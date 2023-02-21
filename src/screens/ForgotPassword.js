@@ -1,4 +1,4 @@
-import { Text, SafeAreaView } from "react-native";
+import { Text, SafeAreaView,StyleSheet } from "react-native";
 import React from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useNavigation } from "@react-navigation/native";
@@ -11,36 +11,29 @@ export default function ForgotPassword() {
 
     function renderContent() {
         return (
-            <KeyboardAwareScrollView
-                contentContainerStyle={{
-                    flexGrow: 1,
-                    paddingHorizontal: 20,
-                    paddingVertical: 25,
-                }}
-                showsHorizontalScrollIndicator={false}
-            >
-                <ContainerComponent>
-                    <Text
-                        style={{
-                            ...FONTS.Mulish_400Regular,
-                            fontSize: 16,
-                            color: COLORS.gray,
-                            marginBottom: 30,
-                        }}
-                    >
-                        Please enter your email address. You will receive a link
-                        to create a new password via email.
-                    </Text>
-                    <InputField
-                        placeholder="Email Address"
-                        containerStyle={{ marginBottom: 20 }}
-                    />
-                    <Button
-                        title="SEND"
-                        onPress={() => navigation.navigate("NewPassword")}
-                    />
-                </ContainerComponent>
-            </KeyboardAwareScrollView>
+          <KeyboardAwareScrollView
+            contentContainerStyle={{
+              flexGrow: 1,
+              paddingHorizontal: 20,
+              paddingVertical: 25,
+            }}
+            showsHorizontalScrollIndicator={false}>
+            <ContainerComponent>
+              <Text
+                style={styles.textMessage}>
+                אנא הכנסי את כתובת הדוא"ל שלך. את תקבלי קישור כדי ליצור סיסמה חדשה
+                באמצעות דואר אלקטרוני.
+              </Text>
+              <InputField
+                placeholder="כתובת דואר אלקטרוני"
+                containerStyle={{ marginBottom: 20 }}
+              />
+              <Button
+                title="שלחי"
+                onPress={() => navigation.navigate("NewPassword")}
+              />
+            </ContainerComponent>
+          </KeyboardAwareScrollView>
         );
     }
 
@@ -54,3 +47,12 @@ export default function ForgotPassword() {
         </SafeAreaView>
     );
 }
+const styles = StyleSheet.create({
+  textMessage: {
+    ...FONTS.Mulish_400Regular,
+    fontSize: 16,
+    color: COLORS.gray,
+    marginBottom: 30,
+    textAlign: "right",
+  }
+});

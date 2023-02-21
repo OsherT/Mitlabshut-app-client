@@ -1,4 +1,4 @@
-import { Text, SafeAreaView } from "react-native";
+import { Text, SafeAreaView, StyleSheet } from "react-native";
 import React from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useNavigation } from "@react-navigation/native";
@@ -21,26 +21,20 @@ export default function NewPassword() {
             >
                 <ContainerComponent>
                     <Text
-                        style={{
-                            marginBottom: 30,
-                            ...FONTS.Mulish_400Regular,
-                            fontSize: 16,
-                            color: COLORS.gray,
-                            lineHeight: 16 * 1.7,
-                        }}
+                        style={styles.textMessage}
                     >
-                        Enter new password and confirm.
+                        הכניסי סיסמא חדשה ובצעי אימות
                     </Text>
                     <InputField
-                        placeholder="New Password"
+                        placeholder="סיסמא חדשה"
                         containerStyle={{ marginBottom: 10 }}
                     />
                     <InputField
-                        placeholder="Confirm Password"
+                        placeholder="אימות סיסמא"
                         containerStyle={{ marginBottom: 20 }}
                     />
                     <Button
-                        title="change password"
+                        title="עדכני סיסמא"
                         onPress={() =>
                             navigation.navigate("RessetPasswordNotice")
                         }
@@ -59,3 +53,13 @@ export default function NewPassword() {
         </SafeAreaView>
     );
 }
+const styles = StyleSheet.create({
+  textMessage: {
+    marginBottom: 30,
+    ...FONTS.Mulish_400Regular,
+    fontSize: 16,
+    color: COLORS.gray,
+    lineHeight: 16 * 1.7,
+    textAlign: "center",
+  },
+});

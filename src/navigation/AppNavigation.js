@@ -51,9 +51,9 @@ export default function Navigation() {
                     },
                     headerShown: false,
                 }}
-                initialRouteName="OnBoarding"
+                initialRouteName="SignIn"
             >
-                <Stack.Screen name="OnBoarding" component={OnBoarding} />
+                <Stack.Screen name="SignIn" component={SignIn}  />
                 <Stack.Screen name="OrderHistory" component={OrderHistory} />
                 <Stack.Screen name="SignUp" component={SignUp} />
                 <Stack.Screen name="NewCard" component={NewCard} />
@@ -113,7 +113,6 @@ export default function Navigation() {
                     name="ForgotPassword"
                     component={ForgotPassword}
                 />
-                <Stack.Screen name="SignIn" component={SignIn} />
             </Stack.Navigator>
             <FlashMessage position="top" />
         </NavigationContainer>

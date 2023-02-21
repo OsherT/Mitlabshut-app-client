@@ -31,20 +31,20 @@ export default function SignUp() {
                             textTransform: "capitalize",
                         }}
                     >
-                        Sign up
+                        הצטרפות לקהילה
                     </Text>
                     <InputField
-                        placeholder="Kristin Watson"
+                        placeholder="שם מלא"
                         containerStyle={{ marginBottom: 10 }}
                         icon={<Check color={COLORS.gray} />}
                     />
                     <InputField
-                        placeholder="kristinwatson@mail.com"
+                        placeholder="מייל"
                         containerStyle={{ marginBottom: 20 }}
                         icon={<Check color={COLORS.gray} />}
                     />
                     <InputField
-                        placeholder="••••••••"
+                        placeholder="סיסמה"
                         containerStyle={{ marginBottom: 20 }}
                         icon={
                             <TouchableOpacity>

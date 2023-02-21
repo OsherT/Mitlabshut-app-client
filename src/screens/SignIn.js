@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, SafeAreaView } from "react-native";
+import { View, Text, TouchableOpacity, SafeAreaView,StyleSheet  } from "react-native";
 import React, { useState } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useNavigation } from "@react-navigation/native";
@@ -32,7 +32,7 @@ export default function SignIn() {
                             textTransform: "capitalize",
                         }}
                     >
-                        Welcome Back!
+                        ברוכות הבאות!
                     </Text>
                     <Text
                         style={{
@@ -44,15 +44,15 @@ export default function SignIn() {
                             marginBottom: 30,
                         }}
                     >
-                        Sign in to continue
+                        התחברי לקהילה
                     </Text>
                     <InputField
-                        placeholder="johndoe@mail.com"
-                        containerStyle={{ marginBottom: 10 }}
+                        placeholder="המייל שלך"
+                        containerStyle={{ marginBottom: 10, textAlign:"right" }}
                         icon={<Check color={COLORS.gray} />}
                     />
                     <InputField
-                        placeholder="*********************"
+                        placeholder="••••••••"
                         containerStyle={{ marginBottom: 20 }}
                         icon={
                             <TouchableOpacity>
@@ -98,7 +98,7 @@ export default function SignIn() {
                                     lineHeight: 16 * 1.7,
                                 }}
                             >
-                                Remember me
+                                זכור אותי 
                             </Text>
                         </TouchableOpacity>
 
@@ -115,13 +115,13 @@ export default function SignIn() {
                                     lineHeight: 16 * 1.7,
                                 }}
                             >
-                                Forgot password?
+                                שכחת את הסיסמה?
                             </Text>
                         </TouchableOpacity>
                     </View>
                     <Button
-                        title="SIGN IN"
-                        onPress={() => navigation.navigate("VerifyPhoneNumber")}
+                        title="התחברי"
+                        onPress={() => navigation.navigate("MainLayout")}
                     />
                 </ContainerComponent>
                 <View
@@ -133,15 +133,7 @@ export default function SignIn() {
                         flexDirection: "row",
                     }}
                 >
-                    <Text
-                        style={{
-                            ...FONTS.Mulish_400Regular,
-                            fontSize: 16,
-                            color: COLORS.gray,
-                        }}
-                    >
-                        Don’t have an account?{" "}
-                    </Text>
+                    
                     <TouchableOpacity
                         onPress={() => navigation.navigate("SignUp")}
                     >
@@ -152,12 +144,22 @@ export default function SignIn() {
                                 color: COLORS.black,
                             }}
                         >
-                            Sign up.
+                            {" "}הצטרפי.  
                         </Text>
                     </TouchableOpacity>
+                    <Text
+                        style={{
+                            ...FONTS.Mulish_400Regular,
+                            fontSize: 16,
+                            color: COLORS.gray,
+                        }}
+                    >
+                        עדיין לא חברת קהילה? {" "}
+                    </Text>
                 </View>
             </KeyboardAwareScrollView>
         );
+        
     }
 
     return (
@@ -166,4 +168,11 @@ export default function SignIn() {
             {renderContent()}
         </SafeAreaView>
     );
+    
 }
+
+  
+  
+  
+  
+  

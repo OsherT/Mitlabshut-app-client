@@ -22,7 +22,7 @@ export default function InputField({ placeholder, containerStyle, icon }) {
         >
             <TextInput
                 placeholder={placeholder}
-                style={{ flex: 1, paddingRight: 15 }}
+                style={{ flex: 1, paddingRight: 15 ,textAlign:"right"}}
             />
             {icon && icon}
         </View>

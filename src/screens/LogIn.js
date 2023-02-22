@@ -10,7 +10,7 @@ import {
 import React, { useState } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useNavigation } from "@react-navigation/native";
-import { Header, InputField, Button, ContainerComponent } from "../components";
+import { Header, Button, ContainerComponent } from "../components";
 import { AREA, COLORS, FONTS } from "../constants";
 import AppLoading from "expo-app-loading";
 import ButtonLogIn from "../components/ButtonLogIn";
@@ -26,43 +26,37 @@ export default function SignIn() {
 
   const logIn = () => {
     if (userEmail === "" || userPassword === "") {
-      Alert.alert("נא למלא את כל הפרטים");
+      Alert.alert("יש למלא את כל הפרטים");
     } else {
-      Alert.alert("Yayy");
-    }
-    const user = {
-      email: userEmail,
-      password: userPassword,
-    };
-    ApiUrl = `localhost:7210/api/User/email/${user.email}/password/${user.password}`;
+      setUserEmail(userEmail.replace("@", "%40"));
+      let ApiUrl = `https://localhost:7210/api/User/email/${userEmail}/password/${userPassword}`;
 
-    fetch(ApiUrl, {
-      method: "GET",
-      headers: new Headers({
-        "Content-Type": "application/json; charset=UTF-8",
-      }),
-    })
-      .then((res) => {
-        return res.json();
+      fetch(ApiUrl, {
+        method: "GET",
+        headers: new Headers({
+          "Content-Type": "application/json; charset=UTF-8",
+          Accept: "application/json; charset=UTF-8",
+        }),
       })
-      .then(
-        /////////need to return the object /////////
-        (result) => {
-          if (result > 0) {
-            localStorage.setItem("loggedUser", JSON.stringify(result));
-            //update the logged user
-            setLoggedUser(user.email);
-            // FireBaseLogin();
-          } else {
-            Alert.alert("הסיסמא או שם המשתמש אינם נכונים");
-            // window.location.reload();
+        .then((res) => {
+          console.log(res);
+          return res.json();
+        })
+        .then(
+          (user) => {
+            // setLoggedUser(user.ID);
+            console.log(user);
+            Alert.alert("userrr");
+          },
+          (error) => {
+            console.log("ERR in get user");
+            // console.log(user);
+            // Alert.alert(ApiUrl);
           }
-        },
-        (error) => {
-          console.log(error);
-          Alert.alert("erorrrrr");
-        }
-      );
+        );
+    }
+
+
   };
 
   const logInWithFaceBook = () => {

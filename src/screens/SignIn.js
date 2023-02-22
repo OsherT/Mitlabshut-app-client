@@ -144,7 +144,7 @@ export default function SignIn() {
                                 color: COLORS.black,
                             }}
                         >
-                            {" "}הצטרפי.  
+                            {" "}הצטרפי  
                         </Text>
                     </TouchableOpacity>
                     <Text

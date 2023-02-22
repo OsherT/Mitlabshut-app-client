@@ -1,11 +1,11 @@
-import { View, Text, TouchableOpacity, SafeAreaView } from "react-native";
+import { View, Text, TouchableOpacity, SafeAreaView,StyleSheet } from "react-native";
 import React from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useNavigation } from "@react-navigation/native";
-
 import { Header, InputField, Button, ContainerComponent } from "../components";
 import { AREA, COLORS, FONTS } from "../constants";
 import { EyeOff, Check } from "../svg";
+import { TextInput } from "react-native";
 
 export default function SignUp() {
     const navigation = useNavigation();
@@ -36,33 +36,31 @@ export default function SignUp() {
                     <InputField
                         placeholder="שם מלא"
                         containerStyle={{ marginBottom: 10 }}
-                        icon={<Check color={COLORS.gray} />}
+                        // icon={<Check color={COLORS.gray} />}
                     />
                     <InputField
                         placeholder="מייל"
-                        containerStyle={{ marginBottom: 20 }}
-                        icon={<Check color={COLORS.gray} />}
+                        containerStyle={{ marginBottom: 10 }}
+                        // icon={<Check color={COLORS.gray} />}
                     />
                     <InputField
                         placeholder="סיסמה"
-                        containerStyle={{ marginBottom: 20 }}
-                        icon={
-                            <TouchableOpacity>
-                                <EyeOff />
-                            </TouchableOpacity>
-                        }
+                        containerStyle={{ marginBottom: 10 }}
+                        // icon={
+                        //     <TouchableOpacity>
+                        //         <EyeOff />
+                        //     </TouchableOpacity>
+                        // }
                     />
-                    <InputField
-                        placeholder="••••••••"
-                        containerStyle={{ marginBottom: 20 }}
-                        icon={
-                            <TouchableOpacity>
-                                <EyeOff />
-                            </TouchableOpacity>
-                        }
+                    <View style={styles.view}>
+                    <TextInput style={styles.input}
+                        placeholder="מספר טלפון"
+                        keyboardType="phone-pad"
                     />
+                    </View>
+                    
                     <Button
-                        title="SIGN UP"
+                        title="הרשמה"
                         onPress={() => navigation.navigate("VerifyPhoneNumber")}
                     />
                 </ContainerComponent>
@@ -75,15 +73,7 @@ export default function SignUp() {
                         flexDirection: "row",
                     }}
                 >
-                    <Text
-                        style={{
-                            ...FONTS.Mulish_400Regular,
-                            fontSize: 16,
-                            color: COLORS.gray,
-                        }}
-                    >
-                        Already have an account?{" "}
-                    </Text>
+                    
                     <TouchableOpacity
                         onPress={() => navigation.navigate("SignIn")}
                     >
@@ -94,9 +84,18 @@ export default function SignUp() {
                                 color: COLORS.black,
                             }}
                         >
-                            Sign in.
+                            {" "}התחברי
                         </Text>
                     </TouchableOpacity>
+                    <Text
+                        style={{
+                            ...FONTS.Mulish_400Regular,
+                            fontSize: 16,
+                            color: COLORS.gray,
+                        }}
+                    >
+                        כבר חלק מהקהילה?{" "}
+                    </Text>
                 </View>
             </KeyboardAwareScrollView>
         );
@@ -109,3 +108,21 @@ export default function SignUp() {
         </SafeAreaView>
     );
 }
+const styles = StyleSheet.create({
+    view: {
+        width: "100%",
+        height: 50,
+        borderWidth: 1,
+        borderRadius: 25,
+        paddingHorizontal: 25,
+        borderColor: COLORS.goldenTransparent_03,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        backgroundColor: "#FBF8F2",
+        marginBottom: 10
+    },
+    input:{
+        flex: 1, paddingRight: 15 ,textAlign:"right"
+    }
+})

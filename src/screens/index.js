@@ -1,5 +1,5 @@
 import OnBoarding from "./OnBoarding";
-import SignIn from "./SignIn";
+import SignIn from "./LogIn";
 import SignUp from "./SignUp";
 import ForgotPassword from "./ForgotPassword";
 import AccountCreated from "./AccountCreated";

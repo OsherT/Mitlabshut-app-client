@@ -19,6 +19,14 @@ import { ScrollView } from "react-native-gesture-handler";
 export default function SignUp() {
   const navigation = useNavigation();
   const [location, setLocation] = useState([]);
+  const [userName, setUserName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
+  const [userPassword, setUserPassword] = useState("");
+  const [userPhone, setUserPhone] = useState("");
+
+
+
+
 
   function renderContent() {
     return (
@@ -46,22 +54,27 @@ export default function SignUp() {
           <InputField
             placeholder="שם מלא"
             containerStyle={{ marginBottom: 10 }}
+            onChangeText={(text) => setUserName(text)}
             // icon={<Check color={COLORS.gray} />}
           />
           <InputField
             placeholder="מייל"
             containerStyle={{ marginBottom: 10 }}
+            onChangeText={(text) => setUserEmail(text)}
             //icon={<Check color={COLORS.gray} />}
           />
           <InputField
             placeholder="סיסמה"
             containerStyle={{ marginBottom: 10 }}
+            onChangeText={(text) => setUserPassword(text)}
+
           />
           <View style={styles.view}>
             <TextInput
               style={styles.input}
               placeholder="מספר טלפון"
               keyboardType="phone-pad"
+              onChangeText={(text) => setUserPhone(text)}
             />
           </View>
           <SafeAreaView style={{ flex: 1 }}>

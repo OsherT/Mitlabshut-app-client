@@ -1,9 +1,13 @@
 import { View, Text, TextInput } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 
 import { COLORS } from "../constants";
 
-export default function InputField({ placeholder, containerStyle, icon }) {
+export default function InputField({ placeholder, containerStyle, icon,onChangeText }) {
+    function handleChange(text) {
+        setText(text);
+      }
+
     return (
         <View
             style={{
@@ -23,6 +27,7 @@ export default function InputField({ placeholder, containerStyle, icon }) {
             <TextInput
                 placeholder={placeholder}
                 style={{ flex: 1, paddingRight: 15 ,textAlign:"right"}}
+                onChangeText={onChangeText}
             />
             {icon && icon}
         </View>

@@ -15,17 +15,45 @@ import { EyeOff, Check } from "../svg";
 import { TextInput } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { ScrollView } from "react-native-gesture-handler";
+import axios from 'axios';
+
 
 export default function SignUp() {
+  const difPic="https://images.squarespace-cdn.com/content/v1/5beb55599d5abb5a47cc4907/1610465905997-2G8SGHXIYCGTF9BQB0OD/female+girl+woman+icon.jpg?format=500w"
   const navigation = useNavigation();
-  const [location, setLocation] = useState([]);
+  const [userLocation, setUserLocation] = useState([]);
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const [userPhone, setUserPhone] = useState("");
 
+  const SignUp =()=> {
 
+    if (userName==""||userEmail==""||userPassword==""||userPhone=="") {//Remember to add location!!!!
+      alert("אנא הכניסי את כל הפרטים הנדרשים")
+    }
+    else{
+      var newUser={
+        Email:userEmail,
+        Phone_number:userPhone,
+        Full_name:userName,
+        Password:userPassword,
+        Address:"נחל צבי 13 א מגדל העמק",//To change
+        IsAdmin:false,
+        Closet_ID:"4",//to change
+        User_image:difPic
+      }
+    }
+    axios
+    .post("https://localhost:7210/api/User", newUser)
+    .then((res) => {
+      alert("🦄 ");
+    })
+    .catch((err) => {
+      alert("Error ");
+    });
 
+  }
 
 
   function renderContent() {
@@ -77,27 +105,24 @@ export default function SignUp() {
               onChangeText={(text) => setUserPhone(text)}
             />
           </View>
-          <SafeAreaView style={{ flex: 1 }}>
+          {/* <SafeAreaView style={{ flex: 1 }}>
             <GooglePlacesAutocomplete
               placeholder="כתובת"
               keyboardShouldPersistTaps="always"
               onPress={(data) => {
-                setLocation(data);
-                placeholder = location;
-                alert(location);
+                setUserLocation(data);
               }}
               query={{
                 key: "AIzaSyAaCpPtzL7apvQuXnKdRhY0omPHiMdc--s",
                 language: "he",
               }}
             />
-          </SafeAreaView>
+          </SafeAreaView> */}
 
-          <View>{location}</View>
 
           <Button
             title="הרשמה"
-            onPress={() => navigation.navigate("VerifyPhoneNumber")}
+            onPress={SignUp}
           />
         </ContainerComponent>
         <View

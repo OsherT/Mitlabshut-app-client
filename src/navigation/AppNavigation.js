@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import FlashMessage from "react-native-flash-message";
@@ -37,12 +37,15 @@ import {
     NewCard,
 } from "../screens";
 import Home from "../screens/Home";
+import { userContext } from "./userContext";
 
 const Stack = createStackNavigator();
 
 export default function Navigation() {
+  const [loggedUser, setloggedUser] = useState("");
     return (
       <NavigationContainer>
+        <userContext.Provider value={{loggedUser,setloggedUser}}>
         <Stack.Navigator
           screenOptions={{
             headerStyle: {
@@ -63,7 +66,6 @@ export default function Navigation() {
           <Stack.Screen name="MyPromocodes" component={MyPromocodes} />
           <Stack.Screen name="SelectColor" component={SelectColor} />
           <Stack.Screen name="Home" component={Home} />
-
           <Stack.Screen name="TrackYourOrder" component={TrackYourOrder} />
           <Stack.Screen name="FAQ" component={FAQ} />
           <Stack.Screen name="Reviews" component={Reviews} />
@@ -96,6 +98,7 @@ export default function Navigation() {
           <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
         </Stack.Navigator>
         <FlashMessage position="top" />
+        </userContext.Provider>
       </NavigationContainer>
     );
 }

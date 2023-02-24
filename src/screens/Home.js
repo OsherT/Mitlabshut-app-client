@@ -8,17 +8,18 @@ import {
     StyleSheet,
     ScrollView,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { showMessage } from "react-native-flash-message";
 
 import { promo, SIZES, COLORS, products, FONTS } from "../constants";
 import { RatingComponent, Line } from "../components";
 import { BagSvg, HeartSvg } from "../svg";
+import { userContext } from "../navigation/userContext";
 
 export default function Home() {
     const navigation = useNavigation();
-
+    const {loggedUser,setloggedUser}=useContext(userContext)
     const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
     function updateCurrentSlideIndex(e) {

@@ -163,16 +163,14 @@ export default function SignUp() {
             flex: 1,
             marginBottom: 13,
             flexDirection: "row",
-          }}
-        >
+          }}>
           <TouchableOpacity onPress={() => navigation.navigate("SignIn")}>
             <Text
               style={{
                 ...FONTS.Mulish_400Regular,
                 fontSize: 16,
                 color: COLORS.black,
-              }}
-            >
+              }}>
               {" "}
               התחברי
             </Text>
@@ -182,8 +180,7 @@ export default function SignUp() {
               ...FONTS.Mulish_400Regular,
               fontSize: 16,
               color: COLORS.gray,
-            }}
-          >
+            }}>
             כבר חלק מהקהילה?{" "}
           </Text>
         </View>

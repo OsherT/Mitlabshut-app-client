@@ -13,9 +13,9 @@ import { useNavigation } from "@react-navigation/native";
 import { Header, Button, ContainerComponent } from "../components";
 import { AREA, COLORS, FONTS } from "../constants";
 import AppLoading from "expo-app-loading";
-import ButtonLogIn from "../components/ButtonLogIn";
-import Facebook from "../svg/Facebook";
-import Google from "../svg/Google";
+// import ButtonLogIn from "../components/ButtonLogIn";
+// import Facebook from "../svg/Facebook";
+// import Google from "../svg/Google";
 
 export default function SignIn() {
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api`;
@@ -52,8 +52,10 @@ export default function SignIn() {
             if (user.id > 0) {
               setLoggedUser(user.id);
               Alert.alert("Logged in");
-              // navigation.navigate("ProductDetails");
-            } else {
+              navigation.navigate("ProductDetails");
+            } 
+            //if deatails are incorrect
+            else {
               Alert.alert("כתובת האימייל או הסיסמא שגויים");
               setUserEmail("");
               setUserPassword("");

@@ -7,7 +7,7 @@ import {
   Alert,
   TextInput,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useNavigation } from "@react-navigation/native";
 import { Header, Button, ContainerComponent } from "../components";
@@ -18,14 +18,14 @@ import Facebook from "../svg/Facebook";
 import Google from "../svg/Google";
 
 export default function SignIn() {
-  // const ApiUrl = `https://localhost:7210/api`;
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api`;
 
   const navigation = useNavigation();
-
   const [loggedUser, setLoggedUser] = useState([]);
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
+  const emailInputRef = useRef(null);
+  const passwordInputRef = useRef(null);
 
   const logIn = () => {
     if (userEmail === "" || userPassword === "") {
@@ -41,36 +41,39 @@ export default function SignIn() {
       })
         .then((res) => {
           console.log("status", res.status);
-          console.log(
-            ApiUrl + `/User/email/${userEmail}/password/${userPassword}`
-          );
 
           return res.json();
         })
         .then(
           (user) => {
-            if (user.id>0) {
+            console.log(user);
+            console.log(user.id);
+
+            if (user.id > 0) {
               setLoggedUser(user.id);
-              // navigation.navigate("Home");
+              Alert.alert("Logged in");
+              // navigation.navigate("ProductDetails");
+            } else {
+              Alert.alert("כתובת האימייל או הסיסמא שגויים");
+              setUserEmail("");
+              setUserPassword("");
+              emailInputRef.current.clear();
+              passwordInputRef.current.clear();
             }
-            else{Alert.alert("שם משתמש או סיסמא אינם נכונים")}
-        
           },
           (error) => {
-            console.log("ERR in logIn");
-            // console.log(user);
-            // Alert.alert(ApiUrl);
+            console.log("ERR in logIn", error);
           }
         );
     }
   };
 
-  const logInWithFaceBook = () => {
-    Alert.alert("FaceBook yay");
-  };
-  const logInWithGoogle = () => {
-    Alert.alert("Google yay");
-  };
+  // const logInWithFaceBook = () => {
+  //   Alert.alert("FaceBook yay");
+  // };
+  // const logInWithGoogle = () => {
+  //   Alert.alert("Google yay");
+  // };
 
   function renderContent() {
     return (
@@ -91,6 +94,7 @@ export default function SignIn() {
             name="email"
             onChangeText={(text) => setUserEmail(text.replace("%40", "@"))}
             containerStyle={{ marginBottom: 10, textAlign: "right" }}
+            ref={emailInputRef}
           />
 
           <TextInput
@@ -99,6 +103,7 @@ export default function SignIn() {
             name="password"
             onChangeText={(text) => setUserPassword(text)}
             containerStyle={{ marginBottom: 20 }}
+            ref={passwordInputRef}
           />
 
           <View style={styles.textUpperContainer}>
@@ -111,7 +116,7 @@ export default function SignIn() {
           <Button title="התחברי" onPress={logIn} />
         </ContainerComponent>
 
-        <View style={styles.logInViaContainer}>
+        {/* <View style={styles.logInViaContainer}>
           <ButtonLogIn
             icon={<Google />}
             style={styles.logInViaBtn}
@@ -125,7 +130,7 @@ export default function SignIn() {
             title="Facebook  "
             onPress={logInWithFaceBook}
           />
-        </View>
+        </View> */}
 
         <View style={styles.textLowContainer}>
           <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>

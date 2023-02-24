@@ -15,7 +15,7 @@ import { EyeOff, Check } from "../svg";
 import { TextInput } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { ScrollView } from "react-native-gesture-handler";
-import axios from 'axios';
+// import axios from 'axios';
 
 
 export default function SignUp() {

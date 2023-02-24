@@ -18,6 +18,9 @@ import Facebook from "../svg/Facebook";
 import Google from "../svg/Google";
 
 export default function SignIn() {
+  // const ApiUrl = `https://localhost:7210/api`;
+  const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar5/api`;
+
   const navigation = useNavigation();
 
   const [loggedUser, setLoggedUser] = useState([]);
@@ -28,10 +31,8 @@ export default function SignIn() {
     if (userEmail === "" || userPassword === "") {
       Alert.alert("יש למלא את כל הפרטים");
     } else {
-      setUserEmail(userEmail.replace("@", "%40"));
-      let ApiUrl = `https://localhost:7210/api/User/email/${userEmail}/password/${userPassword}`;
-
-      fetch(ApiUrl, {
+      setUserEmail(userEmail.replace("%40", "@"));
+      fetch(ApiUrl + `/User/email/${userEmail}/password/${userPassword}`, {
         method: "GET",
         headers: new Headers({
           "Content-Type": "application/json; charset=UTF-8",
@@ -39,24 +40,28 @@ export default function SignIn() {
         }),
       })
         .then((res) => {
-          console.log(res);
+                    
+          console.log( res);
+          console.log("status", res.status);
+          console.log(
+            ApiUrl + `/User/email/${userEmail}/password/${userPassword}`
+          );
+
           return res.json();
         })
         .then(
           (user) => {
             // setLoggedUser(user.ID);
             console.log(user);
-            Alert.alert("userrr");
+            Alert.alert("yayyy");
           },
           (error) => {
-            console.log("ERR in get user");
+            console.log("ERR in logIn");
             // console.log(user);
             // Alert.alert(ApiUrl);
           }
         );
     }
-
-
   };
 
   const logInWithFaceBook = () => {
@@ -83,7 +88,7 @@ export default function SignIn() {
             style={styles.textInput}
             placeholder="המייל שלך"
             name="email"
-            onChangeText={(text) => setUserEmail(text)}
+            onChangeText={(text) => setUserEmail(text.replace("%40", "@"))}
             containerStyle={{ marginBottom: 10, textAlign: "right" }}
           />
 

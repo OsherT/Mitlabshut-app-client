@@ -12,12 +12,13 @@ import { useNavigation } from "@react-navigation/native";
 import { Header, Button, ContainerComponent } from "../components";
 import { AREA, COLORS, FONTS } from "../constants";
 import { TextInput } from "react-native";
-import { MultipleSelectList } from "react-native-dropdown-select-list";
+import {
+  MultipleSelectList,
+  SelectList,
+} from "react-native-dropdown-select-list";
 import axios from "axios";
 
 export default function UploadItem() {
-  const difPic =
-    "https://images.squarespace-cdn.com/content/v1/5beb55599d5abb5a47cc4907/1610465905997-2G8SGHXIYCGTF9BQB0OD/female+girl+woman+icon.jpg?format=500w";
   const navigation = useNavigation();
   const [itemName, setItemName] = useState("");
   const [itemPrice, setItemPrice] = useState("");
@@ -30,36 +31,141 @@ export default function UploadItem() {
   const [itemBrand, setItemBrand] = useState([]);
   const [itemImage, setItemImage] = useState([]);
   const [itemDescription, setItemDescription] = useState("");
-  const DeliveryMethod = [
+
+  //lists  
+  const [brandsList, setBrandsList] = useState([]);
+  const [categoriesList, setCategoriesList] = useState([]);
+  const [colorsList, setColorsList] = useState([]);
+  const [sizesList, setSizesList] = useState([]);
+  const [typesList, setTypesList] = useState([]);
+
+  const deliveryMethodsList = [
     { key: "1", value: "איסוף עצמי" },
     { key: "2", value: "משלוח" },
   ];
 
-  const ItemCondition = [
+  const conditionsList = [
     { key: "1", value: "חדש עם אטיקט  " },
     { key: "2", value: "חדש ללא אטיקט  " },
     { key: "3", value: "כמו חדש" },
     { key: "4", value: "נלבש מספר פעמים" },
   ];
 
-  useEffect(
-    () =>
-      //Get Values from database
-      axios
-        .get("https://jsonplaceholder.typicode.com/users")
-        .then((response) => {
-          // Store Values in Temporary Array
-          let newArray = response.data.map((item) => {
-            return { key: item.id, value: item.name };
-          });
-          //Set Data Variable
-          setData(newArray);
-        })
-        .catch((e) => {
-          console.log(e);
-        }),
-    []
-  );
+  const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
+
+  useEffect(() => {
+    GetBrandsList();
+    GetCategoriesList();
+    GetColorsList();
+    GetSizesList();
+    GetTypesList();
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const GetBrandsList = () => {
+    fetch(ApiUrl + "Item_brand", {
+      method: "GET",
+      headers: new Headers({
+        "Content-Type": "application/json; charset=UTF-8",
+        Accept: "application/json; charset=UTF-8",
+      }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then(
+        (result) => {
+          setBrandsList(result);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+  };
+
+  const GetCategoriesList = () => {
+    fetch(ApiUrl + "Item_category", {
+      method: "GET",
+      headers: new Headers({
+        "Content-Type": "application/json; charset=UTF-8",
+        Accept: "application/json; charset=UTF-8",
+      }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then(
+        (result) => {
+          setCategoriesList(result);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+  };
+
+  const GetColorsList = () => {
+    fetch(ApiUrl + "Item_color", {
+      method: "GET",
+      headers: new Headers({
+        "Content-Type": "application/json; charset=UTF-8",
+        Accept: "application/json; charset=UTF-8",
+      }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then(
+        (result) => {
+          setColorsList(result);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+  };
+
+  const GetSizesList = () => {
+    fetch(ApiUrl + "Item_size", {
+      method: "GET",
+      headers: new Headers({
+        "Content-Type": "application/json; charset=UTF-8",
+        Accept: "application/json; charset=UTF-8",
+      }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then(
+        (result) => {
+          setSizesList(result);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+  };
+
+  const GetTypesList = () => {
+    fetch(ApiUrl + "Item_type", {
+      method: "GET",
+      headers: new Headers({
+        "Content-Type": "application/json; charset=UTF-8",
+        Accept: "application/json; charset=UTF-8",
+      }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then(
+        (result) => {
+          setTypesList(result);
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+  };
 
   function renderContent() {
     return (
@@ -88,43 +194,64 @@ export default function UploadItem() {
             />
           </View>
 
-          <TextInput
-            style={styles.dropdownInput}
-            placeholder="קטגוריה"
-            containerStyle={{ marginBottom: 10 }}
+          <SelectList
+            placeholder="  קטגוריה"
+            searchPlaceholder="חיפוש"
+            boxStyles={styles.dropdownInput}
+            dropdownStyles={styles.dropdownContainer}
+            setSelected={(val) => setItemCategory(val)}
+            data={categoriesList}
+            notFoundText="לא קיים מידע"
           />
 
-          <TextInput
-            style={styles.dropdownInput}
-            placeholder="סוג פריט"
-            containerStyle={{ marginBottom: 10 }}
+          <SelectList
+            placeholder="  סוג פריט"
+            searchPlaceholder="חיפוש"
+            boxStyles={styles.dropdownInput}
+            dropdownStyles={styles.dropdownContainer}
+            setSelected={(val) => setItemType(val)}
+            data={typesList}
+            notFoundText="לא קיים מידע"
           />
 
-          <TextInput
-            style={styles.dropdownInput}
-            placeholder="מידה"
-            containerStyle={{ marginBottom: 10 }}
+          <SelectList
+            placeholder="מידה "
+            searchPlaceholder="חיפוש"
+            boxStyles={styles.dropdownInput}
+            dropdownStyles={styles.dropdownContainer}
+            setSelected={(val) => setItemSize(val)}
+            data={sizesList}
+            notFoundText="לא קיים מידע"
           />
 
-          <MultipleSelectList
+          <SelectList
+            placeholder="  צבע "
+            searchPlaceholder="חיפוש"
+            boxStyles={styles.dropdownInput}
+            dropdownStyles={styles.dropdownContainer}
+            setSelected={(val) => setItemColor(val)}
+            data={colorsList}
+            notFoundText="לא קיים מידע"
+          />
+
+          <SelectList
+            placeholder="  מותג "
+            searchPlaceholder="חיפוש"
+            boxStyles={styles.dropdownInput}
+            dropdownStyles={styles.dropdownContainer}
+            setSelected={(val) => setItemBrand(val)}
+            data={brandsList}
+            notFoundText="לא קיים מידע"
+          />
+
+          <SelectList
             placeholder=" מצב פריט"
             searchPlaceholder="חיפוש"
             boxStyles={styles.dropdownInput}
             dropdownStyles={styles.dropdownContainer}
             setSelected={(val) => setItemCondition(val)}
-            data={ItemCondition}
+            data={conditionsList}
             notFoundText="לא קיים מידע"
-          />
-          <TextInput
-            style={styles.dropdownInput}
-            placeholder="צבע"
-            containerStyle={{ marginBottom: 10 }}
-          />
-
-          <TextInput
-            style={styles.dropdownInput}
-            placeholder="מותג"
-            containerStyle={{ marginBottom: 10 }}
           />
 
           <MultipleSelectList
@@ -133,7 +260,7 @@ export default function UploadItem() {
             boxStyles={styles.dropdownInput}
             dropdownStyles={styles.dropdownContainer}
             setSelected={(val) => setItemDeliveryMethod(val)}
-            data={DeliveryMethod}
+            data={deliveryMethodsList}
             notFoundText="לא קיים מידע"
           />
           <TextInput
@@ -170,6 +297,8 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
   },
   doubleContainer: {
+    width: "100%",
+
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -204,6 +333,7 @@ const styles = StyleSheet.create({
     textAlign: "right",
   },
   dropdownContainer: {
+    width: "100%",
     backgroundColor: "#FBF8F2",
     borderColor: COLORS.goldenTransparent_03,
     marginBottom: 30,

@@ -26,33 +26,51 @@ export default function SignUp() {
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const [userPhone, setUserPhone] = useState("");
+  const [userClosetId, setUserClosetId] = useState("");
+
+  
+
+  //https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/
+
 
   const SignUp =()=> {
-
-    if (userName==""||userEmail==""||userPassword==""||userPhone=="") {//Remember to add location!!!!
-      alert("אנא הכניסי את כל הפרטים הנדרשים")
-    }
-    else{
-      var newUser={
-        Email:userEmail,
-        Phone_number:userPhone,
-        Full_name:userName,
-        Password:userPassword,
-        Address:"נחל צבי 13 א מגדל העמק",//To change
-        IsAdmin:false,
-        Closet_ID:"4",//to change
-        User_image:difPic
-      }
+    const newCloset ={
+      Id:0,
+      Description:"היי, זה הארון החדש שלי!"
     }
     axios
-    .post("https://localhost:7210/api/User", newUser)
+    .post("https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Closet",newCloset)
     .then((res) => {
-      alert("🦄 ");
+      if (res.data!=0) {
+        alert(res.data);
+        const newUser={
+          Email:userEmail,
+          Phone_number:userPhone,
+          Full_name:userName,
+          Password:userPassword,
+          Address:"נחל צבי 13 א מגדל העמק",//To change
+          IsAdmin:false,
+          Closet_ID:res.data,
+          User_image:difPic
+        }
+        if (userName==""||userEmail==""||userPassword==""||userPhone=="") {//Remember to add location!!!!
+          alert("אנא הכניסי את כל הפרטים הנדרשים")
+        }
+        else{
+        axios
+        .post("https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User", newUser)
+        .then((res) => {
+          alert("🦄");
+        })
+        .catch((err) => {
+          alert("Error");
+        });
+        }
+      }
     })
     .catch((err) => {
-      alert("Error ");
+      alert("Error");
     });
-
   }
 
 

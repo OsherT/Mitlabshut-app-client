@@ -93,8 +93,7 @@ export default function SignUp() {
           paddingHorizontal: 20,
           paddingVertical: 25,
         }}
-        showsHorizontalScrollIndicator={false}
-      >
+        showsHorizontalScrollIndicator={false}>
         <ContainerComponent>
           <Text
             style={{
@@ -104,8 +103,7 @@ export default function SignUp() {
               marginBottom: 30,
               lineHeight: 32 * 1.2,
               textTransform: "capitalize",
-            }}
-          >
+            }}>
             הצטרפות לקהילה
           </Text>
           <InputField
@@ -118,6 +116,7 @@ export default function SignUp() {
             placeholder="מייל"
             containerStyle={{ marginBottom: 10 }}
             onChangeText={(text) => setUserEmail(text)}
+
             //icon={<Check color={COLORS.gray} />}
           />
           <InputField
@@ -156,16 +155,14 @@ export default function SignUp() {
             flex: 1,
             marginBottom: 13,
             flexDirection: "row",
-          }}
-        >
+          }}>
           <TouchableOpacity onPress={() => navigation.navigate("SignIn")}>
             <Text
               style={{
                 ...FONTS.Mulish_400Regular,
                 fontSize: 16,
                 color: COLORS.black,
-              }}
-            >
+              }}>
               {" "}
               התחברי
             </Text>
@@ -175,8 +172,7 @@ export default function SignUp() {
               ...FONTS.Mulish_400Regular,
               fontSize: 16,
               color: COLORS.gray,
-            }}
-          >
+            }}>
             כבר חלק מהקהילה?{" "}
           </Text>
         </View>

@@ -37,6 +37,7 @@ import {
 } from "../screens";
 import Home from "../screens/Home";
 import ProductDetails from "../screens/ProductDetails";
+import UploadItem from "../screens/UploadItem";
 
 
 const Stack = createStackNavigator();
@@ -53,7 +54,7 @@ export default function Navigation() {
           },
           headerShown: false,
         }}
-        initialRouteName="SignIn">
+        initialRouteName="UploadItem">
         <Stack.Screen name="SignIn" component={SignIn} />
         <Stack.Screen name="OrderHistory" component={OrderHistory} />
         <Stack.Screen name="SignUp" component={SignUp} />
@@ -65,6 +66,7 @@ export default function Navigation() {
         <Stack.Screen name="SelectColor" component={SelectColor} />
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="ProductDetails" component={ProductDetails} />
+        <Stack.Screen name="UploadItem" component={UploadItem} />
 
         <Stack.Screen name="TrackYourOrder" component={TrackYourOrder} />
         <Stack.Screen name="FAQ" component={FAQ} />

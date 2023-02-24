@@ -15,11 +15,11 @@ import { EyeOff, Check } from "../svg";
 import { TextInput } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { ScrollView } from "react-native-gesture-handler";
-// import axios from 'axios';
-
+import axios from "axios";
 
 export default function SignUp() {
-  const difPic="https://images.squarespace-cdn.com/content/v1/5beb55599d5abb5a47cc4907/1610465905997-2G8SGHXIYCGTF9BQB0OD/female+girl+woman+icon.jpg?format=500w"
+  const difPic =
+  "https://images.squarespace-cdn.com/content/v1/5beb55599d5abb5a47cc4907/1610465905997-2G8SGHXIYCGTF9BQB0OD/female+girl+woman+icon.jpg?format=500w";
   const navigation = useNavigation();
   const [userLocation, setUserLocation] = useState([]);
   const [userName, setUserName] = useState("");
@@ -28,50 +28,61 @@ export default function SignUp() {
   const [userPhone, setUserPhone] = useState("");
   const [userClosetId, setUserClosetId] = useState("");
 
-  
-
   //https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/
 
-
-  const SignUp =()=> {
-    const newCloset ={
-      Id:0,
-      Description:"היי, זה הארון החדש שלי!"
-    }
-    axios
-    .post("https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Closet",newCloset)
-    .then((res) => {
-      if (res.data!=0) {
-        alert(res.data);
-        const newUser={
-          Email:userEmail,
-          Phone_number:userPhone,
-          Full_name:userName,
-          Password:userPassword,
-          Address:"נחל צבי 13 א מגדל העמק",//To change
-          IsAdmin:false,
-          Closet_ID:res.data,
-          User_image:difPic
-        }
-        if (userName==""||userEmail==""||userPassword==""||userPhone=="") {//Remember to add location!!!!
-          alert("אנא הכניסי את כל הפרטים הנדרשים")
-        }
-        else{
-        axios
-        .post("https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User", newUser)
+  const SignUp = () => {
+    if (
+      userName == "" ||
+      userEmail == "" ||
+      userPassword == "" ||
+      userPhone == ""
+    ) {
+      //Remember to add location!!!!
+      alert("אנא הכניסי את כל הפרטים הנדרשים");
+    } 
+    else {
+      const newCloset = {
+        Id: 0,
+        Description: "היי, זה הארון החדש שלי!",
+      };
+      axios
+        .post(
+          "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Closet",
+          newCloset
+        )
         .then((res) => {
-          alert("🦄");
+          if (res.data != 0) {
+            const newUser = {
+              Email: userEmail,
+              Phone_number: userPhone,
+              Full_name: userName,
+              Password: userPassword,
+              Address: "נחל צבי 13 א מגדל העמק", //To change
+              IsAdmin: false,
+              Closet_ID: res.data,
+              User_image: difPic,
+            };
+            axios
+          .post(
+            "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User",
+            newUser
+          )
+          .then((res) => {
+            alert("🦄");
+          })
+          .catch((err) => {
+            alert("Error in user");
+            console.log(err);
+          });      
+          }
         })
         .catch((err) => {
-          alert("Error");
+          alert("Error in closet");
         });
-        }
       }
-    })
-    .catch((err) => {
-      alert("Error");
-    });
-  }
+    }
+    
+
 
 
   function renderContent() {
@@ -113,7 +124,6 @@ export default function SignUp() {
             placeholder="סיסמה"
             containerStyle={{ marginBottom: 10 }}
             onChangeText={(text) => setUserPassword(text)}
-
           />
           <View style={styles.view}>
             <TextInput
@@ -137,11 +147,7 @@ export default function SignUp() {
             />
           </SafeAreaView> */}
 
-
-          <Button
-            title="הרשמה"
-            onPress={SignUp}
-          />
+          <Button title="הרשמה" onPress={SignUp} />
         </ContainerComponent>
         <View
           style={{

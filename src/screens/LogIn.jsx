@@ -52,9 +52,8 @@ export default function SignIn() {
             if (user.id > 0) {
               setLoggedUser(user.id);
               Alert.alert("Logged in");
-              // navigation.navigate("Home");
-            }
-            else {
+              // navigation.navigate("ProductDetails");
+            } else {
               Alert.alert("כתובת האימייל או הסיסמא שגויים");
               setUserEmail("");
               setUserPassword("");
@@ -69,12 +68,12 @@ export default function SignIn() {
     }
   };
 
-  const logInWithFaceBook = () => {
-    Alert.alert("FaceBook yay");
-  };
-  const logInWithGoogle = () => {
-    Alert.alert("Google yay");
-  };
+  // const logInWithFaceBook = () => {
+  //   Alert.alert("FaceBook yay");
+  // };
+  // const logInWithGoogle = () => {
+  //   Alert.alert("Google yay");
+  // };
 
   function renderContent() {
     return (
@@ -117,7 +116,7 @@ export default function SignIn() {
           <Button title="התחברי" onPress={logIn} />
         </ContainerComponent>
 
-        <View style={styles.logInViaContainer}>
+        {/* <View style={styles.logInViaContainer}>
           <ButtonLogIn
             icon={<Google />}
             style={styles.logInViaBtn}
@@ -131,7 +130,7 @@ export default function SignIn() {
             title="Facebook  "
             onPress={logInWithFaceBook}
           />
-        </View>
+        </View> */}
 
         <View style={styles.textLowContainer}>
           <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>

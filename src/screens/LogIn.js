@@ -19,7 +19,7 @@ import Google from "../svg/Google";
 
 export default function SignIn() {
   // const ApiUrl = `https://localhost:7210/api`;
-  const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar5/api`;
+  const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api`;
 
   const navigation = useNavigation();
 
@@ -40,8 +40,6 @@ export default function SignIn() {
         }),
       })
         .then((res) => {
-                    
-          console.log( res);
           console.log("status", res.status);
           console.log(
             ApiUrl + `/User/email/${userEmail}/password/${userPassword}`
@@ -51,9 +49,12 @@ export default function SignIn() {
         })
         .then(
           (user) => {
-            // setLoggedUser(user.ID);
-            console.log(user);
-            Alert.alert("yayyy");
+            if (user.id>0) {
+              setLoggedUser(user.id);
+              // navigation.navigate("Home");
+            }
+            else{Alert.alert("שם משתמש או סיסמא אינם נכונים")}
+        
           },
           (error) => {
             console.log("ERR in logIn");

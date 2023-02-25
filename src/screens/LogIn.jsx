@@ -18,7 +18,6 @@ import AppLoading from "expo-app-loading";
 // import Google from "../svg/Google";
 import { userContext } from "../navigation/userContext";
 
-
 export default function SignIn() {
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api`;
   const { loggedUser, setloggedUser } = useContext(userContext);
@@ -28,7 +27,6 @@ export default function SignIn() {
   const [userPassword, setUserPassword] = useState("");
   const emailInputRef = useRef(null);
   const passwordInputRef = useRef(null);
-
 
   const logIn = () => {
     if (userEmail === "" || userPassword === "") {
@@ -44,21 +42,15 @@ export default function SignIn() {
       })
         .then((res) => {
           console.log("status", res.status);
-
           return res.json();
         })
         .then(
           (user) => {
-            console.log(user);
-            console.log(user.id);
-
             if (user.id > 0) {
               setloggedUser(user);
-              navigation.navigate("Closet");
-              // setLoggedUser(user.id);
-              // Alert.alert("Logged in");
-              // navigation.navigate("ProductDetails");
-            } 
+              // navigation.navigate("Closet");
+              navigation.navigate("UploadItem");
+            }
             //if deatails are incorrect
             else {
               Alert.alert("כתובת האימייל או הסיסמא שגויים");

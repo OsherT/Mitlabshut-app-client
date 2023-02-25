@@ -89,7 +89,6 @@ export default function MainLayout() {
                   ...FONTS.Mulish_700Bold,
                 }}
               >
-                5
               </Text>
             </View>
           </View>

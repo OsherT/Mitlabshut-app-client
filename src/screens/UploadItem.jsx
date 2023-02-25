@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   StyleSheet,
   VirtualizedList,
+  Image,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -16,7 +17,8 @@ import {
   MultipleSelectList,
   SelectList,
 } from "react-native-dropdown-select-list";
-import axios from "axios";
+import { AddSvg } from "../svg";
+import * as ImagePicker from "expo-image-picker";
 
 export default function UploadItem() {
   const navigation = useNavigation();
@@ -29,8 +31,10 @@ export default function UploadItem() {
   const [itemColor, setItemColor] = useState([]);
   const [itemDeliveryMethod, setItemDeliveryMethod] = useState("");
   const [itemBrand, setItemBrand] = useState([]);
-  const [itemImage, setItemImage] = useState([]);
+  const [itemImage, setItemImage] = useState("");
   const [itemDescription, setItemDescription] = useState("");
+
+
 
   //lists
   const [brandsList, setBrandsList] = useState([]);
@@ -116,9 +120,7 @@ export default function UploadItem() {
       })
       .then(
         (data) => {
-          console.log("data", data);
           setColorsList(data.map((item) => item.color_name));
-          console.log("dataLIST", colorsList);
         },
         (error) => {
           console.log(error);
@@ -168,6 +170,37 @@ export default function UploadItem() {
       );
   };
 
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      setItemImage(result.uri);
+    }
+  };
+
+  const UploadItem = () => {
+    const newItem = {
+      itemName: itemName,
+      itemPrice: itemPrice,
+      itemCategory: itemCategory,
+      itemType: itemType,
+      itemSize: itemSize,
+      itemCondition: itemCondition,
+      itemColor: itemColor,
+      itemDeliveryMethod: itemDeliveryMethod,
+      itemBrand: itemBrand,
+      itemImage: itemImage,
+      itemDescription: itemDescription,
+    };
+    console.log(newItem);
+  };
+
   function renderContent() {
     return (
       <KeyboardAwareScrollView
@@ -179,7 +212,6 @@ export default function UploadItem() {
         showsHorizontalScrollIndicator={false}>
         <ContainerComponent>
           <Text style={styles.header}>פריט חדש</Text>
-
           <View style={styles.doubleContainer}>
             <TextInput
               style={styles.textInput}
@@ -194,7 +226,6 @@ export default function UploadItem() {
               onChangeText={(text) => setItemName(text)}
             />
           </View>
-
           <SelectList
             placeholder="  קטגוריה"
             searchPlaceholder="חיפוש"
@@ -204,7 +235,6 @@ export default function UploadItem() {
             data={categoriesList}
             notFoundText="לא קיים מידע"
           />
-
           <SelectList
             placeholder="  סוג פריט"
             searchPlaceholder="חיפוש"
@@ -214,7 +244,6 @@ export default function UploadItem() {
             data={typesList}
             notFoundText="לא קיים מידע"
           />
-
           <SelectList
             placeholder="מידה "
             searchPlaceholder="חיפוש"
@@ -224,7 +253,6 @@ export default function UploadItem() {
             data={sizesList}
             notFoundText="לא קיים מידע"
           />
-
           <SelectList
             placeholder="  צבע "
             searchPlaceholder="חיפוש"
@@ -234,7 +262,6 @@ export default function UploadItem() {
             data={colorsList}
             notFoundText="לא קיים מידע"
           />
-
           <SelectList
             placeholder="  מותג "
             searchPlaceholder="חיפוש"
@@ -244,7 +271,6 @@ export default function UploadItem() {
             data={brandsList}
             notFoundText="לא קיים מידע"
           />
-
           <SelectList
             placeholder=" מצב פריט"
             searchPlaceholder="חיפוש"
@@ -254,7 +280,6 @@ export default function UploadItem() {
             data={conditionsList}
             notFoundText="לא קיים מידע"
           />
-
           <MultipleSelectList
             placeholder="שיטת מסירה"
             searchPlaceholder="חיפוש"
@@ -264,18 +289,34 @@ export default function UploadItem() {
             data={deliveryMethodsList}
             notFoundText="לא קיים מידע"
           />
-          <TextInput
-            style={styles.dropdownInput}
-            placeholder=" הוספת תמונה"
-            containerStyle={{ marginBottom: 10 }}
-          />
+
           <TextInput
             style={styles.bigInput}
             placeholder=" תיאור מפורט  "
             containerStyle={{ marginBottom: 10 }}
+            onChangeText={(text) => setItemDescription(text)}
           />
+          <TouchableOpacity onPress={pickImage}>
+            <View style={styles.picturBtn}>
+              <Text
+                style={{
+                  color: "gray",
+                  paddingTop: 10,
+                  paddingBottom: 30,
+                  textAlign: "center",
+                }}>
+                הוסיפי תמונות
+              </Text>
+              <AddSvg></AddSvg>
+            </View>
+          </TouchableOpacity>
+          <View style={styles.imageContainer}>
+            {itemImage && (
+              <Image source={{ uri: itemImage }} style={styles.Image} />
+            )}
+          </View>
 
-          <Button title="הוספת פריט" />
+          <Button title="הוספת פריט" onPress={UploadItem} />
         </ContainerComponent>
       </KeyboardAwareScrollView>
     );
@@ -318,7 +359,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#FBF8F2",
     textAlign: "right",
   },
-
   dropdownInput: {
     width: "100%",
     height: 50,
@@ -326,7 +366,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     paddingHorizontal: 25,
     borderColor: COLORS.goldenTransparent_03,
-    flexDirection: "row",
+    flexDirection: "row-reverse",
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "#FBF8F2",
@@ -343,7 +383,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
     textAlign: "right",
   },
-
   bigInput: {
     width: "100%",
     height: 100,
@@ -351,11 +390,39 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     paddingHorizontal: 25,
     borderColor: COLORS.goldenTransparent_03,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
     backgroundColor: "#FBF8F2",
     textAlign: "right",
     marginBottom: 30,
+  },
+  picturBtn: {
+    width: "100%",
+    height: 100,
+    borderWidth: 1,
+    borderRadius: 25,
+    paddingHorizontal: 25,
+    borderColor: COLORS.goldenTransparent_03,
+    flexDirection: "column-reverse",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#FBF8F2",
+    marginBottom: 30,
+    paddingTop: 30,
+  },
+  Image: {
+    width: 100,
+    height: 100,
+  },
+  imageContainer: {
+    width: "100%",
+    height: 120,
+    borderWidth: 1,
+    paddingHorizontal: 25,
+    borderColor: COLORS.goldenTransparent_03,
+    backgroundColor: "#FBF8F2",
+    textAlign: "right",
+    marginBottom: 30,
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingTop:10
   },
 });

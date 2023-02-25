@@ -70,7 +70,7 @@ export default function SignUp() {
               )
               .then((res) => {
                 setloggedUser(newUser);
-                navigation.navigate("Home");
+                navigation.navigate("Closet");
               })
               .catch((err) => {
                 alert("Error in user");

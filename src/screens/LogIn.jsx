@@ -7,7 +7,7 @@ import {
   Alert,
   TextInput,
 } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useNavigation } from "@react-navigation/native";
 import { Header, Button, ContainerComponent } from "../components";
@@ -16,16 +16,19 @@ import AppLoading from "expo-app-loading";
 // import ButtonLogIn from "../components/ButtonLogIn";
 // import Facebook from "../svg/Facebook";
 // import Google from "../svg/Google";
+import { userContext } from "../navigation/userContext";
+
 
 export default function SignIn() {
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api`;
-
+  const { loggedUser, setloggedUser } = useContext(userContext);
   const navigation = useNavigation();
-  const [loggedUser, setLoggedUser] = useState([]);
+  //const [loggedUser, setLoggedUser] = useState([]);
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const emailInputRef = useRef(null);
   const passwordInputRef = useRef(null);
+
 
   const logIn = () => {
     if (userEmail === "" || userPassword === "") {
@@ -50,9 +53,11 @@ export default function SignIn() {
             console.log(user.id);
 
             if (user.id > 0) {
-              setLoggedUser(user.id);
-              Alert.alert("Logged in");
-              navigation.navigate("ProductDetails");
+              setloggedUser(user);
+              navigation.navigate("Closet");
+              // setLoggedUser(user.id);
+              // Alert.alert("Logged in");
+              // navigation.navigate("ProductDetails");
             } 
             //if deatails are incorrect
             else {

@@ -12,6 +12,7 @@ export default function App() {
         Mulish_700Bold: require("./src/assets/fonts/Mulish-Bold.ttf"),
     });
 
+  
     if (!fontsLoaded) {
         return <AppLoading />;
     } else {

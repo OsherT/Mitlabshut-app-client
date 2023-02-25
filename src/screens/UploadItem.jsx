@@ -6,8 +6,9 @@ import {
   StyleSheet,
   VirtualizedList,
   Image,
+  Alert,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useNavigation } from "@react-navigation/native";
 import { Header, Button, ContainerComponent } from "../components";
@@ -19,6 +20,8 @@ import {
 } from "react-native-dropdown-select-list";
 import { AddSvg } from "../svg";
 import * as ImagePicker from "expo-image-picker";
+import { userContext } from "../navigation/userContext";
+import axios from "axios";
 
 export default function UploadItem() {
   const navigation = useNavigation();
@@ -31,10 +34,9 @@ export default function UploadItem() {
   const [itemColor, setItemColor] = useState([]);
   const [itemDeliveryMethod, setItemDeliveryMethod] = useState("");
   const [itemBrand, setItemBrand] = useState([]);
-  const [itemImage, setItemImage] = useState("");
+  const [itemImage, setItemImage] = useState([]);
   const [itemDescription, setItemDescription] = useState("");
-
-
+  const { loggedUser } = useContext(userContext);
 
   //lists
   const [brandsList, setBrandsList] = useState([]);
@@ -55,7 +57,7 @@ export default function UploadItem() {
     { key: "4", value: "נלבש מספר פעמים" },
   ];
 
-  const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
+  const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
 
   useEffect(() => {
     GetBrandsList();
@@ -63,6 +65,8 @@ export default function UploadItem() {
     GetColorsList();
     GetSizesList();
     GetTypesList();
+    console.log(loggedUser.closet_id);
+    console.log(ApiUrl);
   }, []);
 
   const GetBrandsList = () => {
@@ -81,7 +85,7 @@ export default function UploadItem() {
           setBrandsList(data.map((item) => item.brand_name));
         },
         (error) => {
-          console.log(error);
+          console.log("barnd error", error);
         }
       );
   };
@@ -102,7 +106,7 @@ export default function UploadItem() {
           setCategoriesList(data.map((item) => item.category_name));
         },
         (error) => {
-          console.log(error);
+          console.log("category error", error);
         }
       );
   };
@@ -123,7 +127,7 @@ export default function UploadItem() {
           setColorsList(data.map((item) => item.color_name));
         },
         (error) => {
-          console.log(error);
+          console.log("colors error", error);
         }
       );
   };
@@ -144,7 +148,7 @@ export default function UploadItem() {
           setSizesList(data.map((item) => item.size_name));
         },
         (error) => {
-          console.log(error);
+          console.log("size error", error);
         }
       );
   };
@@ -165,13 +169,12 @@ export default function UploadItem() {
           setTypesList(data.map((item) => item.item_type_name));
         },
         (error) => {
-          console.log(error);
+          console.log("type error", error);
         }
       );
   };
 
-  const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
+  const pickImage = async (index) => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -179,26 +182,63 @@ export default function UploadItem() {
       quality: 1,
     });
 
-    if (!result.cancelled) {
-      setItemImage(result.uri);
-    }
+    let newImages = [...itemImage];
+    newImages[index] = result.uri;
+    setItemImage(newImages);
   };
 
   const UploadItem = () => {
-    const newItem = {
-      itemName: itemName,
-      itemPrice: itemPrice,
-      itemCategory: itemCategory,
-      itemType: itemType,
-      itemSize: itemSize,
-      itemCondition: itemCondition,
-      itemColor: itemColor,
-      itemDeliveryMethod: itemDeliveryMethod,
-      itemBrand: itemBrand,
-      itemImage: itemImage,
-      itemDescription: itemDescription,
-    };
-    console.log(newItem);
+    if (
+      itemName == "" ||
+      itemPrice == "" ||
+      itemCategory == "" ||
+      itemType == "" ||
+      itemSize == "" ||
+      itemCondition == "" ||
+      itemColor == "" ||
+      itemDeliveryMethod == "" ||
+      itemBrand == "" ||
+      itemDescription == ""
+    ) {
+      Alert.alert("אנא מלאי את כל הפרטים");
+    } else {
+      const newItem = {
+        closetId: loggedUser.closet_id,
+        itemName: itemName,
+        itemPrice: itemPrice,
+        // itemCategory: itemCategory,נשמר בטבלה מקשרת, לא לשלוח
+        itemType: itemType,
+        itemSize: itemSize,
+        itemCondition: itemCondition,
+        itemColor: itemColor,
+        itemDeliveryMethod: itemDeliveryMethod,
+        itemBrand: itemBrand,
+        itemDescription: itemDescription,
+        saleStatus: true,
+      };
+      console.log(newItem);
+
+      fetch(ApiUrl + `Item`, {
+        method: "POST",
+        body: JSON.stringify(newItem),
+        headers: new Headers({
+          "Content-type": "application/json; charset=UTF-8",
+          Accept: "application/json; charset=UTF-8",
+        }),
+      })
+        .then((res) => {
+          console.log("status", res.status);
+          return res.json();
+        })
+        .then(
+          (user) => {
+            console.log("user", user);
+          },
+          (error) => {
+            console.log("ERR in logIn", error);
+          }
+        );
+    }
   };
 
   function renderContent() {
@@ -271,6 +311,8 @@ export default function UploadItem() {
             data={brandsList}
             notFoundText="לא קיים מידע"
           />
+
+          {/* לשנות שיכניס את המילה ולא את המפתח */}
           <SelectList
             placeholder=" מצב פריט"
             searchPlaceholder="חיפוש"
@@ -280,6 +322,8 @@ export default function UploadItem() {
             data={conditionsList}
             notFoundText="לא קיים מידע"
           />
+
+          {/* לשנות שיכניס את המילה ולא את המפתח */}
           <MultipleSelectList
             placeholder="שיטת מסירה"
             searchPlaceholder="חיפוש"
@@ -296,23 +340,37 @@ export default function UploadItem() {
             containerStyle={{ marginBottom: 10 }}
             onChangeText={(text) => setItemDescription(text)}
           />
-          <TouchableOpacity onPress={pickImage}>
-            <View style={styles.picturBtn}>
-              <Text
-                style={{
-                  color: "gray",
-                  paddingTop: 10,
-                  paddingBottom: 30,
-                  textAlign: "center",
-                }}>
-                הוסיפי תמונות
-              </Text>
-              <AddSvg></AddSvg>
-            </View>
-          </TouchableOpacity>
-          <View style={styles.imageContainer}>
-            {itemImage && (
-              <Image source={{ uri: itemImage }} style={styles.Image} />
+
+          <View>
+            {itemImage.length < 3 && (
+              <TouchableOpacity onPress={() => pickImage(itemImage.length)}>
+                <View style={styles.picturBtn}>
+                  <Text
+                    style={{
+                      color: "gray",
+                      paddingTop: 10,
+                      paddingBottom: 30,
+                      textAlign: "center",
+                    }}>
+                    הוסיפי תמונות
+                  </Text>
+                  <AddSvg></AddSvg>
+                </View>
+              </TouchableOpacity>
+            )}
+          </View>
+
+          <View>
+            {itemImage.length > 0 && (
+              <View style={styles.imageContainer}>
+                {itemImage.map((image, index) => (
+                  <Image
+                    key={index}
+                    source={{ uri: image }}
+                    style={styles.Image}
+                  />
+                ))}
+              </View>
             )}
           </View>
 
@@ -321,7 +379,6 @@ export default function UploadItem() {
       </KeyboardAwareScrollView>
     );
   }
-
   return (
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
       <Header onPress={() => navigation.goBack()} />
@@ -382,6 +439,9 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     paddingHorizontal: 25,
     textAlign: "right",
+    flexDirection: "column-reverse",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   bigInput: {
     width: "100%",
@@ -409,20 +469,25 @@ const styles = StyleSheet.create({
     paddingTop: 30,
   },
   Image: {
-    width: 100,
-    height: 100,
+    width: 90,
+    height: 90,
+    margin: 5,
+    borderRadius: 25,
   },
   imageContainer: {
     width: "100%",
     height: 120,
     borderWidth: 1,
     paddingHorizontal: 25,
+    borderRadius: 25,
+
     borderColor: COLORS.goldenTransparent_03,
     backgroundColor: "#FBF8F2",
     textAlign: "right",
     marginBottom: 30,
-    alignItems: "center",
+    paddingTop: 13,
+    flexDirection: "row",
+    alignItems: "left",
     justifyContent: "space-between",
-    paddingTop:10
   },
 });

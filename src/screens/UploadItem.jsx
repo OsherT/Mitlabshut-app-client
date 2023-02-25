@@ -32,7 +32,7 @@ export default function UploadItem() {
   const [itemImage, setItemImage] = useState([]);
   const [itemDescription, setItemDescription] = useState("");
 
-  //lists  
+  //lists
   const [brandsList, setBrandsList] = useState([]);
   const [categoriesList, setCategoriesList] = useState([]);
   const [colorsList, setColorsList] = useState([]);
@@ -59,7 +59,6 @@ export default function UploadItem() {
     GetColorsList();
     GetSizesList();
     GetTypesList();
-    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const GetBrandsList = () => {
@@ -74,8 +73,8 @@ export default function UploadItem() {
         return res.json();
       })
       .then(
-        (result) => {
-          setBrandsList(result);
+        (data) => {
+          setBrandsList(data.map((item) => item.brand_name));
         },
         (error) => {
           console.log(error);
@@ -95,8 +94,8 @@ export default function UploadItem() {
         return res.json();
       })
       .then(
-        (result) => {
-          setCategoriesList(result);
+        (data) => {
+          setCategoriesList(data.map((item) => item.category_name));
         },
         (error) => {
           console.log(error);
@@ -116,8 +115,10 @@ export default function UploadItem() {
         return res.json();
       })
       .then(
-        (result) => {
-          setColorsList(result);
+        (data) => {
+          console.log("data", data);
+          setColorsList(data.map((item) => item.color_name));
+          console.log("dataLIST", colorsList);
         },
         (error) => {
           console.log(error);
@@ -137,8 +138,8 @@ export default function UploadItem() {
         return res.json();
       })
       .then(
-        (result) => {
-          setSizesList(result);
+        (data) => {
+          setSizesList(data.map((item) => item.size_name));
         },
         (error) => {
           console.log(error);
@@ -158,8 +159,8 @@ export default function UploadItem() {
         return res.json();
       })
       .then(
-        (result) => {
-          setTypesList(result);
+        (data) => {
+          setTypesList(data.map((item) => item.item_type_name));
         },
         (error) => {
           console.log(error);

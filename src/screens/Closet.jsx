@@ -21,13 +21,19 @@ export default function Closet() {
   const { loggedUser} = useContext(userContext);
   const [ClosetDesc, setClosetDesc] = useState("");
   const [UsersItems, setUsersItems] = useState([]);
+  const [UsersItemPhotos, setUsersItemPhotos] = useState([]);
+  
   useEffect(() => {
-    ClosetDescription();
-    ClosetItems();
+    GetClosetDescription();
+    GetClosetItems();
     return () => {};
   }, []);
 
-  function ClosetDescription() {
+  function GetClosetDescription() {
+    setUsersItemPhotos([
+        {ID:3,Item_ID:15,Src:"https://blueberrytlv.co.il/wp-content/uploads/2023/02/WhatsApp-Image-2023-02-15-at-16.39.40-2.jpeg"},
+        {ID:3,Item_ID:15 ,Src:"https://blueberrytlv.co.il/wp-content/uploads/2023/02/WhatsApp-Image-2023-02-15-at-16.39.39-1.jpeg"}
+    ])
     axios
       .get("https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Closet") //לשנות כשדנה עושה החזרת הדיסקריפשן לפי איידי
       .then((res) => {
@@ -42,18 +48,31 @@ export default function Closet() {
         console.log(err);
       });
   }
-  function ClosetItems() {
+  function GetClosetItems() {
     axios
       .get("https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/ClosetId/"+loggedUser.closet_id) 
       .then((res) => {
         setUsersItems(res.data);
-        console.log(res.data);
+        //console.log(UsersItems);
+        
       })
       .catch((err) => {
         alert("cant take items");
         console.log(err);
       });
   }
+//   function GetItemPhotos() {
+//     axios
+//       .get("") 
+//       .then((res) => {
+//         setUsersItemPhotos(res.data);
+//         //console.log(res.data);
+//       })
+//       .catch((err) => {
+//         alert("cant take photos");
+//         console.log(err);
+//       });
+//   }
   function renderUserContent() {
     return (
       <View
@@ -118,10 +137,10 @@ export default function Closet() {
       </View>
     );
   }
-  function renderClothes() {
+  function renderClothes() { //לעשות גט לכל הקטגוריות והתמונות בנפרד
     return (
       <FlatList
-        data={products}
+        data={UsersItems}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
@@ -138,15 +157,15 @@ export default function Closet() {
               borderRadius: 10,
               backgroundColor: COLORS.white,
             }}
-            onPress={() =>
-              navigation.navigate("ProductDetails", {
-                productDetails: item,
-                productSlides: item.slides,
-              })
-            }
+            // onPress={() =>
+            //   navigation.navigate("ProductDetails", {
+            //     productDetails: item,
+            //     productSlides: item.slides,
+            //   })
+            // }
           >
             <ImageBackground
-              source={item.photo_480x384}
+              source={"https://blueberrytlv.co.il/wp-content/uploads/2023/02/WhatsApp-Image-2023-02-15-at-16.39.40-2.jpeg"}
               style={{
                 width: "100%",
                 height: 128,
@@ -172,6 +191,7 @@ export default function Closet() {
                   lineHeight: 14 * 1.2,
                   color: COLORS.black,
                   marginBottom: 6,
+                  textAlign:"right"
                 }}
               >
                 {item.name}
@@ -181,9 +201,11 @@ export default function Closet() {
                   color: COLORS.gray,
                   ...FONTS.Mulish_400Regular,
                   fontSize: 14,
+                  textAlign:"right"
                 }}
               >
-                Size: {item.size}
+                 מידה: {item.size} 
+                 
               </Text>
               <View
                 style={{
@@ -197,10 +219,13 @@ export default function Closet() {
                 style={{
                   ...FONTS.Mulish_600SemiBold,
                   fontSize: 14,
-                  color: COLORS.carrot,
+                  color: COLORS.black,
+                  marginLeft:70
+                  //textAlign:"right"
+
                 }}
               >
-                {item.price}
+               ₪ {item.price}
               </Text>
             </View>
             <TouchableOpacity

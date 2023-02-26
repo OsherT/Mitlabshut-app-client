@@ -49,7 +49,7 @@ export default function SignIn() {
             if (user.id > 0) {
               setloggedUser(user);
               // navigation.navigate("Closet");
-              navigation.navigate("UploadItem");
+              navigation.navigate("Closet");
             }
             //if deatails are incorrect
             else {

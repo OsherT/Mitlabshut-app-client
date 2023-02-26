@@ -27,9 +27,8 @@ export default function ProductDetails(props) {
   // const route = useRoute();
   const item = props.route.params.item;
   const [follow, setFollow] = useState(false);
-  // const [shippingMethod, setShippingMethod] = useState(item.shipping_method);
+  const [shippingMethod, setShippingMethod] = useState(item.shipping_method);
 
-  const [shippingMethod, setShippingMethod] = useState(12);
 
   const followCloset = () => {
     Alert.alert("follow");
@@ -68,9 +67,8 @@ export default function ProductDetails(props) {
 
         <View style={styles.contentContainer}>
           <View style={styles.Row}>
-            {/* <View>
+            <View>
               {(shippingMethod == 1 || shippingMethod == 12) && (
-                <Check></Check>
                 <Text
                   style={{ textAlign: "right", fontSize: 13, marginBottom: 5 }}>
                   איסוף עצמי
@@ -79,10 +77,11 @@ export default function ProductDetails(props) {
               {(shippingMethod == 2 || shippingMethod == 12) && (
                 <Text
                   style={{ textAlign: "right", fontSize: 13, marginBottom: 5 }}>
-                  משלוח
+                   משלוח
                 </Text>
               )}
-            </View> */}
+            </View>
+          
             <View style={styles.Col}>
               <Text style={styles.itemHeader}>{item.name}</Text>
               <Text

@@ -184,24 +184,67 @@ export default function UploadItem() {
     setItemImage(newImages);
   };
 
-  //to convert the items categories to string,categories in data base gets string only
-  const ArrayToString = (data) => {
-    var string = "";
-    for (let index = 0; index < data.length; index++) {
-      string += data[index] + ",";
-    }
-    console.log("new stringggg  ", string);
-    return string;
-  };
-
   //to convert the shipping method to string,shipping method in data base gets string only
   const ArrayToStringShip = (data) => {
     var string = "";
     for (let index = 0; index < data.length; index++) {
       string += data[index];
     }
-    console.log("new stringggg  ", string);
     return string;
+  };
+
+  //update after dand will add to the server//////////////////////////////////////////////
+  const uploadImages = (item_id) => {
+    for (let i = 0; i < itemImage.length; i++) {
+      fetch(ApiUrl + `${item_id}/${itemImage[i]}`, {
+        method: "POST",
+        body: JSON.stringify(item_id, itemImage[i]),
+        headers: new Headers({
+          "Content-type": "application/json; charset=UTF-8",
+          Accept: "application/json; charset=UTF-8",
+        }),
+      })
+        .then((res) => {
+          console.log(res.status);
+          return res.json();
+        })
+        .then(
+          (result) => {
+            console.log("suc in post imges= ", result);
+          },
+          (error) => {
+            console.log("ERR in post imges", error);
+          }
+        );
+    }
+  };
+
+
+  //update after dand will add to the server////////////////////////////////////////////////
+
+  const uploadCtegories = (item_id) => {
+    for (let i = 0; i < itemCategory.length; i++) {
+      fetch(ApiUrl + `${item_id}/${itemCategory[i]}`, {
+        method: "POST",
+        body: JSON.stringify(item_id, itemCategory[i]),
+        headers: new Headers({
+          "Content-type": "application/json; charset=UTF-8",
+          Accept: "application/json; charset=UTF-8",
+        }),
+      })
+        .then((res) => {
+          console.log(res.status);
+          return res.json();
+        })
+        .then(
+          (result) => {
+            console.log("suc in post categories= ", result);
+          },
+          (error) => {
+            console.log("ERR in post categories", error);
+          }
+        );
+    }
   };
 
   const UploadItem = () => {
@@ -220,9 +263,6 @@ export default function UploadItem() {
     ) {
       Alert.alert("אנא מלאי את כל הפרטים");
     } else {
-      ArrayToStringShip(itemDeliveryMethod);
-      ArrayToString(itemCategory);
-
       const newItem = {
         Closet_ID: loggedUser.closet_id,
         Name: itemName,
@@ -236,15 +276,8 @@ export default function UploadItem() {
         Description: itemDescription,
         Sale_status: true,
       };
-      const new_itemCategories = {
-        itemCategory: ArrayToString(itemCategory),
-      };
-      const new_itemImaged = {
-        itemImage: itemImage,
-      };
 
-      console.log("new item ", newItem);
-
+      //post to item tabel
       fetch(ApiUrl + `Item`, {
         method: "POST",
         body: JSON.stringify(newItem),
@@ -260,6 +293,10 @@ export default function UploadItem() {
         .then(
           (item) => {
             Alert.alert("Item added in succ");
+            // console.log("item id ", item);
+            // uploadImages(item.id);
+            // uploadCtegories(item.id);
+
             navigation.navigate("Closet");
           },
           (error) => {
@@ -294,22 +331,12 @@ export default function UploadItem() {
               onChangeText={(text) => setItemName(text)}
             />
           </View>
-          {/* <SelectList
-            placeholder="  קטגוריה"
-            searchPlaceholder="חיפוש"
-            boxStyles={styles.dropdownInput}
-            dropdownStyles={styles.dropdownContainer}
-            setSelected={(val) => setItemCategory(val)}
-            data={categoriesList}
-            notFoundText="לא קיים מידע"
-          /> */}
 
           <MultipleSelectList
             placeholder=" קטגוריה"
             searchPlaceholder="חיפוש"
             boxStyles={styles.dropdownInput}
             dropdownStyles={styles.dropdownContainer}
-            // setSelected={(val) => setItemCategory(val)}
             setSelected={(val) => setItemCategory(val)}
             data={categoriesList}
             notFoundText="לא קיים מידע"

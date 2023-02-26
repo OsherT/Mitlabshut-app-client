@@ -184,6 +184,26 @@ export default function UploadItem() {
     setItemImage(newImages);
   };
 
+  //to convert the items categories to string,categories in data base gets string only
+  const ArrayToString = (data) => {
+    var string = "";
+    for (let index = 0; index < data.length; index++) {
+      string += data[index] + ",";
+    }
+    console.log("new stringggg  ", string);
+    return string;
+  };
+
+  //to convert the shipping method to string,shipping method in data base gets string only
+  const ArrayToStringShip = (data) => {
+    var string = "";
+    for (let index = 0; index < data.length; index++) {
+      string += data[index];
+    }
+    console.log("new stringggg  ", string);
+    return string;
+  };
+
   const UploadItem = () => {
     if (
       itemName == "" ||
@@ -200,30 +220,30 @@ export default function UploadItem() {
     ) {
       Alert.alert("אנא מלאי את כל הפרטים");
     } else {
+      ArrayToStringShip(itemDeliveryMethod);
+      ArrayToString(itemCategory);
+
       const newItem = {
-        closetId: loggedUser.closet_id,
-        itemName: itemName,
-        itemPrice: itemPrice,
-        // itemCategory: itemCategory,נשמר בטבלה מקשרת, לא לשלוח
-        itemType: itemType,
-        itemSize: itemSize,
-        itemCondition: itemCondition,
-        itemColor: itemColor,
-        itemDeliveryMethod: itemDeliveryMethod,
-        itemBrand: itemBrand,
-        itemDescription: itemDescription,
-        saleStatus: true,
+        Closet_ID: loggedUser.closet_id,
+        Name: itemName,
+        Price: itemPrice,
+        Type: itemType,
+        Size: itemSize,
+        Use_condition: itemCondition,
+        Color: itemColor,
+        Shipping_method: ArrayToStringShip(itemDeliveryMethod),
+        Brand: itemBrand,
+        Description: itemDescription,
+        Sale_status: true,
       };
       const new_itemCategories = {
-        itemCategory: itemCategory,
+        itemCategory: ArrayToString(itemCategory),
       };
       const new_itemImaged = {
         itemImage: itemImage,
       };
 
-      console.log(newItem);
-      console.log(new_itemCategories);
-      console.log(new_itemImaged);
+      console.log("new item ", newItem);
 
       fetch(ApiUrl + `Item`, {
         method: "POST",
@@ -234,15 +254,16 @@ export default function UploadItem() {
         }),
       })
         .then((res) => {
-          console.log("status", res.status);
+          console.log("post status", res.status);
           return res.json();
         })
         .then(
-          (user) => {
-            console.log("user", user);
+          (item) => {
+            Alert.alert("Item added in succ");
+            navigation.navigate("Closet");
           },
           (error) => {
-            console.log("ERR in logIn", error);
+            console.log("ERR in upload item ", error);
           }
         );
     }
@@ -288,10 +309,11 @@ export default function UploadItem() {
             searchPlaceholder="חיפוש"
             boxStyles={styles.dropdownInput}
             dropdownStyles={styles.dropdownContainer}
+            // setSelected={(val) => setItemCategory(val)}
             setSelected={(val) => setItemCategory(val)}
             data={categoriesList}
             notFoundText="לא קיים מידע"
-            // save="value"
+            save="value"
             label="קטגוריה"
           />
 
@@ -340,6 +362,7 @@ export default function UploadItem() {
             dropdownStyles={styles.dropdownContainer}
             setSelected={(val) => setItemCondition(val)}
             data={conditionsList}
+            save="value"
             notFoundText="לא קיים מידע"
           />
 
@@ -352,8 +375,8 @@ export default function UploadItem() {
             setSelected={(val) => setItemDeliveryMethod(val)}
             data={deliveryMethodsList}
             notFoundText="לא קיים מידע"
-            // save="value"
             label="שיטת מסירה"
+            // save="value"
             maxHeight={200}
           />
 

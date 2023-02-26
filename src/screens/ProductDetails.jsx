@@ -69,7 +69,8 @@ export default function ProductDetails(props) {
           <ScrollView>
             <View style={styles.Row}>
               <View>
-                {(shippingMethod == 1 || shippingMethod == 12) && (
+                {/* 21 זה גם משלוח וגם איסוף עצמי */}
+                {(shippingMethod == 1 || shippingMethod == 21) && (
                   <Text
                     style={{
                       textAlign: "right",
@@ -79,7 +80,7 @@ export default function ProductDetails(props) {
                     ✓ איסוף עצמי
                   </Text>
                 )}
-                {(shippingMethod == 2 || shippingMethod == 12) && (
+                {(shippingMethod == 2 || shippingMethod == 21) && (
                   <Text
                     style={{
                       textAlign: "right",

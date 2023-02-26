@@ -21,7 +21,6 @@ import {
 import { AddSvg } from "../svg";
 import * as ImagePicker from "expo-image-picker";
 import { userContext } from "../navigation/userContext";
-import axios from "axios";
 
 export default function UploadItem() {
   const navigation = useNavigation();
@@ -57,7 +56,7 @@ export default function UploadItem() {
     { key: "4", value: "נלבש מספר פעמים" },
   ];
 
-  const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
+  const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
 
   useEffect(() => {
     GetBrandsList();
@@ -65,8 +64,6 @@ export default function UploadItem() {
     GetColorsList();
     GetSizesList();
     GetTypesList();
-    console.log(loggedUser.closet_id);
-    console.log(ApiUrl);
   }, []);
 
   const GetBrandsList = () => {
@@ -198,7 +195,8 @@ export default function UploadItem() {
       itemColor == "" ||
       itemDeliveryMethod == "" ||
       itemBrand == "" ||
-      itemDescription == ""
+      itemDescription == "" ||
+      itemImage == []
     ) {
       Alert.alert("אנא מלאי את כל הפרטים");
     } else {
@@ -216,7 +214,16 @@ export default function UploadItem() {
         itemDescription: itemDescription,
         saleStatus: true,
       };
+      const new_itemCategories = {
+        itemCategory: itemCategory,
+      };
+      const new_itemImaged = {
+        itemImage: itemImage,
+      };
+
       console.log(newItem);
+      console.log(new_itemCategories);
+      console.log(new_itemImaged);
 
       fetch(ApiUrl + `Item`, {
         method: "POST",
@@ -266,7 +273,7 @@ export default function UploadItem() {
               onChangeText={(text) => setItemName(text)}
             />
           </View>
-          <SelectList
+          {/* <SelectList
             placeholder="  קטגוריה"
             searchPlaceholder="חיפוש"
             boxStyles={styles.dropdownInput}
@@ -274,7 +281,20 @@ export default function UploadItem() {
             setSelected={(val) => setItemCategory(val)}
             data={categoriesList}
             notFoundText="לא קיים מידע"
+          /> */}
+
+          <MultipleSelectList
+            placeholder=" קטגוריה"
+            searchPlaceholder="חיפוש"
+            boxStyles={styles.dropdownInput}
+            dropdownStyles={styles.dropdownContainer}
+            setSelected={(val) => setItemCategory(val)}
+            data={categoriesList}
+            notFoundText="לא קיים מידע"
+            // save="value"
+            label="קטגוריה"
           />
+
           <SelectList
             placeholder="  סוג פריט"
             searchPlaceholder="חיפוש"
@@ -332,6 +352,9 @@ export default function UploadItem() {
             setSelected={(val) => setItemDeliveryMethod(val)}
             data={deliveryMethodsList}
             notFoundText="לא קיים מידע"
+            // save="value"
+            label="שיטת מסירה"
+            maxHeight={200}
           />
 
           <TextInput
@@ -418,7 +441,7 @@ const styles = StyleSheet.create({
   },
   dropdownInput: {
     width: "100%",
-    height: 50,
+    // height: 50,
     borderWidth: 1,
     borderRadius: 25,
     paddingHorizontal: 25,

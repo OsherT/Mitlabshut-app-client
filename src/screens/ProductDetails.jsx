@@ -66,7 +66,6 @@ export default function ProductDetails(props) {
         {/* <View style={styles.container} /> */}
 
         <View style={styles.contentContainer}>
-
           <ScrollView>
             <View style={styles.Row}>
               <View>
@@ -205,7 +204,7 @@ export default function ProductDetails(props) {
             </View>
 
             <View style={styles.dseContainer}>
-              <Text style={styles.description}> {item.decription}</Text>
+              <Text style={styles.description}> {item.description}</Text>
             </View>
             <View>
               <Button
@@ -246,7 +245,7 @@ const styles = StyleSheet.create({
   },
   image: {
     // width: SIZES.width,
-    height: 255,
+    height: 280,
     marginBottom: 30,
   },
   userImage: {
@@ -308,7 +307,6 @@ const styles = StyleSheet.create({
     ...FONTS.Mulish_700Bold,
     fontSize: 14,
     textAlign: "center",
-    textTransform: "capitalize",
     lineHeight: 22 * 1.2,
     color: COLORS.black,
   },
@@ -322,19 +320,16 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   dseContainer: {
-    ...FONTS.Mulish_700Bold,
-    borderRadius: 25,
-    backgroundColor: COLORS.goldenTransparent_03,
-    marginBottom: 30,
     height: 100,
-    justifyContent: "center",
   },
   description: {
     ...FONTS.Mulish_700Bold,
+    backgroundColor: COLORS.goldenTransparent_03,
     fontSize: 14,
     textAlign: "right",
-    textTransform: "capitalize",
-    lineHeight: 22 * 1.2,
-    color: COLORS.black,
+    padding: 5,
+    paddingBottom: 15,
+    paddingTop: 15,
+    marginTop: 15,
   },
 });

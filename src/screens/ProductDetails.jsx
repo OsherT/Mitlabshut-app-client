@@ -21,6 +21,7 @@ import {
 } from "../svg";
 import ButtonFollow from "../components/ButtonFollow";
 import { Alert } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 export default function ProductDetails(props) {
   const navigation = useNavigation();
@@ -28,7 +29,6 @@ export default function ProductDetails(props) {
   const item = props.route.params.item;
   const [follow, setFollow] = useState(false);
   const [shippingMethod, setShippingMethod] = useState(item.shipping_method);
-
 
   const followCloset = () => {
     Alert.alert("follow");
@@ -66,140 +66,154 @@ export default function ProductDetails(props) {
         {/* <View style={styles.container} /> */}
 
         <View style={styles.contentContainer}>
-          <View style={styles.Row}>
-            <View>
-              {(shippingMethod == 1 || shippingMethod == 12) && (
+
+          <ScrollView>
+            <View style={styles.Row}>
+              <View>
+                {(shippingMethod == 1 || shippingMethod == 12) && (
+                  <Text
+                    style={{
+                      textAlign: "right",
+                      fontSize: 13,
+                      marginBottom: 5,
+                    }}>
+                    ✓ איסוף עצמי
+                  </Text>
+                )}
+                {(shippingMethod == 2 || shippingMethod == 12) && (
+                  <Text
+                    style={{
+                      textAlign: "right",
+                      fontSize: 13,
+                      marginBottom: 5,
+                    }}>
+                    ✓ משלוח
+                  </Text>
+                )}
+              </View>
+
+              <View style={styles.Col}>
+                <Text style={styles.itemHeader}>{item.name}</Text>
                 <Text
                   style={{ textAlign: "right", fontSize: 13, marginBottom: 5 }}>
-                  איסוף עצמי
+                  ♡ 17 אהבו פריט זה
                 </Text>
-              )}
-              {(shippingMethod == 2 || shippingMethod == 12) && (
+              </View>
+            </View>
+            <ImageBackground
+              style={styles.image}
+              source={{
+                uri: "https://images.asos-media.com/products/asos-design-long-sleeve-blouse-with-pocket-detail-in-ivory/14020990-1-ivory?$n_640w$&wid=513&fit=constrain",
+              }}></ImageBackground>
+            <View style={styles.Row}>
+              <View>
+                {!follow && (
+                  <Button
+                    title="עקבי                            "
+                    containerStyle={{ marginBottom: 13 }}
+                    onPress={() => {
+                      setFollow(true);
+                      followCloset();
+                    }}
+                  />
+                )}
+              </View>
+              <View>
+                {follow && (
+                  <ButtonFollow
+                    title="עוקבת                          "
+                    containerStyle={{ marginBottom: 13 }}
+                    onPress={() => {
+                      setFollow(false);
+                      unfollowCloset();
+                    }}
+                  />
+                )}
+              </View>
+              <View
+                style={{
+                  flexDirection: "row-reverse",
+                  alignItems: "center",
+                }}>
+                <ImageBackground
+                  source={{
+                    // uri: loggedUser.user_image,
+                    uri: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Angelina_Jolie_%2848462859552%29_%28cropped%29.jpg/800px-Angelina_Jolie_%2848462859552%29_%28cropped%29.jpg",
+                  }}
+                  style={styles.userImage}
+                  imageStyle={{ borderRadius: 40 }}></ImageBackground>
+                <Text> </Text>
+                <Text> </Text>
                 <Text
-                  style={{ textAlign: "right", fontSize: 13, marginBottom: 5 }}>
-                   משלוח
+                  style={{
+                    ...FONTS.Mulish_700Bold,
+                    fontSize: 16,
+                    color: COLORS.gray,
+                    lineHeight: 22 * 1.2,
+                  }}>
+                  הארון של
                 </Text>
-              )}
-            </View>
-          
-            <View style={styles.Col}>
-              <Text style={styles.itemHeader}>{item.name}</Text>
-              <Text
-                style={{ textAlign: "right", fontSize: 13, marginBottom: 5 }}>
-                ♡ 17 אהבו פריט זה
-              </Text>
-            </View>
-          </View>
-          <ImageBackground
-            style={styles.image}
-            source={{
-              uri: "https://images.asos-media.com/products/asos-design-long-sleeve-blouse-with-pocket-detail-in-ivory/14020990-1-ivory?$n_640w$&wid=513&fit=constrain",
-            }}></ImageBackground>
-          <View style={styles.Row}>
-            <View>
-              {!follow && (
-                <Button
-                  title="עקבי                            "
-                  containerStyle={{ marginBottom: 13 }}
-                  onPress={() => {
-                    setFollow(true);
-                    followCloset();
-                  }}
-                />
-              )}
-            </View>
-            <View>
-              {follow && (
-                <ButtonFollow
-                  title="עוקבת                          "
-                  containerStyle={{ marginBottom: 13 }}
-                  onPress={() => {
-                    setFollow(false);
-                    unfollowCloset();
-                  }}
-                />
-              )}
-            </View>
-            <View
-              style={{
-                flexDirection: "row-reverse",
-                alignItems: "center",
-              }}>
-              <ImageBackground
-                source={{
-                  // uri: loggedUser.user_image,
-                  uri: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Angelina_Jolie_%2848462859552%29_%28cropped%29.jpg/800px-Angelina_Jolie_%2848462859552%29_%28cropped%29.jpg",
-                }}
-                style={styles.userImage}
-                imageStyle={{ borderRadius: 40 }}></ImageBackground>
-              <Text> </Text>
-              <Text> </Text>
-              <Text
-                style={{
-                  ...FONTS.Mulish_700Bold,
-                  fontSize: 16,
-                  color: COLORS.gray,
-                  lineHeight: 22 * 1.2,
-                }}>
-                הארון של
-              </Text>
-              <Text> </Text>
-              <Text
-                style={{
-                  ...FONTS.Mulish_700Bold,
-                  fontSize: 16,
-                  color: COLORS.black,
-                  lineHeight: 22 * 1.2,
-                }}>
-                דנוש
-              </Text>
-            </View>
-          </View>
-          <View style={styles.line}></View>
-          <View style={styles.Row}>
-            <View style={styles.Col}>
-              <View>
-                <Text style={styles.descriptionHeader}>₪ {item.price} </Text>
-                <Text style={styles.descriptionText}> מחיר</Text>
-              </View>
-              <View>
-                <Text style={styles.descriptionHeader}> {item.size}</Text>
-                <Text style={styles.descriptionText}> מידה</Text>
-              </View>
-            </View>
-
-            <View style={styles.Col}>
-              <View>
-                <Text style={styles.descriptionHeader}>
-                  {" "}
-                  {item.use_condition}
+                <Text> </Text>
+                <Text
+                  style={{
+                    ...FONTS.Mulish_700Bold,
+                    fontSize: 16,
+                    color: COLORS.black,
+                    lineHeight: 22 * 1.2,
+                  }}>
+                  דנוש
                 </Text>
-                <Text style={styles.descriptionText}> מצב פריט</Text>
-              </View>
-
-              <View>
-                <Text style={styles.descriptionHeader}> {item.brand}</Text>
-                <Text style={styles.descriptionText}> מותג </Text>
               </View>
             </View>
-            <View style={styles.Col}>
-              <View>
-                <Text style={styles.descriptionHeader}> {item.color}</Text>
-                <Text style={styles.descriptionText}> צבע</Text>
+            <View style={styles.line}></View>
+            <View style={styles.Row}>
+              <View style={styles.Col}>
+                <View>
+                  <Text style={styles.descriptionHeader}>₪ {item.price} </Text>
+                  <Text style={styles.descriptionText}> מחיר</Text>
+                </View>
+                <View>
+                  <Text style={styles.descriptionHeader}> {item.size}</Text>
+                  <Text style={styles.descriptionText}> מידה</Text>
+                </View>
               </View>
-              <View>
-                <Text style={styles.descriptionHeader}> 23 ק"מ (ידני)</Text>
-                <Text style={styles.descriptionText}> מרחק ממך</Text>
+
+              <View style={styles.Col}>
+                <View>
+                  <Text style={styles.descriptionHeader}>
+                    {" "}
+                    {item.use_condition}
+                  </Text>
+                  <Text style={styles.descriptionText}> מצב פריט</Text>
+                </View>
+
+                <View>
+                  <Text style={styles.descriptionHeader}> {item.brand}</Text>
+                  <Text style={styles.descriptionText}> מותג </Text>
+                </View>
+              </View>
+              <View style={styles.Col}>
+                <View>
+                  <Text style={styles.descriptionHeader}> {item.color}</Text>
+                  <Text style={styles.descriptionText}> צבע</Text>
+                </View>
+                <View>
+                  <Text style={styles.descriptionHeader}> 23 ק"מ (ידני)</Text>
+                  <Text style={styles.descriptionText}> מרחק ממך</Text>
+                </View>
               </View>
             </View>
-          </View>
 
-          <View>
-            <Button
-              title="+ הוסיפי לסל קניות"
-              containerStyle={{ marginBottom: 13 }}
-            />
-          </View>
+            <View style={styles.dseContainer}>
+              <Text style={styles.description}> {item.decription}</Text>
+            </View>
+            <View>
+              <Button
+                title="+ הוסיפי לסל קניות"
+                containerStyle={{ marginBottom: 13 }}
+              />
+            </View>
+          </ScrollView>
         </View>
       </View>
     );
@@ -223,15 +237,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     width: SIZES.width,
+    marginBottom: 30,
   },
   line: {
     borderColor: COLORS.goldenTransparent_03,
     borderWidth: 1,
-    marginBottom: 30,
+    marginBottom: 20,
   },
   image: {
     // width: SIZES.width,
-    height: 360,
+    height: 255,
     marginBottom: 30,
   },
   userImage: {
@@ -305,5 +320,21 @@ const styles = StyleSheet.create({
     color: COLORS.gray,
     fontSize: 10,
     marginBottom: 30,
+  },
+  dseContainer: {
+    ...FONTS.Mulish_700Bold,
+    borderRadius: 25,
+    backgroundColor: COLORS.goldenTransparent_03,
+    marginBottom: 30,
+    height: 100,
+    justifyContent: "center",
+  },
+  description: {
+    ...FONTS.Mulish_700Bold,
+    fontSize: 14,
+    textAlign: "right",
+    textTransform: "capitalize",
+    lineHeight: 22 * 1.2,
+    color: COLORS.black,
   },
 });

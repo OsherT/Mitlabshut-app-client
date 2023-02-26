@@ -172,10 +172,12 @@ export default function Closet() {
 
               navigation.navigate("ProductDetails", {
                 item: item,
+                // closet: closet,דנה עשתה גט לפי אידי של ארון וזה מחזיר תיאור ושם ארון, ברגע שתפעילי אותו אני צריכה את פרטי הארון לדף פריט (שם ארון)
                 closet_id: loggedUser.closet_id,
                 slides: item.slides,
               });
             }}>
+            {/* Osherrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr */}
             <ImageBackground
               source={
                 "https://blueberrytlv.co.il/wp-content/uploads/2023/02/WhatsApp-Image-2023-02-15-at-16.39.40-2.jpeg"

@@ -11,14 +11,32 @@ import { useRoute, useNavigation } from "@react-navigation/native";
 
 import { COLORS, FONTS, SIZES } from "../constants";
 import { Button } from "../components";
-import { ArrowFive, BackSvg, Edit, HeartTwoSvg, RatingSvg } from "../svg";
+import {
+  ArrowFive,
+  BackSvg,
+  Check,
+  Edit,
+  HeartTwoSvg,
+  RatingSvg,
+} from "../svg";
+import ButtonFollow from "../components/ButtonFollow";
+import { Alert } from "react-native";
 
 export default function ProductDetails(props) {
   const navigation = useNavigation();
-  const route = useRoute();
-
+  // const route = useRoute();
   const item = props.route.params.item;
-  const closet_id = props.route.params.closet_id;
+  const [follow, setFollow] = useState(false);
+  // const [shippingMethod, setShippingMethod] = useState(item.shipping_method);
+
+  const [shippingMethod, setShippingMethod] = useState(12);
+
+  const followCloset = () => {
+    Alert.alert("follow");
+  };
+  const unfollowCloset = () => {
+    Alert.alert("unfollow");
+  };
 
   function renderSlide() {
     return (
@@ -49,8 +67,30 @@ export default function ProductDetails(props) {
         {/* <View style={styles.container} /> */}
 
         <View style={styles.contentContainer}>
-          <Text style={styles.itemHeader}>{item.name}</Text>
-
+          <View style={styles.Row}>
+            {/* <View>
+              {(shippingMethod == 1 || shippingMethod == 12) && (
+                <Check></Check>
+                <Text
+                  style={{ textAlign: "right", fontSize: 13, marginBottom: 5 }}>
+                  איסוף עצמי
+                </Text>
+              )}
+              {(shippingMethod == 2 || shippingMethod == 12) && (
+                <Text
+                  style={{ textAlign: "right", fontSize: 13, marginBottom: 5 }}>
+                  משלוח
+                </Text>
+              )}
+            </View> */}
+            <View style={styles.Col}>
+              <Text style={styles.itemHeader}>{item.name}</Text>
+              <Text
+                style={{ textAlign: "right", fontSize: 13, marginBottom: 5 }}>
+                ♡ 17 אהבו פריט זה
+              </Text>
+            </View>
+          </View>
           <ImageBackground
             style={styles.image}
             source={{
@@ -58,12 +98,29 @@ export default function ProductDetails(props) {
             }}></ImageBackground>
           <View style={styles.Row}>
             <View>
-              <Button
-                title="עקבי                            "
-                containerStyle={{ marginBottom: 13 }}
-              />
+              {!follow && (
+                <Button
+                  title="עקבי                            "
+                  containerStyle={{ marginBottom: 13 }}
+                  onPress={() => {
+                    setFollow(true);
+                    followCloset();
+                  }}
+                />
+              )}
             </View>
-
+            <View>
+              {follow && (
+                <ButtonFollow
+                  title="עוקבת                          "
+                  containerStyle={{ marginBottom: 13 }}
+                  onPress={() => {
+                    setFollow(false);
+                    unfollowCloset();
+                  }}
+                />
+              )}
+            </View>
             <View
               style={{
                 flexDirection: "row-reverse",
@@ -114,7 +171,10 @@ export default function ProductDetails(props) {
 
             <View style={styles.Col}>
               <View>
-                <Text style={styles.descriptionHeader}> {item.use_condition}</Text>
+                <Text style={styles.descriptionHeader}>
+                  {" "}
+                  {item.use_condition}
+                </Text>
                 <Text style={styles.descriptionText}> מצב פריט</Text>
               </View>
 
@@ -172,7 +232,7 @@ const styles = StyleSheet.create({
   },
   image: {
     // width: SIZES.width,
-    height: 380,
+    height: 360,
     marginBottom: 30,
   },
   userImage: {
@@ -213,7 +273,6 @@ const styles = StyleSheet.create({
     textAlign: "right",
     textTransform: "capitalize",
     lineHeight: 22 * 1.2,
-    marginBottom: 35,
     color: COLORS.black,
   },
   descriptionContainer: {

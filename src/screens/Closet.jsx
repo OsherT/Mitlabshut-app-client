@@ -168,13 +168,14 @@ export default function Closet() {
             }}
             //Osherrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr//
             onPress={() => {
+              console.log(item);
 
               navigation.navigate("ProductDetails", {
                 item: item,
                 closet_id: loggedUser.closet_id,
                 slides: item.slides,
-              });}
-            }>
+              });
+            }}>
             <ImageBackground
               source={
                 "https://blueberrytlv.co.il/wp-content/uploads/2023/02/WhatsApp-Image-2023-02-15-at-16.39.40-2.jpeg"

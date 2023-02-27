@@ -10,13 +10,14 @@ import {
   FlatList,
 } from "react-native";
 import axios from "axios";
-import { Edit } from "../svg";
-import { FilterSvg, SearchSvg, BagSvg, HeartSvg } from "../svg";
+import { Edit, Fail } from "../svg";
+import { BagSvg, HeartSvg,Facebook } from "../svg";
 import { Header, ContainerComponent, ProfileCategory } from "../components";
 import { COLORS, products, FONTS } from "../constants";
 import MainLayout from "./MainLayout";
 // import Navigation from "../navigation/AppNavigation";
 import { useNavigation } from "@react-navigation/native";
+import { FilledHeartSvg } from "../svg";
 
 export default function Closet() {
   const { loggedUser } = useContext(userContext);
@@ -24,34 +25,19 @@ export default function Closet() {
   const [ClosetData, setClosetData] = useState("");
   const [UsersItems, setUsersItems] = useState([]);
   const [UsersItemPhotos, setUsersItemPhotos] = useState([]);
+  const [UsersFavList, setUsersFavList] = useState([]);
+
   const navigation = useNavigation();
 
   useEffect(() => {
     GetClosetDescription();
     GetClosetItems();
+    GetItemPhotos();
+    getFavItems();
     return () => {};
-  }, []);
+  }, [UsersFavList]);
 
   function GetClosetDescription() {
-    setUsersItemPhotos([
-      {
-        ID: 3,
-        Item_ID: 15,
-        Src: "https://images.asos-media.com/products/asos-design-long-sleeve-blouse-with-pocket-detail-in-ivory/14020990-1-ivory?$n_640w$&wid=513&fit=constrain",
-      },
-
-      {
-        ID: 4,
-        Item_ID: 17,
-        Src: "https://cdn.shopify.com/s/files/1/0599/2136/7227/products/product-image-1418603144_1200x.jpg?v=1638276256",
-      },
-      {
-        ID: 5,
-        Item_ID: 17,
-        Src: "https://cdn.shopify.com/s/files/1/0611/1353/2653/products/22.9-3928_540x.jpg?v=1665062432",
-      },
-      
-    ]);
     axios
       .get(
         "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Closet/" +
@@ -80,19 +66,17 @@ export default function Closet() {
         console.log(err);
       });
   }
-  //   function GetItemPhotos() {
-  //     axios
-  //       .get("")
-  //       .then((res) => {
-  //         setUsersItemPhotos(res.data);
-  //         //console.log(res.data);
-  //       })
-  //       .catch((err) => {
-  //         alert("cant take photos");
-  //         console.log(err);
-  //       });
-  //   }
-
+  function GetItemPhotos() {
+    axios
+      .get("https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item_Image_Video")
+      .then((res) => {
+        setUsersItemPhotos(res.data);
+      })
+      .catch((err) => {
+        alert("cant take photos");
+        console.log(err);
+      });
+  }
   function renderUserContent() {
     return (
       <View
@@ -157,8 +141,71 @@ export default function Closet() {
       </View>
     );
   }
+  function AddtoFav(item_id) {
+    var newFav = {
+      item_ID: item_id,
+      user_Email: loggedUser.email,
+    };
+    axios
+      .post(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList",
+        newFav
+      )
+      .then((res) => {
+        alert("added");
+        setUsersFavList((prevList) => [
+          ...prevList,
+          { isFavorite: true, item_ID: item_id },
+        ]);
+      })
+      .catch((err) => {
+        alert("cant add to fav");
+        console.log(err);
+        console.log(newFav);
+        console.log(UsersFavList);
+        console.log("פה "+ UsersFavList.find(obj => obj.item_ID === 15) !== undefined);
+      });
+  }
+  function getFavItems() {
+    const itemIds = UsersItems.map((item) => item.id);
+    axios
+      .get("https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList")
+      .then((res) => {
+        const tempUsersFavList = res.data
+          .filter((fav) => itemIds.includes(fav.item_ID))
+          .map((fav) => ({ item_ID: fav.item_ID, isFavorite: true }));
+        setUsersFavList(tempUsersFavList);
+      })
+      .catch((err) => {
+        alert("cant get fav");
+        console.log(err);
+        console.log(newFav);
+      });
+  }
+  function RemoveFromFav(itemId) {
+    setUsersFavList((prevList) => prevList.filter((id) => id !== itemId));
+    alert("removed " + itemId);
+
+    // axios
+    // .delete(
+    //   "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList",
+    //   newFav
+    // )
+    // .then((res) => {
+    //   alert("added");
+    //   setUsersFavList((prevList) => [
+    //     ...prevList,
+    //     { isFavorite: true, item_ID: item_id },
+    //   ]);
+    // })
+    // .catch((err) => {
+    //   alert("cant add to fav");
+    //   console.log(err);
+    //   console.log(newFav);
+    // });
+  }
+
   function renderClothes() {
-    //לעשות גט לכל הקטגוריות והתמונות בנפרד
     return (
       <FlatList
         data={UsersItems}
@@ -188,12 +235,12 @@ export default function Closet() {
               });
             }}
           >
-            {UsersItemPhotos.filter((photo) => photo.Item_ID === item.id)
+            {UsersItemPhotos.filter((photo) => photo.item_ID === item.id)
               .slice(0, 1)
               .map((photo) => {
                 return (
                   <ImageBackground
-                    source={{ uri: photo.Src }}
+                    source={{ uri: photo.src }}
                     style={{
                       width: "100%",
                       height: 128,
@@ -201,9 +248,23 @@ export default function Closet() {
                     imageStyle={{ borderRadius: 10 }}
                     key={photo.ID}
                   >
-                    <TouchableOpacity style={{ left: 12, top: 12 }}>
-                      <HeartSvg />
-                    </TouchableOpacity>
+                    {UsersFavList.includes(item.id) ? (
+                      // render the filled heart SVG if the item ID is in the UsersFavList
+                      <TouchableOpacity
+                        style={{ left: 12, top: 12 }}
+                        onPress={() => RemoveFromFav(item.id)}
+                      >
+                        <Facebook />
+                      </TouchableOpacity>
+                    ) : (
+                      // render the unfilled heart SVG if the item ID is not in the UsersFavList
+                      <TouchableOpacity
+                        style={{ left: 12, top: 12 }}
+                        onPress={() => AddtoFav(item.id)}
+                      >
+                        <HeartSvg />
+                      </TouchableOpacity>
+                    )}
                   </ImageBackground>
                 );
               })}

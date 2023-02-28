@@ -193,24 +193,31 @@ export default function UploadItem() {
     return string;
   };
 
-  //update after dand will add to the server//////////////////////////////////////////////
+  //upload images to images table
   const uploadImages = (item_id) => {
     for (let i = 0; i < itemImage.length; i++) {
-      fetch(ApiUrl + `${item_id}/${itemImage[i]}`, {
+      const new_image = {
+        Id: 0,
+        Item_ID: item_id,
+        //use fireBase
+        // Src: itemImage[i],
+        Src: "https://scontent.ftlv18-1.fna.fbcdn.net/v/t1.6435-9/67385796_10220626621924962_2662861091951869952_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=cdbe9c&_nc_ohc=oIzma2hYUgkAX-ktGT2&_nc_ht=scontent.ftlv18-1.fna&oh=00_AfB1EXQF4k-4uGdo9C37lV0qMyF8qCGl-cpNxGWuh0PSbg&oe=64254AFE",
+      };
+      console.log(new_image);
+      fetch(ApiUrl + `Item_Image_Video`, {
         method: "POST",
-        body: JSON.stringify(item_id, itemImage[i]),
+        body: JSON.stringify(new_image),
         headers: new Headers({
           "Content-type": "application/json; charset=UTF-8",
           Accept: "application/json; charset=UTF-8",
         }),
       })
         .then((res) => {
-          console.log(res.status);
           return res.json();
         })
         .then(
           (result) => {
-            console.log("suc in post imges= ", result);
+            // console.log("suc in post imges= ", result);
           },
           (error) => {
             console.log("ERR in post imges", error);
@@ -219,21 +226,26 @@ export default function UploadItem() {
     }
   };
 
-
   //update after dand will add to the server////////////////////////////////////////////////
-
-  const uploadCtegories = (item_id) => {
-    for (let i = 0; i < itemCategory.length; i++) {
-      fetch(ApiUrl + `${item_id}/${itemCategory[i]}`, {
+  const uploadCtegories = (item_ID) => {
+     var itemCategoryTry = [1, 2];
+    for (let i = 0; i < itemCategoryTry.length; i++) {
+      const new_categories = {
+        Item_ID: item_ID,
+        // Category_ID: itemCategory[i],
+        Category_ID: itemCategoryTry[i],
+      };
+      console.log("new_categories", new_categories);
+      fetch(ApiUrl + `Item_in_category`, {
         method: "POST",
-        body: JSON.stringify(item_id, itemCategory[i]),
+        body: JSON.stringify(new_categories),
         headers: new Headers({
           "Content-type": "application/json; charset=UTF-8",
           Accept: "application/json; charset=UTF-8",
         }),
       })
         .then((res) => {
-          console.log(res.status);
+          console.log("category ststus", res.status);
           return res.json();
         })
         .then(
@@ -287,17 +299,15 @@ export default function UploadItem() {
         }),
       })
         .then((res) => {
-          console.log("post status", res.status);
           return res.json();
         })
         .then(
-          (item) => {
+          (item_ID) => {
             Alert.alert("Item added in succ");
-            // console.log("item id ", item);
-            // uploadImages(item.id);
-            // uploadCtegories(item.id);
+            uploadImages(item_ID);
+            uploadCtegories(item_ID);
 
-            navigation.navigate("Closet");
+            // navigation.navigate("Closet");
           },
           (error) => {
             console.log("ERR in upload item ", error);

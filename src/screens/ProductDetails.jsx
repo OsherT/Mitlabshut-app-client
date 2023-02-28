@@ -17,11 +17,14 @@ import {
   Check,
   Edit,
   HeartTwoSvg,
+  HeartSvg,
   RatingSvg,
 } from "../svg";
 import ButtonFollow from "../components/ButtonFollow";
 import { Alert } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import SharetSvg from "../svg/ShareSvg";
+import ShareSvg from "../svg/ShareSvg";
 
 export default function ProductDetails(props) {
   const navigation = useNavigation();
@@ -39,7 +42,7 @@ export default function ProductDetails(props) {
 
   function renderSlide() {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, backgroundColor: "#EFEDE6" }}>
         <View style={styles.topIcons}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <BackSvg />
@@ -61,7 +64,7 @@ export default function ProductDetails(props) {
 
   function renderContent() {
     return (
-      <View style={{ backgroundColor: "#EFEDE6" }}>
+      <View>
         {/* {renderDots()} */}
         {/* <View style={styles.container} /> */}
 
@@ -70,7 +73,7 @@ export default function ProductDetails(props) {
             <View style={styles.Row}>
               <View>
                 {/* 21 זה גם משלוח וגם איסוף עצמי */}
-                {(shippingMethod == 1 || shippingMethod == 21) && (
+                {(shippingMethod == 1 || shippingMethod == 12) && (
                   <Text
                     style={{
                       textAlign: "right",
@@ -80,7 +83,7 @@ export default function ProductDetails(props) {
                     ✓ איסוף עצמי
                   </Text>
                 )}
-                {(shippingMethod == 2 || shippingMethod == 21) && (
+                {(shippingMethod == 2 || shippingMethod == 12) && (
                   <Text
                     style={{
                       textAlign: "right",
@@ -104,7 +107,18 @@ export default function ProductDetails(props) {
               style={styles.image}
               source={{
                 uri: "https://images.asos-media.com/products/asos-design-long-sleeve-blouse-with-pocket-detail-in-ivory/14020990-1-ivory?$n_640w$&wid=513&fit=constrain",
-              }}></ImageBackground>
+              }}>
+              <TouchableOpacity
+                style={{ left: 12, top: 250 }}
+                onPress={() => RemoveFromFav(item.id)}>
+                <HeartSvg filled={false} />
+              </TouchableOpacity>
+              {/* 
+              <TouchableOpacity style={{ left: 12, top: 300 }}>
+                <ShareSvg size={24} />
+              </TouchableOpacity> */}
+            </ImageBackground>
+
             <View style={styles.Row}>
               <View>
                 {!follow && (
@@ -204,6 +218,8 @@ export default function ProductDetails(props) {
               </View>
             </View>
 
+            <View></View>
+            
             <View style={styles.dseContainer}>
               <Text style={styles.description}> {item.description}</Text>
             </View>
@@ -238,6 +254,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: SIZES.width,
     marginBottom: 30,
+    // borderColor: COLORS.goldenTransparent_03,
+    // borderBottomWidth: 2,
   },
   line: {
     borderColor: COLORS.goldenTransparent_03,
@@ -263,20 +281,22 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     top: -50,
   },
-  container: {
-    width: SIZES.width,
-    height: 15,
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
-    position: "absolute",
-    top: -15,
-    backgroundColor: COLORS.white,
-    zIndex: 9,
-    backgroundColor: "#EFEDE6",
-  },
+  // container: {
+  //   width: SIZES.width,
+  //   height: 15,
+  //   borderTopLeftRadius: 15,
+  //   borderTopRightRadius: 15,
+  //   position: "absolute",
+  //   top: -15,
+  //   // backgroundColor: COLORS.white,
+  //   zIndex: 9,
+  //   // backgroundColor: "#EFEDE6",
+  // },
+
   contentContainer: {
     paddingVertical: 30,
     paddingTop: 10,
+    // backgroundColor: COLORS.white,
     backgroundColor: "#EFEDE6",
     width: "100%",
     paddingHorizontal: 30,

@@ -49,9 +49,9 @@ export default function SignIn() {
             if (user.id > 0) {
               setloggedUser(user);
               // navigation.navigate("Closet");
-              navigation.navigate("Closet");
+              navigation.navigate("UploadItem");
             }
-            
+
             //if deatails are incorrect
             else {
               Alert.alert("כתובת האימייל או הסיסמא שגויים");

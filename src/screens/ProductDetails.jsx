@@ -1,35 +1,27 @@
 import {
   View,
   Text,
-  FlatList,
   ImageBackground,
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
 import React, { useState } from "react";
-import { useRoute, useNavigation } from "@react-navigation/native";
-
+import { useNavigation } from "@react-navigation/native";
 import { COLORS, FONTS, SIZES } from "../constants";
 import { Button } from "../components";
-import {
-  ArrowFive,
-  BackSvg,
-  Check,
-  Edit,
-  HeartTwoSvg,
-  HeartSvg,
-  RatingSvg,
-} from "../svg";
+import { BackSvg, HeartTwoSvg, HeartSvg } from "../svg";
 import ButtonFollow from "../components/ButtonFollow";
 import { Alert } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
-import SharetSvg from "../svg/ShareSvg";
-import ShareSvg from "../svg/ShareSvg";
 
 export default function ProductDetails(props) {
   const navigation = useNavigation();
-  // const route = useRoute();
+
   const item = props.route.params.item;
+  // const itemImage = props.route.params.itemImage;
+  // const itemCategory = props.route.params.itemCategory;
+  // const closet_id = props.route.params.closet_id;
+
   const [follow, setFollow] = useState(false);
   const [shippingMethod, setShippingMethod] = useState(item.shipping_method);
 
@@ -39,6 +31,27 @@ export default function ProductDetails(props) {
   const unfollowCloset = () => {
     Alert.alert("unfollow");
   };
+
+  // const GetItemCategories = () => {
+  //   fetch(ApiUrl + "Item_brand", {
+  //     method: "GET",
+  //     headers: new Headers({
+  //       "Content-Type": "application/json; charset=UTF-8",
+  //       Accept: "application/json; charset=UTF-8",
+  //     }),
+  //   })
+  //     .then((res) => {
+  //       return res.json();
+  //     })
+  //     .then(
+  //       (data) => {
+  //         setBrandsList(data.map((item) => item.brand_name));
+  //       },
+  //       (error) => {
+  //         console.log("barnd error", error);
+  //       }
+  //     );
+  // };
 
   function renderSlide() {
     return (
@@ -72,7 +85,7 @@ export default function ProductDetails(props) {
           <ScrollView>
             <View style={styles.Row}>
               <View>
-                {/* 21 זה גם משלוח וגם איסוף עצמי */}
+                {/* 12 זה גם משלוח וגם איסוף עצמי */}
                 {(shippingMethod == 1 || shippingMethod == 12) && (
                   <Text
                     style={{
@@ -107,6 +120,7 @@ export default function ProductDetails(props) {
               style={styles.image}
               source={{
                 uri: "https://images.asos-media.com/products/asos-design-long-sleeve-blouse-with-pocket-detail-in-ivory/14020990-1-ivory?$n_640w$&wid=513&fit=constrain",
+                // uri: itemImage[1],
               }}>
               <TouchableOpacity
                 style={{ left: 12, top: 250 }}
@@ -219,7 +233,7 @@ export default function ProductDetails(props) {
             </View>
 
             <View></View>
-            
+
             <View style={styles.dseContainer}>
               <Text style={styles.description}> {item.description}</Text>
             </View>

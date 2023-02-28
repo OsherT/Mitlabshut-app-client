@@ -193,7 +193,7 @@ export default function UploadItem() {
     return string;
   };
 
-  //upload images to images table
+  //upload images to Item_Image_Video table
   const uploadImages = (item_id) => {
     for (let i = 0; i < itemImage.length; i++) {
       const new_image = {
@@ -226,16 +226,16 @@ export default function UploadItem() {
     }
   };
 
-  //update after dand will add to the server////////////////////////////////////////////////
+  //upload categories to Items_in_category table
   const uploadCtegories = (item_ID) => {
-     var itemCategoryTry = [1, 2];
-    for (let i = 0; i < itemCategoryTry.length; i++) {
+    for (let i = 0; i < itemCategory.length; i++) {
       const new_categories = {
         Item_ID: item_ID,
-        // Category_ID: itemCategory[i],
-        Category_ID: itemCategoryTry[i],
+        Category_name: itemCategory[i],
       };
+
       console.log("new_categories", new_categories);
+
       fetch(ApiUrl + `Item_in_category`, {
         method: "POST",
         body: JSON.stringify(new_categories),
@@ -245,13 +245,10 @@ export default function UploadItem() {
         }),
       })
         .then((res) => {
-          console.log("category ststus", res.status);
           return res.json();
         })
         .then(
-          (result) => {
-            console.log("suc in post categories= ", result);
-          },
+          (result) => {},
           (error) => {
             console.log("ERR in post categories", error);
           }
@@ -275,7 +272,7 @@ export default function UploadItem() {
     ) {
       Alert.alert("אנא מלאי את כל הפרטים");
     } else {
-      const newItem = {
+      const item = {
         Closet_ID: loggedUser.closet_id,
         Name: itemName,
         Price: itemPrice,
@@ -292,7 +289,7 @@ export default function UploadItem() {
       //post to item tabel
       fetch(ApiUrl + `Item`, {
         method: "POST",
-        body: JSON.stringify(newItem),
+        body: JSON.stringify(item),
         headers: new Headers({
           "Content-type": "application/json; charset=UTF-8",
           Accept: "application/json; charset=UTF-8",
@@ -307,7 +304,7 @@ export default function UploadItem() {
             uploadImages(item_ID);
             uploadCtegories(item_ID);
 
-            // navigation.navigate("Closet");
+            navigation.navigate("Closet")
           },
           (error) => {
             console.log("ERR in upload item ", error);

@@ -26,7 +26,8 @@ export default function Closet() {
   const [UsersItems, setUsersItems] = useState([]);
   const [UsersItemPhotos, setUsersItemPhotos] = useState([]);
   const [UsersFavList, setUsersFavList] = useState([]);
-
+  const [UsersShopList, setUsersShopList] = useState([]);
+  //להוסיף כפתור הוספת פריט
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -34,8 +35,9 @@ export default function Closet() {
     GetClosetItems();
     GetItemPhotos();
     getFavItems();
+    getShopItems;
     return () => {};
-  }, []);
+  }, [UsersShopList,UsersFavList]);
 
   function GetClosetDescription() {
     axios
@@ -141,6 +143,23 @@ export default function Closet() {
       </View>
     );
   }
+  ///handle fav list
+  function getFavItems() {
+    var Email = loggedUser.email.replace("%40", "@");
+    axios
+      .get(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList/User_Email/" +
+          Email
+      )
+      .then((res) => {
+        const tempUsersFavList = res.data.map(({ item_ID }) => item_ID);
+        setUsersFavList(tempUsersFavList);
+      })
+      .catch((err) => {
+        alert("cant get fav");
+        console.log(err);
+      });
+  }
   function AddtoFav(item_id) {
     var newFav = {
       item_ID: item_id,
@@ -153,42 +172,76 @@ export default function Closet() {
       )
       .then((res) => {
         alert("added");
-        setUsersFavList((prevList) => [
-          ...prevList,
-          { isFavorite: true, item_ID: item_id },
-        ]);
+        setUsersFavList((prevList) => [...prevList, { item_id }]);
       })
       .catch((err) => {
         alert("cant add to fav");
         console.log(err);
-        console.log(newFav);
-        console.log(UsersFavList);
-        console.log(
-          "פה " + UsersFavList.find((obj) => obj.item_ID === 15) !== undefined
-        );
+        // console.log(newFav);
+        // console.log(UsersFavList);
+        // console.log(
+        //   "פה " + UsersFavList.find((obj) => obj.item_ID === 15) !== undefined
+        // );
       });
   }
-  function getFavItems() {
-    const itemIds = UsersItems.map((item) => item.id);
+  function RemoveFromFav(itemId) {
+    var Email = loggedUser.email.replace("%40", "@");
+
     axios
-      .get("https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList")
+      .delete(
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList/Item_ID/${itemId}/User_Email/${Email}`
+      )
       .then((res) => {
-        const tempUsersFavList = res.data
-          .filter((fav) => itemIds.includes(fav.item_ID))
-          .map((fav) => (fav.item_ID));
-        setUsersFavList(tempUsersFavList);
-        //console.log(tempUsersFavList);
-        //console.log(UsersFavList.includes(15));
+        setUsersFavList((prevList) => prevList.filter((id) => id !== itemId));
+        alert("removed " + itemId);
       })
       .catch((err) => {
-        alert("cant get fav");
+        alert("cant remove from fav");
         console.log(err);
         console.log(newFav);
       });
   }
-  function RemoveFromFav(itemId) {
-    setUsersFavList((prevList) => prevList.filter((id) => id !== itemId));
-    alert("removed " + itemId);
+  ///handle shop list
+  function getShopItems() {
+    var Email = loggedUser.email.replace("%40", "@");
+    axios
+      .get(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserShopList/User_Email/" +
+          Email
+      )
+      .then((res) => {
+        
+        const tempUsersShopList = res.data.map(({ item_ID }) => item_ID);
+        setUsersShopList(tempUsersShopList);
+        console.log(tempUsersShopList);
+      })
+      .catch((err) => {
+        alert("cant get shop list");
+        console.log(err);
+      });
+  }
+  function AddToShopList(item_id) {
+    var newitemInBag = {
+      item_ID: item_id,
+      user_Email: loggedUser.email,
+    };
+    axios
+      .post(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserShopList",
+        newitemInBag
+      )
+      .then((res) => {
+        alert("added");
+        setUsersShopList((prevList) => [...prevList, { item_id }]);
+      })
+      .catch((err) => {
+        alert("cant add to shop list");
+        console.log(err);
+      });
+  }
+  function RemoveFromShopList(itemId) {
+    setUsersShopList((prevList) => prevList.filter((id) => id !== itemId));
+    alert("removed from shop list " + itemId);
 
     // axios
     // .delete(
@@ -208,9 +261,8 @@ export default function Closet() {
     //   console.log(newFav);
     // });
   }
-
+  ///render items
   function renderClothes() {
-    var flag=false;
     return (
       <FlatList
         data={UsersItems}
@@ -253,8 +305,7 @@ export default function Closet() {
                     imageStyle={{ borderRadius: 10 }}
                     key={photo.ID}
                   >
-
-                    {UsersFavList.includes(item.id) &&  (
+                    {UsersFavList.includes(item.id) && (
                       // render the filled heart SVG if the item ID is in the UsersFavList
                       <TouchableOpacity
                         style={{ left: 12, top: 12 }}
@@ -262,8 +313,8 @@ export default function Closet() {
                       >
                         <HeartSvg filled={true} />
                       </TouchableOpacity>
-                    ) }
-                    {!UsersFavList.includes(item.id)&& (
+                    )}
+                    {!UsersFavList.includes(item.id) && (
                       // render the unfilled heart SVG if the item ID is not in the UsersFavList
                       <TouchableOpacity
                         style={{ left: 12, top: 12 }}
@@ -325,15 +376,32 @@ export default function Closet() {
                 ₪ {item.price}
               </Text>
             </View>
-            <TouchableOpacity
-              style={{
-                position: "absolute",
-                right: 12,
-                bottom: 12,
-              }}
-            >
-              <BagSvg />
-            </TouchableOpacity>
+            {UsersShopList.includes(item.id) && (
+              // render the filled heart SVG if the item ID is in the UsersFavList
+              <TouchableOpacity
+                style={{
+                  position: "absolute",
+                  right: 12,
+                  bottom: 12,
+                }}
+                onPress={() => RemoveFromShopList(item.id)}
+              >
+                <BagSvg color="#FF0000" />
+              </TouchableOpacity>
+            )}
+            {!UsersShopList.includes(item.id) && (
+              // render the unfilled heart SVG if the item ID is not in the UsersFavList
+              <TouchableOpacity
+                style={{
+                  position: "absolute",
+                  right: 12,
+                  bottom: 12,
+                }}
+                onPress={() => AddToShopList(item.id)}
+              >
+               <BagSvg color="#000000" />
+              </TouchableOpacity>
+            )}
           </TouchableOpacity>
         )}
       />

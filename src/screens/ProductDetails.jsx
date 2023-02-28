@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { COLORS, FONTS, SIZES } from "../constants";
 import { Button } from "../components";
@@ -13,17 +13,27 @@ import { BackSvg, HeartTwoSvg, HeartSvg } from "../svg";
 import ButtonFollow from "../components/ButtonFollow";
 import { Alert } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import Swiper from "react-native-swiper";
 
 export default function ProductDetails(props) {
   const navigation = useNavigation();
 
   const item = props.route.params.item;
-  // const itemImage = props.route.params.itemImage;
+  // const itemImages = props.route.params.itemImage;
   // const itemCategory = props.route.params.itemCategory;
   // const closet_id = props.route.params.closet_id;
 
   const [follow, setFollow] = useState(false);
   const [shippingMethod, setShippingMethod] = useState(item.shipping_method);
+  const [itemCtegories, setItemCtegories] = useState([]);
+  const [itemImages, setItemImages] = useState([]);
+
+  const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
+
+  useEffect(() => {
+    GetItemCategories();
+    GetItemImages();
+  }, []);
 
   const followCloset = () => {
     Alert.alert("follow");
@@ -32,26 +42,54 @@ export default function ProductDetails(props) {
     Alert.alert("unfollow");
   };
 
-  // const GetItemCategories = () => {
-  //   fetch(ApiUrl + "Item_brand", {
-  //     method: "GET",
-  //     headers: new Headers({
-  //       "Content-Type": "application/json; charset=UTF-8",
-  //       Accept: "application/json; charset=UTF-8",
-  //     }),
-  //   })
-  //     .then((res) => {
-  //       return res.json();
-  //     })
-  //     .then(
-  //       (data) => {
-  //         setBrandsList(data.map((item) => item.brand_name));
-  //       },
-  //       (error) => {
-  //         console.log("barnd error", error);
-  //       }
-  //     );
-  // };
+  const GetItemCategories = () => {
+    fetch(ApiUrl + `Item_in_category/Item_ID/${item.id}`, {
+      method: "GET",
+      headers: new Headers({
+        "Content-Type": "application/json; charset=UTF-8",
+        Accept: "application/json; charset=UTF-8",
+      }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then(
+        (data) => {
+          setItemCtegories(data);
+        },
+        (error) => {
+          console.log("Item_in_category error", error);
+        }
+      );
+  };
+
+  const GetItemImages = () => {
+    fetch(ApiUrl + `Item_Image_Video/Item_ID/${item.id}`, {
+      method: "GET",
+      headers: new Headers({
+        "Content-Type": "application/json; charset=UTF-8",
+        Accept: "application/json; charset=UTF-8",
+      }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then(
+        (data) => {
+          setItemImages(data.map((item) => item.src));
+        },
+        (error) => {
+          console.log("Item_Image_Video error", error);
+        }
+      );
+  };
+
+  //stringify all item's categories
+  const ArrayToStringCat = (dataObj) => {
+    const categoryNames = dataObj.map((item) => item.category_name);
+    const concatenatedString = categoryNames.join("#");
+    return concatenatedString;
+  };
 
   function renderSlide() {
     return (
@@ -116,18 +154,22 @@ export default function ProductDetails(props) {
                 </Text>
               </View>
             </View>
+
+            {/* imageeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee */}
             <ImageBackground
               style={styles.image}
               source={{
-                uri: "https://images.asos-media.com/products/asos-design-long-sleeve-blouse-with-pocket-detail-in-ivory/14020990-1-ivory?$n_640w$&wid=513&fit=constrain",
-                // uri: itemImage[1],
+                uri: "https://pps.whatsapp.net/v/t61.24694-24/300514484_121244887340111_6705197073618495271_n.jpg?ccb=11-4&oh=01_AdQSRQa5u-L0pATuFAVs-DW-A5h4bUE7IDky0DkUvRAo8g&oe=640B20D3",
               }}>
-              <TouchableOpacity
+           
+            {/* imageeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee */}
+
+            <TouchableOpacity
                 style={{ left: 12, top: 250 }}
                 onPress={() => RemoveFromFav(item.id)}>
                 <HeartSvg filled={false} />
               </TouchableOpacity>
-              {/* 
+            {/* 
               <TouchableOpacity style={{ left: 12, top: 300 }}>
                 <ShareSvg size={24} />
               </TouchableOpacity> */}
@@ -235,7 +277,10 @@ export default function ProductDetails(props) {
             <View></View>
 
             <View style={styles.dseContainer}>
-              <Text style={styles.description}> {item.description}</Text>
+              <Text style={styles.description}>
+                {ArrayToStringCat(itemCtegories)}
+                {"\n"} {item.description}
+              </Text>
             </View>
             <View>
               <Button

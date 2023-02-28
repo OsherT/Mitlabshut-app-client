@@ -37,7 +37,7 @@ export default function Closet() {
     getFavItems();
     getShopItems;
     return () => {};
-  }, [UsersShopList,UsersFavList]);
+  }, [UsersShopList, UsersFavList]);
 
   function GetClosetDescription() {
     axios
@@ -88,8 +88,7 @@ export default function Closet() {
           paddingTop: 25,
           paddingBottom: 40,
         }}
-        showsHorizontalScrollIndicator={false}
-      >
+        showsHorizontalScrollIndicator={false}>
         <ContainerComponent containerStyle={{ marginBottom: 20 }}>
           <TouchableOpacity onPress={() => navigation.navigate("EditProfile")}>
             <ImageBackground
@@ -102,15 +101,13 @@ export default function Closet() {
                 alignSelf: "center",
                 marginBottom: 15,
               }}
-              imageStyle={{ borderRadius: 40 }}
-            >
+              imageStyle={{ borderRadius: 40 }}>
               <View
                 style={{
                   position: "absolute",
                   right: 3,
                   bottom: 3,
-                }}
-              >
+                }}>
                 <Edit />
               </View>
             </ImageBackground>
@@ -123,8 +120,7 @@ export default function Closet() {
                 color: COLORS.black,
                 marginBottom: 4,
                 lineHeight: 16 * 1.2,
-              }}
-            >
+              }}>
               {loggedUser.full_name}
             </Text>
             <Text
@@ -134,8 +130,7 @@ export default function Closet() {
                 fontSize: 14,
                 color: COLORS.gray,
                 lineHeight: 14 * 1.7,
-              }}
-            >
+              }}>
               {ClosetDesc}
             </Text>
           </TouchableOpacity>
@@ -210,7 +205,6 @@ export default function Closet() {
           Email
       )
       .then((res) => {
-        
         const tempUsersShopList = res.data.map(({ item_ID }) => item_ID);
         setUsersShopList(tempUsersShopList);
         console.log(tempUsersShopList);
@@ -284,20 +278,14 @@ export default function Closet() {
             }}
             //Osherrrrrrrrrrrr///////////////////////////////////////////////
             onPress={() => {
-              console.log(item);
+
+              console.log(item.id);
               navigation.navigate("ProductDetails", {
                 item: item,
-                // item_image:item_image,
                 closet: ClosetData,
                 closet_id: loggedUser.closet_id,
                 slides: item.slides,
               });
-                //  navigation.navigate("UploadItem", {
-                //    item: item,
-                //    closet: ClosetData,
-                //    closet_id: loggedUser.closet_id,
-                //    slides: item.slides,
-                //  });
             }}
             //Osherrrrrrrrrrrr///////////////////////////////////////////////
           >
@@ -312,10 +300,8 @@ export default function Closet() {
                       height: 128,
                     }}
                     imageStyle={{ borderRadius: 10 }}
-                    key={photo.ID}
-                  >
-
-                    {UsersFavList.includes(item.id) &&  (
+                    key={photo.ID}>
+                    {UsersFavList.includes(item.id) && (
                       // render the filled heart SVG if the item ID is in the UsersFavList
                       <TouchableOpacity
                         style={{ left: 12, top: 12 }}
@@ -385,8 +371,7 @@ export default function Closet() {
                 position: "absolute",
                 right: 12,
                 bottom: 12,
-              }}
-            >
+              }}>
               <BagSvg />
             </TouchableOpacity>
           </TouchableOpacity>
@@ -400,8 +385,7 @@ export default function Closet() {
       style={{
         flex: 1,
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-      }}
-    >
+      }}>
       {/* <Header title="הארון של`{}`" goBack={false} /> */}
       {renderUserContent()}
       {renderClothes()}

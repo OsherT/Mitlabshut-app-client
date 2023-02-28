@@ -51,6 +51,7 @@ export default function SignIn() {
               // navigation.navigate("Closet");
               navigation.navigate("Closet");
             }
+            
             //if deatails are incorrect
             else {
               Alert.alert("כתובת האימייל או הסיסמא שגויים");

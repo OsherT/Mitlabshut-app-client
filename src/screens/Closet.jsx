@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import axios from "axios";
 import { Edit, Fail } from "../svg";
-import { BagSvg, HeartSvg,Facebook } from "../svg";
+import { BagSvg, HeartSvg, Facebook } from "../svg";
 import { Header, ContainerComponent, ProfileCategory } from "../components";
 import { COLORS, products, FONTS } from "../constants";
 import MainLayout from "./MainLayout";
@@ -35,7 +35,7 @@ export default function Closet() {
     GetItemPhotos();
     getFavItems();
     return () => {};
-  }, [UsersFavList]);
+  }, []);
 
   function GetClosetDescription() {
     axios
@@ -163,7 +163,9 @@ export default function Closet() {
         console.log(err);
         console.log(newFav);
         console.log(UsersFavList);
-        console.log("פה "+ UsersFavList.find(obj => obj.item_ID === 15) !== undefined);
+        console.log(
+          "פה " + UsersFavList.find((obj) => obj.item_ID === 15) !== undefined
+        );
       });
   }
   function getFavItems() {
@@ -173,8 +175,10 @@ export default function Closet() {
       .then((res) => {
         const tempUsersFavList = res.data
           .filter((fav) => itemIds.includes(fav.item_ID))
-          .map((fav) => ({ item_ID: fav.item_ID, isFavorite: true }));
+          .map((fav) => (fav.item_ID));
         setUsersFavList(tempUsersFavList);
+        //console.log(tempUsersFavList);
+        //console.log(UsersFavList.includes(15));
       })
       .catch((err) => {
         alert("cant get fav");
@@ -206,6 +210,7 @@ export default function Closet() {
   }
 
   function renderClothes() {
+    var flag=false;
     return (
       <FlatList
         data={UsersItems}
@@ -248,21 +253,23 @@ export default function Closet() {
                     imageStyle={{ borderRadius: 10 }}
                     key={photo.ID}
                   >
-                    {UsersFavList.includes(item.id) ? (
+
+                    {UsersFavList.includes(item.id) &&  (
                       // render the filled heart SVG if the item ID is in the UsersFavList
                       <TouchableOpacity
                         style={{ left: 12, top: 12 }}
                         onPress={() => RemoveFromFav(item.id)}
                       >
-                        <Facebook />
+                        <HeartSvg filled={true} />
                       </TouchableOpacity>
-                    ) : (
+                    ) }
+                    {!UsersFavList.includes(item.id)&& (
                       // render the unfilled heart SVG if the item ID is not in the UsersFavList
                       <TouchableOpacity
                         style={{ left: 12, top: 12 }}
                         onPress={() => AddtoFav(item.id)}
                       >
-                        <HeartSvg />
+                        <HeartSvg filled={false} />
                       </TouchableOpacity>
                     )}
                   </ImageBackground>

@@ -4,6 +4,7 @@ import {
   ImageBackground,
   TouchableOpacity,
   StyleSheet,
+  Image,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -154,27 +155,36 @@ export default function ProductDetails(props) {
                 </Text>
               </View>
             </View>
-
             {/* imageeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee */}
+           
             <ImageBackground
               style={styles.image}
               source={{
                 uri: "https://pps.whatsapp.net/v/t61.24694-24/300514484_121244887340111_6705197073618495271_n.jpg?ccb=11-4&oh=01_AdQSRQa5u-L0pATuFAVs-DW-A5h4bUE7IDky0DkUvRAo8g&oe=640B20D3",
               }}>
-           
-            {/* imageeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee */}
 
-            <TouchableOpacity
-                style={{ left: 12, top: 250 }}
-                onPress={() => RemoveFromFav(item.id)}>
-                <HeartSvg filled={false} />
-              </TouchableOpacity>
+            {/* <Swiper>
+              {itemImages.map((image, index) => (
+                <ImageBackground
+                  key={index}
+                  // style={{ flex: 1 }}
+                  style={styles.image}
+                  source={{ uri: image }}
+                />
+              ))}                 
+            </Swiper>  */}
+
+            {/* imageeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee */}
+            {/* <TouchableOpacity
+              style={{ left: 12, top: 250 }}
+              onPress={() => RemoveFromFav(item.id)}>
+              <HeartSvg filled={false} />
+            </TouchableOpacity> */}
             {/* 
               <TouchableOpacity style={{ left: 12, top: 300 }}>
                 <ShareSvg size={24} />
               </TouchableOpacity> */}
             </ImageBackground>
-
             <View style={styles.Row}>
               <View>
                 {!follow && (
@@ -273,9 +283,7 @@ export default function ProductDetails(props) {
                 </View>
               </View>
             </View>
-
             <View></View>
-
             <View style={styles.dseContainer}>
               <Text style={styles.description}>
                 {ArrayToStringCat(itemCtegories)}

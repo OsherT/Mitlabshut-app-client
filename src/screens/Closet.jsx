@@ -301,6 +301,8 @@ export default function Closet() {
                     }}
                     imageStyle={{ borderRadius: 10 }}
                     key={photo.ID}>
+
+                      
                     {UsersFavList.includes(item.id) && (
                       // render the filled heart SVG if the item ID is in the UsersFavList
                       <TouchableOpacity

@@ -6,35 +6,37 @@ import {
   StyleSheet,
   Image,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { COLORS, FONTS, SIZES } from "../constants";
 import { Button } from "../components";
-import { BackSvg, HeartTwoSvg } from "../svg";
+import { BackSvg, HeartSvg, HeartTwoSvg } from "../svg";
 import ButtonFollow from "../components/ButtonFollow";
 import { Alert } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Swiper from "react-native-swiper";
 import ShareSvg from "../svg/ShareSvg";
+import { userContext } from "../navigation/userContext";
+import axios from "axios";
 
 export default function ProductDetails(props) {
-  const navigation = useNavigation();
-
   const item = props.route.params.item;
-  // const itemImages = props.route.params.itemImage;
-  // const itemCategory = props.route.params.itemCategory;
-  // const closet_id = props.route.params.closet_id;
 
+  const navigation = useNavigation();
+  const { loggedUser } = useContext(userContext);
   const [follow, setFollow] = useState(false);
-  const [shippingMethod, setShippingMethod] = useState(item.shipping_method);
+  const [shippingMethod] = useState(item.shipping_method);
   const [itemCtegories, setItemCtegories] = useState([]);
   const [itemImages, setItemImages] = useState([]);
+  const [UsersFavList, setUsersFavList] = useState([]);
+  const [fav, setFav] = useState(false);
 
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
 
   useEffect(() => {
     GetItemCategories();
     GetItemImages();
+    getFavItems();
   }, []);
 
   const followCloset = () => {
@@ -43,7 +45,6 @@ export default function ProductDetails(props) {
   const unfollowCloset = () => {
     Alert.alert("unfollow");
   };
-
   const GetItemCategories = () => {
     fetch(ApiUrl + `Item_in_category/Item_ID/${item.id}`, {
       method: "GET",
@@ -64,7 +65,6 @@ export default function ProductDetails(props) {
         }
       );
   };
-
   const GetItemImages = () => {
     fetch(ApiUrl + `Item_Image_Video/Item_ID/${item.id}`, {
       method: "GET",
@@ -85,6 +85,55 @@ export default function ProductDetails(props) {
         }
       );
   };
+  const getFavItems = () => {
+    var Email = loggedUser.email.replace("%40", "@");
+    axios
+      .get(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList/User_Email/" +
+          Email
+      )
+      .then((res) => {
+        const tempUsersFavList = res.data.map(({ item_ID }) => item_ID);
+        setUsersFavList(tempUsersFavList);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const AddtoFav = (item_id) => {
+    var newFav = {
+      item_ID: item_id,
+      user_Email: loggedUser.email,
+    };
+    axios
+      .post(ApiUrl + "UserFavList", newFav)
+      .then((res) => {
+        alert("added");
+        setUsersFavList((prevList) => [...prevList, { item_id }]);
+        setFav(true);
+      })
+      .catch((err) => {
+        alert("cant add to fav");
+        console.log(err);
+      });
+  };
+  const RemoveFromFav = (itemId) => {
+    var Email = loggedUser.email.replace("%40", "@");
+
+    axios
+      .delete(ApiUrl + `UserFavList/Item_ID/${itemId}/User_Email/${Email}`)
+      .then((res) => {
+        setUsersFavList((prevList) => prevList.filter((id) => id !== itemId));
+        setFav(false);
+
+        alert("removed " + itemId);
+      })
+      .catch((err) => {
+        alert("cant remove from fav");
+        console.log(err);
+        console.log("newFav", newFav);
+      });
+  };
 
   //stringify all item's categories
   const ArrayToStringCat = (dataObj) => {
@@ -99,10 +148,6 @@ export default function ProductDetails(props) {
         <View style={styles.topIcons}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <BackSvg />
-          </TouchableOpacity>
-
-          <TouchableOpacity>
-            <HeartTwoSvg />
           </TouchableOpacity>
         </View>
         <View
@@ -157,33 +202,35 @@ export default function ProductDetails(props) {
               </View>
             </View>
 
-            <TouchableOpacity style={styles.shareIcon}>
-              <ShareSvg></ShareSvg>
-            </TouchableOpacity>
-
-
-
             <Swiper style={styles.imageSwipperContainer}>
               {itemImages.map((image, index) => (
                 <ImageBackground
                   key={index}
-                  // style={{ flex: 1 }}
                   style={styles.image}
-                  source={{ uri: image }}
-                />
+                  source={{ uri: image }}>
+                  {/* in fav list */}
+                  {UsersFavList.includes(item.id) && (
+                    <TouchableOpacity
+                      style={styles.favIcon}
+                      onPress={() => RemoveFromFav(item.id)}>
+                      <HeartTwoSvg filled={true} />
+                    </TouchableOpacity>
+                  )}
+                  {/* not in fav list */}
+                  {!UsersFavList.includes(item.id) && (
+                    <TouchableOpacity
+                      style={styles.favIcon}
+                      onPress={() => AddtoFav(item.id)}>
+                      <HeartTwoSvg filled={false} />
+                    </TouchableOpacity>
+                  )}
+
+                  <TouchableOpacity style={styles.shareIcon}>
+                    <ShareSvg></ShareSvg>
+                  </TouchableOpacity>
+                </ImageBackground>
               ))}
             </Swiper>
-
-            {/* imageeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee */}
-            {/* <TouchableOpacity
-              style={{ left: 12, top: 250 }}
-              onPress={() => RemoveFromFav(item.id)}>
-              <HeartSvg filled={false} />
-            </TouchableOpacity> */}
-            {/* 
-              <TouchableOpacity style={{ left: 12, top: 300 }}>
-                <ShareSvg size={24} />
-              </TouchableOpacity> */}
 
             <View style={styles.Row}>
               <View>
@@ -322,15 +369,28 @@ const styles = StyleSheet.create({
     width: SIZES.width,
     marginBottom: 30,
   },
+  favIcon: {
+    position: "absolute",
+    left: 12,
+    top: 190,
+    zIndex: 1,
+    width: 38,
+    height: 38,
+    paddingLeft: 9,
+    paddingTop: 11,
+    backgroundColor: "white",
+    borderRadius: 45,
+  },
   shareIcon: {
     position: "absolute",
     left: 12,
-    top: 285,
-    width: 30,
-    height: 30,
-    paddingLeft:5,
-    paddingTop:3,
+    top: 235,
     zIndex: 1,
+
+    width: 38,
+    height: 38,
+    paddingLeft: 9,
+    paddingTop: 8,
     backgroundColor: "white",
     borderRadius: 45,
   },

@@ -15,7 +15,7 @@ const HeartSvg = ({ filled, ...props }) => (
       strokeWidth={1.2}
       strokeLinecap="round"
       strokeLinejoin="round"
-      fill={filled ? "#626262" : "none"} // fill the heart if filled is true, otherwise leave it empty
+      fill={filled ? "red" : "none"} // fill the heart if filled is true, otherwise leave it empty
     />
   </Svg>
 );

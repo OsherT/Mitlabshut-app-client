@@ -184,15 +184,6 @@ export default function UploadItem() {
     setItemImage(newImages);
   };
 
-  //to convert the shipping method to string,shipping method in data base gets string only
-  const ArrayToStringShip = (data) => {
-    var string = "";
-    for (let index = 0; index < data.length; index++) {
-      string += data[index];
-    }
-    return string;
-  };
-
   //upload images to Item_Image_Video table
   const uploadImages = (item_id) => {
     for (let i = 0; i < itemImage.length; i++) {
@@ -225,6 +216,17 @@ export default function UploadItem() {
         );
     }
   };
+  
+  //to convert the shipping method to string,shipping method in data base gets string only
+  const ArrayToStringShip = (data) => {
+    var string = "";
+    for (let index = 0; index < data.length; index++) {
+      string += data[index];
+    }
+    return string;
+  };
+
+
 
   //upload categories to Items_in_category table
   const uploadCtegories = (item_ID) => {

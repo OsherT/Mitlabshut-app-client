@@ -90,7 +90,11 @@ export default function Closet() {
         }}
         showsHorizontalScrollIndicator={false}>
         <ContainerComponent containerStyle={{ marginBottom: 20 }}>
-          <TouchableOpacity onPress={() => navigation.navigate("EditProfile")}>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("EditProfile")
+              console.log(loggedUser);
+            }}>
             <ImageBackground
               source={{
                 uri: loggedUser.user_image,
@@ -284,7 +288,6 @@ export default function Closet() {
                 item: item,
                 closet: ClosetData,
                 closet_id: loggedUser.closet_id,
-                slides: item.slides,
               });
             }}
             //Osherrrrrrrrrrrr///////////////////////////////////////////////
@@ -302,7 +305,7 @@ export default function Closet() {
                     imageStyle={{ borderRadius: 10 }}
                     key={photo.ID}>
 
-                      
+
                     {UsersFavList.includes(item.id) && (
                       // render the filled heart SVG if the item ID is in the UsersFavList
                       <TouchableOpacity

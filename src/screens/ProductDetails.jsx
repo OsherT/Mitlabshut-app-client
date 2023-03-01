@@ -39,12 +39,6 @@ export default function ProductDetails(props) {
     getFavItems();
   }, [UsersFavList]);
 
-  const followCloset = () => {
-    Alert.alert("follow");
-  };
-  const unfollowCloset = () => {
-    Alert.alert("unfollow");
-  };
   const GetItemCategories = () => {
     fetch(ApiUrl + `Item_in_category/Item_ID/${item.id}`, {
       method: "GET",
@@ -88,13 +82,11 @@ export default function ProductDetails(props) {
   const getFavItems = () => {
     var Email = loggedUser.email.replace("%40", "@");
     axios
-      .get(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList/User_Email/" +
-          Email
-      )
+      .get(ApiUrl + `UserFavList/User_Email/${Email}`)
       .then((res) => {
         const tempUsersFavList = res.data.map(({ item_ID }) => item_ID);
         setUsersFavList(tempUsersFavList);
+        console.log("tempUsersFavList", tempUsersFavList);
       })
       .catch((err) => {
         console.log(err);
@@ -133,6 +125,12 @@ export default function ProductDetails(props) {
       });
   };
 
+  const followCloset = () => {
+    Alert.alert("follow");
+  };
+  const unfollowCloset = () => {
+    Alert.alert("unfollow");
+  };
   //stringify all item's categories
   const ArrayToStringCat = (dataObj) => {
     const categoryNames = dataObj.map((item) => item.category_name);

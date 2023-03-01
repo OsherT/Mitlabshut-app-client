@@ -5,7 +5,7 @@ const HeartTwoSvg = ({ filled, ...props }) => (
   <Svg
     width={38}
     height={38}
-    fill={filled ? "red" : "none"}
+    fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}>
     {/* <Rect width={38} height={38} rx={19} fill="#fff" /> */}

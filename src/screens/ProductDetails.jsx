@@ -29,7 +29,7 @@ export default function ProductDetails(props) {
   const [itemCtegories, setItemCtegories] = useState([]);
   const [itemImages, setItemImages] = useState([]);
   const [UsersFavList, setUsersFavList] = useState([]);
-  const [fav, setFav] = useState(false);
+  // const [fav, setFav] = useState(false);
 
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
 
@@ -37,7 +37,7 @@ export default function ProductDetails(props) {
     GetItemCategories();
     GetItemImages();
     getFavItems();
-  }, []);
+  }, [UsersFavList]);
 
   const followCloset = () => {
     Alert.alert("follow");
@@ -110,7 +110,6 @@ export default function ProductDetails(props) {
       .then((res) => {
         alert("added");
         setUsersFavList((prevList) => [...prevList, { item_id }]);
-        setFav(true);
       })
       .catch((err) => {
         alert("cant add to fav");
@@ -124,7 +123,6 @@ export default function ProductDetails(props) {
       .delete(ApiUrl + `UserFavList/Item_ID/${itemId}/User_Email/${Email}`)
       .then((res) => {
         setUsersFavList((prevList) => prevList.filter((id) => id !== itemId));
-        setFav(false);
 
         alert("removed " + itemId);
       })

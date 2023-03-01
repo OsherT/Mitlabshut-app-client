@@ -12,6 +12,7 @@ export default function Button({ title, containerStyle, onPress }) {
                 borderRadius: 25,
                 justifyContent: "center",
                 alignItems: "center",
+                zIndex:0,
                 ...containerStyle,
             }}
             onPress={onPress}

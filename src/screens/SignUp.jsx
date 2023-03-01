@@ -86,76 +86,85 @@ export default function SignUp() {
 
   function renderContent() {
     return (
-      <View>
+      <View style={{flex:1}}>
         <ContainerComponent>
-
-            <Text
-              style={{
-                textAlign: "center",
-                ...FONTS.H1,
-                color: COLORS.black,
-                marginBottom: 30,
-                lineHeight: 32 * 1.2,
-                textTransform: "capitalize",
-              }}
-            >
-              הצטרפות לקהילה
-            </Text>
-            <InputField
-              placeholder="שם מלא"
-              containerStyle={{ marginBottom: 10 }}
-              onChangeText={(text) => setUserName(text)}
-            />
-            <InputField
-              placeholder="מייל"
-              containerStyle={{ marginBottom: 10 }}
-              onChangeText={(text) => setUserEmail(text)}
-            />
-            <InputField
-              placeholder="סיסמה"
-              containerStyle={{ marginBottom: 10 }}
-              onChangeText={(text) => setUserPassword(text)}
-            />
-            <View style={styles.view}>
-              <TextInput
-                style={styles.input}
-                placeholder="מספר טלפון"
-                keyboardType="phone-pad"
-                onChangeText={(text) => setUserPhone(text)}
-              />
-            </View>
-        <SafeAreaView style={styles.view}>
-          <GooglePlacesAutocomplete
-            placeholder="כתובת"
-            fetchDetails={true}
-            GooglePlacesSearchQuery={{ rankby: "distance" }}
-            onPress={(data, details = null) => {
-              setAddress(data.description);
-              console.log(data.description);
-            }}
-            query={{
-              key: "AIzaSyAaCpPtzL7apvQuXnKdRhY0omPHiMdc--s",
-              language: "he",
-            }}
-            textInputProps={{
-              textAlign: 'right',
-              backgroundColor:"#FBF8F2",
-            }}
-            styles={{
-              container: {
-                flex: 0,
-                //position: "absolute",
-                width: "100%",
-                zIndex: 1,
-              },
-              listView: { position: "absolute", zIndex: 1,},
-            }}
+          <Text
+            style={{
+              textAlign: "center",
+              ...FONTS.H1,
+              color: COLORS.black,
+              marginBottom: 30,
+              lineHeight: 32 * 1.2,
+              textTransform: "capitalize",
+            }}>
+            הצטרפות לקהילה
+          </Text>
+          <InputField
+            placeholder="שם מלא"
+            containerStyle={{ marginBottom: 10 }}
+            onChangeText={(text) => setUserName(text)}
           />
-        </SafeAreaView>
-        
+          <InputField
+            placeholder="מייל"
+            containerStyle={{ marginBottom: 10 }}
+            onChangeText={(text) => setUserEmail(text)}
+          />
+          <SafeAreaView style={styles.view}>
+            <GooglePlacesAutocomplete
+              placeholder="כתובת"
+              fetchDetails={true}
+              GooglePlacesSearchQuery={{ rankby: "distance" }}
+              onPress={(data, details = null) => {
+                setAddress(data.description);
+                console.log(data.description);
+              }}
+              query={{
+                key: "AIzaSyAaCpPtzL7apvQuXnKdRhY0omPHiMdc--s",
+                language: "he",
+              }}
+              textInputProps={{
+                textAlign: "right",
+                backgroundColor: "#FBF8F2",
+              }}
+              styles={{
+                container: {
+                  flex: 0,
+                  //position: "absolute",
+                  width: "100%",
+                  zIndex: 1,
+                },
+                listView: { position: "absolute", zIndex: 1, top: 50 },
+              }}
+            />
+          </SafeAreaView>
+
+          <InputField
+            placeholder="סיסמה"
+            containerStyle={{ marginBottom: 10 }}
+            onChangeText={(text) => setUserPassword(text)}
+          />
+
+          <InputField
+            placeholder="מספר טלפון"
+            containerStyle={{ marginBottom: 10 }}
+            onChangeText={(text) => setUserPhone(text)}
+            keyboardType="phone-pad"
+          />
+
+          {/* <View style={styles.view0}>
+            <TextInput
+              style={styles.input}
+              placeholder="מספר טלפון"
+              keyboardType="phone-pad"
+              onChangeText={(text) => setUserPhone(text)}
+            />
+          </View> */}
+
+          <View style={{ marginTop: 40 }}>
+            <Button title="הרשמה" onPress={SignUp} />
+          </View>
         </ContainerComponent>
 
-        <Button title="הרשמה" onPress={SignUp} />
         <View
           style={{
             justifyContent: "center",
@@ -207,11 +216,26 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     backgroundColor: "#FBF8F2",
-    marginBottom:10
+    marginBottom: 10,
+    zIndex: 1,
   },
   input: {
     flex: 1,
     paddingRight: 15,
     textAlign: "right",
+    zIndex: 0,
+  },
+  view0: {
+    width: "100%",
+    height: 50,
+    borderWidth: 1,
+    borderRadius: 25,
+    paddingHorizontal: 25,
+    borderColor: COLORS.goldenTransparent_03,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "#FBF8F2",
+    marginBottom: 10,
   },
 });

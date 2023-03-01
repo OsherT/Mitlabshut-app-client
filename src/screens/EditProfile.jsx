@@ -84,102 +84,103 @@ export default function EditProfile() {
 
   function renderContent() {
     return (
-      <KeyboardAwareScrollView
-        contentContainerStyle={{
-          flexGrow: 1,
-          paddingHorizontal: 20,
-          paddingVertical: 25,
-        }}
-        showsHorizontalScrollIndicator={false}>
-        <ContainerComponent>
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("EditProfile");
-              console.log(loggedUser);
-            }}>
-            <ImageBackground
-              source={{
-                uri: loggedUser.user_image,
-              }}
+      // <KeyboardAwareScrollView
+      //   contentContainerStyle={{
+      //     flexGrow: 1,
+      //     paddingHorizontal: 20,
+      //     paddingVertical: 25,
+      //   }}
+      //   showsHorizontalScrollIndicator={false}>
+      <ContainerComponent>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate("EditProfile");
+            console.log(loggedUser);
+          }}>
+          <ImageBackground
+            source={{
+              uri: loggedUser.user_image,
+            }}
+            style={{
+              width: 80,
+              height: 80,
+              alignSelf: "center",
+              marginBottom: 15,
+            }}
+            imageStyle={{ borderRadius: 40 }}>
+            <View
               style={{
-                width: 80,
-                height: 80,
-                alignSelf: "center",
-                marginBottom: 15,
-              }}
-              imageStyle={{ borderRadius: 40 }}>
-              <View
-                style={{
-                  position: "absolute",
-                  right: 3,
-                  bottom: 3,
-                }}>
-                <Edit />
-              </View>
-            </ImageBackground>
-          </TouchableOpacity>
+                position: "absolute",
+                right: 3,
+                bottom: 3,
+              }}>
+              <Edit />
+            </View>
+          </ImageBackground>
+        </TouchableOpacity>
 
-          <InputField
-            value={loggedUser.full_name}
-            icon={<EditTwo />}
-            containerStyle={{ marginBottom: 10 }}
+        <InputField
+          value={loggedUser.full_name}
+          icon={<EditTwo />}
+          containerStyle={{ marginBottom: 10 }}
+        />
+        <InputField
+          value={loggedUser.email}
+          icon={<EditTwo />}
+          containerStyle={{ marginBottom: 10 }}
+        />
+        {/* gogellllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll */}
+        <SafeAreaView style={styles.view}>
+          <GooglePlacesAutocomplete
+            placeholder={loggedUser.address}
+            fetchDetails={true}
+            GooglePlacesSearchQuery={{ rankby: "distance" }}
+            onPress={(data, details = null) => {
+              setAddress(data.description);
+              console.log(data.description);
+            }}
+            query={{
+              key: "AIzaSyAaCpPtzL7apvQuXnKdRhY0omPHiMdc--s",
+              language: "he",
+            }}
+            textInputProps={{
+              textAlign: "right",
+              backgroundColor: "#FBF8F2",
+            }}
+            styles={{
+              container: {
+                flex: 0,
+                // position: "absolute",
+                width: "100%",
+              },
+              listView: { position: "absolute", zIndex: 1, top: 50 },
+            }}
           />
-          <InputField
-            value={loggedUser.email}
-            icon={<EditTwo />}
-            containerStyle={{ marginBottom: 10 }}
+        </SafeAreaView>
+
+        <InputField
+          value={loggedUser.phone_number}
+          icon={<EditTwo />}
+          containerStyle={{ marginBottom: 10 }}
+          keyboardType="phone-pad"
+        />
+        <InputField
+          value={loggedUser.password}
+          icon={<EditTwo />}
+          containerStyle={{ marginBottom: 20 }}
+        />
+
+        <View style={{ marginTop: 40 }}>
+          <Button
+            title="שמור שינויים "
+            onPress={
+              // (() => navigation.navigate("Closet"), updateUser(loggedUser.id))
+              () => Alert.alert("to update")
+            }
           />
-          <InputField
-            value={loggedUser.phone_number}
-            icon={<EditTwo />}
-            containerStyle={{ marginBottom: 10 }}
-            keyboardType="phone-pad"
-          />
-          <InputField
-            value={loggedUser.password}
-            icon={<EditTwo />}
-            containerStyle={{ marginBottom: 20 }}
-          />
-          {/* gogellllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll */}
-          <SafeAreaView style={styles.view}>
-            <GooglePlacesAutocomplete
-              placeholder={loggedUser.address}
-              fetchDetails={true}
-              GooglePlacesSearchQuery={{ rankby: "distance" }}
-              onPress={(data, details = null) => {
-                setAddress(data.description);
-                console.log(data.description);
-              }}
-              query={{
-                key: "AIzaSyAaCpPtzL7apvQuXnKdRhY0omPHiMdc--s",
-                language: "he",
-              }}
-              textInputProps={{
-                textAlign: "right",
-                backgroundColor: "#FBF8F2",
-              }}
-              styles={{
-                container: {
-                  flex: 0,
-                  //position: "absolute",
-                  width: "100%",
-                  zIndex: 1,
-                },
-                listView: { position: "absolute", zIndex: 1 },
-              }}
-            />
-          </SafeAreaView>
-          <View style={{ marginTop: 40 }}>
-            <Button
-              title="שמור שינויים "
-              onPress={
-                // (() => navigation.navigate("Closet"), updateUser(loggedUser.id))
-                (() =>  Alert.alert("to update"))
-              }
-            />
-          </View>
-        </ContainerComponent>
-      </KeyboardAwareScrollView>
+        </View>
+      </ContainerComponent>
+      // </KeyboardAwareScrollView>
     );
   }
 
@@ -204,5 +205,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     backgroundColor: "#FBF8F2",
     marginBottom: 10,
+    zIndex:1
   },
 });

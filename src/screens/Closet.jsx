@@ -20,7 +20,7 @@ import { useNavigation } from "@react-navigation/native";
 import { FilledHeartSvg } from "../svg";
 
 export default function Closet() {
-  const { loggedUser } = useContext(userContext);
+  const { loggedUser, setloggedUser } = useContext(userContext);
   const [ClosetDesc, setClosetDesc] = useState("");
   const [ClosetData, setClosetData] = useState("");
   const [UsersItems, setUsersItems] = useState([]);
@@ -30,12 +30,14 @@ export default function Closet() {
   //להוסיף כפתור הוספת פריט
   const navigation = useNavigation();
 
-  useEffect(() => {
+  useEffect(() => { 
+
     GetClosetDescription();
     GetClosetItems();
     GetItemPhotos();
     getFavItems();
     getShopItems;
+
     return () => {};
   }, [UsersShopList, UsersFavList]);
 
@@ -92,7 +94,7 @@ export default function Closet() {
         <ContainerComponent containerStyle={{ marginBottom: 20 }}>
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate("EditProfile")
+              navigation.navigate("EditProfile");
               console.log(loggedUser);
             }}>
             <ImageBackground
@@ -282,7 +284,6 @@ export default function Closet() {
             }}
             //Osherrrrrrrrrrrr///////////////////////////////////////////////
             onPress={() => {
-
               console.log(item.id);
               navigation.navigate("ProductDetails", {
                 item: item,
@@ -304,8 +305,6 @@ export default function Closet() {
                     }}
                     imageStyle={{ borderRadius: 10 }}
                     key={photo.ID}>
-
-
                     {UsersFavList.includes(item.id) && (
                       // render the filled heart SVG if the item ID is in the UsersFavList
                       <TouchableOpacity

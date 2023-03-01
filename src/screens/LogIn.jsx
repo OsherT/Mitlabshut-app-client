@@ -22,9 +22,12 @@ export default function SignIn() {
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api`;
   const { loggedUser, setloggedUser } = useContext(userContext);
   const navigation = useNavigation();
-  //const [loggedUser, setLoggedUser] = useState([]);
-  const [userEmail, setUserEmail] = useState("");
-  const [userPassword, setUserPassword] = useState("");
+  //לצורך נוחות כדי לא להקליד את הנתונים כל פעם////////////////////////
+  // const [userEmail, setUserEmail] = useState("");
+  // const [userPassword, setUserPassword] = useState("");
+
+  const [userEmail, setUserEmail] = useState("o@g.c");
+  const [userPassword, setUserPassword] = useState("123");
   const emailInputRef = useRef(null);
   const passwordInputRef = useRef(null);
 
@@ -92,7 +95,9 @@ export default function SignIn() {
             style={styles.textInput}
             placeholder="המייל שלך"
             name="email"
-            onChangeText={(text) => setUserEmail(text.replace("%40", "@"))}
+            // onChangeText={(text) => setUserEmail(text.replace("%40", "@"))}
+            //לצורך נוחות כדי לא להקליד את הנתונים כל פעם////////////////////////
+            value="o@g.c"
             containerStyle={{ marginBottom: 10, textAlign: "right" }}
             ref={emailInputRef}
           />
@@ -101,7 +106,9 @@ export default function SignIn() {
             style={styles.textInput}
             placeholder="••••••••"
             name="password"
-            onChangeText={(text) => setUserPassword(text)}
+            // onChangeText={(text) => setUserPassword(text)}
+            //לצורך נוחות כדי לא להקליד את הנתונים כל פעם////////////////////////
+            value="123"
             containerStyle={{ marginBottom: 20 }}
             ref={passwordInputRef}
           />

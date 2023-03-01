@@ -151,7 +151,7 @@ export default function Closet() {
         setUsersFavList(tempUsersFavList);
       })
       .catch((err) => {
-        alert("cant get fav");
+        // alert("cant get fav");
         console.log(err);
       });
   }

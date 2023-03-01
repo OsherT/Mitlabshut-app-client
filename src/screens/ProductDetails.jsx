@@ -10,11 +10,12 @@ import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { COLORS, FONTS, SIZES } from "../constants";
 import { Button } from "../components";
-import { BackSvg, HeartTwoSvg, HeartSvg } from "../svg";
+import { BackSvg, HeartTwoSvg } from "../svg";
 import ButtonFollow from "../components/ButtonFollow";
 import { Alert } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Swiper from "react-native-swiper";
+import ShareSvg from "../svg/ShareSvg";
 
 export default function ProductDetails(props) {
   const navigation = useNavigation();
@@ -155,13 +156,12 @@ export default function ProductDetails(props) {
                 </Text>
               </View>
             </View>
-            {/* imageeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee */}
 
-            {/* <ImageBackground
-              style={styles.image}
-              source={{
-                uri: "https://pps.whatsapp.net/v/t61.24694-24/300514484_121244887340111_6705197073618495271_n.jpg?ccb=11-4&oh=01_AdQSRQa5u-L0pATuFAVs-DW-A5h4bUE7IDky0DkUvRAo8g&oe=640B20D3",
-              }}> */}
+            <TouchableOpacity style={styles.shareIcon}>
+              <ShareSvg></ShareSvg>
+            </TouchableOpacity>
+
+
 
             <Swiper style={styles.imageSwipperContainer}>
               {itemImages.map((image, index) => (
@@ -321,19 +321,18 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: SIZES.width,
     marginBottom: 30,
-    // borderColor: COLORS.goldenTransparent_03,
-    // borderBottomWidth: 2,
   },
-  imageIcons: {
+  shareIcon: {
     position: "absolute",
-    top: 0,
+    left: 12,
+    top: 285,
+    width: 30,
+    height: 30,
+    paddingLeft:5,
+    paddingTop:3,
     zIndex: 1,
-    paddingHorizontal: 20,
-    marginTop: 45,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: SIZES.width,
-    marginBottom: 30,
+    backgroundColor: "white",
+    borderRadius: 45,
   },
   line: {
     borderColor: COLORS.goldenTransparent_03,

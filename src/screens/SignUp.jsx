@@ -63,6 +63,7 @@ export default function SignUp() {
               Closet_ID: res.data,
               User_image: difPic,
             };
+            {console.log("newUser", newUser);}
             axios
               .post(
                 "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User",
@@ -225,17 +226,17 @@ const styles = StyleSheet.create({
     textAlign: "right",
     zIndex: 0,
   },
-  view0: {
-    width: "100%",
-    height: 50,
-    borderWidth: 1,
-    borderRadius: 25,
-    paddingHorizontal: 25,
-    borderColor: COLORS.goldenTransparent_03,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: "#FBF8F2",
-    marginBottom: 10,
-  },
+  // view0: {
+  //   width: "100%",
+  //   height: 50,
+  //   borderWidth: 1,
+  //   borderRadius: 25,
+  //   paddingHorizontal: 25,
+  //   borderColor: COLORS.goldenTransparent_03,
+  //   flexDirection: "row",
+  //   alignItems: "center",
+  //   justifyContent: "space-between",
+  //   backgroundColor: "#FBF8F2",
+  //   marginBottom: 10,
+  // },
 });

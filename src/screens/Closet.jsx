@@ -31,12 +31,15 @@ export default function Closet() {
   const navigation = useNavigation();
 
   useEffect(() => { 
+ 
 
     GetClosetDescription();
     GetClosetItems();
     GetItemPhotos();
     getFavItems();
     getShopItems;
+
+
 
     return () => {};
   }, [UsersShopList, UsersFavList]);

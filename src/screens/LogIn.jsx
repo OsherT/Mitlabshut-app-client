@@ -107,6 +107,7 @@ export default function SignIn() {
             placeholder="••••••••"
             name="password"
             // onChangeText={(text) => setUserPassword(text)}
+
             //לצורך נוחות כדי לא להקליד את הנתונים כל פעם////////////////////////
             value="123"
             containerStyle={{ marginBottom: 20 }}

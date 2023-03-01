@@ -16,6 +16,7 @@ import { Edit, EditTwo } from "../svg";
 import { userContext } from "../navigation/userContext";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { Alert } from "react-native";
+import * as ImagePicker from "expo-image-picker";
 
 export default function EditProfile() {
   const { loggedUser, setloggedUser } = useContext(userContext);
@@ -24,18 +25,15 @@ export default function EditProfile() {
 
   const [address, setAddress] = useState(loggedUser.address);
   const [userName, setUserName] = useState(loggedUser.full_name);
-  const [userEmail, setUserEmail] = useState(loggedUser.email);
+  const [userEmail] = useState(loggedUser.email);
   const [userPassword, setUserPassword] = useState(loggedUser.password);
   const [userPhone, setUserPhone] = useState(loggedUser.phone_number);
-  const [userClosetId] = useState(loggedUser.Closet_ID);
-  const [itemImage, setItemImage] = useState(loggedUser.User_image);
+  const [userClosetId] = useState(loggedUser.closet_id);
+  const [userImage, setUserImage] = useState(loggedUser.user_image);
 
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
 
-  console.log("loggedUser", loggedUser);
-  console.log("loggedUser.address", loggedUser.address);
-
-  const pickImage = async (index) => {
+  const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -43,26 +41,31 @@ export default function EditProfile() {
       quality: 1,
     });
 
-    let newImages = [...itemImage];
-    newImages[index] = result.uri;
-    setItemImage(newImages);
+    // setItemImage(result.uri);
+
+    setUserImage(
+      "https://scontent.ftlv18-1.fna.fbcdn.net/v/t1.6435-9/37673670_10157514945495278_8702446268250587136_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=e3f864&_nc_ohc=y3hGZ5pDXjoAX-m60Ia&_nc_ht=scontent.ftlv18-1.fna&oh=00_AfBnG6vLlmG8fKu4oTNCZQzr5NWKc5FnhMFG3m3zWitr5A&oe=64272285"
+    );
   };
 
-  //upload images to Item_Image_Video table
-  const updateUser = (id) => {
+  //update users details
+  const updateUser = () => {
     const newUser = {
       Email: userEmail,
+      ID: loggedUser.id,
+      Closet_ID: userClosetId,
       Phone_number: userPhone,
       Full_name: userName,
       Password: userPassword,
-      Address: address, //To change
+      Address: address,
       IsAdmin: false,
-      Closet_ID: userClosetId,
-      User_image:
-        "https://scontent.fsdv1-2.fna.fbcdn.net/v/t1.6435-9/41952282_10157685462195278_136145717344337920_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=TnyYCGqvAOYAX_nk6mp&tn=0JEpg4HFhHuurQmq&_nc_ht=scontent.fsdv1-2.fna&oh=00_AfBzlF3IlBrfMLEoWKSKpJMqbuPlakxqPXtZkXGoiRXtcA&oe=6426C3C7",
+      User_image: userImage,
     };
-    fetch(ApiUrl + `User/id/${id}`, {
-      method: "UPDATE",
+
+    console.log("newUser", newUser);
+
+    fetch(ApiUrl + `User`, {
+      method: "PUT",
       body: JSON.stringify(newUser),
       headers: new Headers({
         "Content-type": "application/json; charset=UTF-8",
@@ -74,6 +77,7 @@ export default function EditProfile() {
       })
       .then(
         (result) => {
+          setloggedUser(newUser);
           console.log("suc in update user= ", result);
         },
         (error) => {
@@ -91,15 +95,18 @@ export default function EditProfile() {
       //     paddingVertical: 25,
       //   }}
       //   showsHorizontalScrollIndicator={false}>
+
       <ContainerComponent>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate("EditProfile");
-            console.log(loggedUser);
+            // navigation.navigate("EditProfile");
+            pickImage();
+            console.log("User_image", loggedUser.user_image);
           }}>
           <ImageBackground
             source={{
-              uri: loggedUser.user_image,
+              // uri: loggedUser.user_image,
+              uri: userImage,
             }}
             style={{
               width: 80,
@@ -120,16 +127,22 @@ export default function EditProfile() {
         </TouchableOpacity>
 
         <InputField
-          value={loggedUser.full_name}
+          // value={loggedUser.full_name}
+          placeholder={loggedUser.full_name}
           icon={<EditTwo />}
           containerStyle={{ marginBottom: 10 }}
+          onChangeText={(text) => setUserName(text)}
+          keyboardType="text"
         />
-        <InputField
+        {/* <InputField
           value={loggedUser.email}
           icon={<EditTwo />}
           containerStyle={{ marginBottom: 10 }}
-        />
-        {/* gogellllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll */}
+          onChangeText={(text) => setUserEmail(text)}
+          keyboardType="text"
+          
+        /> */}
+
         <SafeAreaView style={styles.view}>
           <GooglePlacesAutocomplete
             placeholder={loggedUser.address}
@@ -159,23 +172,30 @@ export default function EditProfile() {
         </SafeAreaView>
 
         <InputField
-          value={loggedUser.phone_number}
+          // value={loggedUser.phone_number}
+          placeholder={loggedUser.phone_number}
           icon={<EditTwo />}
           containerStyle={{ marginBottom: 10 }}
           keyboardType="phone-pad"
+          onChangeText={(text) => setUserPhone(text)}
         />
+
         <InputField
-          value={loggedUser.password}
+          // value={loggedUser.password}
+          placeholder={loggedUser.password}
           icon={<EditTwo />}
           containerStyle={{ marginBottom: 20 }}
+          onChangeText={(text) => setUserPassword(text)}
+          keyboardType="text"
         />
 
         <View style={{ marginTop: 40 }}>
           <Button
             title="שמור שינויים "
             onPress={
-              // (() => navigation.navigate("Closet"), updateUser(loggedUser.id))
-              () => Alert.alert("to update")
+              // updateUser
+              (() => navigation.navigate("OrderSuccessful"), updateUser)
+              // () => Alert.alert("to update")
             }
           />
         </View>
@@ -186,7 +206,7 @@ export default function EditProfile() {
 
   return (
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
-      <Header title="Edit Profile" onPress={() => navigation.goBack()} />
+      <Header title="עדכון פרטים אישיים" onPress={() => navigation.goBack()} />
       {renderContent()}
     </SafeAreaView>
   );
@@ -205,6 +225,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     backgroundColor: "#FBF8F2",
     marginBottom: 10,
-    zIndex:1
+    zIndex: 1,
   },
 });

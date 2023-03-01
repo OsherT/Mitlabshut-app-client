@@ -9,6 +9,7 @@ export default function InputField({
   icon,
   onChangeText,
   value,
+  keyboardType,
 }) {
   function handleChange(text) {
     setText(text);
@@ -33,7 +34,7 @@ export default function InputField({
         placeholder={placeholder}
         style={{ flex: 1, paddingRight: 15, textAlign: "right" }}
         onChangeText={onChangeText}
-        keyboardType="phone-pad"
+        keyboardType={keyboardType}
         value={value}
       />
       {icon && icon}

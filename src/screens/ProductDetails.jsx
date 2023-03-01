@@ -156,14 +156,14 @@ export default function ProductDetails(props) {
               </View>
             </View>
             {/* imageeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee */}
-           
-            <ImageBackground
+
+            {/* <ImageBackground
               style={styles.image}
               source={{
                 uri: "https://pps.whatsapp.net/v/t61.24694-24/300514484_121244887340111_6705197073618495271_n.jpg?ccb=11-4&oh=01_AdQSRQa5u-L0pATuFAVs-DW-A5h4bUE7IDky0DkUvRAo8g&oe=640B20D3",
-              }}>
+              }}> */}
 
-            {/* <Swiper>
+            <Swiper style={styles.imageSwipperContainer}>
               {itemImages.map((image, index) => (
                 <ImageBackground
                   key={index}
@@ -171,8 +171,8 @@ export default function ProductDetails(props) {
                   style={styles.image}
                   source={{ uri: image }}
                 />
-              ))}                 
-            </Swiper>  */}
+              ))}
+            </Swiper>
 
             {/* imageeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee */}
             {/* <TouchableOpacity
@@ -184,7 +184,7 @@ export default function ProductDetails(props) {
               <TouchableOpacity style={{ left: 12, top: 300 }}>
                 <ShareSvg size={24} />
               </TouchableOpacity> */}
-            </ImageBackground>
+
             <View style={styles.Row}>
               <View>
                 {!follow && (
@@ -324,10 +324,25 @@ const styles = StyleSheet.create({
     // borderColor: COLORS.goldenTransparent_03,
     // borderBottomWidth: 2,
   },
+  imageIcons: {
+    position: "absolute",
+    top: 0,
+    zIndex: 1,
+    paddingHorizontal: 20,
+    marginTop: 45,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: SIZES.width,
+    marginBottom: 30,
+  },
   line: {
     borderColor: COLORS.goldenTransparent_03,
     borderWidth: 1,
     marginBottom: 20,
+  },
+  imageSwipperContainer: {
+    height: 290,
+    marginBottom: 30,
   },
   image: {
     // width: SIZES.width,

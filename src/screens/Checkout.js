@@ -258,7 +258,7 @@ export default function Checkout() {
                     </TouchableOpacity>
                     <Button
                         title="Confirm order"
-                        onPress={() => navigation.navigate("OrderSuccessful")}
+                        // onPress={() => navigation.navigate("OrderSuccessful")}
                     />
                 </ContainerComponent>
             </ScrollView>

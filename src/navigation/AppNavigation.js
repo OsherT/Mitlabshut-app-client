@@ -15,7 +15,6 @@ import {
   RessetPasswordNotice,
   MainLayout,
   EditProfile,
-  OrderSuccessful,
   OrderFailed,
   CartIsEmpty,
   Order,
@@ -43,6 +42,8 @@ import Search from "../screens/Search";
 import Profile from "../screens/Profile";
 import UploadItem from "../screens/UploadItem";
 import EditItem from "../screens/EditItem";
+import OrderSuccessful from "../screens/OrderSuccessful";
+import ItemUpdateSucc from "../screens/ItemUpdateSucc";
 
 const Stack = createStackNavigator();
 
@@ -95,6 +96,8 @@ export default function Navigation() {
           <Stack.Screen name="OrderFailed" component={OrderFailed} />
           <Stack.Screen name="MainLayout" component={MainLayout} />
           <Stack.Screen name="OrderSuccessful" component={OrderSuccessful} />
+          <Stack.Screen name="ItemUpdateSucc" component={ItemUpdateSucc} />
+
           <Stack.Screen name="Profile" component={Profile} />
 
           <Stack.Screen

@@ -86,7 +86,6 @@ export default function ProductDetails(props) {
         }
       );
   };
-
   const GetNumOfFav = () => {
     fetch(ApiUrl + `UserFavList/Item_ID/${item.id}`, {
       method: "GET",
@@ -107,7 +106,6 @@ export default function ProductDetails(props) {
         }
       );
   };
-
   const getFavItems = () => {
     var Email = loggedUser.email.replace("%40", "@");
     axios
@@ -225,6 +223,7 @@ export default function ProductDetails(props) {
                     navigation.navigate("EditItem", {
                       item: item,
                       itemImages: itemImages,
+                      itemCtegories: itemCtegories,
                       // closet: ClosetData,
                       // closet_id: loggedUser.closet_id,
                     });

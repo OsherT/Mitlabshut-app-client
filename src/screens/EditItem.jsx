@@ -23,21 +23,24 @@ import { userContext } from "../navigation/userContext";
 
 export default function EditItem(props) {
   const item = props.route.params.item;
-    const itemImages = props.route.params.itemImages;
+  const itemImages = props.route.params.itemImages;
+  const itemCtegories = props.route.params.itemCtegories;
+  const { loggedUser } = useContext(userContext);
 
   const navigation = useNavigation();
   const [itemName, setItemName] = useState(item.name);
   const [itemPrice, setItemPrice] = useState(item.price);
-  const [itemCategory, setItemCategory] = useState([]);
+  const [itemCategory, setItemCategory] = useState(itemCtegories);
   const [itemType, setItemType] = useState(item.type);
   const [itemSize, setItemSize] = useState(item.size);
   const [itemCondition, setItemCondition] = useState(item.use_condition);
   const [itemColor, setItemColor] = useState(item.color);
-  const [itemDeliveryMethod, setItemDeliveryMethod] =useState(item.shipping_method);
   const [itemBrand, setItemBrand] = useState(item.brand);
-  const [itemImage, setItemImage] = useState([]);
+  const [itemImage, setItemImage] = useState(itemImages);
   const [itemDescription, setItemDescription] = useState(item.description);
-  const { loggedUser } = useContext(userContext);
+  const [itemDeliveryMethod, setItemDeliveryMethod] = useState(
+    item.shipping_method
+  );
 
   //lists
   const [brandsList, setBrandsList] = useState([]);
@@ -66,6 +69,7 @@ export default function EditItem(props) {
     GetColorsList();
     GetSizesList();
     GetTypesList();
+    console.log(itemCategory);
   }, []);
 
   const GetBrandsList = () => {
@@ -186,39 +190,6 @@ export default function EditItem(props) {
     setItemImage(newImages);
   };
 
-  //upload images to Item_Image_Video table
-  const updateImages = (item_id) => {
-    for (let i = 0; i < itemImage.length; i++) {
-      const new_image = {
-        Id: 0,
-        Item_ID: item_id,
-        //use fireBase
-        // Src: itemImage[i],
-        Src: "https://scontent.ftlv18-1.fna.fbcdn.net/v/t1.6435-9/67385796_10220626621924962_2662861091951869952_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=cdbe9c&_nc_ohc=oIzma2hYUgkAX-ktGT2&_nc_ht=scontent.ftlv18-1.fna&oh=00_AfB1EXQF4k-4uGdo9C37lV0qMyF8qCGl-cpNxGWuh0PSbg&oe=64254AFE",
-      };
-      console.log(new_image);
-      fetch(ApiUrl + `Item_Image_Video`, {
-        method: "POST",
-        body: JSON.stringify(new_image),
-        headers: new Headers({
-          "Content-type": "application/json; charset=UTF-8",
-          Accept: "application/json; charset=UTF-8",
-        }),
-      })
-        .then((res) => {
-          return res.json();
-        })
-        .then(
-          (result) => {
-            // console.log("suc in post imges= ", result);
-          },
-          (error) => {
-            console.log("ERR in post imges", error);
-          }
-        );
-    }
-  };
-
   //to convert the shipping method to string,shipping method in data base gets string only
   const ArrayToStringShip = (data) => {
     var string = "";
@@ -239,7 +210,7 @@ export default function EditItem(props) {
       console.log("new_categories", new_categories);
 
       fetch(ApiUrl + `Item_in_category`, {
-        method: "POST",
+        method: "PUT",
         body: JSON.stringify(new_categories),
         headers: new Headers({
           "Content-type": "application/json; charset=UTF-8",
@@ -258,46 +229,83 @@ export default function EditItem(props) {
     }
   };
 
-  const UdateItem = () => {
+  //upload images to Item_Image_Video table
+  const updateImages = (item_id) => {
+    for (let i = 0; i < itemImage.length; i++) {
+      const new_image = {
+        Id: 0,
+        Item_ID: item_id,
+        //use fireBase
+        // Src: itemImage[i],
+        Src: "https://scontent.ftlv18-1.fna.fbcdn.net/v/t1.6435-9/67385796_10220626621924962_2662861091951869952_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=cdbe9c&_nc_ohc=oIzma2hYUgkAX-ktGT2&_nc_ht=scontent.ftlv18-1.fna&oh=00_AfB1EXQF4k-4uGdo9C37lV0qMyF8qCGl-cpNxGWuh0PSbg&oe=64254AFE",
+      };
+      console.log(new_image);
+      fetch(ApiUrl + `Item_Image_Video`, {
+        method: "PUT",
+        body: JSON.stringify(new_image),
+        headers: new Headers({
+          "Content-type": "application/json; charset=UTF-8",
+          Accept: "application/json; charset=UTF-8",
+        }),
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then(
+          (result) => {
+            // console.log("suc in post imges= ", result);
+          },
+          (error) => {
+            console.log("ERR in post imges", error);
+          }
+        );
+    }
+  };
 
-    console.log("itemSize", itemSize);
-    // const item = {
-    //   Closet_ID: loggedUser.closet_id,
-    //   Name: itemName,
-    //   Price: itemPrice,
-    //   Type: itemType,
-    //   Size: itemSize,
-    //   Use_condition: itemCondition,
-    //   Color: itemColor,
-    //   Shipping_method: ArrayToStringShip(itemDeliveryMethod),
-    //   Brand: itemBrand,
-    //   Description: itemDescription,
-    //   Sale_status: true,
-    // };
+  const UpdateItem = () => {
+    console.log(item);
+    const updateItem = {
+      ID: item.id,
+      Closet_ID: loggedUser.closet_id,
+      Name: itemName,
+      Price: itemPrice,
+      Type: itemType,
+      Size: itemSize,
+      Use_condition: itemCondition,
+      Color: itemColor,
+      Shipping_method: ArrayToStringShip(itemDeliveryMethod),
+      Brand: itemBrand,
+      Description: itemDescription,
+      Sale_status: true,
+    };
+    console.log("updateItem", updateItem);
 
-    // //post to item tabel
-    // fetch(ApiUrl + `Item`, {
-    //   method: "PUT",
-    //   body: JSON.stringify(item),
-    //   headers: new Headers({
-    //     "Content-type": "application/json; charset=UTF-8",
-    //     Accept: "application/json; charset=UTF-8",
-    //   }),
-    // })
-    //   .then((res) => {
-    //     return res.json();
-    //   })
-    //   .then(
-    //     (item_ID) => {
-    //       Alert.alert("Item updated in succ");
-    //     //   updateImages(item_ID);
-    //     //   updateCtegories(item_ID);
-    //     //   navigation.navigate("Closet");
-    //     },
-    //     (error) => {
-    //       console.log("ERR in upload item ", error);
-    //     }
-    //   );
+    //update the item's data
+    fetch(ApiUrl + `Item`, {
+      method: "PUT",
+      body: JSON.stringify(updateItem),
+      headers: new Headers({
+        "Content-type": "application/json; charset=UTF-8",
+        Accept: "application/json; charset=UTF-8",
+      }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then(
+        (data) => {
+          console.log("data", data);
+          navigation.navigate("OrderSuccessful");
+
+          //   Alert.alert("Item updated in succ");
+          //   console.log("upItem", updateItem);
+          //   updateImages(item_ID);
+          //   updateCtegories(item_ID);
+        },
+        (error) => {
+          console.log("ERR in update item ", error);
+        }
+      );
   };
 
   function renderContent() {
@@ -329,8 +337,7 @@ export default function EditItem(props) {
           </View>
 
           <MultipleSelectList
-            placeholder=" קטגוריה"
-            searchPlaceholder="חיפוש"
+            // selectedItems={itemCategory}
             boxStyles={styles.dropdownInput}
             dropdownStyles={styles.dropdownContainer}
             setSelected={(val) => setItemCategory(val)}
@@ -338,6 +345,8 @@ export default function EditItem(props) {
             notFoundText="לא קיים מידע"
             save="value"
             label="קטגוריה"
+            placeholder=" קטגוריה"
+            searchPlaceholder="חיפוש"
           />
 
           <SelectList
@@ -394,12 +403,12 @@ export default function EditItem(props) {
           />
 
           <MultipleSelectList
-            placeholder="שיטת מסירה"
-            searchPlaceholder="חיפוש"
             boxStyles={styles.dropdownInput}
             dropdownStyles={styles.dropdownContainer}
             setSelected={(val) => setItemDeliveryMethod(val)}
             data={deliveryMethodsList}
+            placeholder="שיטת מסירה"
+            searchPlaceholder="חיפוש"
             notFoundText="לא קיים מידע"
             label="שיטת מסירה"
             // save="value"
@@ -446,7 +455,7 @@ export default function EditItem(props) {
             )}
           </View>
 
-          <Button title="עדכן פרטים " onPress={UdateItem} />
+          <Button title="עדכן פרטים " onPress={UpdateItem} />
         </ContainerComponent>
       </KeyboardAwareScrollView>
     );

@@ -42,7 +42,7 @@ export {
     RessetPasswordNotice,
     MainLayout,
     EditProfile,
-    OrderSuccessful,
+OrderSuccessful,
     OrderFailed,
     CartIsEmpty,
     Order,

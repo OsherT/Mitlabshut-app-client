@@ -129,8 +129,7 @@ export default function EditProfile() {
         </TouchableOpacity>
 
         <InputField
-          // value={loggedUser.full_name}
-          placeholder={loggedUser.full_name}
+          defaultValue={loggedUser.full_name}
           icon={<EditTwo />}
           containerStyle={{ marginBottom: 10 }}
           onChangeText={(text) => setUserName(text)}
@@ -173,8 +172,8 @@ export default function EditProfile() {
         </SafeAreaView>
 
         <InputField
-          value={loggedUser.phone_number}
-          placeholder={loggedUser.phone_number}
+          
+          defaultValue={loggedUser.phone_number}
           icon={<EditTwo />}
           containerStyle={{ marginBottom: 10 }}
           keyboardType="phone-pad"
@@ -182,8 +181,7 @@ export default function EditProfile() {
         />
 
         <InputField
-          value={loggedUser.password}
-          placeholder={loggedUser.password}
+          defaultValue={loggedUser.password}
           icon={<EditTwo />}
           containerStyle={{ marginBottom: 20 }}
           onChangeText={(text) => setUserPassword(text)}

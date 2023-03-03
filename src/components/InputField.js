@@ -10,6 +10,7 @@ export default function InputField({
   onChangeText,
   value,
   keyboardType,
+  defaultValue
 }) {
   function handleChange(text) {
     setText(text);
@@ -36,6 +37,7 @@ export default function InputField({
         onChangeText={onChangeText}
         keyboardType={keyboardType}
         value={value}
+        defaultValue={defaultValue}
       />
       {icon && icon}
     </View>

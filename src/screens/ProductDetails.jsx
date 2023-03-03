@@ -33,18 +33,16 @@ export default function ProductDetails(props) {
 
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
 
-  // useEffect(() => {
-  //   GetItemCategories();
-  //   GetItemImages();
-  //   getFavItems();
-  // }, [UsersFavList]);
-
   useEffect(() => {
     GetItemCategories();
     GetItemImages();
-    getFavItems();
     GetNumOfFav();
   }, []);
+
+  useEffect(() => {
+    getFavItems();
+    return()=>{}
+  }, [UsersFavList]);
 
   const GetItemCategories = () => {
     fetch(ApiUrl + `Item_in_category/Item_ID/${item.id}`, {
@@ -113,7 +111,7 @@ export default function ProductDetails(props) {
       .then((res) => {
         const tempUsersFavList = res.data.map(({ item_ID }) => item_ID);
         setUsersFavList(tempUsersFavList);
-        console.log("tempUsersFavList", tempUsersFavList);
+        console.log("getFavItems", tempUsersFavList);
       })
       .catch((err) => {
         console.log(err);
@@ -129,6 +127,7 @@ export default function ProductDetails(props) {
       .then((res) => {
         alert("added");
         setUsersFavList((prevList) => [...prevList, { item_id }]);
+        console.log("AddtoFav");
       })
       .catch((err) => {
         alert("cant add to fav");
@@ -144,6 +143,7 @@ export default function ProductDetails(props) {
         setUsersFavList((prevList) => prevList.filter((id) => id !== itemId));
 
         alert("removed " + itemId);
+        console.log("RemoveFromFav");
       })
       .catch((err) => {
         alert("cant remove from fav");

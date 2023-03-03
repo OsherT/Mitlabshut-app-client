@@ -72,8 +72,8 @@ export default function EditItem(props) {
     GetColorsList();
     GetSizesList();
     GetTypesList();
-    // console.log("categoryOptions", categoryOptions);
-    // console.log("chosenCategory", chosenCategory);
+    console.log("categoryOptions", categoryOptions);
+    console.log("chosenCategory", chosenCategory);
     // console.log("categoriesList", categoriesList);
     // console.log("price", item.price);
   }, []);
@@ -357,7 +357,7 @@ export default function EditItem(props) {
 
           <MultipleSelectList
             data={categoryOptions}
-            defaultOption={{ value: "הריון" }}
+            defaultOption={chosenCategory}
             boxStyles={styles.dropdownInput}
             dropdownStyles={styles.dropdownContainer}
             setSelected={(val) => setItemCategory(val)}

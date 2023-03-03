@@ -30,23 +30,17 @@ export default function Closet() {
   //להוסיף כפתור הוספת פריט
   const navigation = useNavigation();
 
-  // useEffect(() => {
-  //   GetClosetDescription();
-  //   GetClosetItems();
-  //   GetItemPhotos();
-  //   getFavItems();
-  //   getShopItems;
-  //   return () => {};
-  // }, [UsersShopList, UsersFavList]);
+  useEffect(() => {
+    GetClosetDescription();
+    GetClosetItems();
+    GetItemPhotos();
+    getShopItems();
+  }, []);
 
-//osher changed 
-    useEffect(() => {
-      GetClosetDescription();
-      GetClosetItems();
-      GetItemPhotos();
-      getFavItems();
-      getShopItems();
-    }, []);
+  useEffect(() => {
+    getFavItems();
+  }, [UsersShopList, UsersFavList]);
+
 
   function GetClosetDescription() {
     axios

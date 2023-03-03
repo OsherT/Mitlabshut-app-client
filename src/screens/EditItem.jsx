@@ -30,7 +30,9 @@ export default function EditItem(props) {
   const navigation = useNavigation();
   const [itemName, setItemName] = useState(item.name);
   const [itemPrice, setItemPrice] = useState(item.price);
-  const [itemCategory, setItemCategory] = useState(itemCtegories);
+  const [itemCategory, setItemCategory] = useState(
+    itemCtegories.map((item) => item.category_name)
+  );
   const [itemType, setItemType] = useState(item.type);
   const [itemSize, setItemSize] = useState(item.size);
   const [itemCondition, setItemCondition] = useState(item.use_condition);
@@ -69,7 +71,10 @@ export default function EditItem(props) {
     GetColorsList();
     GetSizesList();
     GetTypesList();
-    console.log(itemCategory);
+    // console.log("categoryOptions", categoryOptions);
+    // console.log("chosenCategory", chosenCategory);
+    // console.log("categoriesList", categoriesList);
+    // console.log("price", item.price);
   }, []);
 
   const GetBrandsList = () => {
@@ -308,6 +313,18 @@ export default function EditItem(props) {
       );
   };
 
+  //options ia obj
+  const categoryOptions = categoriesList.map((category) => ({
+    key: category,
+    value: category,
+  }));
+
+  //options ia obj
+  const chosenCategory = itemCategory.map((category) => ({
+    key: category,
+    value: category,
+  }));
+
   function renderContent() {
     return (
       <KeyboardAwareScrollView
@@ -323,21 +340,35 @@ export default function EditItem(props) {
             <TextInput
               style={styles.textInput}
               value={item.price}
-              //   placeholder={item.size}
+              defaultValue={item.price}
               placeholder="מחיר"
               keyboardType="numeric"
               onChangeText={(text) => setItemPrice(text)}
             />
             <TextInput
               style={styles.textInput}
-              placeholder={item.name}
+              //   placeholder={item.name}
+              defaultValue={item.name}
               containerStyle={{ marginBottom: 10 }}
               onChangeText={(text) => setItemName(text)}
             />
           </View>
 
+          {/* <MultipleSelectList 
+            defaultOption={selectedCategories}
+            boxStyles={styles.dropdownInput}
+            dropdownStyles={styles.dropdownContainer}
+            setSelected={(val) => setItemCategory(val)}
+            data={categoriesList}
+            notFoundText="לא קיים מידע"
+            save="value"
+            label="קטגוריה"
+            placeholder=" קטגוריה"
+            searchPlaceholder="חיפוש"
+          /> */}
+
           <MultipleSelectList
-            // selectedItems={itemCategory}
+            defaultOption="הריון"
             boxStyles={styles.dropdownInput}
             dropdownStyles={styles.dropdownContainer}
             setSelected={(val) => setItemCategory(val)}
@@ -411,13 +442,12 @@ export default function EditItem(props) {
             searchPlaceholder="חיפוש"
             notFoundText="לא קיים מידע"
             label="שיטת מסירה"
-            // save="value"
             maxHeight={200}
           />
 
           <TextInput
             style={styles.bigInput}
-            placeholder=" תיאור מפורט  "
+            defaultValue={item.description}
             containerStyle={{ marginBottom: 10 }}
             onChangeText={(text) => setItemDescription(text)}
           />

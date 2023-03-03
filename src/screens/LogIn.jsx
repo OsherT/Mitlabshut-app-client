@@ -44,7 +44,7 @@ export default function SignIn() {
         }),
       })
         .then((res) => {
-          console.log("status", res.status);
+          console.log("status LOG IN", res.status);
           return res.json();
         })
         .then(
@@ -95,6 +95,7 @@ export default function SignIn() {
             style={styles.textInput}
             placeholder="המייל שלך"
             name="email"
+
             // onChangeText={(text) => setUserEmail(text.replace("%40", "@"))}
             //לצורך נוחות כדי לא להקליד את הנתונים כל פעם////////////////////////
             value="o@g.c"

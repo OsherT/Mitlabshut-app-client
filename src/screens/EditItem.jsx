@@ -4,7 +4,6 @@ import {
   TouchableOpacity,
   SafeAreaView,
   StyleSheet,
-  VirtualizedList,
   Image,
   Alert,
 } from "react-native";
@@ -22,20 +21,22 @@ import { AddSvg } from "../svg";
 import * as ImagePicker from "expo-image-picker";
 import { userContext } from "../navigation/userContext";
 
-export default function UploadItem() {
-//להחליף מה שיושב סתם במערך ל"""
+export default function EditItem(props) {
+  const item = props.route.params.item;
+    const itemImages = props.route.params.itemImages;
+
   const navigation = useNavigation();
-  const [itemName, setItemName] = useState("");
-  const [itemPrice, setItemPrice] = useState("");
+  const [itemName, setItemName] = useState(item.name);
+  const [itemPrice, setItemPrice] = useState(item.price);
   const [itemCategory, setItemCategory] = useState([]);
-  const [itemType, setItemType] = useState([]);
-  const [itemSize, setItemSize] = useState([]);
-  const [itemCondition, setItemCondition] = useState("");
-  const [itemColor, setItemColor] = useState([]);
-  const [itemDeliveryMethod, setItemDeliveryMethod] = useState("");
-  const [itemBrand, setItemBrand] = useState([]);
+  const [itemType, setItemType] = useState(item.type);
+  const [itemSize, setItemSize] = useState(item.size);
+  const [itemCondition, setItemCondition] = useState(item.use_condition);
+  const [itemColor, setItemColor] = useState(item.color);
+  const [itemDeliveryMethod, setItemDeliveryMethod] =useState(item.shipping_method);
+  const [itemBrand, setItemBrand] = useState(item.brand);
   const [itemImage, setItemImage] = useState([]);
-  const [itemDescription, setItemDescription] = useState("");
+  const [itemDescription, setItemDescription] = useState(item.description);
   const { loggedUser } = useContext(userContext);
 
   //lists
@@ -186,7 +187,7 @@ export default function UploadItem() {
   };
 
   //upload images to Item_Image_Video table
-  const uploadImages = (item_id) => {
+  const updateImages = (item_id) => {
     for (let i = 0; i < itemImage.length; i++) {
       const new_image = {
         Id: 0,
@@ -217,7 +218,7 @@ export default function UploadItem() {
         );
     }
   };
-  
+
   //to convert the shipping method to string,shipping method in data base gets string only
   const ArrayToStringShip = (data) => {
     var string = "";
@@ -227,10 +228,8 @@ export default function UploadItem() {
     return string;
   };
 
-
-
   //upload categories to Items_in_category table
-  const uploadCtegories = (item_ID) => {
+  const updateCtegories = (item_ID) => {
     for (let i = 0; i < itemCategory.length; i++) {
       const new_categories = {
         Item_ID: item_ID,
@@ -259,61 +258,46 @@ export default function UploadItem() {
     }
   };
 
-  const UploadItem = () => {
-    if (
-      itemName == "" ||
-      itemPrice == "" ||
-      itemCategory == "" ||
-      itemType == "" ||
-      itemSize == "" ||
-      itemCondition == "" ||
-      itemColor == "" ||
-      itemDeliveryMethod == "" ||
-      itemBrand == "" ||
-      itemDescription == "" ||
-      itemImage == []
-    ) {
-      Alert.alert("אנא מלאי את כל הפרטים");
-    } else {
-      const item = {
-        Closet_ID: loggedUser.closet_id,
-        Name: itemName,
-        Price: itemPrice,
-        Type: itemType,
-        Size: itemSize,
-        Use_condition: itemCondition,
-        Color: itemColor,
-        Shipping_method: ArrayToStringShip(itemDeliveryMethod),
-        Brand: itemBrand,
-        Description: itemDescription,
-        Sale_status: true,
-      };
+  const UdateItem = () => {
 
-      //post to item tabel
-      fetch(ApiUrl + `Item`, {
-        method: "POST",
-        body: JSON.stringify(item),
-        headers: new Headers({
-          "Content-type": "application/json; charset=UTF-8",
-          Accept: "application/json; charset=UTF-8",
-        }),
-      })
-        .then((res) => {
-          return res.json();
-        })
-        .then(
-          (item_ID) => {
-            Alert.alert("Item added in succ");
-            uploadImages(item_ID);
-            uploadCtegories(item_ID);
+    console.log("itemSize", itemSize);
+    // const item = {
+    //   Closet_ID: loggedUser.closet_id,
+    //   Name: itemName,
+    //   Price: itemPrice,
+    //   Type: itemType,
+    //   Size: itemSize,
+    //   Use_condition: itemCondition,
+    //   Color: itemColor,
+    //   Shipping_method: ArrayToStringShip(itemDeliveryMethod),
+    //   Brand: itemBrand,
+    //   Description: itemDescription,
+    //   Sale_status: true,
+    // };
 
-            navigation.navigate("Closet")
-          },
-          (error) => {
-            console.log("ERR in upload item ", error);
-          }
-        );
-    }
+    // //post to item tabel
+    // fetch(ApiUrl + `Item`, {
+    //   method: "PUT",
+    //   body: JSON.stringify(item),
+    //   headers: new Headers({
+    //     "Content-type": "application/json; charset=UTF-8",
+    //     Accept: "application/json; charset=UTF-8",
+    //   }),
+    // })
+    //   .then((res) => {
+    //     return res.json();
+    //   })
+    //   .then(
+    //     (item_ID) => {
+    //       Alert.alert("Item updated in succ");
+    //     //   updateImages(item_ID);
+    //     //   updateCtegories(item_ID);
+    //     //   navigation.navigate("Closet");
+    //     },
+    //     (error) => {
+    //       console.log("ERR in upload item ", error);
+    //     }
+    //   );
   };
 
   function renderContent() {
@@ -326,17 +310,19 @@ export default function UploadItem() {
         }}
         showsHorizontalScrollIndicator={false}>
         <ContainerComponent>
-          <Text style={styles.header}>פריט חדש</Text>
+          <Text style={styles.header}>עדכון פריט</Text>
           <View style={styles.doubleContainer}>
             <TextInput
               style={styles.textInput}
+              value={item.price}
+              //   placeholder={item.size}
               placeholder="מחיר"
-              keyboardType="phone-pad"
+              keyboardType="numeric"
               onChangeText={(text) => setItemPrice(text)}
             />
             <TextInput
               style={styles.textInput}
-              placeholder="שם פריט"
+              placeholder={item.name}
               containerStyle={{ marginBottom: 10 }}
               onChangeText={(text) => setItemName(text)}
             />
@@ -355,7 +341,8 @@ export default function UploadItem() {
           />
 
           <SelectList
-            placeholder="  סוג פריט"
+            placeholder={item.type}
+            defaultOption={item.type}
             searchPlaceholder="חיפוש"
             boxStyles={styles.dropdownInput}
             dropdownStyles={styles.dropdownContainer}
@@ -364,7 +351,8 @@ export default function UploadItem() {
             notFoundText="לא קיים מידע"
           />
           <SelectList
-            placeholder="מידה "
+            placeholder={item.size}
+            defaultOption={item.size}
             searchPlaceholder="חיפוש"
             boxStyles={styles.dropdownInput}
             dropdownStyles={styles.dropdownContainer}
@@ -373,7 +361,8 @@ export default function UploadItem() {
             notFoundText="לא קיים מידע"
           />
           <SelectList
-            placeholder="  צבע "
+            placeholder={item.color}
+            defaultOption={item.color}
             searchPlaceholder="חיפוש"
             boxStyles={styles.dropdownInput}
             dropdownStyles={styles.dropdownContainer}
@@ -382,7 +371,8 @@ export default function UploadItem() {
             notFoundText="לא קיים מידע"
           />
           <SelectList
-            placeholder="  מותג "
+            placeholder={item.brand}
+            defaultOption={item.brand}
             searchPlaceholder="חיפוש"
             boxStyles={styles.dropdownInput}
             dropdownStyles={styles.dropdownContainer}
@@ -391,9 +381,9 @@ export default function UploadItem() {
             notFoundText="לא קיים מידע"
           />
 
-          {/* לשנות שיכניס את המילה ולא את המפתח */}
           <SelectList
-            placeholder=" מצב פריט"
+            placeholder={item.use_condition}
+            defaultOption={item.use_condition}
             searchPlaceholder="חיפוש"
             boxStyles={styles.dropdownInput}
             dropdownStyles={styles.dropdownContainer}
@@ -403,7 +393,6 @@ export default function UploadItem() {
             notFoundText="לא קיים מידע"
           />
 
-          {/* לשנות שיכניס את המילה ולא את המפתח */}
           <MultipleSelectList
             placeholder="שיטת מסירה"
             searchPlaceholder="חיפוש"
@@ -457,7 +446,7 @@ export default function UploadItem() {
             )}
           </View>
 
-          <Button title="הוספת פריט" onPress={UploadItem} />
+          <Button title="עדכן פרטים " onPress={UdateItem} />
         </ContainerComponent>
       </KeyboardAwareScrollView>
     );

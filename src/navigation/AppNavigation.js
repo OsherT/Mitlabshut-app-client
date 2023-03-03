@@ -42,6 +42,7 @@ import { userContext } from "./userContext";
 import Search from "../screens/Search";
 import Profile from "../screens/Profile";
 import UploadItem from "../screens/UploadItem";
+import EditItem from "../screens/EditItem";
 
 const Stack = createStackNavigator();
 
@@ -89,6 +90,8 @@ export default function Navigation() {
           <Stack.Screen name="Filter" component={Filter} />
           <Stack.Screen name="PaymentMethod" component={PaymentMethod} />
           <Stack.Screen name="EditProfile" component={EditProfile} />
+          <Stack.Screen name="EditItem" component={EditItem} />
+
           <Stack.Screen name="OrderFailed" component={OrderFailed} />
           <Stack.Screen name="MainLayout" component={MainLayout} />
           <Stack.Screen name="OrderSuccessful" component={OrderSuccessful} />

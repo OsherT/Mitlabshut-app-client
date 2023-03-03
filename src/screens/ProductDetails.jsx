@@ -10,7 +10,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { COLORS, FONTS, SIZES } from "../constants";
 import { Button } from "../components";
-import { BackSvg, HeartSvg, HeartTwoSvg } from "../svg";
+import { BackSvg, Edit, HeartTwoSvg } from "../svg";
 import ButtonFollow from "../components/ButtonFollow";
 import { Alert } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -29,7 +29,6 @@ export default function ProductDetails(props) {
   const [itemCtegories, setItemCtegories] = useState([]);
   const [itemImages, setItemImages] = useState([]);
   const [UsersFavList, setUsersFavList] = useState([]);
-  // const [fav, setFav] = useState(false);
   const [numOfFav, setNumOfFav] = useState("");
 
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
@@ -220,6 +219,18 @@ export default function ProductDetails(props) {
               </View>
 
               <View style={styles.Col}>
+                <TouchableOpacity
+                  onPress={() => {
+                    console.log(item.id);
+                    navigation.navigate("EditItem", {
+                      item: item,
+                      itemImages: itemImages,
+                      // closet: ClosetData,
+                      // closet_id: loggedUser.closet_id,
+                    });
+                  }}>
+                  <Edit />
+                </TouchableOpacity>
                 <Text style={styles.itemHeader}>{item.name}</Text>
                 {numOfFav > 0 && (
                   <Text

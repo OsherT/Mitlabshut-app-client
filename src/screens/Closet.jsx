@@ -299,8 +299,8 @@ export default function Closet() {
               console.log(item.id);
               navigation.navigate("ProductDetails", {
                 item: item,
-                closet: ClosetData,
-                closet_id: loggedUser.closet_id,
+                // closet: ClosetData,
+                // closet_id: loggedUser.closet_id,
               });
             }}
             //Osherrrrrrrrrrrr///////////////////////////////////////////////

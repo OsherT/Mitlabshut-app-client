@@ -30,19 +30,23 @@ export default function Closet() {
   //להוסיף כפתור הוספת פריט
   const navigation = useNavigation();
 
-  useEffect(() => { 
- 
+  // useEffect(() => {
+  //   GetClosetDescription();
+  //   GetClosetItems();
+  //   GetItemPhotos();
+  //   getFavItems();
+  //   getShopItems;
+  //   return () => {};
+  // }, [UsersShopList, UsersFavList]);
 
-    GetClosetDescription();
-    GetClosetItems();
-    GetItemPhotos();
-    getFavItems();
-    getShopItems;
-
-
-
-    return () => {};
-  }, [UsersShopList, UsersFavList]);
+//osher changed 
+    useEffect(() => {
+      GetClosetDescription();
+      GetClosetItems();
+      GetItemPhotos();
+      getFavItems();
+      getShopItems();
+    }, []);
 
   function GetClosetDescription() {
     axios
@@ -51,11 +55,12 @@ export default function Closet() {
           loggedUser.closet_id
       ) //לשנות כשדנה עושה החזרת הדיסקריפשן לפי איידי
       .then((res) => {
+        console.log("description", res.status);
         setClosetData(res.data[0]);
         setClosetDesc(res.data[0].description);
       })
       .catch((err) => {
-        alert("cant take");
+        alert("cant take description");
         console.log(err);
       });
   }
@@ -98,7 +103,7 @@ export default function Closet() {
           <TouchableOpacity
             onPress={() => {
               navigation.navigate("EditProfile");
-              console.log(loggedUser);
+              console.log("loggedUser", loggedUser);
             }}>
             <ImageBackground
               source={{
@@ -149,7 +154,9 @@ export default function Closet() {
   }
   ///handle fav list
   function getFavItems() {
-    var Email = loggedUser.email.replace("%40", "@");
+    // var Email = loggedUser.email.replace("%40", "@");
+    var Email = loggedUser.email;
+
     axios
       .get(
         "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList/User_Email/" +
@@ -207,7 +214,9 @@ export default function Closet() {
   }
   ///handle shop list
   function getShopItems() {
-    var Email = loggedUser.email.replace("%40", "@");
+    // var Email = loggedUser.email.replace("%40", "@");
+    var Email = loggedUser.email;
+
     axios
       .get(
         "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserShopList/User_Email/" +
@@ -216,7 +225,7 @@ export default function Closet() {
       .then((res) => {
         const tempUsersShopList = res.data.map(({ item_ID }) => item_ID);
         setUsersShopList(tempUsersShopList);
-        console.log(tempUsersShopList);
+        console.log("tempUsersShopList", tempUsersShopList);
       })
       .catch((err) => {
         alert("cant get shop list");

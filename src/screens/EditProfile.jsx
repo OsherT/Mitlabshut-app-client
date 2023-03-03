@@ -43,8 +43,11 @@ export default function EditProfile() {
 
     // setItemImage(result.uri);
 
+    // setUserImage(
+    //   "https://scontent.ftlv18-1.fna.fbcdn.net/v/t1.6435-9/37673670_10157514945495278_8702446268250587136_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=e3f864&_nc_ohc=y3hGZ5pDXjoAX-m60Ia&_nc_ht=scontent.ftlv18-1.fna&oh=00_AfBnG6vLlmG8fKu4oTNCZQzr5NWKc5FnhMFG3m3zWitr5A&oe=64272285"
+    // );
     setUserImage(
-      "https://scontent.ftlv18-1.fna.fbcdn.net/v/t1.6435-9/37673670_10157514945495278_8702446268250587136_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=e3f864&_nc_ohc=y3hGZ5pDXjoAX-m60Ia&_nc_ht=scontent.ftlv18-1.fna&oh=00_AfBnG6vLlmG8fKu4oTNCZQzr5NWKc5FnhMFG3m3zWitr5A&oe=64272285"
+      "https://scontent.fsdv1-2.fna.fbcdn.net/v/t39.30808-6/275113161_10228259427687412_4499196323364308307_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=8bfeb9&_nc_ohc=iDDYjAdJaKoAX_O-eJW&_nc_ht=scontent.fsdv1-2.fna&oh=00_AfAZWmFI0O_mjhX3rl2OqNXxe4w98TmIOehzkCLbF3JDEA&oe=64070A66"
     );
   };
 
@@ -79,6 +82,7 @@ export default function EditProfile() {
         (result) => {
           setloggedUser(newUser);
           console.log("suc in update user= ", result);
+          navigation.navigate("OrderSuccessful");
         },
         (error) => {
           console.log("ERR in update user", error);
@@ -99,9 +103,7 @@ export default function EditProfile() {
       <ContainerComponent>
         <TouchableOpacity
           onPress={() => {
-            // navigation.navigate("EditProfile");
             pickImage();
-            console.log("User_image", loggedUser.user_image);
           }}>
           <ImageBackground
             source={{
@@ -150,7 +152,6 @@ export default function EditProfile() {
             GooglePlacesSearchQuery={{ rankby: "distance" }}
             onPress={(data, details = null) => {
               setAddress(data.description);
-              console.log(data.description);
             }}
             query={{
               key: "AIzaSyAaCpPtzL7apvQuXnKdRhY0omPHiMdc--s",
@@ -172,7 +173,7 @@ export default function EditProfile() {
         </SafeAreaView>
 
         <InputField
-          // value={loggedUser.phone_number}
+          value={loggedUser.phone_number}
           placeholder={loggedUser.phone_number}
           icon={<EditTwo />}
           containerStyle={{ marginBottom: 10 }}
@@ -181,7 +182,7 @@ export default function EditProfile() {
         />
 
         <InputField
-          // value={loggedUser.password}
+          value={loggedUser.password}
           placeholder={loggedUser.password}
           icon={<EditTwo />}
           containerStyle={{ marginBottom: 20 }}
@@ -190,14 +191,7 @@ export default function EditProfile() {
         />
 
         <View style={{ marginTop: 40 }}>
-          <Button
-            title="שמור שינויים "
-            onPress={
-              // updateUser
-              (() => navigation.navigate("OrderSuccessful"), updateUser)
-              // () => Alert.alert("to update")
-            }
-          />
+          <Button title="שמור שינויים " onPress={updateUser} />
         </View>
       </ContainerComponent>
       // </KeyboardAwareScrollView>

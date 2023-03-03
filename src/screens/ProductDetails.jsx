@@ -30,14 +30,22 @@ export default function ProductDetails(props) {
   const [itemImages, setItemImages] = useState([]);
   const [UsersFavList, setUsersFavList] = useState([]);
   // const [fav, setFav] = useState(false);
+  const [numOfFav, setNumOfFav] = useState("");
 
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
+
+  // useEffect(() => {
+  //   GetItemCategories();
+  //   GetItemImages();
+  //   getFavItems();
+  // }, [UsersFavList]);
 
   useEffect(() => {
     GetItemCategories();
     GetItemImages();
     getFavItems();
-  }, [UsersFavList]);
+    GetNumOfFav();
+  }, []);
 
   const GetItemCategories = () => {
     fetch(ApiUrl + `Item_in_category/Item_ID/${item.id}`, {
@@ -79,6 +87,28 @@ export default function ProductDetails(props) {
         }
       );
   };
+
+  const GetNumOfFav = () => {
+    fetch(ApiUrl + `UserFavList/Item_ID/${item.id}`, {
+      method: "GET",
+      headers: new Headers({
+        "Content-Type": "application/json; charset=UTF-8",
+        Accept: "application/json; charset=UTF-8",
+      }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then(
+        (data) => {
+          setNumOfFav(data);
+        },
+        (error) => {
+          console.log("setNumOfFav error", error);
+        }
+      );
+  };
+
   const getFavItems = () => {
     var Email = loggedUser.email.replace("%40", "@");
     axios
@@ -191,10 +221,16 @@ export default function ProductDetails(props) {
 
               <View style={styles.Col}>
                 <Text style={styles.itemHeader}>{item.name}</Text>
-                <Text
-                  style={{ textAlign: "right", fontSize: 13, marginBottom: 5 }}>
-                  ♡ 17 אהבו פריט זה
-                </Text>
+                {numOfFav > 0 && (
+                  <Text
+                    style={{
+                      textAlign: "right",
+                      fontSize: 13,
+                      marginBottom: 5,
+                    }}>
+                    ♡ {numOfFav} אהבו פריט זה
+                  </Text>
+                )}
               </View>
             </View>
 

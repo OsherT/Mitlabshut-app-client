@@ -18,6 +18,7 @@ import Swiper from "react-native-swiper";
 import ShareSvg from "../svg/ShareSvg";
 import { userContext } from "../navigation/userContext";
 import axios from "axios";
+import debounce from "lodash.debounce";
 
 export default function ProductDetails(props) {
   const item = props.route.params.item;
@@ -41,7 +42,6 @@ export default function ProductDetails(props) {
 
   useEffect(() => {
     getFavItems();
-    return()=>{}
   }, [UsersFavList]);
 
   const GetItemCategories = () => {
@@ -84,6 +84,7 @@ export default function ProductDetails(props) {
         }
       );
   };
+
   const GetNumOfFav = () => {
     fetch(ApiUrl + `UserFavList/Item_ID/${item.id}`, {
       method: "GET",
@@ -104,57 +105,148 @@ export default function ProductDetails(props) {
         }
       );
   };
-  const getFavItems = () => {
-    var Email = loggedUser.email.replace("%40", "@");
+
+  // const getFavItems = () => {
+  //   var Email = loggedUser.email.replace("%40", "@");
+  //   axios
+  //     .get(ApiUrl + `UserFavList/User_Email/${Email}`)
+  //     .then((res) => {
+  //       const tempUsersFavList = res.data.map(({ item_ID }) => item_ID);
+  //       setUsersFavList(tempUsersFavList);
+  //       console.log("o", tempUsersFavList);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
+  // const getFavItems = () => {
+  //   // var Email = loggedUser.email.replace("%40", "@");
+  //   console.log(loggedUser.email);
+  //   fetch(ApiUrl + `UserFavList/User_Email/${loggedUser.email}`, {
+  //     method: "GET",
+  //     headers: new Headers({
+  //       "Content-Type": "application/json; charset=UTF-8",
+  //       Accept: "application/json; charset=UTF-8",
+  //     }),
+  //   })
+  //     .then((res) => {
+  //       return res.json();
+  //     })
+  //     .then(
+  //       (data) => {
+  //         const tempUsersFavList = data.map(({ item_ID }) => item_ID);
+  //         setUsersFavList(tempUsersFavList);
+  //         console.log("o", tempUsersFavList);
+  //       },
+  //       (error) => {
+  //         console.log("getFavItems error", error);
+  //       }
+  //     );
+  // };
+
+  // const AddtoFav = (item_id) => {
+  //   var newFav = {
+  //     item_ID: item_id,
+  //     user_Email: loggedUser.email,
+  //   };
+  //   axios
+  //     .post(ApiUrl + "UserFavList", newFav)
+  //     .then((res) => {
+  //       alert("added");
+  //       setUsersFavList((prevList) => [...prevList, { item_id }]);
+  //       console.log("AddtoFav");
+  //     })
+  //     .catch((err) => {
+  //       alert("cant add to fav");
+  //       console.log(err);
+  //     });
+  // };
+
+  // const RemoveFromFav = (itemId) => {
+
+  //   axios
+  //     .delete(
+  //       ApiUrl + `UserFavList/Item_ID/${itemId}/User_Email/${loggedUser.email}`
+  //     )
+  //     .then((res) => {
+  //       setUsersFavList((prevList) => prevList.filter((id) => id !== itemId));
+
+  //       alert("removed " + itemId);
+  //       console.log("RemoveFromFav");
+  //     })
+  //     .catch((err) => {
+  //       alert("cant remove from fav");
+  //       console.log(err);
+  //       console.log("newFav", newFav);
+  //     });
+  // };
+
+  function getFavItems() {
+    // var Email = loggedUser.email.replace("%40", "@");
+    var Email = loggedUser.email;
+
     axios
-      .get(ApiUrl + `UserFavList/User_Email/${Email}`)
+      .get(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList/User_Email/" +
+          Email
+      )
       .then((res) => {
         const tempUsersFavList = res.data.map(({ item_ID }) => item_ID);
         setUsersFavList(tempUsersFavList);
-        console.log("getFavItems", tempUsersFavList);
+        console.log("fav");
       })
       .catch((err) => {
+        // alert("cant get fav");
         console.log(err);
       });
-  };
-  const AddtoFav = (item_id) => {
+  }
+  function AddtoFav(item_id) {
     var newFav = {
       item_ID: item_id,
       user_Email: loggedUser.email,
     };
     axios
-      .post(ApiUrl + "UserFavList", newFav)
+      .post(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList",
+        newFav
+      )
       .then((res) => {
-        alert("added");
-        setUsersFavList((prevList) => [...prevList, { item_id }]);
+        // alert("added");
         console.log("AddtoFav");
+        setUsersFavList((prevList) => [...prevList, { item_id }]);
       })
       .catch((err) => {
         alert("cant add to fav");
         console.log(err);
+        // console.log(newFav);
+        // console.log(UsersFavList);
+        // console.log(
+        //   "פה " + UsersFavList.find((obj) => obj.item_ID === 15) !== undefined
+        // );
       });
-  };
-  const RemoveFromFav = (itemId) => {
+  }
+  function RemoveFromFav(itemId) {
     var Email = loggedUser.email.replace("%40", "@");
 
     axios
-      .delete(ApiUrl + `UserFavList/Item_ID/${itemId}/User_Email/${Email}`)
+      .delete(
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList/Item_ID/${itemId}/User_Email/${Email}`
+      )
       .then((res) => {
         setUsersFavList((prevList) => prevList.filter((id) => id !== itemId));
-
-        alert("removed " + itemId);
-        console.log("RemoveFromFav");
+        // alert("removed " + itemId);
       })
       .catch((err) => {
         alert("cant remove from fav");
         console.log(err);
-        console.log("newFav", newFav);
+        console.log(newFav);
       });
-  };
+  }
 
   const followCloset = () => {
     Alert.alert("follow");
   };
+
   const unfollowCloset = () => {
     Alert.alert("unfollow");
   };

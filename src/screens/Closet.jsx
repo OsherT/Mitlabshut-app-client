@@ -148,8 +148,8 @@ export default function Closet() {
   }
   ///handle fav list
   function getFavItems() {
-    // var Email = loggedUser.email.replace("%40", "@");
-    var Email = loggedUser.email;
+    var Email = loggedUser.email.replace("%40", "@");
+    // var Email = loggedUser.email;
 
     axios
       .get(
@@ -158,6 +158,7 @@ export default function Closet() {
       )
       .then((res) => {
         const tempUsersFavList = res.data.map(({ item_ID }) => item_ID);
+        console.log("fav");
         setUsersFavList(tempUsersFavList);
       })
       .catch((err) => {
@@ -176,7 +177,7 @@ export default function Closet() {
         newFav
       )
       .then((res) => {
-        alert("added");
+        // alert("added");
         setUsersFavList((prevList) => [...prevList, { item_id }]);
       })
       .catch((err) => {
@@ -198,7 +199,7 @@ export default function Closet() {
       )
       .then((res) => {
         setUsersFavList((prevList) => prevList.filter((id) => id !== itemId));
-        alert("removed " + itemId);
+        // alert("removed " + itemId);
       })
       .catch((err) => {
         alert("cant remove from fav");

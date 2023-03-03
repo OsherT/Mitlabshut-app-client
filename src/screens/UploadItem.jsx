@@ -352,6 +352,8 @@ export default function UploadItem() {
             notFoundText="לא קיים מידע"
             save="value"
             label="קטגוריה"
+            badgeStyles={{ backgroundColor: "white" }}
+            badgeTextStyles={{ color: "black" }}
           />
 
           <SelectList
@@ -403,7 +405,6 @@ export default function UploadItem() {
             notFoundText="לא קיים מידע"
           />
 
-          {/* לשנות שיכניס את המילה ולא את המפתח */}
           <MultipleSelectList
             placeholder="שיטת מסירה"
             searchPlaceholder="חיפוש"
@@ -413,8 +414,9 @@ export default function UploadItem() {
             data={deliveryMethodsList}
             notFoundText="לא קיים מידע"
             label="שיטת מסירה"
-            // save="value"
             maxHeight={200}
+            badgeStyles={{ backgroundColor: "white" }}
+            badgeTextStyles={{ color: "black" }}
           />
 
           <TextInput

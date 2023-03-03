@@ -20,6 +20,7 @@ import {
 import { AddSvg } from "../svg";
 import * as ImagePicker from "expo-image-picker";
 import { userContext } from "../navigation/userContext";
+import MultiSelect from "react-native-multiple-select";
 
 export default function EditItem(props) {
   const item = props.route.params.item;
@@ -354,32 +355,43 @@ export default function EditItem(props) {
             />
           </View>
 
-          {/* <MultipleSelectList 
-            defaultOption={selectedCategories}
-            boxStyles={styles.dropdownInput}
-            dropdownStyles={styles.dropdownContainer}
-            setSelected={(val) => setItemCategory(val)}
-            data={categoriesList}
-            notFoundText="לא קיים מידע"
-            save="value"
-            label="קטגוריה"
-            placeholder=" קטגוריה"
-            searchPlaceholder="חיפוש"
-          /> */}
-
           <MultipleSelectList
-            defaultOption="הריון"
+            data={categoryOptions}
+            defaultOption={{ value: "הריון" }}
             boxStyles={styles.dropdownInput}
             dropdownStyles={styles.dropdownContainer}
             setSelected={(val) => setItemCategory(val)}
-            data={categoriesList}
             notFoundText="לא קיים מידע"
             save="value"
             label="קטגוריה"
+            badgeStyles={{ backgroundColor: "white" }}
+            badgeTextStyles={{ color: "black" }}
             placeholder=" קטגוריה"
             searchPlaceholder="חיפוש"
           />
 
+          {/* <MultiSelect
+            items={categoryOptions}
+            uniqueKey="key"
+            displayKey="value"
+            onSelectedItemsChange={(val) => setItemCategory(val)}
+            selectedItems={chosenCategory}
+            selectText="Select Options"
+            searchInputPlaceholderText="Search Options..."
+            tagRemoveIconColor="#CCC"
+            tagBorderColor="#CCC"
+            tagTextColor="#CCC"
+            selectedItemTextColor="#CCC"
+            selectedItemIconColor="#CCC"
+            itemTextColor="#000"
+            searchInputStyle={{ color: "#CCC" }}
+            submitButtonColor="#CCC"
+            submitButtonText="Submit"
+          />
+          <Text>Selected Items:</Text>
+          {chosenCategory.map((item) => (
+            <Text key={item.key}>{item.value}</Text>
+          ))} */}
           <SelectList
             placeholder={item.type}
             defaultOption={item.type}
@@ -443,6 +455,8 @@ export default function EditItem(props) {
             notFoundText="לא קיים מידע"
             label="שיטת מסירה"
             maxHeight={200}
+            badgeStyles={{ backgroundColor: "white" }}
+            badgeTextStyles={{ color: "black" }}
           />
 
           <TextInput

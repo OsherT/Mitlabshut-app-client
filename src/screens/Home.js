@@ -56,6 +56,7 @@ export default function Home() {
         );
     }
 
+    //the big image in the page
     function renderSlide() {
         return (
             <View

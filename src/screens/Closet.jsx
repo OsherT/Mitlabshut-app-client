@@ -35,12 +35,13 @@ export default function Closet() {
     GetClosetItems();
     GetItemPhotos();
     getShopItems();
+    getFavItems();
   }, []);
 
-  useEffect(() => {
-    getFavItems();
-  }, [UsersShopList, UsersFavList]);
+  // useEffect(() => {
+  //       getFavItems();
 
+  // }, [UsersShopList, UsersFavList]);
 
   function GetClosetDescription() {
     axios

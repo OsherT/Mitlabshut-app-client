@@ -20,7 +20,6 @@ import {
 import { AddSvg } from "../svg";
 import * as ImagePicker from "expo-image-picker";
 import { userContext } from "../navigation/userContext";
-import MultiSelect from "react-native-multiple-select";
 
 export default function EditItem(props) {
   const item = props.route.params.item;
@@ -72,8 +71,8 @@ export default function EditItem(props) {
     GetColorsList();
     GetSizesList();
     GetTypesList();
-    console.log("categoryOptions", categoryOptions);
-    console.log("chosenCategory", chosenCategory);
+    // console.log("categoryOptions", categoryOptions);
+    // console.log("chosenCategory", chosenCategory);
     // console.log("categoriesList", categoriesList);
     // console.log("price", item.price);
   }, []);
@@ -369,29 +368,6 @@ export default function EditItem(props) {
             placeholder=" קטגוריה"
             searchPlaceholder="חיפוש"
           />
-
-          {/* <MultiSelect
-            items={categoryOptions}
-            uniqueKey="key"
-            displayKey="value"
-            onSelectedItemsChange={(val) => setItemCategory(val)}
-            selectedItems={chosenCategory}
-            selectText="Select Options"
-            searchInputPlaceholderText="Search Options..."
-            tagRemoveIconColor="#CCC"
-            tagBorderColor="#CCC"
-            tagTextColor="#CCC"
-            selectedItemTextColor="#CCC"
-            selectedItemIconColor="#CCC"
-            itemTextColor="#000"
-            searchInputStyle={{ color: "#CCC" }}
-            submitButtonColor="#CCC"
-            submitButtonText="Submit"
-          />
-          <Text>Selected Items:</Text>
-          {chosenCategory.map((item) => (
-            <Text key={item.key}>{item.value}</Text>
-          ))} */}
           <SelectList
             placeholder={item.type}
             defaultOption={item.type}
@@ -448,6 +424,8 @@ export default function EditItem(props) {
           <MultipleSelectList
             boxStyles={styles.dropdownInput}
             dropdownStyles={styles.dropdownContainer}
+            badgeStyles={{ backgroundColor: "white" }}
+            badgeTextStyles={{ color: "black" }}
             setSelected={(val) => setItemDeliveryMethod(val)}
             data={deliveryMethodsList}
             placeholder="שיטת מסירה"
@@ -455,8 +433,6 @@ export default function EditItem(props) {
             notFoundText="לא קיים מידע"
             label="שיטת מסירה"
             maxHeight={200}
-            badgeStyles={{ backgroundColor: "white" }}
-            badgeTextStyles={{ color: "black" }}
           />
 
           <TextInput
@@ -543,14 +519,13 @@ const styles = StyleSheet.create({
   },
   dropdownInput: {
     width: "100%",
-    // height: 50,
     borderWidth: 1,
     borderRadius: 25,
     paddingHorizontal: 25,
     borderColor: COLORS.goldenTransparent_03,
     flexDirection: "row-reverse",
-    alignItems: "center",
     justifyContent: "space-between",
+    alignItems: "center",
     backgroundColor: "#FBF8F2",
     marginBottom: 30,
     textAlign: "right",
@@ -564,9 +539,10 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     paddingHorizontal: 25,
     textAlign: "right",
-    flexDirection: "column-reverse",
-    alignItems: "center",
-    justifyContent: "space-between",
+    // textAlign: "right",
+    // flexDirection: "column",
+    // alignItems: "flex-end",
+    // justifyContent: "space-between",
   },
   bigInput: {
     width: "100%",

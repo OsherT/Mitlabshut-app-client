@@ -22,12 +22,14 @@ export default function SignIn() {
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api`;
   const { loggedUser, setloggedUser } = useContext(userContext);
   const navigation = useNavigation();
-  //לצורך נוחות כדי לא להקליד את הנתונים כל פעם////////////////////////
   // const [userEmail, setUserEmail] = useState("");
   // const [userPassword, setUserPassword] = useState("");
 
+  //לצורך נוחות כדי לא להקליד את הנתונים כל פעם////////////////////////
   const [userEmail, setUserEmail] = useState("o@g.c");
   const [userPassword, setUserPassword] = useState("123");
+  //לצורך נוחות כדי לא להקליד את הנתונים כל פעם////////////////////////
+
   const emailInputRef = useRef(null);
   const passwordInputRef = useRef(null);
 
@@ -51,8 +53,9 @@ export default function SignIn() {
           (user) => {
             if (user.id > 0) {
               setloggedUser(user);
-              navigation.navigate("Closet");
+              // navigation.navigate("Closet");
               // navigation.navigate("UploadItem");
+              navigation.navigate("MainLayout");
             }
 
             //if deatails are incorrect
@@ -95,7 +98,6 @@ export default function SignIn() {
             style={styles.textInput}
             placeholder="המייל שלך"
             name="email"
-
             // onChangeText={(text) => setUserEmail(text.replace("%40", "@"))}
             //לצורך נוחות כדי לא להקליד את הנתונים כל פעם////////////////////////
             value="o@g.c"

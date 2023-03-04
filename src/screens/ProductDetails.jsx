@@ -38,11 +38,13 @@ export default function ProductDetails(props) {
     GetItemCategories();
     GetItemImages();
     GetNumOfFav();
+        getFavItems();
+
   }, []);
 
-  useEffect(() => {
-    getFavItems();
-  }, [UsersFavList]);
+  // useEffect(() => {
+  //   getFavItems();
+  // }, [UsersFavList]);
 
   const GetItemCategories = () => {
     fetch(ApiUrl + `Item_in_category/Item_ID/${item.id}`, {

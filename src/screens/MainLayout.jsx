@@ -43,7 +43,7 @@ export default function MainLayout() {
     },
     {
       id: "3",
-      screen: "Order",
+      screen: "Closet",
       icon: (
         <View
           style={{
@@ -55,8 +55,7 @@ export default function MainLayout() {
             borderRadius: 30,
             justifyContent: "center",
             alignItems: "center",
-          }}
-        >
+          }}>
           <View
             style={{
               width: 54,
@@ -66,8 +65,7 @@ export default function MainLayout() {
 
               justifyContent: "center",
               alignItems: "center",
-            }}
-          >
+            }}>
             <Bag />
             <View
               style={{
@@ -80,16 +78,13 @@ export default function MainLayout() {
                 position: "absolute",
                 right: 10,
                 bottom: 10,
-              }}
-            >
+              }}>
               <Text
                 style={{
                   fontSize: 10,
                   color: COLORS.golden,
                   ...FONTS.Mulish_700Bold,
-                }}
-              >
-              </Text>
+                }}></Text>
             </View>
           </View>
         </View>
@@ -119,7 +114,7 @@ export default function MainLayout() {
     <View style={{ flex: 1, backgroundColor: COLORS.goldenTransparent_01 }}>
       {selectedTab == "Home" && <Home />}
       {selectedTab == "Search" && <Search />}
-      {selectedTab == "Order" && <CartIsEmpty />}
+      {selectedTab == "Closet" && <CartIsEmpty />}
       {selectedTab == "WishList" && <WishList />}
       {selectedTab == "Profile" && <Profile />}
 
@@ -128,8 +123,7 @@ export default function MainLayout() {
           alignSelf: "center",
           position: "absolute",
           bottom: 68,
-        }}
-      >
+        }}>
         <TabElement />
       </View>
       <View
@@ -140,18 +134,16 @@ export default function MainLayout() {
           paddingHorizontal: 28,
           backgroundColor: COLORS.white,
           paddingBottom: 10,
-        }}
-      >
+        }}>
         {tabs.map((item, index) => {
           return (
             <TouchableOpacity
               key={index}
               onPress={() =>
-                item.screen == "Order" && products.length !== 0
-                  ? navigation.navigate("Order")
+                item.screen == "Closet" && products.length !== 0
+                  ? navigation.navigate("Closet")
                   : setSelectedTab(item.screen)
-              }
-            >
+              }>
               {item.icon}
             </TouchableOpacity>
           );

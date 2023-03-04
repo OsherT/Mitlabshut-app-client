@@ -15,29 +15,32 @@ import { COLORS, products, FONTS } from "../constants";
 import { FilterSvg, SearchSvg, BagSvg, HeartSvg } from "../svg";
 import axios from "axios";
 
-export default function ItemsByCtegory() {
+export default function ItemsByCtegory(props) {
   const navigation = useNavigation();
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
-  const [type, setType] = useState("");
-  const [itemsByCategory, setItemsByCategory] = useState([]);
-  const [itemsImageByCategory, setItemsImageByCategory] = useState([]);
+
+  const [itemsByType, setItemsByType] = useState([]);
+  const [itemsImageByType, setItemsImageByType] = useState([]);
+  const type = props.route.params.type;
 
   useEffect(() => {
-    console.log("type", type);
+    getItemsByType();
+    console.log("recived type", type);
+
     return () => {};
-  }, [type, itemsByCategory]);
+  }, []);
 
   const getItemsByType = () => {
     axios
       .get(ApiUrl + `Item/Type/${type}`)
       .then((res) => {
-        setItemsByCategory(res.data);
-        console.log("itemsByCategory", itemsByCategory);
+        setItemsByType(res.data);
+        console.log("itemsByType", itemsByType);
         GetItemPhotos();
         getFavItems();
       })
       .catch((err) => {
-        console.log("err in search ", err);
+        console.log("err in itemsByType ", err);
       });
   };
 
@@ -46,7 +49,7 @@ export default function ItemsByCtegory() {
       .get("https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item_Image_Video")
       .then((res) => {
         console.log("res.data", res.data);
-        setItemsImageByCategory(res.data);
+        setItemsImageByType(res.data);
       })
       .catch((err) => {
         alert("cant take photos");
@@ -74,54 +77,54 @@ export default function ItemsByCtegory() {
       });
   }
 
-  function renderSearch() {
-    return (
-      <View
-        style={{
-          paddingHorizontal: 20,
-          marginTop: 10,
-          marginBottom: 20,
-        }}>
-        <View
-          style={{
-            width: "100%",
-            height: 44,
-            backgroundColor: COLORS.white,
-            borderRadius: 5,
-            flexDirection: "row",
-            alignItems: "center",
-          }}>
-          <View style={{ paddingLeft: 15, paddingRight: 10 }}>
-            <SearchSvg onPress={getItemsByType} />
-          </View>
-          <TextInput
-            style={{ flex: 1, textAlign: "right" }}
-            placeholder="חפשי פריט..."
-            onChangeText={(text) => setType(text)}
-            keyboardType="web-search"
-          />
-          <TouchableOpacity
-            style={{
-              paddingHorizontal: 15,
-              paddingVertical: 5,
-            }}
-            onPress={() => navigation.navigate("Filter")}>
-            <FilterSvg />
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  }
- 
+  //   function renderSearch() {
+  //     return (
+  //       <View
+  //         style={{
+  //           paddingHorizontal: 20,
+  //           marginTop: 10,
+  //           marginBottom: 20,
+  //         }}>
+  //         <View
+  //           style={{
+  //             width: "100%",
+  //             height: 44,
+  //             backgroundColor: COLORS.white,
+  //             borderRadius: 5,
+  //             flexDirection: "row",
+  //             alignItems: "center",
+  //           }}>
+  //           <View style={{ paddingLeft: 15, paddingRight: 10 }}>
+  //             <SearchSvg onPress={getItemsByType} />
+  //           </View>
+  //           <TextInput
+  //             style={{ flex: 1, textAlign: "right" }}
+  //             placeholder="חפשי פריט..."
+  //             onChangeText={(text) => setTypeBySearch(text)}
+  //             keyboardType="web-search"
+  //           />
+  //           <TouchableOpacity
+  //             style={{
+  //               paddingHorizontal: 15,
+  //               paddingVertical: 5,
+  //             }}
+  //             onPress={() => navigation.navigate("Filter")}>
+  //             <FilterSvg />
+  //           </TouchableOpacity>
+  //         </View>
+  //       </View>
+  //     );
+  //   }
+
   function renderItems() {
     return (
       <View>
-        <View style={{ marginBottom: 30 }}>
+        {/* <View style={{ marginBottom: 30 }}>
           <Button title={"חפש"} onPress={getItemsByType}></Button>
-        </View>
+        </View> */}
 
         <FlatList
-          data={itemsByCategory}
+          data={itemsByType}
           keyExtractor={(item) => item.id}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{
@@ -144,7 +147,7 @@ export default function ItemsByCtegory() {
                   item: item,
                 });
               }}>
-              {itemsImageByCategory
+              {itemsImageByType
                 .filter((photo) => photo.item_ID === item.id)
                 .slice(0, 1)
                 .map((photo) => {
@@ -247,8 +250,8 @@ export default function ItemsByCtegory() {
         flex: 1,
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
       }}>
-      <Header title="חיפוש פריט" goBack={false} />
-      {renderSearch()}
+      <Header title={type} goBack={false} />
+      {/* {renderSearch()} */}
       {renderItems()}
       {/* {renderContent()} */}
     </SafeAreaView>

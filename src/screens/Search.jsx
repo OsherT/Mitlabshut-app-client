@@ -21,6 +21,7 @@ export default function Search() {
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
 
   const [typeList, setTypeList] = useState([]);
+  const [type, setType] = useState("");
 
   useEffect(() => {
     getTypeList();
@@ -57,7 +58,12 @@ export default function Search() {
             alignItems: "center",
           }}>
           <View style={{ paddingLeft: 15, paddingRight: 10 }}>
-            <SearchSvg />
+            <TouchableOpacity
+              onPress={() => {
+                alert("search");
+              }}>
+              <SearchSvg />
+            </TouchableOpacity>
           </View>
           <TextInput
             style={{ flex: 1, textAlign: "right" }}
@@ -89,38 +95,41 @@ export default function Search() {
                   key={index}
                   style={{
                     width: "100%",
-                    height: 100,
+                    height: 150,
                     backgroundColor: COLORS.white,
                     marginBottom: 15,
                     borderRadius: 10,
                     flexDirection: "row",
                   }}
-                  // onPress={() =>
-                  //   navigation.navigate("ItemsByCtegory", {
-                  //     // productDetails: item,
-                  //     // productSlides: item.slides,
-                  //     type: type,
-                  //   })                  }
-                >
+                  onPress={() =>
+                    navigation.navigate("ItemsByCtegory", {
+                      // productDetails: item,
+                      // productSlides: item.slides,
+                      type: type.item_type_name,
+                    })
+                  }>
                   <ImageBackground
                     // source={type.item_type_image}
                     source={{
                       uri: "https://myjeans.co.il/wp-content/uploads/2022/05/WhatsApp-Image-2022-05-02-at-14.00.27-1.jpeg",
                     }}
                     style={{
-                      width: 100,
-                      height: "100%",
+                      width: 250,
+                      height: "97%",
+                      margin: 5,
                     }}
                     imageStyle={{ borderRadius: 10 }}></ImageBackground>
                   <View
                     style={{
                       padding: 35,
+                      paddingTop: 65,
                       flex: 1,
+                      alignContent: "center",
                     }}>
                     <Text
                       style={{
-                        ...FONTS.Mulish_600SemiBold,
-                        fontSize: 25,
+                        ...FONTS.Mulish_400Regular,
+                        fontSize: 20,
                         textTransform: "capitalize",
                         marginBottom: 6,
                         textAlign: "right",

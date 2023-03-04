@@ -38,8 +38,7 @@ export default function ProductDetails(props) {
     GetItemCategories();
     GetItemImages();
     GetNumOfFav();
-        getFavItems();
-
+    getFavItems();
   }, []);
 
   // useEffect(() => {
@@ -202,6 +201,7 @@ export default function ProductDetails(props) {
         console.log(err);
       });
   }
+
   function AddtoFav(item_id) {
     var newFav = {
       item_ID: item_id,
@@ -227,6 +227,7 @@ export default function ProductDetails(props) {
         // );
       });
   }
+
   function RemoveFromFav(itemId) {
     var Email = loggedUser.email.replace("%40", "@");
 
@@ -259,6 +260,7 @@ export default function ProductDetails(props) {
     return concatenatedString;
   };
 
+  //need to delete and fix the view
   function renderSlide() {
     return (
       <View style={{ flex: 1, backgroundColor: "#EFEDE6" }}>
@@ -487,6 +489,7 @@ export default function ProductDetails(props) {
 
   return (
     <View style={{ flex: 1, backgroundColor: "#EFEDE6" }}>
+      {/* //need to delete and fix the view */}
       {renderSlide()}
       {renderContent()}
     </View>

@@ -27,7 +27,7 @@ export default function Home() {
         const currentIndex = Math.round(contentOffsetX / SIZES.width);
         setCurrentSlideIndex(currentIndex);
     }
-
+//render the sliders dots
     function renderDots() {
         return (
             <View>
@@ -36,6 +36,7 @@ export default function Home() {
                         alignItems: "center",
                         justifyContent: "center",
                         flexDirection: "row",
+                      
                     }}
                 >
                     {promo.map((_, index) => {

@@ -77,44 +77,53 @@ export default function ItemsByCtegory(props) {
       });
   }
 
-  //   function renderSearch() {
-  //     return (
-  //       <View
-  //         style={{
-  //           paddingHorizontal: 20,
-  //           marginTop: 10,
-  //           marginBottom: 20,
-  //         }}>
-  //         <View
-  //           style={{
-  //             width: "100%",
-  //             height: 44,
-  //             backgroundColor: COLORS.white,
-  //             borderRadius: 5,
-  //             flexDirection: "row",
-  //             alignItems: "center",
-  //           }}>
-  //           <View style={{ paddingLeft: 15, paddingRight: 10 }}>
-  //             <SearchSvg onPress={getItemsByType} />
-  //           </View>
-  //           <TextInput
-  //             style={{ flex: 1, textAlign: "right" }}
-  //             placeholder="חפשי פריט..."
-  //             onChangeText={(text) => setTypeBySearch(text)}
-  //             keyboardType="web-search"
-  //           />
-  //           <TouchableOpacity
-  //             style={{
-  //               paddingHorizontal: 15,
-  //               paddingVertical: 5,
-  //             }}
-  //             onPress={() => navigation.navigate("Filter")}>
-  //             <FilterSvg />
-  //           </TouchableOpacity>
-  //         </View>
-  //       </View>
-  //     );
-  //   }
+
+//need to do shearch by categories
+  function renderSearch() {
+    return (
+      <View
+        style={{
+          paddingHorizontal: 20,
+          marginTop: 10,
+          marginBottom: 20,
+        }}>
+        <View
+          style={{
+            width: "100%",
+            height: 44,
+            backgroundColor: COLORS.white,
+            borderRadius: 5,
+            flexDirection: "row",
+            alignItems: "center",
+          }}>
+          <View style={{ paddingLeft: 15, paddingRight: 10 }}>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("ItemsByCtegory", {
+                  type: typeBySearch,
+                })
+              }>
+              <SearchSvg />
+            </TouchableOpacity>
+          </View>
+          <TextInput
+            style={{ flex: 1, textAlign: "right" }}
+            placeholder="חפשי פריט..."
+            onChangeText={(text) => setTypeBySearch(text)}
+            keyboardType="web-search"
+          />
+          <TouchableOpacity
+            style={{
+              paddingHorizontal: 15,
+              paddingVertical: 5,
+            }}
+            onPress={() => navigation.navigate("Filter")}>
+            <FilterSvg />
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
 
   function renderItems() {
     return (
@@ -251,7 +260,7 @@ export default function ItemsByCtegory(props) {
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
       }}>
       <Header title={type} goBack={false} />
-      {/* {renderSearch()} */}
+      {renderSearch()}
       {renderItems()}
       {/* {renderContent()} */}
     </SafeAreaView>

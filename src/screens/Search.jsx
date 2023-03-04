@@ -21,7 +21,7 @@ export default function Search() {
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
 
   const [typeList, setTypeList] = useState([]);
-  const [type, setType] = useState("");
+  const [typeBySearch, setTypeBySearch] = useState("");
 
   useEffect(() => {
     getTypeList();
@@ -59,16 +59,18 @@ export default function Search() {
           }}>
           <View style={{ paddingLeft: 15, paddingRight: 10 }}>
             <TouchableOpacity
-              onPress={() => {
-                alert("search");
-              }}>
+              onPress={() =>
+                navigation.navigate("ItemsByCtegory", {
+                  type: typeBySearch,
+                })
+              }>
               <SearchSvg />
             </TouchableOpacity>
           </View>
           <TextInput
             style={{ flex: 1, textAlign: "right" }}
             placeholder="חפשי פריט..."
-            onChangeText={(text) => setType(text)}
+            onChangeText={(text) => setTypeBySearch(text)}
             keyboardType="web-search"
           />
           <TouchableOpacity
@@ -103,12 +105,11 @@ export default function Search() {
                   }}
                   onPress={() =>
                     navigation.navigate("ItemsByCtegory", {
-                      // productDetails: item,
-                      // productSlides: item.slides,
                       type: type.item_type_name,
                     })
                   }>
                   <ImageBackground
+                    //update after dana will update the server///////////////////////////////////////////////////////////////////////////
                     // source={type.item_type_image}
                     source={{
                       uri: "https://myjeans.co.il/wp-content/uploads/2022/05/WhatsApp-Image-2022-05-02-at-14.00.27-1.jpeg",

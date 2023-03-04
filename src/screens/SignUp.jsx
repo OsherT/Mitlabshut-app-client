@@ -87,7 +87,7 @@ export default function SignUp() {
 
   function renderContent() {
     return (
-      <View style={{flex:1}}>
+      <View style={{ flex: 1 }}>
         <ContainerComponent>
           <Text
             style={{

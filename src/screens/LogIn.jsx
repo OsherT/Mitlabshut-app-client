@@ -56,6 +56,8 @@ export default function SignIn() {
               // navigation.navigate("Closet");
               // navigation.navigate("UploadItem");
               navigation.navigate("MainLayout");
+                            // navigation.navigate("ItemsByCtegory");
+
             }
 
             //if deatails are incorrect
@@ -103,6 +105,7 @@ export default function SignIn() {
             value="o@g.c"
             containerStyle={{ marginBottom: 10, textAlign: "right" }}
             ref={emailInputRef}
+            keyboardType="email-address"
           />
 
           <TextInput

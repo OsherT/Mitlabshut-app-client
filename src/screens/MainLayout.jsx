@@ -35,6 +35,7 @@ export default function MainLayout() {
     {
       id: "2",
       screen: "Search",
+
       icon: (
         <SearchTab
           color={selectedTab == "Search" ? COLORS.golden : COLORS.lightGray}
@@ -44,6 +45,7 @@ export default function MainLayout() {
     {
       id: "3",
       screen: "Closet",
+
       icon: (
         <View
           style={{

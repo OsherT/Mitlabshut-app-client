@@ -10,69 +10,34 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { Button, Header } from "../components";
+import { Line, Header, RatingComponent } from "../components";
 import { COLORS, products, FONTS } from "../constants";
 import { FilterSvg, SearchSvg, BagSvg, HeartSvg } from "../svg";
 import axios from "axios";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function Search() {
   const navigation = useNavigation();
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
-  const [type, setType] = useState("");
-  const [itemsByCategory, setItemsByCategory] = useState([]);
-  const [itemsImageByCategory, setItemsImageByCategory] = useState([]);
+
+  const [typeList, setTypeList] = useState([]);
 
   useEffect(() => {
-    console.log("type", type);
+    getTypeList();
     return () => {};
-  }, [type, itemsByCategory]);
+  }, []);
 
-  const getItemsByType = () => {
+  const getTypeList = () => {
     axios
-      .get(ApiUrl + `Item/Type/${type}`)
+      .get(ApiUrl + `Item_type`)
       .then((res) => {
-        setItemsByCategory(res.data);
-        console.log("itemsByCategory", itemsByCategory);
-        GetItemPhotos();
-        getFavItems();
+        setTypeList(res.data);
+        console.log("typeList", typeList);
       })
       .catch((err) => {
-        console.log("err in search ", err);
+        console.log("err in typeList ", err);
       });
   };
-
-  const GetItemPhotos = () => {
-    axios
-      .get("https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item_Image_Video")
-      .then((res) => {
-        console.log("res.data", res.data);
-        setItemsImageByCategory(res.data);
-      })
-      .catch((err) => {
-        alert("cant take photos");
-        console.log(err);
-      });
-  };
-
-  function getFavItems() {
-    var Email = loggedUser.email.replace("%40", "@");
-    // var Email = loggedUser.email;
-
-    axios
-      .get(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList/User_Email/" +
-          Email
-      )
-      .then((res) => {
-        const tempUsersFavList = res.data.map(({ item_ID }) => item_ID);
-        console.log("fav");
-        setUsersFavList(tempUsersFavList);
-      })
-      .catch((err) => {
-        // alert("cant get fav");
-        console.log(err);
-      });
-  }
 
   function renderSearch() {
     return (
@@ -92,12 +57,13 @@ export default function Search() {
             alignItems: "center",
           }}>
           <View style={{ paddingLeft: 15, paddingRight: 10 }}>
-            <SearchSvg onPress={getItemsByType} />
+            <SearchSvg />
           </View>
           <TextInput
             style={{ flex: 1, textAlign: "right" }}
             placeholder="חפשי פריט..."
             onChangeText={(text) => setType(text)}
+            keyboardType="web-search"
           />
           <TouchableOpacity
             style={{
@@ -112,233 +78,62 @@ export default function Search() {
     );
   }
 
-  // function renderContent() {
-  //   return (
-  //     <View>
-  //       <View style={{ marginBottom: 30 }}>
-  //         <Button title={"חפש"} onPress={getItemsByType}></Button>
-  //       </View>
-  //       <FlatList
-  //         data={products}
-  //         keyExtractor={(item) => item.id}
-  //         showsVerticalScrollIndicator={false}
-  //         contentContainerStyle={{
-  //           paddingHorizontal: 20,
-  //           paddingBottom: 50,
-  //         }}
-  //         numColumns={2}
-  //         columnWrapperStyle={{ justifyContent: "space-between" }}
-  //         renderItem={({ item, index }) => (
-  //           <TouchableOpacity
-  //             style={{
-  //               width: "47.5%",
-  //               marginBottom: 15,
-  //               borderRadius: 10,
-  //               backgroundColor: COLORS.white,
-  //             }}
-  //             onPress={() =>
-  //               navigation.navigate("ProductDetails", {
-  //                 productDetails: item,
-  //                 productSlides: item.slides,
-  //               })
-  //             }>
-  //             <ImageBackground
-  //               source={item.photo_480x384}
-  //               style={{
-  //                 width: "100%",
-  //                 height: 128,
-  //               }}
-  //               imageStyle={{ borderRadius: 10 }}>
-  //               <TouchableOpacity style={{ left: 12, top: 12 }}>
-  //                 <HeartSvg />
-  //               </TouchableOpacity>
-  //             </ImageBackground>
-  //             <View
-  //               style={{
-  //                 paddingHorizontal: 12,
-  //                 paddingBottom: 15,
-  //                 paddingTop: 12,
-  //               }}>
-  //               <Text
-  //                 style={{
-  //                   ...FONTS.Mulish_600SemiBold,
-  //                   fontSize: 14,
-  //                   textTransform: "capitalize",
-  //                   lineHeight: 14 * 1.2,
-  //                   color: COLORS.black,
-  //                   marginBottom: 6,
-  //                 }}>
-  //                 {item.name}
-  //               </Text>
-  //               <Text
-  //                 style={{
-  //                   color: COLORS.gray,
-  //                   ...FONTS.Mulish_400Regular,
-  //                   fontSize: 14,
-  //                 }}>
-  //                 Size: {item.size}
-  //               </Text>
-  //               <View
-  //                 style={{
-  //                   height: 1,
-  //                   backgroundColor: "#E9E9E9",
-  //                   width: "75%",
-  //                   marginVertical: 7,
-  //                 }}
-  //               />
-  //               <Text
-  //                 style={{
-  //                   ...FONTS.Mulish_600SemiBold,
-  //                   fontSize: 14,
-  //                   color: COLORS.carrot,
-  //                 }}>
-  //                 {item.price}
-  //               </Text>
-  //             </View>
-  //             <TouchableOpacity
-  //               style={{
-  //                 position: "absolute",
-  //                 right: 12,
-  //                 bottom: 12,
-  //               }}>
-  //               <BagSvg />
-  //             </TouchableOpacity>
-  //           </TouchableOpacity>
-  //         )}
-  //       />
-  //     </View>
-  //   );
-  // }
-
-  ///render items
-  function renderItems() {
+  function renderTyps() {
     return (
-      <View>
-        <View style={{ marginBottom: 30 }}>
-          <Button title={"חפש"} onPress={getItemsByType}></Button>
-        </View>
-
-        <FlatList
-          data={itemsByCategory}
-          keyExtractor={(item) => item.id}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{
-            paddingHorizontal: 20,
-            paddingBottom: 50,
-          }}
-          numColumns={2}
-          columnWrapperStyle={{ justifyContent: "space-between" }}
-          renderItem={({ item, index }) => (
-            <TouchableOpacity
-              style={{
-                width: "47.5%",
-                marginBottom: 15,
-                borderRadius: 10,
-                backgroundColor: COLORS.white,
-              }}
-              //Osherrrrrrrrrrrr///////////////////////////////////////////////
-              onPress={() => {
-                console.log(item.id);
-                navigation.navigate("ProductDetails", {
-                  item: item,
-                  // closet: ClosetData,
-                  // closet_id: loggedUser.closet_id,
-                });
-              }}
-              //Osherrrrrrrrrrrr///////////////////////////////////////////////
-            >
-              {itemsImageByCategory
-                .filter((photo) => photo.item_ID === item.id)
-                .slice(0, 1)
-                .map((photo) => {
-                  return (
-                    <ImageBackground
-                      source={{ uri: photo.src }}
-                      style={{
-                        width: "100%",
-                        height: 128,
-                      }}
-                      imageStyle={{ borderRadius: 10 }}
-                      key={photo.ID}>
-                      {/* {UsersFavList.includes(item.id) && ( */}
-                      {/* // render the filled heart SVG if the item ID is in the
-                      UsersFavList */}
-                      <TouchableOpacity
-                        style={{ left: 12, top: 12 }}
-                        onPress={() => RemoveFromFav(item.id)}>
-                        <HeartSvg filled={true} />
-                      </TouchableOpacity>
-                      {/* )} */}
-                      {/* {!UsersFavList.includes(item.id) && ( */}
-                      {/* // render the unfilled heart SVG if the item ID is not in
-                      the UsersFavList */}
-                      <TouchableOpacity
-                        style={{ left: 12, top: 12 }}
-                        onPress={() => AddtoFav(item.id)}>
-                        <HeartSvg filled={false} />
-                      </TouchableOpacity>
-                      {/* )} */}
-                    </ImageBackground>
-                  );
-                })}
-              <View
-                style={{
-                  paddingHorizontal: 12,
-                  paddingBottom: 15,
-                  paddingTop: 12,
-                }}>
-                <Text
+      <KeyboardAwareScrollView>
+        <View style={{ paddingHorizontal: 20 }}>
+          {typeList.map((type, index) => {
+            return (
+              type.item_type_name && (
+                <TouchableOpacity
+                  key={index}
                   style={{
-                    ...FONTS.Mulish_600SemiBold,
-                    fontSize: 14,
-                    textTransform: "capitalize",
-                    lineHeight: 14 * 1.2,
-                    color: COLORS.black,
-                    marginBottom: 6,
-                    textAlign: "right",
-                  }}>
-                  {item.name}
-                </Text>
-                <Text
-                  style={{
-                    color: COLORS.gray,
-                    ...FONTS.Mulish_400Regular,
-                    fontSize: 14,
-                    textAlign: "right",
-                  }}>
-                  מידה: {item.size}
-                </Text>
-                <View
-                  style={{
-                    height: 1,
-                    backgroundColor: "#E9E9E9",
-                    width: "75%",
-                    marginVertical: 7,
+                    width: "100%",
+                    height: 100,
+                    backgroundColor: COLORS.white,
+                    marginBottom: 15,
+                    borderRadius: 10,
+                    flexDirection: "row",
                   }}
-                />
-                <Text
-                  style={{
-                    ...FONTS.Mulish_600SemiBold,
-                    fontSize: 14,
-                    color: COLORS.black,
-                    //marginLeft: 70,
-                    textAlign: "left",
-                  }}>
-                  ₪ {item.price}
-                </Text>
-              </View>
-              <TouchableOpacity
-                style={{
-                  position: "absolute",
-                  right: 12,
-                  bottom: 12,
-                }}>
-                <BagSvg />
-              </TouchableOpacity>
-            </TouchableOpacity>
-          )}
-        />
-      </View>
+                  // onPress={() =>
+                  //   navigation.navigate("ItemsByCtegory", {
+                  //     // productDetails: item,
+                  //     // productSlides: item.slides,
+                  //     type: type,
+                  //   })                  }
+                >
+                  <ImageBackground
+                    // source={type.item_type_image}
+                    source={{
+                      uri: "https://myjeans.co.il/wp-content/uploads/2022/05/WhatsApp-Image-2022-05-02-at-14.00.27-1.jpeg",
+                    }}
+                    style={{
+                      width: 100,
+                      height: "100%",
+                    }}
+                    imageStyle={{ borderRadius: 10 }}></ImageBackground>
+                  <View
+                    style={{
+                      padding: 35,
+                      flex: 1,
+                    }}>
+                    <Text
+                      style={{
+                        ...FONTS.Mulish_600SemiBold,
+                        fontSize: 25,
+                        textTransform: "capitalize",
+                        marginBottom: 6,
+                        textAlign: "right",
+                      }}>
+                      {type.item_type_name}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              )
+            );
+          })}
+        </View>
+      </KeyboardAwareScrollView>
     );
   }
 
@@ -350,7 +145,7 @@ export default function Search() {
       }}>
       <Header title="חיפוש פריט" goBack={false} />
       {renderSearch()}
-      {renderItems()}
+      {renderTyps()}
       {/* {renderContent()} */}
     </SafeAreaView>
   );

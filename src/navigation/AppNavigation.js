@@ -44,6 +44,8 @@ import UploadItem from "../screens/UploadItem";
 import EditItem from "../screens/EditItem";
 import OrderSuccessful from "../screens/OrderSuccessful";
 import ItemUpdateSucc from "../screens/ItemUpdateSucc";
+import ItemsByCtegory from "../screens/ItemsByCtegory";
+
 
 const Stack = createStackNavigator();
 
@@ -79,6 +81,8 @@ export default function Navigation() {
           <Stack.Screen name="FAQ" component={FAQ} />
           <Stack.Screen name="Reviews" component={Reviews} />
           <Stack.Screen name="ProductDetails" component={ProductDetails} />
+          <Stack.Screen name="ItemsByCtegory" component={ItemsByCtegory} />
+
           <Stack.Screen
             name="PaymentMethodCheckout"
             component={PaymentMethodCheckout}

@@ -15,7 +15,6 @@ import { BagSvg, HeartSvg, Facebook } from "../svg";
 import { Header, ContainerComponent, ProfileCategory } from "../components";
 import { COLORS, products, FONTS } from "../constants";
 import MainLayout from "./MainLayout";
-// import Navigation from "../navigation/AppNavigation";
 import { useNavigation } from "@react-navigation/native";
 import { FilledHeartSvg } from "../svg";
 

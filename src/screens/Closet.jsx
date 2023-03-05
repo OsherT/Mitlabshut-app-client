@@ -17,11 +17,12 @@ import { COLORS, products, FONTS } from "../constants";
 import MainLayout from "./MainLayout";
 import { useNavigation } from "@react-navigation/native";
 import { FilledHeartSvg } from "../svg";
+import { render } from "react-dom";
 
 export default function Closet() {
   const { loggedUser, setloggedUser } = useContext(userContext);
   const [ClosetDesc, setClosetDesc] = useState("");
-  const [ClosetData, setClosetData] = useState("");
+  const [ClosetName, setClosetName] = useState("");
   const [UsersItems, setUsersItems] = useState([]);
   const [UsersItemPhotos, setUsersItemPhotos] = useState([]);
   const [UsersFavList, setUsersFavList] = useState([]);
@@ -49,8 +50,8 @@ export default function Closet() {
           loggedUser.closet_id
       ) //לשנות כשדנה עושה החזרת הדיסקריפשן לפי איידי
       .then((res) => {
-        console.log("description", res.status);
-        setClosetData(res.data[0]);
+        //console.log("description", res.status);
+        setClosetName(res.data[0].user_name);
         setClosetDesc(res.data[0].description);
       })
       .catch((err) => {
@@ -92,13 +93,27 @@ export default function Closet() {
           paddingTop: 25,
           paddingBottom: 40,
         }}
-        showsHorizontalScrollIndicator={false}>
+        showsHorizontalScrollIndicator={false}
+      >
         <ContainerComponent containerStyle={{ marginBottom: 20 }}>
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate("EditProfile");
+              navigation.navigate("EditProfile", {
+                ClosetDesc: ClosetDesc,
+                ClosetName: ClosetName,
+              });
               console.log("loggedUser", loggedUser);
-            }}>
+            }}
+          >
+            <View
+              style={{
+                position: "absolute",
+                right: 330,
+                bottom: 140,
+              }}
+            >
+              <Edit />
+            </View>
             <ImageBackground
               source={{
                 uri: loggedUser.user_image,
@@ -109,16 +124,8 @@ export default function Closet() {
                 alignSelf: "center",
                 marginBottom: 15,
               }}
-              imageStyle={{ borderRadius: 40 }}>
-              <View
-                style={{
-                  position: "absolute",
-                  right: 3,
-                  bottom: 3,
-                }}>
-                <Edit />
-              </View>
-            </ImageBackground>
+              imageStyle={{ borderRadius: 40 }}
+            ></ImageBackground>
             <Text
               style={{
                 textAlign: "center",
@@ -128,7 +135,8 @@ export default function Closet() {
                 color: COLORS.black,
                 marginBottom: 4,
                 lineHeight: 16 * 1.2,
-              }}>
+              }}
+            >
               {loggedUser.full_name}
             </Text>
             <Text
@@ -138,7 +146,8 @@ export default function Closet() {
                 fontSize: 14,
                 color: COLORS.gray,
                 lineHeight: 14 * 1.7,
-              }}>
+              }}
+            >
               {ClosetDesc}
             </Text>
           </TouchableOpacity>
@@ -148,18 +157,15 @@ export default function Closet() {
   }
   ///handle fav list
   function getFavItems() {
-    var Email = loggedUser.email.replace("%40", "@");
-    // var Email = loggedUser.email;
-
     axios
       .get(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList/User_Email/" +
-          Email
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList/User_ID/" +
+          loggedUser.id
       )
       .then((res) => {
         const tempUsersFavList = res.data.map(({ item_ID }) => item_ID);
-        console.log("fav");
         setUsersFavList(tempUsersFavList);
+        console.log("get");
       })
       .catch((err) => {
         // alert("cant get fav");
@@ -169,7 +175,7 @@ export default function Closet() {
   function AddtoFav(item_id) {
     var newFav = {
       item_ID: item_id,
-      user_Email: loggedUser.email,
+      user_ID: loggedUser.id,
     };
     axios
       .post(
@@ -177,25 +183,18 @@ export default function Closet() {
         newFav
       )
       .then((res) => {
-        // alert("added");
+        getFavItems();
         setUsersFavList((prevList) => [...prevList, { item_id }]);
       })
       .catch((err) => {
         alert("cant add to fav");
         console.log(err);
-        // console.log(newFav);
-        // console.log(UsersFavList);
-        // console.log(
-        //   "פה " + UsersFavList.find((obj) => obj.item_ID === 15) !== undefined
-        // );
       });
   }
   function RemoveFromFav(itemId) {
-    var Email = loggedUser.email.replace("%40", "@");
-
     axios
       .delete(
-        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList/Item_ID/${itemId}/User_Email/${Email}`
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList/Item_ID/${itemId}/User_ID/${loggedUser.id}`
       )
       .then((res) => {
         setUsersFavList((prevList) => prevList.filter((id) => id !== itemId));
@@ -209,18 +208,14 @@ export default function Closet() {
   }
   ///handle shop list
   function getShopItems() {
-    // var Email = loggedUser.email.replace("%40", "@");
-    var Email = loggedUser.email;
-
     axios
       .get(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserShopList/User_Email/" +
-          Email
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserShopList/User_ID/" +
+          loggedUser.id
       )
       .then((res) => {
         const tempUsersShopList = res.data.map(({ item_ID }) => item_ID);
         setUsersShopList(tempUsersShopList);
-        console.log("tempUsersShopList", tempUsersShopList);
       })
       .catch((err) => {
         alert("cant get shop list");
@@ -230,7 +225,7 @@ export default function Closet() {
   function AddToShopList(item_id) {
     var newitemInBag = {
       item_ID: item_id,
-      user_Email: loggedUser.email,
+      user_ID: loggedUser.ID,
     };
     axios
       .post(
@@ -238,7 +233,7 @@ export default function Closet() {
         newitemInBag
       )
       .then((res) => {
-        alert("added");
+        getShopItems();
         setUsersShopList((prevList) => [...prevList, { item_id }]);
       })
       .catch((err) => {
@@ -250,23 +245,19 @@ export default function Closet() {
     setUsersShopList((prevList) => prevList.filter((id) => id !== itemId));
     alert("removed from shop list " + itemId);
 
-    // axios
-    // .delete(
-    //   "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList",
-    //   newFav
-    // )
-    // .then((res) => {
-    //   alert("added");
-    //   setUsersFavList((prevList) => [
-    //     ...prevList,
-    //     { isFavorite: true, item_ID: item_id },
-    //   ]);
-    // })
-    // .catch((err) => {
-    //   alert("cant add to fav");
-    //   console.log(err);
-    //   console.log(newFav);
-    // });
+    axios
+      .delete(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList",
+        newFav
+      )
+      .then((res) => {
+        setUsersShopList((prevList) => prevList.filter((id) => id !== itemId));
+      })
+      .catch((err) => {
+        alert("cant add to fav");
+        console.log(err);
+        console.log(newFav);
+      });
   }
   ///render items
   function renderClothes() {
@@ -311,12 +302,14 @@ export default function Closet() {
                       height: 128,
                     }}
                     imageStyle={{ borderRadius: 10 }}
-                    key={photo.ID}>
+                    key={photo.ID}
+                  >
                     {UsersFavList.includes(item.id) && (
                       // render the filled heart SVG if the item ID is in the UsersFavList
                       <TouchableOpacity
                         style={{ left: 12, top: 12 }}
-                        onPress={() => RemoveFromFav(item.id)}>
+                        onPress={() => RemoveFromFav(item.id)}
+                      >
                         <HeartSvg filled={true} />
                       </TouchableOpacity>
                     )}
@@ -324,7 +317,8 @@ export default function Closet() {
                       // render the unfilled heart SVG if the item ID is not in the UsersFavList
                       <TouchableOpacity
                         style={{ left: 12, top: 12 }}
-                        onPress={() => AddtoFav(item.id)}>
+                        onPress={() => AddtoFav(item.id)}
+                      >
                         <HeartSvg filled={false} />
                       </TouchableOpacity>
                     )}
@@ -336,7 +330,8 @@ export default function Closet() {
                 paddingHorizontal: 12,
                 paddingBottom: 15,
                 paddingTop: 12,
-              }}>
+              }}
+            >
               <Text
                 style={{
                   ...FONTS.Mulish_600SemiBold,
@@ -346,8 +341,9 @@ export default function Closet() {
                   color: COLORS.black,
                   marginBottom: 6,
                   textAlign: "right",
-                }}>
-                {item.name}
+                }}
+              >
+                {item.name} {item.id}
               </Text>
               <Text
                 style={{
@@ -355,7 +351,8 @@ export default function Closet() {
                   ...FONTS.Mulish_400Regular,
                   fontSize: 14,
                   textAlign: "right",
-                }}>
+                }}
+              >
                 מידה: {item.size}
               </Text>
               <View
@@ -373,16 +370,36 @@ export default function Closet() {
                   color: COLORS.black,
                   //marginLeft: 70,
                   textAlign: "left",
-                }}>
+                }}
+              >
                 ₪ {item.price}
               </Text>
             </View>
+            {UsersShopList.includes(item.id) && (
+              // render the filled heart SVG if the item ID is in the UsersFavList
+              <TouchableOpacity
+                style={{ left: 12, top: 12 }}
+                onPress={() => RemoveFromFav(item.id)}
+              >
+                <BagSvg color="black" />
+              </TouchableOpacity>
+            )}
+            {!UsersShopList.includes(item.id) && (
+              // render the unfilled heart SVG if the item ID is not in the UsersFavList
+              <TouchableOpacity
+                style={{ left: 12, top: 12 }}
+                onPress={() => AddToShopList(item.id)}
+              >
+                <HeartSvg filled={false} />
+              </TouchableOpacity>
+            )}
             <TouchableOpacity
               style={{
                 position: "absolute",
                 right: 12,
                 bottom: 12,
-              }}>
+              }}
+            >
               <BagSvg />
             </TouchableOpacity>
           </TouchableOpacity>
@@ -396,7 +413,8 @@ export default function Closet() {
       style={{
         flex: 1,
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-      }}>
+      }}
+    >
       {/* <Header title="הארון של`{}`" goBack={false} /> */}
       {renderUserContent()}
       {renderClothes()}

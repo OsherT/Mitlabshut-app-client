@@ -6,6 +6,7 @@ import {
   View,
   Text,
   StyleSheet,
+  KeyboardAvoidingView,
 } from "react-native";
 import React, { useContext, useState } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -17,9 +18,14 @@ import { userContext } from "../navigation/userContext";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { Alert } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import { colors } from "react-native-elements";
+import axios from "axios";
+import { ScrollView } from "react-native-gesture-handler";
 
-export default function EditProfile() {
+export default function EditProfile(props) {
   const { loggedUser, setloggedUser } = useContext(userContext);
+  const ClosetDesc = props.route.params.ClosetDesc;
+  const ClosetName = props.route.params.ClosetName;
 
   const navigation = useNavigation();
 
@@ -30,6 +36,8 @@ export default function EditProfile() {
   const [userPhone, setUserPhone] = useState(loggedUser.phone_number);
   const [userClosetId] = useState(loggedUser.closet_id);
   const [userImage, setUserImage] = useState(loggedUser.user_image);
+  const [NewClosetDesc, setNewClosetDesc] = useState("");
+  const [NewClosetName, setNewClosetName] = useState("");
 
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
 
@@ -65,6 +73,12 @@ export default function EditProfile() {
       User_image: userImage,
     };
 
+    const newClosetData = {
+      id: loggedUser.closet_id,
+      description: NewClosetDesc,
+      user_name: NewClosetName,
+    };
+
     console.log("newUser", newUser);
 
     fetch(ApiUrl + `User`, {
@@ -88,54 +102,69 @@ export default function EditProfile() {
           console.log("ERR in update user", error);
         }
       );
+
+    axios
+      .put(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Closet",
+        newClosetData
+      )
+      .then((res) => {
+        navigation.navigate("OrderSuccessful");
+      })
+      .catch((err) => {
+        console.log("ERR in update closet", error);
+      });
   };
 
   function renderContent() {
     return (
-      // <KeyboardAwareScrollView
-      //   contentContainerStyle={{
-      //     flexGrow: 1,
-      //     paddingHorizontal: 20,
-      //     paddingVertical: 25,
-      //   }}
-      //   showsHorizontalScrollIndicator={false}>
+      <View style={{ flex: 1 }}>
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+            <ContainerComponent>
+              <TouchableOpacity
+                onPress={() => {
+                  pickImage();
+                }}
+              >
+                <ImageBackground
+                  source={{
+                    // uri: loggedUser.user_image,
+                    uri: userImage,
+                  }}
+                  style={{
+                    width: 80,
+                    height: 80,
+                    alignSelf: "center",
+                    marginBottom: 15,
+                  }}
+                  imageStyle={{ borderRadius: 40 }}
+                >
+                  <View
+                    style={{
+                      position: "absolute",
+                      right: 3,
+                      bottom: 3,
+                    }}
+                  >
+                    <Edit />
+                  </View>
+                </ImageBackground>
+              </TouchableOpacity>
 
-      <ContainerComponent>
-        <TouchableOpacity
-          onPress={() => {
-            pickImage();
-          }}>
-          <ImageBackground
-            source={{
-              // uri: loggedUser.user_image,
-              uri: userImage,
-            }}
-            style={{
-              width: 80,
-              height: 80,
-              alignSelf: "center",
-              marginBottom: 15,
-            }}
-            imageStyle={{ borderRadius: 40 }}>
-            <View
-              style={{
-                position: "absolute",
-                right: 3,
-                bottom: 3,
-              }}>
-              <Edit />
-            </View>
-          </ImageBackground>
-        </TouchableOpacity>
-
-        <InputField
-          defaultValue={loggedUser.full_name}
-          icon={<EditTwo />}
-          containerStyle={{ marginBottom: 10 }}
-          onChangeText={(text) => setUserName(text)}
-          keyboardType="text"
-        />
-        {/* <InputField
+              <Text
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
+              >
+                שם מלא:
+              </Text>
+              <InputField
+                defaultValue={loggedUser.full_name}
+                icon={<EditTwo />}
+                containerStyle={{ marginBottom: 10 }}
+                onChangeText={(text) => setUserName(text)}
+                keyboardType="text"
+              />
+              {/* <InputField
           value={loggedUser.email}
           icon={<EditTwo />}
           containerStyle={{ marginBottom: 10 }}
@@ -143,56 +172,98 @@ export default function EditProfile() {
           keyboardType="text"
           
         /> */}
+              <Text
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
+              >
+                כתובת מגורים:
+              </Text>
 
-        <SafeAreaView style={styles.view}>
-          <GooglePlacesAutocomplete
-            placeholder={loggedUser.address}
-            fetchDetails={true}
-            GooglePlacesSearchQuery={{ rankby: "distance" }}
-            onPress={(data, details = null) => {
-              setAddress(data.description);
-            }}
-            query={{
-              key: "AIzaSyAaCpPtzL7apvQuXnKdRhY0omPHiMdc--s",
-              language: "he",
-            }}
-            textInputProps={{
-              textAlign: "right",
-              backgroundColor: "#FBF8F2",
-            }}
-            styles={{
-              container: {
-                flex: 0,
-                // position: "absolute",
-                width: "100%",
-              },
-              listView: { position: "absolute", zIndex: 1, top: 50 },
-            }}
-          />
-        </SafeAreaView>
+              <SafeAreaView style={styles.view}>
+                <GooglePlacesAutocomplete
+                  placeholder={loggedUser.address}
+                  fetchDetails={true}
+                  GooglePlacesSearchQuery={{ rankby: "distance" }}
+                  onPress={(data, details = null) => {
+                    setAddress(data.description);
+                  }}
+                  query={{
+                    key: "AIzaSyAaCpPtzL7apvQuXnKdRhY0omPHiMdc--s",
+                    language: "he",
+                  }}
+                  textInputProps={{
+                    textAlign: "right",
+                    backgroundColor: "#FBF8F2",
+                  }}
+                  styles={{
+                    container: {
+                      flex: 0,
+                      // position: "absolute",
+                      width: "100%",
+                    },
+                    listView: { position: "absolute", zIndex: 1, top: 50 },
+                  }}
+                />
+              </SafeAreaView>
 
-        <InputField
-          
-          defaultValue={loggedUser.phone_number}
-          icon={<EditTwo />}
-          containerStyle={{ marginBottom: 10 }}
-          keyboardType="phone-pad"
-          onChangeText={(text) => setUserPhone(text)}
-        />
+              <Text
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
+              >
+                מספר טלפון:
+              </Text>
+              <InputField
+                defaultValue={loggedUser.phone_number}
+                icon={<EditTwo />}
+                containerStyle={{ marginBottom: 10 }}
+                keyboardType="phone-pad"
+                onChangeText={(text) => setUserPhone(text)}
+              />
 
-        <InputField
-          defaultValue={loggedUser.password}
-          icon={<EditTwo />}
-          containerStyle={{ marginBottom: 20 }}
-          onChangeText={(text) => setUserPassword(text)}
-          keyboardType="text"
-        />
+              <Text
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
+              >
+                סיסמה:
+              </Text>
+              <InputField
+                defaultValue={loggedUser.password}
+                icon={<EditTwo />}
+                containerStyle={{ marginBottom: 10 }}
+                onChangeText={(text) => setUserPassword(text)}
+                keyboardType="text"
+              />
 
-        <View style={{ marginTop: 40 }}>
-          <Button title="שמור שינויים " onPress={updateUser} />
-        </View>
-      </ContainerComponent>
-      // </KeyboardAwareScrollView>
+              <Text
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
+              >
+                תיאור ארון:
+              </Text>
+              <InputField
+                defaultValue={ClosetDesc}
+                icon={<EditTwo />}
+                containerStyle={{ marginBottom: 10 }}
+                onChangeText={(text) => setNewClosetDesc(text)}
+                keyboardType="text"
+              />
+
+              <Text
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
+              >
+                שם ארון:
+              </Text>
+              <InputField
+                defaultValue={ClosetName}
+                icon={<EditTwo />}
+                containerStyle={{ marginBottom: 20 }}
+                onChangeText={(text) => setNewClosetName(text)}
+                keyboardType="text"
+              />
+
+              <View style={{ marginTop: 40 }}>
+                <Button title="שמור שינויים " onPress={updateUser} />
+              </View>
+            </ContainerComponent>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </View>
     );
   }
 

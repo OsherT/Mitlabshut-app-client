@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   StyleSheet,
   VirtualizedList,
+  KeyboardAvoidingView
 } from "react-native";
 import React, { useContext, useState } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -27,7 +28,8 @@ export default function SignUp() {
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const [userPhone, setUserPhone] = useState("");
-  const [userClosetId, setUserClosetId] = useState("");
+  const [ClosetDisc, setClosetDisc] = useState("ברוכות הבאות לארון החדש שלי");
+  const [ClosetName, setClosetName] = useState(userName);
   const { loggedUser, setloggedUser } = useContext(userContext);
 
   //https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/
@@ -44,7 +46,8 @@ export default function SignUp() {
     } else {
       const newCloset = {
         Id: 0,
-        Description: "היי, זה הארון החדש שלי!",
+        Description:ClosetDisc,
+        User_name:ClosetName
       };
       axios
         .post(
@@ -87,15 +90,15 @@ export default function SignUp() {
 
   function renderContent() {
     return (
-      <View style={{ flex: 1 }}>
+      <View>
         <ContainerComponent>
           <Text
             style={{
               textAlign: "center",
-              ...FONTS.H1,
+              ...FONTS.H2,
               color: COLORS.black,
-              marginBottom: 30,
-              lineHeight: 32 * 1.2,
+              marginBottom: 10,
+              lineHeight: 19 * 1.2,
               textTransform: "capitalize",
             }}>
             הצטרפות לקהילה
@@ -151,6 +154,19 @@ export default function SignUp() {
             onChangeText={(text) => setUserPhone(text)}
             keyboardType="phone-pad"
           />
+          <InputField
+                placeholder="תיאור הארון החדש שלך"
+                containerStyle={{ marginBottom: 10 }}
+                onChangeText={(text) => setClosetDisc(text)}
+                keyboardType="text"
+              />
+
+              <InputField
+                placeholder="הארון של..."
+                containerStyle={{ marginBottom: 20 }}
+                onChangeText={(text) => setClosetName(text)}
+                keyboardType="text"
+              />
 
           {/* <View style={styles.view0}>
             <TextInput
@@ -194,6 +210,7 @@ export default function SignUp() {
             כבר חלק מהקהילה?{" "}
           </Text>
         </View>
+        
       </View>
     );
   }

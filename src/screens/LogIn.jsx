@@ -56,8 +56,7 @@ export default function SignIn() {
               // navigation.navigate("Closet");
               // navigation.navigate("UploadItem");
               navigation.navigate("MainLayout");
-                            // navigation.navigate("ItemsByCtegory");
-
+              // navigation.navigate("ItemsByCtegory");
             }
 
             //if deatails are incorrect

@@ -5,7 +5,6 @@ import {
   SafeAreaView,
   StyleSheet,
   Image,
-  Alert,
 } from "react-native";
 import React, { useEffect, useState, useContext } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -24,15 +23,16 @@ import { userContext } from "../navigation/userContext";
 export default function EditItem(props) {
   const item = props.route.params.item;
   const itemImages = props.route.params.itemImages;
-  const itemCtegories = props.route.params.itemCtegories;
-  const { loggedUser } = useContext(userContext);
+  //take only the category name and not the all object
+  const itemCtegories = props.route.params.itemCtegories.map(
+    (item) => item.category_name
+  );
 
+  const { loggedUser } = useContext(userContext);
   const navigation = useNavigation();
   const [itemName, setItemName] = useState(item.name);
   const [itemPrice, setItemPrice] = useState(item.price);
-  const [itemCategory, setItemCategory] = useState(
-    itemCtegories.map((item) => item.category_name)
-  );
+  const [itemCategory, setItemCategory] = useState(itemCtegories);
   const [itemType, setItemType] = useState(item.type);
   const [itemSize, setItemSize] = useState(item.size);
   const [itemCondition, setItemCondition] = useState(item.use_condition);
@@ -43,6 +43,7 @@ export default function EditItem(props) {
   const [itemDeliveryMethod, setItemDeliveryMethod] = useState(
     item.shipping_method
   );
+  const [categoriesFlag, setCategoriesFlag] = useState(itemCategory);
 
   //lists
   const [brandsList, setBrandsList] = useState([]);
@@ -50,7 +51,6 @@ export default function EditItem(props) {
   const [colorsList, setColorsList] = useState([]);
   const [sizesList, setSizesList] = useState([]);
   const [typesList, setTypesList] = useState([]);
-
   const deliveryMethodsList = [
     { key: "1", value: "איסוף עצמי" },
     { key: "2", value: "משלוח" },
@@ -67,10 +67,11 @@ export default function EditItem(props) {
 
   useEffect(() => {
     GetBrandsList();
-    GetCategoriesList();
     GetColorsList();
     GetSizesList();
     GetTypesList();
+    GetCategoriesList();
+
     // console.log("categoryOptions", categoryOptions);
     // console.log("chosenCategory", chosenCategory);
     // console.log("categoriesList", categoriesList);
@@ -205,17 +206,40 @@ export default function EditItem(props) {
   };
 
   //upload categories to Items_in_category table
-  const updateCtegories = (item_ID) => {
+  //to update after chage in the array
+  const updateCtegories = () => {
+    deleteCtegories();
+  };
+
+  const deleteCtegories = () => {
+    fetch(ApiUrl + `Item_in_category/${item.id}`, {
+      method: "DELETE",
+      headers: new Headers({
+        "Content-type": "application/json; charset=UTF-8",
+        Accept: "application/json; charset=UTF-8",
+      }),
+    })
+      .then((res) => {
+        return res;
+      })
+      .then(
+        (result) => {
+          postCtegories(item.id);
+        },
+        (error) => {
+          console.log("ERR in delete categories", error);
+        }
+      );
+  };
+
+  const postCtegories = (item_ID) => {
     for (let i = 0; i < itemCategory.length; i++) {
       const new_categories = {
         Item_ID: item_ID,
         Category_name: itemCategory[i],
       };
-
-      console.log("new_categories", new_categories);
-
       fetch(ApiUrl + `Item_in_category`, {
-        method: "PUT",
+        method: "POST",
         body: JSON.stringify(new_categories),
         headers: new Headers({
           "Content-type": "application/json; charset=UTF-8",
@@ -353,13 +377,15 @@ export default function EditItem(props) {
               onChangeText={(text) => setItemName(text)}
             />
           </View>
-
           <MultipleSelectList
             data={categoryOptions}
             defaultOption={chosenCategory}
             boxStyles={styles.dropdownInput}
             dropdownStyles={styles.dropdownContainer}
-            setSelected={(val) => setItemCategory(val)}
+            setSelected={(val) => {
+              setItemCategory(val);
+              setCategoriesFlag(val);
+            }}
             notFoundText="לא קיים מידע"
             save="value"
             label="קטגוריה"
@@ -368,6 +394,8 @@ export default function EditItem(props) {
             placeholder=" קטגוריה"
             searchPlaceholder="חיפוש"
           />
+          {console.log("itemCategory", itemCategory)}
+          {console.log("categoriesFlag", categoriesFlag)}
           <SelectList
             placeholder={item.type}
             defaultOption={item.type}
@@ -408,7 +436,6 @@ export default function EditItem(props) {
             data={brandsList}
             notFoundText="לא קיים מידע"
           />
-
           <SelectList
             placeholder={item.use_condition}
             defaultOption={item.use_condition}
@@ -420,7 +447,6 @@ export default function EditItem(props) {
             save="value"
             notFoundText="לא קיים מידע"
           />
-
           <MultipleSelectList
             boxStyles={styles.dropdownInput}
             dropdownStyles={styles.dropdownContainer}
@@ -434,14 +460,12 @@ export default function EditItem(props) {
             label="שיטת מסירה"
             maxHeight={200}
           />
-
           <TextInput
             style={styles.bigInput}
             defaultValue={item.description}
             containerStyle={{ marginBottom: 10 }}
             onChangeText={(text) => setItemDescription(text)}
           />
-
           <View>
             {itemImage.length < 3 && (
               <TouchableOpacity onPress={() => pickImage(itemImage.length)}>
@@ -460,7 +484,6 @@ export default function EditItem(props) {
               </TouchableOpacity>
             )}
           </View>
-
           <View>
             {itemImage.length > 0 && (
               <View style={styles.imageContainer}>
@@ -474,8 +497,13 @@ export default function EditItem(props) {
               </View>
             )}
           </View>
-
-          <Button title="עדכן פרטים " onPress={UpdateItem} />
+          <Button
+            title="עדכן פרטים "
+            onPress={() => {
+              UpdateItem();
+              updateCtegories();
+            }}
+          />
         </ContainerComponent>
       </KeyboardAwareScrollView>
     );

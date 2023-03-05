@@ -33,6 +33,7 @@ export default function Search() {
       .get(ApiUrl + `Item_type`)
       .then((res) => {
         setTypeList(res.data);
+
         console.log("typeList", typeList);
       })
       .catch((err) => {
@@ -72,6 +73,7 @@ export default function Search() {
             placeholder="חפשי פריט..."
             onChangeText={(text) => setTypeBySearch(text)}
             keyboardType="web-search"
+            defaultValue=""
           />
           <TouchableOpacity
             style={{
@@ -109,13 +111,11 @@ export default function Search() {
                     })
                   }>
                   <ImageBackground
-                    //update after dana will update the server///////////////////////////////////////////////////////////////////////////
-                    // source={type.item_type_image}
                     source={{
-                      uri: "https://myjeans.co.il/wp-content/uploads/2022/05/WhatsApp-Image-2022-05-02-at-14.00.27-1.jpeg",
+                      uri: type.item_type_image,
                     }}
                     style={{
-                      width: 250,
+                      width: 220,
                       height: "97%",
                       margin: 5,
                     }}
@@ -153,7 +153,7 @@ export default function Search() {
         flex: 1,
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
       }}>
-      <Header title="חיפוש פריט" goBack={false} />
+      <Header title="חיפוש פריט" />
       {renderSearch()}
       {renderTyps()}
       {/* {renderContent()} */}

@@ -38,7 +38,7 @@ export default function ProductDetails(props) {
     GetItemCategories();
     GetItemImages();
     GetNumOfFav();
-    getFavItems();
+    // getFavItems();
   }, []);
 
   // useEffect(() => {
@@ -65,6 +65,7 @@ export default function ProductDetails(props) {
         }
       );
   };
+
   const GetItemImages = () => {
     fetch(ApiUrl + `Item_Image_Video/Item_ID/${item.id}`, {
       method: "GET",
@@ -107,144 +108,71 @@ export default function ProductDetails(props) {
       );
   };
 
-  // const getFavItems = () => {
-  //   var Email = loggedUser.email.replace("%40", "@");
+  // function getFavItems() {
+  //   // var Email = loggedUser.email.replace("%40", "@");
+  //   var Email = loggedUser.email;
+
   //   axios
-  //     .get(ApiUrl + `UserFavList/User_Email/${Email}`)
+  //     .get(
+  //       "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList/User_Email/" +
+  //         Email
+  //     )
   //     .then((res) => {
   //       const tempUsersFavList = res.data.map(({ item_ID }) => item_ID);
   //       setUsersFavList(tempUsersFavList);
-  //       console.log("o", tempUsersFavList);
+  //       // console.log("fav");
   //     })
   //     .catch((err) => {
+  //       // alert("cant get fav");
   //       console.log(err);
   //     });
-  // };
-  // const getFavItems = () => {
-  //   // var Email = loggedUser.email.replace("%40", "@");
-  //   console.log(loggedUser.email);
-  //   fetch(ApiUrl + `UserFavList/User_Email/${loggedUser.email}`, {
-  //     method: "GET",
-  //     headers: new Headers({
-  //       "Content-Type": "application/json; charset=UTF-8",
-  //       Accept: "application/json; charset=UTF-8",
-  //     }),
-  //   })
-  //     .then((res) => {
-  //       return res.json();
-  //     })
-  //     .then(
-  //       (data) => {
-  //         const tempUsersFavList = data.map(({ item_ID }) => item_ID);
-  //         setUsersFavList(tempUsersFavList);
-  //         console.log("o", tempUsersFavList);
-  //       },
-  //       (error) => {
-  //         console.log("getFavItems error", error);
-  //       }
-  //     );
-  // };
+  // }
 
-  // const AddtoFav = (item_id) => {
+  // function AddtoFav(item_id) {
   //   var newFav = {
   //     item_ID: item_id,
   //     user_Email: loggedUser.email,
   //   };
   //   axios
-  //     .post(ApiUrl + "UserFavList", newFav)
+  //     .post(
+  //       "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList",
+  //       newFav
+  //     )
   //     .then((res) => {
-  //       alert("added");
-  //       setUsersFavList((prevList) => [...prevList, { item_id }]);
+  //       // alert("added");
   //       console.log("AddtoFav");
+  //       setUsersFavList((prevList) => [...prevList, { item_id }]);
+  //       // getFavItems();
   //     })
   //     .catch((err) => {
   //       alert("cant add to fav");
   //       console.log(err);
+  //       // console.log(newFav);
+  //       // console.log(UsersFavList);
+  //       // console.log(
+  //       //   "פה " + UsersFavList.find((obj) => obj.item_ID === 15) !== undefined
+  //       // );
   //     });
-  // };
+  // }
 
-  // const RemoveFromFav = (itemId) => {
+  // function RemoveFromFav(itemId) {
+  //   var Email = loggedUser.email.replace("%40", "@");
 
   //   axios
   //     .delete(
-  //       ApiUrl + `UserFavList/Item_ID/${itemId}/User_Email/${loggedUser.email}`
+  //       `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList/Item_ID/${itemId}/User_Email/${Email}`
   //     )
   //     .then((res) => {
   //       setUsersFavList((prevList) => prevList.filter((id) => id !== itemId));
-
-  //       alert("removed " + itemId);
-  //       console.log("RemoveFromFav");
+  //       // alert("removed " + itemId);
+  //       // getFavItems();
   //     })
   //     .catch((err) => {
   //       alert("cant remove from fav");
   //       console.log(err);
-  //       console.log("newFav", newFav);
+  //       console.log(newFav);
   //     });
-  // };
-
-  function getFavItems() {
-    // var Email = loggedUser.email.replace("%40", "@");
-    var Email = loggedUser.email;
-
-    axios
-      .get(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList/User_Email/" +
-          Email
-      )
-      .then((res) => {
-        const tempUsersFavList = res.data.map(({ item_ID }) => item_ID);
-        setUsersFavList(tempUsersFavList);
-        console.log("fav");
-      })
-      .catch((err) => {
-        // alert("cant get fav");
-        console.log(err);
-      });
-  }
-
-  function AddtoFav(item_id) {
-    var newFav = {
-      item_ID: item_id,
-      user_Email: loggedUser.email,
-    };
-    axios
-      .post(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList",
-        newFav
-      )
-      .then((res) => {
-        // alert("added");
-        console.log("AddtoFav");
-        setUsersFavList((prevList) => [...prevList, { item_id }]);
-      })
-      .catch((err) => {
-        alert("cant add to fav");
-        console.log(err);
-        // console.log(newFav);
-        // console.log(UsersFavList);
-        // console.log(
-        //   "פה " + UsersFavList.find((obj) => obj.item_ID === 15) !== undefined
-        // );
-      });
-  }
-
-  function RemoveFromFav(itemId) {
-    var Email = loggedUser.email.replace("%40", "@");
-
-    axios
-      .delete(
-        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList/Item_ID/${itemId}/User_Email/${Email}`
-      )
-      .then((res) => {
-        setUsersFavList((prevList) => prevList.filter((id) => id !== itemId));
-        // alert("removed " + itemId);
-      })
-      .catch((err) => {
-        alert("cant remove from fav");
-        console.log(err);
-        console.log(newFav);
-      });
-  }
+  // }
 
   const followCloset = () => {
     Alert.alert("follow");
@@ -315,7 +243,6 @@ export default function ProductDetails(props) {
               <View style={styles.Col}>
                 <TouchableOpacity
                   onPress={() => {
-                    console.log(item.id);
                     navigation.navigate("EditItem", {
                       item: item,
                       itemImages: itemImages,
@@ -347,29 +274,28 @@ export default function ProductDetails(props) {
                   style={styles.image}
                   source={{ uri: image }}>
                   {/* in fav list */}
-                  {UsersFavList.includes(item.id) && (
-                    <TouchableOpacity
-                      style={styles.favIcon}
-                      onPress={() => RemoveFromFav(item.id)}>
-                      <HeartTwoSvg filled={true} />
-                    </TouchableOpacity>
-                  )}
-                  {/* not in fav list */}
-                  {!UsersFavList.includes(item.id) && (
-                    <TouchableOpacity
-                      style={styles.favIcon}
-                      onPress={() => AddtoFav(item.id)}>
-                      <HeartTwoSvg filled={false} />
-                    </TouchableOpacity>
-                  )}
-
-                  <TouchableOpacity style={styles.shareIcon}>
-                    <ShareSvg></ShareSvg>
-                  </TouchableOpacity>
                 </ImageBackground>
               ))}
             </Swiper>
+            {UsersFavList.includes(item.id) && (
+              <TouchableOpacity
+                style={styles.favIcon}
+                onPress={() => RemoveFromFav(item.id)}>
+                <HeartTwoSvg filled={true} />
+              </TouchableOpacity>
+            )}
+            {/* not in fav list */}
+            {!UsersFavList.includes(item.id) && (
+              <TouchableOpacity
+                style={styles.favIcon}
+                onPress={() => AddtoFav(item.id)}>
+                <HeartTwoSvg filled={false} />
+              </TouchableOpacity>
+            )}
 
+            <TouchableOpacity style={styles.shareIcon}>
+              <ShareSvg></ShareSvg>
+            </TouchableOpacity>
             <View style={styles.Row}>
               <View>
                 {!follow && (
@@ -511,7 +437,7 @@ const styles = StyleSheet.create({
   favIcon: {
     position: "absolute",
     left: 12,
-    top: 190,
+    top: 255,
     zIndex: 1,
     width: 38,
     height: 38,
@@ -523,9 +449,8 @@ const styles = StyleSheet.create({
   shareIcon: {
     position: "absolute",
     left: 12,
-    top: 235,
+    top: 300,
     zIndex: 1,
-
     width: 38,
     height: 38,
     paddingLeft: 9,

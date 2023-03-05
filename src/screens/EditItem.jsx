@@ -5,7 +5,6 @@ import {
   SafeAreaView,
   StyleSheet,
   Image,
-  Alert,
 } from "react-native";
 import React, { useEffect, useState, useContext } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -24,15 +23,16 @@ import { userContext } from "../navigation/userContext";
 export default function EditItem(props) {
   const item = props.route.params.item;
   const itemImages = props.route.params.itemImages;
-  const itemCtegories = props.route.params.itemCtegories;
-  const { loggedUser } = useContext(userContext);
+  //take only the category name and not the all object
+  const itemCtegories = props.route.params.itemCtegories.map(
+    (item) => item.category_name
+  );
 
+  const { loggedUser } = useContext(userContext);
   const navigation = useNavigation();
   const [itemName, setItemName] = useState(item.name);
   const [itemPrice, setItemPrice] = useState(item.price);
-  const [itemCategory, setItemCategory] = useState(
-    itemCtegories.map((item) => item.category_name)
-  );
+  const [itemCategory, setItemCategory] = useState(itemCtegories);
   const [itemType, setItemType] = useState(item.type);
   const [itemSize, setItemSize] = useState(item.size);
   const [itemCondition, setItemCondition] = useState(item.use_condition);
@@ -43,14 +43,16 @@ export default function EditItem(props) {
   const [itemDeliveryMethod, setItemDeliveryMethod] = useState(
     item.shipping_method
   );
-
+  const [categoriesFlag, setCategoriesFlag] = useState(false);
+  // שהמערך תמונות יועתק פעם אחת בהתחלה כשנכנסים לדף ואז יתעדכן בהתאם למחיקה/ הוספה של תמונה בודדת או כמה
+  let newImages = [...itemImage];
+  
   //lists
   const [brandsList, setBrandsList] = useState([]);
   const [categoriesList, setCategoriesList] = useState([]);
   const [colorsList, setColorsList] = useState([]);
   const [sizesList, setSizesList] = useState([]);
   const [typesList, setTypesList] = useState([]);
-
   const deliveryMethodsList = [
     { key: "1", value: "איסוף עצמי" },
     { key: "2", value: "משלוח" },
@@ -67,10 +69,11 @@ export default function EditItem(props) {
 
   useEffect(() => {
     GetBrandsList();
-    GetCategoriesList();
     GetColorsList();
     GetSizesList();
     GetTypesList();
+    GetCategoriesList();
+
     // console.log("categoryOptions", categoryOptions);
     // console.log("chosenCategory", chosenCategory);
     // console.log("categoriesList", categoriesList);
@@ -182,40 +185,86 @@ export default function EditItem(props) {
       );
   };
 
-  const pickImage = async (index) => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+  const UpdateItem = () => {
+    const updateItem = {
+      ID: item.id,
+      Closet_ID: loggedUser.closet_id,
+      Name: itemName,
+      Price: itemPrice,
+      Type: itemType,
+      Size: itemSize,
+      Use_condition: itemCondition,
+      Color: itemColor,
+      Shipping_method: ArrayToStringShip(itemDeliveryMethod),
+      Brand: itemBrand,
+      Description: itemDescription,
+      Sale_status: true,
+    };
 
-    let newImages = [...itemImage];
-    newImages[index] = result.uri;
-    setItemImage(newImages);
+    //update the item's data
+    fetch(ApiUrl + `Item`, {
+      method: "PUT",
+      body: JSON.stringify(updateItem),
+      headers: new Headers({
+        "Content-type": "application/json; charset=UTF-8",
+        Accept: "application/json; charset=UTF-8",
+      }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then(
+        (data) => {
+          navigation.navigate("OrderSuccessful");
+
+          //   Alert.alert("Item updated in succ");
+          //   console.log("upItem", updateItem);
+          //   updateImages(item_ID);
+          //   updateCtegories(item_ID);
+        },
+        (error) => {
+          console.log("ERR in update item ", error);
+        }
+      );
   };
 
-  //to convert the shipping method to string,shipping method in data base gets string only
-  const ArrayToStringShip = (data) => {
-    var string = "";
-    for (let index = 0; index < data.length; index++) {
-      string += data[index];
+  // update only after the array hsa been changed
+  const updateCtegories = () => {
+    if (categoriesFlag) {
+      deleteCtegories();
     }
-    return string;
+  };
+
+  const deleteCtegories = () => {
+    fetch(ApiUrl + `Item_in_category/${item.id}`, {
+      method: "DELETE",
+      headers: new Headers({
+        "Content-type": "application/json; charset=UTF-8",
+        Accept: "application/json; charset=UTF-8",
+      }),
+    })
+      .then((res) => {
+        return res;
+      })
+      .then(
+        (result) => {
+          postCtegories(item.id);
+        },
+        (error) => {
+          console.log("ERR in delete categories", error);
+        }
+      );
   };
 
   //upload categories to Items_in_category table
-  const updateCtegories = (item_ID) => {
+  const postCtegories = (item_ID) => {
     for (let i = 0; i < itemCategory.length; i++) {
       const new_categories = {
         Item_ID: item_ID,
         Category_name: itemCategory[i],
       };
-
-      console.log("new_categories", new_categories);
-
       fetch(ApiUrl + `Item_in_category`, {
-        method: "PUT",
+        method: "POST",
         body: JSON.stringify(new_categories),
         headers: new Headers({
           "Content-type": "application/json; charset=UTF-8",
@@ -234,8 +283,60 @@ export default function EditItem(props) {
     }
   };
 
-  //upload images to Item_Image_Video table
-  const updateImages = (item_id) => {
+  // const pickImage = async (index) => {
+  //   let result = await ImagePicker.launchImageLibraryAsync({
+  //     mediaTypes: ImagePicker.MediaTypeOptions.All,
+  //     allowsEditing: true,
+  //     aspect: [4, 3],
+  //     quality: 1,
+  //   });
+
+  //   let newImages = [...itemImage];
+  //   newImages[index] = result.uri;
+  //   setItemImage(newImages);
+  // };
+
+  //to add only one image
+
+  const pickImage = async (index) => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    newImages[index] = result.uri;
+    setItemImage(newImages);
+  };
+
+  //delete selected images from Item_Image_Video table
+  const deleteImage = () => {
+    //need to get the image id from item_image_video table
+    fetch(ApiUrl + `Item_Image_Video/${image_id}`, {
+      method: "DELETE",
+      headers: new Headers({
+        "Content-type": "application/json; charset=UTF-8",
+        Accept: "application/json; charset=UTF-8",
+      }),
+    })
+      .then((res) => {
+        return res;
+      })
+      .then(
+        (result) => {
+          console.log("suc in delete imges ", result);
+          //to remova the delet image from the array
+          itemImage.filter((imageSrc) => imageSrc !== src);
+        },
+        (error) => {
+          console.log("ERR in delete imges", error);
+        }
+      );
+  };
+
+  //uploade selected images to Item_Image_Video table
+  const uploadImage = (item_id) => {
     for (let i = 0; i < itemImage.length; i++) {
       const new_image = {
         Id: 0,
@@ -244,9 +345,8 @@ export default function EditItem(props) {
         // Src: itemImage[i],
         Src: "https://scontent.ftlv18-1.fna.fbcdn.net/v/t1.6435-9/67385796_10220626621924962_2662861091951869952_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=cdbe9c&_nc_ohc=oIzma2hYUgkAX-ktGT2&_nc_ht=scontent.ftlv18-1.fna&oh=00_AfB1EXQF4k-4uGdo9C37lV0qMyF8qCGl-cpNxGWuh0PSbg&oe=64254AFE",
       };
-      console.log(new_image);
       fetch(ApiUrl + `Item_Image_Video`, {
-        method: "PUT",
+        method: "POST",
         body: JSON.stringify(new_image),
         headers: new Headers({
           "Content-type": "application/json; charset=UTF-8",
@@ -267,50 +367,13 @@ export default function EditItem(props) {
     }
   };
 
-  const UpdateItem = () => {
-    console.log(item);
-    const updateItem = {
-      ID: item.id,
-      Closet_ID: loggedUser.closet_id,
-      Name: itemName,
-      Price: itemPrice,
-      Type: itemType,
-      Size: itemSize,
-      Use_condition: itemCondition,
-      Color: itemColor,
-      Shipping_method: ArrayToStringShip(itemDeliveryMethod),
-      Brand: itemBrand,
-      Description: itemDescription,
-      Sale_status: true,
-    };
-    console.log("updateItem", updateItem);
-
-    //update the item's data
-    fetch(ApiUrl + `Item`, {
-      method: "PUT",
-      body: JSON.stringify(updateItem),
-      headers: new Headers({
-        "Content-type": "application/json; charset=UTF-8",
-        Accept: "application/json; charset=UTF-8",
-      }),
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then(
-        (data) => {
-          console.log("data", data);
-          navigation.navigate("OrderSuccessful");
-
-          //   Alert.alert("Item updated in succ");
-          //   console.log("upItem", updateItem);
-          //   updateImages(item_ID);
-          //   updateCtegories(item_ID);
-        },
-        (error) => {
-          console.log("ERR in update item ", error);
-        }
-      );
+  //to convert the shipping method to string,shipping method in data base gets string only
+  const ArrayToStringShip = (data) => {
+    var string = "";
+    for (let index = 0; index < data.length; index++) {
+      string += data[index];
+    }
+    return string;
   };
 
   //options ia obj
@@ -353,13 +416,15 @@ export default function EditItem(props) {
               onChangeText={(text) => setItemName(text)}
             />
           </View>
-
           <MultipleSelectList
             data={categoryOptions}
             defaultOption={chosenCategory}
             boxStyles={styles.dropdownInput}
             dropdownStyles={styles.dropdownContainer}
-            setSelected={(val) => setItemCategory(val)}
+            setSelected={(val) => {
+              setItemCategory(val);
+              setCategoriesFlag(true);
+            }}
             notFoundText="לא קיים מידע"
             save="value"
             label="קטגוריה"
@@ -368,6 +433,7 @@ export default function EditItem(props) {
             placeholder=" קטגוריה"
             searchPlaceholder="חיפוש"
           />
+
           <SelectList
             placeholder={item.type}
             defaultOption={item.type}
@@ -408,7 +474,6 @@ export default function EditItem(props) {
             data={brandsList}
             notFoundText="לא קיים מידע"
           />
-
           <SelectList
             placeholder={item.use_condition}
             defaultOption={item.use_condition}
@@ -420,7 +485,6 @@ export default function EditItem(props) {
             save="value"
             notFoundText="לא קיים מידע"
           />
-
           <MultipleSelectList
             boxStyles={styles.dropdownInput}
             dropdownStyles={styles.dropdownContainer}
@@ -434,14 +498,12 @@ export default function EditItem(props) {
             label="שיטת מסירה"
             maxHeight={200}
           />
-
           <TextInput
             style={styles.bigInput}
             defaultValue={item.description}
             containerStyle={{ marginBottom: 10 }}
             onChangeText={(text) => setItemDescription(text)}
           />
-
           <View>
             {itemImage.length < 3 && (
               <TouchableOpacity onPress={() => pickImage(itemImage.length)}>
@@ -460,7 +522,6 @@ export default function EditItem(props) {
               </TouchableOpacity>
             )}
           </View>
-
           <View>
             {itemImage.length > 0 && (
               <View style={styles.imageContainer}>
@@ -474,8 +535,13 @@ export default function EditItem(props) {
               </View>
             )}
           </View>
-
-          <Button title="עדכן פרטים " onPress={UpdateItem} />
+          <Button
+            title="עדכן פרטים "
+            onPress={() => {
+              UpdateItem();
+              updateCtegories();
+            }}
+          />
         </ContainerComponent>
       </KeyboardAwareScrollView>
     );

@@ -49,13 +49,12 @@ export default function EditProfile(props) {
       quality: 1,
     });
 
-    // setItemImage(result.uri);
-
+    // setUserImage(result.uri);
     // setUserImage(
     //   "https://scontent.ftlv18-1.fna.fbcdn.net/v/t1.6435-9/37673670_10157514945495278_8702446268250587136_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=e3f864&_nc_ohc=y3hGZ5pDXjoAX-m60Ia&_nc_ht=scontent.ftlv18-1.fna&oh=00_AfBnG6vLlmG8fKu4oTNCZQzr5NWKc5FnhMFG3m3zWitr5A&oe=64272285"
     // );
     setUserImage(
-      "https://scontent.fsdv1-2.fna.fbcdn.net/v/t39.30808-6/275113161_10228259427687412_4499196323364308307_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=8bfeb9&_nc_ohc=iDDYjAdJaKoAX_O-eJW&_nc_ht=scontent.fsdv1-2.fna&oh=00_AfAZWmFI0O_mjhX3rl2OqNXxe4w98TmIOehzkCLbF3JDEA&oe=64070A66"
+      "https://scontent.ftlv18-1.fna.fbcdn.net/v/t39.30808-6/318441234_6279612948733570_8741695248983855855_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=730e14&_nc_ohc=_S6heIS7Ww0AX9gdDsW&_nc_ht=scontent.ftlv18-1.fna&oh=00_AfDwxnLI-9eF9snTq8sETCw9rv0LdqzDPw9KIZm4r8wzig&oe=6409E89C"
     );
   };
 
@@ -70,7 +69,7 @@ export default function EditProfile(props) {
       Password: userPassword,
       Address: address,
       IsAdmin: false,
-      User_image: userImage,
+      User_image: userImage, 
     };
 
     const newClosetData = {

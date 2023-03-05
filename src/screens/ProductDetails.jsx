@@ -243,7 +243,6 @@ export default function ProductDetails(props) {
               <View style={styles.Col}>
                 <TouchableOpacity
                   onPress={() => {
-                    console.log(item.id);
                     navigation.navigate("EditItem", {
                       item: item,
                       itemImages: itemImages,

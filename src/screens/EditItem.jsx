@@ -43,8 +43,10 @@ export default function EditItem(props) {
   const [itemDeliveryMethod, setItemDeliveryMethod] = useState(
     item.shipping_method
   );
-  const [categoriesFlag, setCategoriesFlag] = useState(itemCategory);
-
+  const [categoriesFlag, setCategoriesFlag] = useState(false);
+  // שהמערך תמונות יועתק פעם אחת בהתחלה כשנכנסים לדף ואז יתעדכן בהתאם למחיקה/ הוספה של תמונה בודדת או כמה
+  let newImages = [...itemImage];
+  
   //lists
   const [brandsList, setBrandsList] = useState([]);
   const [categoriesList, setCategoriesList] = useState([]);
@@ -183,32 +185,54 @@ export default function EditItem(props) {
       );
   };
 
-  const pickImage = async (index) => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+  const UpdateItem = () => {
+    const updateItem = {
+      ID: item.id,
+      Closet_ID: loggedUser.closet_id,
+      Name: itemName,
+      Price: itemPrice,
+      Type: itemType,
+      Size: itemSize,
+      Use_condition: itemCondition,
+      Color: itemColor,
+      Shipping_method: ArrayToStringShip(itemDeliveryMethod),
+      Brand: itemBrand,
+      Description: itemDescription,
+      Sale_status: true,
+    };
 
-    let newImages = [...itemImage];
-    newImages[index] = result.uri;
-    setItemImage(newImages);
+    //update the item's data
+    fetch(ApiUrl + `Item`, {
+      method: "PUT",
+      body: JSON.stringify(updateItem),
+      headers: new Headers({
+        "Content-type": "application/json; charset=UTF-8",
+        Accept: "application/json; charset=UTF-8",
+      }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then(
+        (data) => {
+          navigation.navigate("OrderSuccessful");
+
+          //   Alert.alert("Item updated in succ");
+          //   console.log("upItem", updateItem);
+          //   updateImages(item_ID);
+          //   updateCtegories(item_ID);
+        },
+        (error) => {
+          console.log("ERR in update item ", error);
+        }
+      );
   };
 
-  //to convert the shipping method to string,shipping method in data base gets string only
-  const ArrayToStringShip = (data) => {
-    var string = "";
-    for (let index = 0; index < data.length; index++) {
-      string += data[index];
-    }
-    return string;
-  };
-
-  //upload categories to Items_in_category table
-  //to update after chage in the array
+  // update only after the array hsa been changed
   const updateCtegories = () => {
-    deleteCtegories();
+    if (categoriesFlag) {
+      deleteCtegories();
+    }
   };
 
   const deleteCtegories = () => {
@@ -232,6 +256,7 @@ export default function EditItem(props) {
       );
   };
 
+  //upload categories to Items_in_category table
   const postCtegories = (item_ID) => {
     for (let i = 0; i < itemCategory.length; i++) {
       const new_categories = {
@@ -258,8 +283,60 @@ export default function EditItem(props) {
     }
   };
 
-  //upload images to Item_Image_Video table
-  const updateImages = (item_id) => {
+  // const pickImage = async (index) => {
+  //   let result = await ImagePicker.launchImageLibraryAsync({
+  //     mediaTypes: ImagePicker.MediaTypeOptions.All,
+  //     allowsEditing: true,
+  //     aspect: [4, 3],
+  //     quality: 1,
+  //   });
+
+  //   let newImages = [...itemImage];
+  //   newImages[index] = result.uri;
+  //   setItemImage(newImages);
+  // };
+
+  //to add only one image
+
+  const pickImage = async (index) => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    newImages[index] = result.uri;
+    setItemImage(newImages);
+  };
+
+  //delete selected images from Item_Image_Video table
+  const deleteImage = () => {
+    //need to get the image id from item_image_video table
+    fetch(ApiUrl + `Item_Image_Video/${image_id}`, {
+      method: "DELETE",
+      headers: new Headers({
+        "Content-type": "application/json; charset=UTF-8",
+        Accept: "application/json; charset=UTF-8",
+      }),
+    })
+      .then((res) => {
+        return res;
+      })
+      .then(
+        (result) => {
+          console.log("suc in delete imges ", result);
+          //to remova the delet image from the array
+          itemImage.filter((imageSrc) => imageSrc !== src);
+        },
+        (error) => {
+          console.log("ERR in delete imges", error);
+        }
+      );
+  };
+
+  //uploade selected images to Item_Image_Video table
+  const uploadImage = (item_id) => {
     for (let i = 0; i < itemImage.length; i++) {
       const new_image = {
         Id: 0,
@@ -268,9 +345,8 @@ export default function EditItem(props) {
         // Src: itemImage[i],
         Src: "https://scontent.ftlv18-1.fna.fbcdn.net/v/t1.6435-9/67385796_10220626621924962_2662861091951869952_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=cdbe9c&_nc_ohc=oIzma2hYUgkAX-ktGT2&_nc_ht=scontent.ftlv18-1.fna&oh=00_AfB1EXQF4k-4uGdo9C37lV0qMyF8qCGl-cpNxGWuh0PSbg&oe=64254AFE",
       };
-      console.log(new_image);
       fetch(ApiUrl + `Item_Image_Video`, {
-        method: "PUT",
+        method: "POST",
         body: JSON.stringify(new_image),
         headers: new Headers({
           "Content-type": "application/json; charset=UTF-8",
@@ -291,50 +367,13 @@ export default function EditItem(props) {
     }
   };
 
-  const UpdateItem = () => {
-    console.log(item);
-    const updateItem = {
-      ID: item.id,
-      Closet_ID: loggedUser.closet_id,
-      Name: itemName,
-      Price: itemPrice,
-      Type: itemType,
-      Size: itemSize,
-      Use_condition: itemCondition,
-      Color: itemColor,
-      Shipping_method: ArrayToStringShip(itemDeliveryMethod),
-      Brand: itemBrand,
-      Description: itemDescription,
-      Sale_status: true,
-    };
-    console.log("updateItem", updateItem);
-
-    //update the item's data
-    fetch(ApiUrl + `Item`, {
-      method: "PUT",
-      body: JSON.stringify(updateItem),
-      headers: new Headers({
-        "Content-type": "application/json; charset=UTF-8",
-        Accept: "application/json; charset=UTF-8",
-      }),
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .then(
-        (data) => {
-          console.log("data", data);
-          navigation.navigate("OrderSuccessful");
-
-          //   Alert.alert("Item updated in succ");
-          //   console.log("upItem", updateItem);
-          //   updateImages(item_ID);
-          //   updateCtegories(item_ID);
-        },
-        (error) => {
-          console.log("ERR in update item ", error);
-        }
-      );
+  //to convert the shipping method to string,shipping method in data base gets string only
+  const ArrayToStringShip = (data) => {
+    var string = "";
+    for (let index = 0; index < data.length; index++) {
+      string += data[index];
+    }
+    return string;
   };
 
   //options ia obj
@@ -384,7 +423,7 @@ export default function EditItem(props) {
             dropdownStyles={styles.dropdownContainer}
             setSelected={(val) => {
               setItemCategory(val);
-              setCategoriesFlag(val);
+              setCategoriesFlag(true);
             }}
             notFoundText="לא קיים מידע"
             save="value"
@@ -394,8 +433,7 @@ export default function EditItem(props) {
             placeholder=" קטגוריה"
             searchPlaceholder="חיפוש"
           />
-          {console.log("itemCategory", itemCategory)}
-          {console.log("categoriesFlag", categoriesFlag)}
+
           <SelectList
             placeholder={item.type}
             defaultOption={item.type}

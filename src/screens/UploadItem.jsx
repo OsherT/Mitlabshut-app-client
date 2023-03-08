@@ -23,8 +23,12 @@ import * as ImagePicker from "expo-image-picker";
 import { userContext } from "../navigation/userContext";
 
 export default function UploadItem() {
-//להחליף מה שיושב סתם במערך ל"""
   const navigation = useNavigation();
+  const { loggedUser } = useContext(userContext);
+  const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
+
+  //להחליף מה שיושב סתם במערך ל"""
+  //the section of the item information hooks
   const [itemName, setItemName] = useState("");
   const [itemPrice, setItemPrice] = useState("");
   const [itemCategory, setItemCategory] = useState([]);
@@ -36,28 +40,25 @@ export default function UploadItem() {
   const [itemBrand, setItemBrand] = useState([]);
   const [itemImage, setItemImage] = useState([]);
   const [itemDescription, setItemDescription] = useState("");
-  const { loggedUser } = useContext(userContext);
 
-  //lists
+  //the section of the lists hooks
   const [brandsList, setBrandsList] = useState([]);
   const [categoriesList, setCategoriesList] = useState([]);
   const [colorsList, setColorsList] = useState([]);
   const [sizesList, setSizesList] = useState([]);
   const [typesList, setTypesList] = useState([]);
 
+  // section of the local lists hooks
   const deliveryMethodsList = [
     { key: "1", value: "איסוף עצמי" },
     { key: "2", value: "משלוח" },
   ];
-
   const conditionsList = [
     { key: "1", value: "חדש עם אטיקט  " },
     { key: "2", value: "חדש ללא אטיקט  " },
     { key: "3", value: "כמו חדש" },
     { key: "4", value: "נלבש מספר פעמים" },
   ];
-
-  const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
 
   useEffect(() => {
     GetBrandsList();
@@ -67,8 +68,12 @@ export default function UploadItem() {
     GetTypesList();
   }, []);
 
+  ////////////////////////////////////////
+  //gets all the data from the dataBase//
+  ////////////////////////////////////////
+
   const GetBrandsList = () => {
-    fetch(ApiUrl + "Item_brand", {
+    fetch(ApiUrl + "/GetBrand", {
       method: "GET",
       headers: new Headers({
         "Content-Type": "application/json; charset=UTF-8",
@@ -89,7 +94,7 @@ export default function UploadItem() {
   };
 
   const GetCategoriesList = () => {
-    fetch(ApiUrl + "Item_category", {
+    fetch(ApiUrl + "/GetCategory", {
       method: "GET",
       headers: new Headers({
         "Content-Type": "application/json; charset=UTF-8",
@@ -110,7 +115,7 @@ export default function UploadItem() {
   };
 
   const GetColorsList = () => {
-    fetch(ApiUrl + "Item_color", {
+    fetch(ApiUrl + "/GetColor", {
       method: "GET",
       headers: new Headers({
         "Content-Type": "application/json; charset=UTF-8",
@@ -131,7 +136,7 @@ export default function UploadItem() {
   };
 
   const GetSizesList = () => {
-    fetch(ApiUrl + "Item_size", {
+    fetch(ApiUrl + "/GetItem_size", {
       method: "GET",
       headers: new Headers({
         "Content-Type": "application/json; charset=UTF-8",
@@ -152,7 +157,7 @@ export default function UploadItem() {
   };
 
   const GetTypesList = () => {
-    fetch(ApiUrl + "Item_type", {
+    fetch(ApiUrl + "/GetItem_type", {
       method: "GET",
       headers: new Headers({
         "Content-Type": "application/json; charset=UTF-8",
@@ -171,7 +176,11 @@ export default function UploadItem() {
         }
       );
   };
+  ////////////////////////////////////////
+  //gets all the data from the dataBase//
+  ////////////////////////////////////////
 
+  //open image picker and inserts the url into an array
   const pickImage = async (index) => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -188,17 +197,12 @@ export default function UploadItem() {
   //upload images to Item_Image_Video table
   const uploadImages = (item_id) => {
     for (let i = 0; i < itemImage.length; i++) {
-      const new_image = {
-        Id: 0,
-        Item_ID: item_id,
-        //use fireBase
-        // Src: itemImage[i],
-        Src: "https://scontent.ftlv18-1.fna.fbcdn.net/v/t1.6435-9/67385796_10220626621924962_2662861091951869952_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=cdbe9c&_nc_ohc=oIzma2hYUgkAX-ktGT2&_nc_ht=scontent.ftlv18-1.fna&oh=00_AfB1EXQF4k-4uGdo9C37lV0qMyF8qCGl-cpNxGWuh0PSbg&oe=64254AFE",
-      };
-      console.log(new_image);
-      fetch(ApiUrl + `Item_Image_Video`, {
+      // item_Src: itemImage[i],
+      const item_Src = "image";
+
+      fetch(ApiUrl + `/PostItemImageVideo/ItemId/${item_id}/SRC/${item_Src}`, {
         method: "POST",
-        body: JSON.stringify(new_image),
+        // body: JSON.stringify(new_image),
         headers: new Headers({
           "Content-type": "application/json; charset=UTF-8",
           Accept: "application/json; charset=UTF-8",
@@ -217,8 +221,8 @@ export default function UploadItem() {
         );
     }
   };
-  
-  //to convert the shipping method to string,shipping method in data base gets string only
+
+  //converts the shipping method to string, shipping method in data base gets string only
   const ArrayToStringShip = (data) => {
     var string = "";
     for (let index = 0; index < data.length; index++) {
@@ -227,31 +231,26 @@ export default function UploadItem() {
     return string;
   };
 
-
-
-  //upload categories to Items_in_category table
+  //uploads categories to Items_in_category table
   const uploadCtegories = (item_ID) => {
     for (let i = 0; i < itemCategory.length; i++) {
-      const new_categories = {
-        Item_ID: item_ID,
-        Category_name: itemCategory[i],
-      };
-
-      console.log("new_categories", new_categories);
-
-      fetch(ApiUrl + `Item_in_category`, {
-        method: "POST",
-        body: JSON.stringify(new_categories),
-        headers: new Headers({
-          "Content-type": "application/json; charset=UTF-8",
-          Accept: "application/json; charset=UTF-8",
-        }),
-      })
+      fetch(
+        ApiUrl +
+          `/PostItemsInCategory/Item_ID/${item_ID}/Category_name/${itemCategory[i]}`,
+        {
+          method: "POST",
+          headers: new Headers({
+            "Content-type": "application/json; charset=UTF-8",
+            Accept: "application/json; charset=UTF-8",
+          }),
+        }
+      )
         .then((res) => {
-          return res.json();
+          return res;
         })
         .then(
-          (result) => {},
+          (result) => {
+          },
           (error) => {
             console.log("ERR in post categories", error);
           }
@@ -259,6 +258,7 @@ export default function UploadItem() {
     }
   };
 
+  //checks if the user inserts all the required info and uploads the item into the item table
   const UploadItem = () => {
     if (
       itemName == "" ||
@@ -289,8 +289,8 @@ export default function UploadItem() {
         Sale_status: true,
       };
 
-      //post to item tabel
-      fetch(ApiUrl + `Item`, {
+      //posts to item table
+      fetch(ApiUrl + `/PostItem`, {
         method: "POST",
         body: JSON.stringify(item),
         headers: new Headers({
@@ -307,7 +307,7 @@ export default function UploadItem() {
             uploadImages(item_ID);
             uploadCtegories(item_ID);
 
-            navigation.navigate("Closet")
+            navigation.navigate("Closet");
           },
           (error) => {
             console.log("ERR in upload item ", error);

@@ -52,10 +52,14 @@ const Stack = createStackNavigator();
 export default function Navigation() {
 
   const [loggedUser, setloggedUser] = useState("");
+  const [closetDesc, setclosetDesc] = useState("");
+  const [closetName, setclosetName] = useState("");
+
+
 
   return (
     <NavigationContainer>
-      <userContext.Provider value={{ loggedUser, setloggedUser }}>
+      <userContext.Provider value={{ loggedUser, setloggedUser,closetDesc, setclosetDesc ,closetName, setclosetName}}>
         <Stack.Navigator
           screenOptions={{
             headerStyle: {

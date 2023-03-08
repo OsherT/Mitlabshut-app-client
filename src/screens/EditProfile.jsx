@@ -8,7 +8,7 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
 } from "react-native";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useNavigation } from "@react-navigation/native";
 import { Header, InputField, Button, ContainerComponent } from "../components";
@@ -23,12 +23,8 @@ import axios from "axios";
 import { ScrollView } from "react-native-gesture-handler";
 
 export default function EditProfile(props) {
-  const { loggedUser, setloggedUser } = useContext(userContext);
-  const ClosetDesc = props.route.params.ClosetDesc;
-  const ClosetName = props.route.params.ClosetName;
-
+  const { loggedUser, setclosetDesc, setclosetName ,setloggedUser,closetName,closetDesc} = useContext(userContext);
   const navigation = useNavigation();
-
   const [address, setAddress] = useState(loggedUser.address);
   const [userName, setUserName] = useState(loggedUser.full_name);
   const [userEmail] = useState(loggedUser.email);
@@ -36,10 +32,13 @@ export default function EditProfile(props) {
   const [userPhone, setUserPhone] = useState(loggedUser.phone_number);
   const [userClosetId] = useState(loggedUser.closet_id);
   const [userImage, setUserImage] = useState(loggedUser.user_image);
-  const [NewClosetDesc, setNewClosetDesc] = useState("");
-  const [NewClosetName, setNewClosetName] = useState("");
+  
 
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
+  useEffect(() => {
+    console.log(loggedUser);
+    
+  }, []);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -61,21 +60,21 @@ export default function EditProfile(props) {
   //update users details
   const updateUser = () => {
     const newUser = {
-      Email: userEmail,
-      ID: loggedUser.id,
-      Closet_ID: userClosetId,
-      Phone_number: userPhone,
-      Full_name: userName,
-      Password: userPassword,
-      Address: address,
-      IsAdmin: false,
-      User_image: userImage, 
+      email: userEmail,
+      id: loggedUser.id,
+      closet_id: userClosetId,
+      phone_number: userPhone,
+      full_name: userName,
+      password: userPassword,
+      address: address,
+      isAdmin: false,
+      user_image: userImage,
     };
 
     const newClosetData = {
       id: loggedUser.closet_id,
-      description: NewClosetDesc,
-      user_name: NewClosetName,
+      description: closetDesc,
+      user_name: closetName,
     };
 
     console.log("newUser", newUser);
@@ -93,26 +92,24 @@ export default function EditProfile(props) {
       })
       .then(
         (result) => {
-          setloggedUser(newUser);
-          console.log("suc in update user= ", result);
-          navigation.navigate("OrderSuccessful");
+          axios
+            .put(
+              "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Closet/Put",
+              newClosetData
+            )
+            .then((res) => {
+              setloggedUser(newUser);
+              console.log("suc in update user= ", result);
+              navigation.navigate("OrderSuccessful");
+            })
+            .catch((err) => {
+              console.log("ERR in update closet", error);
+            });
         },
         (error) => {
           console.log("ERR in update user", error);
         }
       );
-
-    axios
-      .put(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Closet/Put",
-        newClosetData
-      )
-      .then((res) => {
-        navigation.navigate("OrderSuccessful");
-      })
-      .catch((err) => {
-        console.log("ERR in update closet", error);
-      });
   };
 
   function renderContent() {
@@ -236,10 +233,10 @@ export default function EditProfile(props) {
                 תיאור ארון:
               </Text>
               <InputField
-                defaultValue={ClosetDesc}
+                defaultValue={closetDesc}
                 icon={<EditTwo />}
                 containerStyle={{ marginBottom: 10 }}
-                onChangeText={(text) => setNewClosetDesc(text)}
+                onChangeText={(text) => setclosetDesc(text)}
                 keyboardType="text"
               />
 
@@ -249,10 +246,10 @@ export default function EditProfile(props) {
                 שם ארון:
               </Text>
               <InputField
-                defaultValue={ClosetName}
+                defaultValue={closetName}
                 icon={<EditTwo />}
                 containerStyle={{ marginBottom: 20 }}
-                onChangeText={(text) => setNewClosetName(text)}
+                onChangeText={(text) => setclosetName(text)}
                 keyboardType="text"
               />
 

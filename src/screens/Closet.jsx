@@ -19,9 +19,9 @@ import { useNavigation } from "@react-navigation/native";
 import { render } from "react-dom";
 
 export default function Closet() {
-  const { loggedUser, setloggedUser } = useContext(userContext);
-  const [ClosetDesc, setClosetDesc] = useState("");
-  const [ClosetName, setClosetName] = useState("");
+  const { loggedUser, setclosetDesc, setclosetName,closetName,closetDesc } = useContext(userContext);
+  // const [ClosetDesc, setClosetDesc] = useState("");
+  // const [ClosetName, setClosetName] = useState("");
   const [UsersItems, setUsersItems] = useState([]);
   const [UsersItemPhotos, setUsersItemPhotos] = useState([]);
   const [UsersFavList, setUsersFavList] = useState([]);
@@ -43,11 +43,10 @@ export default function Closet() {
       .get(
         "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Closet/Get/" +
           loggedUser.closet_id
-      ) //לשנות כשדנה עושה החזרת הדיסקריפשן לפי איידי
+      ) 
       .then((res) => {
-        //console.log("description", res.status);
-        setClosetName(res.data[0].user_name);
-        setClosetDesc(res.data[0].description);
+        setclosetName(res.data[0].user_name);
+        setclosetDesc(res.data[0].description);
       })
       .catch((err) => {
         alert("cant take description");
@@ -95,11 +94,7 @@ export default function Closet() {
         <ContainerComponent containerStyle={{ marginBottom: 20 }}>
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate("EditProfile", {
-                ClosetDesc: ClosetDesc,
-                ClosetName: ClosetName,
-              });
-              console.log("loggedUser", loggedUser);
+              navigation.navigate("EditProfile");
             }}
           >
             <View
@@ -134,7 +129,7 @@ export default function Closet() {
                 lineHeight: 16 * 1.2,
               }}
             >
-              {loggedUser.full_name}
+              הארון של {closetName} 
             </Text>
             <Text
               style={{
@@ -145,7 +140,7 @@ export default function Closet() {
                 lineHeight: 14 * 1.7,
               }}
             >
-              {ClosetDesc}
+              {closetDesc}
             </Text>
           </TouchableOpacity>
         </ContainerComponent>
@@ -326,7 +321,7 @@ export default function Closet() {
                   textAlign: "right",
                 }}
               >
-                {item.name} {item.id}
+                {item.name} 
               </Text>
               <Text
                 style={{

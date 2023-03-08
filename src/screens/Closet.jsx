@@ -12,7 +12,7 @@ import {
 import axios from "axios";
 import { Edit } from "../svg";
 import { BagSvg, HeartSvg, Facebook } from "../svg";
-import { ContainerComponent, ProfileCategory } from "../components";
+import { ContainerComponent, Header, ProfileCategory } from "../components";
 import { COLORS, FONTS } from "../constants";
 import { useNavigation } from "@react-navigation/native";
 import { render } from "react-dom";

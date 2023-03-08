@@ -19,6 +19,7 @@ import {
 import { AddSvg } from "../svg";
 import * as ImagePicker from "expo-image-picker";
 import { userContext } from "../navigation/userContext";
+import { colors } from "react-native-elements";
 
 export default function EditItem(props) {
   const item = props.route.params.item;
@@ -407,6 +408,21 @@ export default function EditItem(props) {
         showsHorizontalScrollIndicator={false}>
         <ContainerComponent>
           <Text style={styles.header}>עדכון פריט</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}>
+            <Text
+              style={{ textAlign: "right", color: colors.grey3, left: 125 }}>
+              מחיר :
+            </Text>
+            <Text
+              style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+              שם פריט :
+            </Text>
+          </View>
           <View style={styles.doubleContainer}>
             <TextInput
               style={styles.textInput}
@@ -426,6 +442,9 @@ export default function EditItem(props) {
               onChangeText={(text) => setItemName(text)}
             />
           </View>
+          <Text style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+            קטגוריה :
+          </Text>
           <MultipleSelectList
             data={categoryOptions}
             defaultOption={chosenCategory}
@@ -443,7 +462,9 @@ export default function EditItem(props) {
             placeholder=" קטגוריה"
             searchPlaceholder="חיפוש"
           />
-
+          <Text style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+            סוג פריט :
+          </Text>
           <SelectList
             placeholder={item.type}
             defaultOption={item.type}
@@ -454,6 +475,9 @@ export default function EditItem(props) {
             data={typesList}
             notFoundText="לא קיים מידע"
           />
+          <Text style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+            מידה :
+          </Text>
           <SelectList
             placeholder={item.size}
             defaultOption={item.size}
@@ -464,6 +488,9 @@ export default function EditItem(props) {
             data={sizesList}
             notFoundText="לא קיים מידע"
           />
+          <Text style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+            צבע :
+          </Text>
           <SelectList
             placeholder={item.color}
             defaultOption={item.color}
@@ -474,6 +501,9 @@ export default function EditItem(props) {
             data={colorsList}
             notFoundText="לא קיים מידע"
           />
+          <Text style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+            מותג :
+          </Text>
           <SelectList
             placeholder={item.brand}
             defaultOption={item.brand}
@@ -484,6 +514,9 @@ export default function EditItem(props) {
             data={brandsList}
             notFoundText="לא קיים מידע"
           />
+          <Text style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+            מצב שימוש :
+          </Text>
           <SelectList
             placeholder={item.use_condition}
             defaultOption={item.use_condition}
@@ -495,6 +528,9 @@ export default function EditItem(props) {
             save="value"
             notFoundText="לא קיים מידע"
           />
+          <Text style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+            שיטת איסוף :
+          </Text>
           <MultipleSelectList
             boxStyles={styles.dropdownInput}
             dropdownStyles={styles.dropdownContainer}
@@ -508,6 +544,9 @@ export default function EditItem(props) {
             label="שיטת מסירה"
             maxHeight={200}
           />
+          <Text style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+            תיאור פריט :
+          </Text>
           <TextInput
             style={styles.bigInput}
             defaultValue={item.description}
@@ -574,12 +613,12 @@ const styles = StyleSheet.create({
   },
   doubleContainer: {
     width: "100%",
-
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 30,
   },
+
   textInput: {
     width: "49%",
     height: 50,

@@ -16,7 +16,6 @@ import { Header, ContainerComponent, ProfileCategory } from "../components";
 import { COLORS, products, FONTS } from "../constants";
 import MainLayout from "./MainLayout";
 import { useNavigation } from "@react-navigation/native";
-import { FilledHeartSvg } from "../svg";
 import { render } from "react-dom";
 
 export default function Closet() {
@@ -31,10 +30,11 @@ export default function Closet() {
   const navigation = useNavigation();
 
   useEffect(() => {
+    console.log(loggedUser);
     GetClosetDescription();
     GetClosetItems();
     GetItemPhotos();
-    getShopItems();
+    // getShopItems();
     getFavItems();
   }, []);
 
@@ -46,8 +46,9 @@ export default function Closet() {
   function GetClosetDescription() {
     axios
       .get(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Closet/" +
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Closet/Get/" +
           loggedUser.closet_id
+          
       ) //לשנות כשדנה עושה החזרת הדיסקריפשן לפי איידי
       .then((res) => {
         //console.log("description", res.status);
@@ -62,7 +63,7 @@ export default function Closet() {
   function GetClosetItems() {
     axios
       .get(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/ClosetId/" +
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemByClosetId/ClosetId/" +
           loggedUser.closet_id
       )
       .then((res) => {
@@ -75,7 +76,7 @@ export default function Closet() {
   }
   function GetItemPhotos() {
     axios
-      .get("https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item_Image_Video")
+      .get("https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemImageVideo")
       .then((res) => {
         setUsersItemPhotos(res.data);
       })
@@ -158,28 +159,24 @@ export default function Closet() {
   function getFavItems() {
     axios
       .get(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList/User_ID/" +
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetFavByUserID/" +
           loggedUser.id
       )
       .then((res) => {
-        const tempUsersFavList = res.data.map(({ item_ID }) => item_ID);
+        console.log(res.data);
+        const tempUsersFavList = res.data.map(({ item_id }) => item_id);
         setUsersFavList(tempUsersFavList);
-        console.log("get");
+        console.log(tempUsersFavList);
       })
       .catch((err) => {
-        // alert("cant get fav");
+        alert("cant get fav");
         console.log(err);
       });
   }
   function AddtoFav(item_id) {
-    var newFav = {
-      item_ID: item_id,
-      user_ID: loggedUser.id,
-    };
     axios
       .post(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList",
-        newFav
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/PostFavItem/Item_ID/${item_id}/User_ID/${loggedUser.id}`
       )
       .then((res) => {
         getFavItems();
@@ -193,11 +190,10 @@ export default function Closet() {
   function RemoveFromFav(itemId) {
     axios
       .delete(
-        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList/Item_ID/${itemId}/User_ID/${loggedUser.id}`
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/DeleteFavItem/Item_ID/${itemId}/User_ID/${loggedUser.id}`
       )
       .then((res) => {
         setUsersFavList((prevList) => prevList.filter((id) => id !== itemId));
-        // alert("removed " + itemId);
       })
       .catch((err) => {
         alert("cant remove from fav");
@@ -206,58 +202,58 @@ export default function Closet() {
       });
   }
   ///handle shop list
-  function getShopItems() {
-    axios
-      .get(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserShopList/User_ID/" +
-          loggedUser.id
-      )
-      .then((res) => {
-        const tempUsersShopList = res.data.map(({ item_ID }) => item_ID);
-        setUsersShopList(tempUsersShopList);
-      })
-      .catch((err) => {
-        alert("cant get shop list");
-        console.log(err);
-      });
-  }
-  function AddToShopList(item_id) {
-    var newitemInBag = {
-      item_ID: item_id,
-      user_ID: loggedUser.ID,
-    };
-    axios
-      .post(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserShopList",
-        newitemInBag
-      )
-      .then((res) => {
-        getShopItems();
-        setUsersShopList((prevList) => [...prevList, { item_id }]);
-      })
-      .catch((err) => {
-        alert("cant add to shop list");
-        console.log(err);
-      });
-  }
-  function RemoveFromShopList(itemId) {
-    setUsersShopList((prevList) => prevList.filter((id) => id !== itemId));
-    alert("removed from shop list " + itemId);
+  // function getShopItems() {
+  //   axios
+  //     .get(
+  //       "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserShopList/User_ID/" +
+  //         loggedUser.id
+  //     )
+  //     .then((res) => {
+  //       const tempUsersShopList = res.data.map(({ item_ID }) => item_ID);
+  //       setUsersShopList(tempUsersShopList);
+  //     })
+  //     .catch((err) => {
+  //       alert("cant get shop list");
+  //       console.log(err);
+  //     });
+  // }
+  // function AddToShopList(item_id) {
+  //   var newitemInBag = {
+  //     item_ID: item_id,
+  //     user_ID: loggedUser.ID,
+  //   };
+  //   axios
+  //     .post(
+  //       "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserShopList",
+  //       newitemInBag
+  //     )
+  //     .then((res) => {
+  //       getShopItems();
+  //       setUsersShopList((prevList) => [...prevList, { item_id }]);
+  //     })
+  //     .catch((err) => {
+  //       alert("cant add to shop list");
+  //       console.log(err);
+  //     });
+  // }
+  // function RemoveFromShopList(itemId) {
+  //   setUsersShopList((prevList) => prevList.filter((id) => id !== itemId));
+  //   alert("removed from shop list " + itemId);
 
-    axios
-      .delete(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList",
-        newFav
-      )
-      .then((res) => {
-        setUsersShopList((prevList) => prevList.filter((id) => id !== itemId));
-      })
-      .catch((err) => {
-        alert("cant add to fav");
-        console.log(err);
-        console.log(newFav);
-      });
-  }
+  //   axios
+  //     .delete(
+  //       "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList",
+  //       newFav
+  //     )
+  //     .then((res) => {
+  //       setUsersShopList((prevList) => prevList.filter((id) => id !== itemId));
+  //     })
+  //     .catch((err) => {
+  //       alert("cant add to fav");
+  //       console.log(err);
+  //       console.log(newFav);
+  //     });
+  // }
   ///render items
   function renderClothes() {
     return (
@@ -295,7 +291,7 @@ export default function Closet() {
               .map((photo) => {
                 return (
                   <ImageBackground
-                    source={{ uri: photo.src }}
+                    source={{ uri: photo.item_Src }}
                     style={{
                       width: "100%",
                       height: 128,
@@ -389,7 +385,6 @@ export default function Closet() {
                 style={{ left: 12, top: 12 }}
                 onPress={() => AddToShopList(item.id)}
               >
-                <HeartSvg filled={false} />
               </TouchableOpacity>
             )}
             <TouchableOpacity

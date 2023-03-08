@@ -39,39 +39,38 @@ export default function SignUp() {
       userEmail == "" ||
       userPassword == "" ||
       userPhone == ""
-    ) {
+    ) {//אלו השדות חובה שלנו 
       alert("אנא הכניסי את כל הפרטים הנדרשים");
     } else {
-      const newCloset = {
+      const newCloset = {//יצירת ארון חדש למשתמשת
         Id: 0,
         Description:ClosetDisc,
         User_name:ClosetName
       };
       axios
         .post(
-          "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Closet",
+          "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Closet/Post",
           newCloset
         )
         .then((res) => {
           if (res.data != 0) {
-            const newUser = {
+            const newUser = {//יצירת יוזר חדש
               Email: userEmail,
               Phone_number: userPhone,
               Full_name: userName,
               Password: userPassword,
-              Address: address, //To change
+              Address: address, 
               IsAdmin: false,
-              Closet_ID: res.data,
+              Closet_ID: res.data,//הכנסת האיידי של הארון ליוזר החדש
               User_image: difPic,
             };
-            {console.log("newUser", newUser);}
             axios
               .post(
-                "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User",
+                "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/PostUser",
                 newUser
               )
               .then((res) => {
-                setloggedUser(newUser);
+                setloggedUser(newUser);//לאחר ההרשמה היוזר מתחבר ומנווט ישר לארון שלו
                 navigation.navigate("Closet");
               })
               .catch((err) => {
@@ -131,7 +130,6 @@ export default function SignUp() {
               styles={{
                 container: {
                   flex: 0,
-                  //position: "absolute",
                   width: "100%",
                   zIndex: 1,
                 },
@@ -165,15 +163,6 @@ export default function SignUp() {
                 onChangeText={(text) => setClosetName(text)}
                 keyboardType="text"
               />
-
-          {/* <View style={styles.view0}>
-            <TextInput
-              style={styles.input}
-              placeholder="מספר טלפון"
-              keyboardType="phone-pad"
-              onChangeText={(text) => setUserPhone(text)}
-            />
-          </View> */}
 
           <View style={{ marginTop: 40 }}>
             <Button title="הרשמה" onPress={SignUp} />

@@ -65,7 +65,7 @@ export default function Navigation() {
             },
             headerShown: false,
           }}
-          initialRouteName="SignIn">
+          initialRouteName="SignIמ">
           <Stack.Screen name="SignIn" component={SignIn} />
           <Stack.Screen name="UploadItem" component={UploadItem} />
           <Stack.Screen name="OrderHistory" component={OrderHistory} />

@@ -7,7 +7,7 @@ import {
   Image,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { AREA, COLORS, FONTS, SIZES } from "../constants";
 import { Button, Header } from "../components";
 import { Edit, HeartTwoSvg } from "../svg";
@@ -24,6 +24,7 @@ export default function ProductDetails(props) {
   const navigation = useNavigation();
   const { loggedUser } = useContext(userContext);
   const item = props.route.params.item;
+  const isFocused = useIsFocused();
 
   //item's info section
   const [follow, setFollow] = useState(false);
@@ -38,12 +39,14 @@ export default function ProductDetails(props) {
   const ApiUrl_user = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User`;
 
   useEffect(() => {
-    getFavItems();
-    GetItemCategories();
-    GetItemImages();
-    GetNumOfFav();
-    console.log(`item`, item);
-  }, []); 
+    if (isFocused) {
+      getFavItems();
+      GetItemCategories();
+      GetItemImages();
+      GetNumOfFav();
+      console.log(`item`, item);
+    }
+  }, [isFocused]); 
 
   const GetItemCategories = () => {
     fetch(ApiUrl + `/GetItemCategortById/Item_ID/${item.id}`, {

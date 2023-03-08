@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState, useContext } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { Header, Button, ContainerComponent } from "../components";
 import { AREA, COLORS, FONTS } from "../constants";
 import { TextInput } from "react-native";
@@ -23,6 +23,7 @@ import { userContext } from "../navigation/userContext";
 export default function EditItem(props) {
   const item = props.route.params.item;
   const itemImages = props.route.params.itemImages;
+  const isFocused = useIsFocused();
 
   //take only the category name and not the all object
   const itemCtegories = props.route.params.itemCtegories.map(
@@ -69,17 +70,19 @@ export default function EditItem(props) {
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
 
   useEffect(() => {
-    GetBrandsList();
-    GetColorsList();
-    GetSizesList();
-    GetTypesList();
-    GetCategoriesList();
-
-    // console.log("categoryOptions", categoryOptions);
-    // console.log("chosenCategory", chosenCategory);
-    // console.log("categoriesList", categoriesList);
-    // console.log("price", item.price);
-  }, []);
+    if (isFocused) {
+      GetBrandsList();
+      GetColorsList();
+      GetSizesList();
+      GetTypesList();
+      GetCategoriesList();
+      console.log("item", item);
+      console.log("price", item.price);
+      // console.log("categoryOptions", categoryOptions);
+      // console.log("chosenCategory", chosenCategory);
+      // console.log("categoriesList", categoriesList);
+    }
+  }, [isFocused]);
 
   const GetBrandsList = () => {
     fetch(ApiUrl + "/GetBrand", {
@@ -207,7 +210,7 @@ export default function EditItem(props) {
     console.log(`updateItem`, item);
 
     //update the item's data
-    fetch(ApiUrl + `/PutItem`, { 
+    fetch(ApiUrl + `/PutItem`, {
       method: "PUT",
       body: JSON.stringify(updateItem),
       headers: new Headers({
@@ -407,15 +410,17 @@ export default function EditItem(props) {
           <View style={styles.doubleContainer}>
             <TextInput
               style={styles.textInput}
-              value={item.price}
-              defaultValue={item.price}
-              placeholder="מחיר"
+              defaultValue={"₪ " + item.price.toString()}
               keyboardType="numeric"
-              onChangeText={(text) => setItemPrice(text)}
+              containerStyle={{ marginBottom: 10 }}
+              onChangeText={(text) => {
+                setItemPrice(text.slice(2));
+                console.log(text.slice(1));
+              }}
             />
+
             <TextInput
               style={styles.textInput}
-              //   placeholder={item.name}
               defaultValue={item.name}
               containerStyle={{ marginBottom: 10 }}
               onChangeText={(text) => setItemName(text)}

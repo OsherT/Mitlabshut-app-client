@@ -10,11 +10,10 @@ import {
   FlatList,
 } from "react-native";
 import axios from "axios";
-import { Edit, Fail, HeartTwoSvg } from "../svg";
+import { Edit } from "../svg";
 import { BagSvg, HeartSvg, Facebook } from "../svg";
-import { Header, ContainerComponent, ProfileCategory } from "../components";
-import { COLORS, products, FONTS } from "../constants";
-import MainLayout from "./MainLayout";
+import { ContainerComponent, ProfileCategory } from "../components";
+import { COLORS, FONTS } from "../constants";
 import { useNavigation } from "@react-navigation/native";
 import { render } from "react-dom";
 import { useIsFocused } from "@react-navigation/native";

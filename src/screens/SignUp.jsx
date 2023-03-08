@@ -32,7 +32,6 @@ export default function SignUp() {
   const [ClosetName, setClosetName] = useState(userName);
   const { loggedUser, setloggedUser } = useContext(userContext);
 
-  //https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/
 
   const SignUp = () => {
     if (
@@ -41,7 +40,6 @@ export default function SignUp() {
       userPassword == "" ||
       userPhone == ""
     ) {
-      //Remember to add location!!!!
       alert("אנא הכניסי את כל הפרטים הנדרשים");
     } else {
       const newCloset = {

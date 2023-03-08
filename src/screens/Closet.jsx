@@ -36,69 +36,13 @@ export default function Closet() {
     GetItemPhotos();
     getShopItems();
     getFavItems();
-  }, [loggedUser]);
+  }, []);
 
-  useEffect(() => {
-        getFavItems();
-  }, [UsersShopList, UsersFavList]);
+  // useEffect(() => {
+  //       getFavItems();
 
+  // }, [UsersShopList, UsersFavList]);
 
-   function getFavItems() {
-     var Email = loggedUser.email.replace("%40", "@");
-     // var Email = loggedUser.email;
-
-     axios
-       .get(
-         "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList/User_Email/" +
-           Email
-       )
-       .then((res) => {
-         const tempUsersFavList = res.data.map(({ item_ID }) => item_ID);
-         console.log("fav");
-         setUsersFavList(tempUsersFavList);
-       })
-       .catch((err) => {
-         alert("cant get fav");
-         console.log(err);
-       });
-   }
-   function AddtoFav(item_id) {
-     var newFav = {
-       item_ID: item_id,
-       user_Email: loggedUser.email,
-     };
-     axios
-       .post(
-         "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList",
-         newFav
-       )
-       .then((res) => {
-         // alert("added");
-         setUsersFavList((prevList) => [...prevList, { item_id }]);
-       })
-       .catch((err) => {
-         alert("cant add to fav");
-         console.log(err);
-
-       });
-   }
-   function RemoveFromFav(itemId) {
-     var Email = loggedUser.email.replace("%40", "@");
-
-     axios
-       .delete(
-         `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList/Item_ID/${itemId}/User_Email/${Email}`
-       )
-       .then((res) => {
-         setUsersFavList((prevList) => prevList.filter((id) => id !== itemId));
-         // alert("removed " + itemId);
-       })
-       .catch((err) => {
-         alert("cant remove from fav");
-         console.log(err);
-         console.log(newFav);
-       });
-   }
   function GetClosetDescription() {
     axios
       .get(
@@ -159,6 +103,7 @@ export default function Closet() {
                 ClosetName: ClosetName,
               });
               console.log("loggedUser", loggedUser);
+            }}
           >
             <View
               style={{

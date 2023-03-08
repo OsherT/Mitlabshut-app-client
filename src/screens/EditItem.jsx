@@ -77,8 +77,7 @@ export default function EditItem(props) {
       GetSizesList();
       GetTypesList();
       GetCategoriesList();
-      console.log("item", item);
-      console.log("price", item.price);
+  
       // console.log("categoryOptions", categoryOptions);
       // console.log("chosenCategory", chosenCategory);
       // console.log("categoriesList", categoriesList);
@@ -191,8 +190,6 @@ export default function EditItem(props) {
   };
 
   const UpdateItem = () => {
-    console.log(`itemName`, itemName);
-
     const updateItem = {
       id: item.id,
       closet_ID: loggedUser.closet_id,
@@ -207,8 +204,6 @@ export default function EditItem(props) {
       description: itemDescription,
       sale_status: true,
     };
-    console.log(`itemName`, itemName);
-    console.log(`updateItem`, item);
 
     //update the item's data
     fetch(ApiUrl + `/PutItem`, {

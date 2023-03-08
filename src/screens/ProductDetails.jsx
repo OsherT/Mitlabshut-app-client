@@ -19,6 +19,7 @@ import ShareSvg from "../svg/ShareSvg";
 import { userContext } from "../navigation/userContext";
 import axios from "axios";
 import { SafeAreaView } from "react-native-safe-area-context";
+import ButtonLogIn from "../components/ButtonLogIn";
 
 export default function ProductDetails(props) {
   const navigation = useNavigation();
@@ -33,6 +34,8 @@ export default function ProductDetails(props) {
   const [itemImages, setItemImages] = useState([]);
   const [UsersFavList, setUsersFavList] = useState([]);
   const [numOfFav, setNumOfFav] = useState("");
+  const [UsersShopList, setUsersShopList] = useState([]);
+  const [UsersFollowingList, setUsersFollowingList] = useState([]);
 
   //URL
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
@@ -41,12 +44,14 @@ export default function ProductDetails(props) {
   useEffect(() => {
     if (isFocused) {
       getFavItems();
+      getShopItems();
       GetItemCategories();
       GetItemImages();
       GetNumOfFav();
-      console.log(`item`, item);
+      getFollowingList();
     }
-  }, [isFocused]); 
+    console.log(UsersFollowingList);
+  }, [isFocused]);
 
   const GetItemCategories = () => {
     fetch(ApiUrl + `/GetItemCategortById/Item_ID/${item.id}`, {
@@ -97,7 +102,6 @@ export default function ProductDetails(props) {
       .then((res) => {
         const tempUsersFavList = res.data.map(({ item_id }) => item_id);
         setUsersFavList(tempUsersFavList);
-        console.log("tempUsersFavList", tempUsersFavList);
       })
       .catch((err) => {
         alert("cant get fav");
@@ -158,6 +162,52 @@ export default function ProductDetails(props) {
       );
   };
 
+  //gets all the items in the user's shop list
+  function getShopItems() {
+    axios
+      .get(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetShopByUserID/UserID/" +
+          loggedUser.id
+      )
+      .then((res) => {
+        const tempUsersShopList = res.data.map(({ item_id }) => item_id);
+        setUsersShopList(tempUsersShopList);
+      })
+      .catch((err) => {
+        console.log("cant get shop list", err);
+      });
+  }
+
+  //adds item in the user's shopping list
+  function AddToShopList(item_id) {
+    axios
+      .post(
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/PostShopItem/ItemID/${item_id}/UserID/${loggedUser.id}`
+      )
+      .then((res) => {
+        getShopItems();
+        setUsersShopList((prevList) => [...prevList, { item_id }]);
+      })
+      .catch((err) => {
+        console.log("cant add to shop list", err);
+      });
+  }
+
+  //removs item from user's shopping list
+  function RemoveFromShopList(itemId) {
+    axios
+      .delete(
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/DeleteShopItem/ItemID/${itemId}/UserID/${loggedUser.id}`
+      )
+      .then((res) => {
+        setUsersShopList((prevList) => prevList.filter((id) => id !== itemId));
+      })
+      .catch((err) => {
+        alert("cant add to fav");
+        console.log(err);
+        // console.log(newFav);
+      });
+  }
   //stringify all item's categories
   const ArrayToStringCat = (dataObj) => {
     const categoryNames = dataObj.map((item) => item.category_name);
@@ -165,12 +215,55 @@ export default function ProductDetails(props) {
     return "#" + concatenatedString;
   };
 
+  //gets all the items in the user's shop list
+  function getFollowingList() {
+    axios
+      .get(ApiUrl_user + `/GetClosetByUserID/User_ID/${loggedUser.id}`)
+      .then((res) => {
+        const tempUsersFollowList = res.data.map(({ closet_id }) => closet_id);
+        setUsersFollowingList(tempUsersFollowList);
+        console.log("tempUsersFollowList", tempUsersFollowList);
+        console.log("res", res.data);
+      })
+      .catch((err) => {
+        console.log("cant get shop list", err);
+      });
+  }
+
   const followCloset = () => {
-    Alert.alert("follow");
+    axios
+      .post(
+        ApiUrl_user +
+          `/PostFollowingCloset/User_ID/${loggedUser.id}/Closet_ID/${item.closet_ID}`
+      )
+      .then((res) => {
+        var closet_ID = item.closet_ID;
+        setUsersFollowingList((prevList) => [...prevList, { closet_ID }]);
+        console.log(" follow", res.status);
+        getFollowingList();
+      })
+      .catch((err) => {
+        console.log("cant follow", err);
+      });
   };
 
   const unfollowCloset = () => {
-    Alert.alert("unfollow");
+    axios
+      .delete(
+        ApiUrl_user +
+          `/Delete/Closet_ID/${item.closet_ID}/User_ID/${loggedUser.id}`
+      )
+      .then((res) => {
+        var closet_ID = item.closet_ID;
+        setUsersFollowingList((prevList) =>
+          prevList.filter((id) => id !== closet_ID)
+        );
+        console.log("unfollow", err);
+        getFollowingList();
+      })
+      .catch((err) => {
+        console.log("cant unfollow", err);
+      });
   };
 
   //need to delete and fix the view
@@ -249,7 +342,6 @@ export default function ProductDetails(props) {
                 )}
               </View>
             </View>
-
             <Swiper style={styles.imageSwipperContainer}>
               {itemImages.map((image, index) => (
                 <ImageBackground
@@ -258,7 +350,6 @@ export default function ProductDetails(props) {
                   source={{ uri: image }}></ImageBackground>
               ))}
             </Swiper>
-
             {UsersFavList.includes(item.id) && (
               // render the filled heart SVG if the item ID is in the UsersFavList
               <TouchableOpacity
@@ -275,36 +366,33 @@ export default function ProductDetails(props) {
                 <HeartTwoSvg filled={false} />
               </TouchableOpacity>
             )}
-
             <TouchableOpacity style={styles.shareIcon}>
               <ShareSvg></ShareSvg>
             </TouchableOpacity>
 
             <View style={styles.Row}>
-              <View>
-                {!follow && (
-                  <Button
-                    title="עקבי                            "
-                    containerStyle={{ marginBottom: 13 }}
-                    onPress={() => {
-                      setFollow(true);
-                      followCloset();
-                    }}
-                  />
-                )}
-              </View>
-              <View>
-                {follow && (
-                  <ButtonFollow
-                    title="עוקבת                          "
-                    containerStyle={{ marginBottom: 13 }}
-                    onPress={() => {
-                      setFollow(false);
-                      unfollowCloset();
-                    }}
-                  />
-                )}
-              </View>
+              {!UsersFollowingList.includes(item.closet_ID) && (
+                <ButtonFollow
+                  title="עקבי"
+                  backgroundColor={COLORS.golden}
+                  textColor={COLORS.white}
+                  containerStyle={{ marginBottom: 13 }}
+                  onPress={() => {
+                    followCloset();
+                  }}
+                />
+              )}
+              {UsersFollowingList.includes(item.closet_ID) && (
+                <ButtonFollow
+                  title="הסירי עוקב"
+                  backgroundColor={COLORS.goldenTransparent_03}
+                  textColor={COLORS.black}
+                  containerStyle={{ marginBottom: 13 }}
+                  onPress={() => {
+                    unfollowCloset();
+                  }}
+                /> 
+              )}
               <View
                 style={{
                   flexDirection: "row-reverse",
@@ -356,7 +444,6 @@ export default function ProductDetails(props) {
               <View style={styles.Col}>
                 <View>
                   <Text style={styles.descriptionHeader}>
-                    {" "}
                     {item.use_condition}
                   </Text>
                   <Text style={styles.descriptionText}> מצב פריט</Text>
@@ -385,10 +472,24 @@ export default function ProductDetails(props) {
               </Text>
             </View>
             <View>
-              <Button
-                title="+ הוסיפי לסל קניות"
-                containerStyle={{ marginBottom: 13 }}
-              />
+              {UsersShopList.includes(item.id) && (
+                <ButtonLogIn
+                  title="- הסירי מסל קניות"
+                  containerStyle={{ marginBottom: 13 }}
+                  onPress={() => {
+                    RemoveFromShopList(item.id);
+                  }}
+                />
+              )}
+              {!UsersShopList.includes(item.id) && (
+                <Button
+                  title="+ הוסיפי לסל קניות"
+                  containerStyle={{ marginBottom: 13 }}
+                  onPress={() => {
+                    AddToShopList(item.id);
+                  }}
+                />
+              )}
             </View>
           </ScrollView>
         </View>

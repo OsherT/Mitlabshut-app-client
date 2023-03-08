@@ -3,12 +3,19 @@ import React from "react";
 
 import { COLORS, FONTS } from "../constants";
 
-export default function ButtonFollow({ title, containerStyle, onPress }) {
+export default function ButtonFollow({
+  textColor,
+  backgroundColor,
+  title,
+  containerStyle,
+  onPress,
+}) {
   return (
     <TouchableOpacity
       style={{
         height: 50,
-        backgroundColor: COLORS.goldenTransparent_03,
+        width: 170,
+        backgroundColor: backgroundColor,
         borderRadius: 25,
         justifyContent: "center",
         alignItems: "center",
@@ -17,7 +24,7 @@ export default function ButtonFollow({ title, containerStyle, onPress }) {
       onPress={onPress}>
       <Text
         style={{
-          color: COLORS.white,
+          color: textColor,
           textAlign: "center",
           ...FONTS.Mulish_600SemiBold,
           fontSize: 16,

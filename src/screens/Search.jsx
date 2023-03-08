@@ -5,14 +5,13 @@ import {
   TextInput,
   StatusBar,
   TouchableOpacity,
-  FlatList,
   ImageBackground,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { Line, Header, RatingComponent } from "../components";
-import { COLORS, products, FONTS } from "../constants";
-import { FilterSvg, SearchSvg, BagSvg, HeartSvg } from "../svg";
+import {  Header } from "../components";
+import { COLORS, FONTS } from "../constants";
+import { FilterSvg, SearchSvg} from "../svg";
 import axios from "axios";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 

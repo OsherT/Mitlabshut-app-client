@@ -80,7 +80,7 @@ export default function EditProfile(props) {
 
     console.log("newUser", newUser);
 
-    fetch(ApiUrl + `User`, {
+    fetch(ApiUrl + `User/PutUser`, {
       method: "PUT",
       body: JSON.stringify(newUser),
       headers: new Headers({
@@ -104,7 +104,7 @@ export default function EditProfile(props) {
 
     axios
       .put(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Closet",
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Closet/Put",
         newClosetData
       )
       .then((res) => {

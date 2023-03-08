@@ -30,21 +30,27 @@ export default function SignIn() {
   const [userPassword, setUserPassword] = useState("123");
   //לצורך נוחות כדי לא להקליד את הנתונים כל פעם////////////////////////
 
+  //ref to clean the user inputs
   const emailInputRef = useRef(null);
   const passwordInputRef = useRef(null);
 
+
+  //check if the user insert correct values, and loning him in
   const logIn = () => {
     if (userEmail === "" || userPassword === "") {
       Alert.alert("יש למלא את כל הפרטים");
     } else {
       setUserEmail(userEmail.replace("%40", "@"));
-      fetch(ApiUrl + `/User/email/${userEmail}/password/${userPassword}`, {
-        method: "GET",
-        headers: new Headers({
-          "Content-Type": "application/json; charset=UTF-8",
-          Accept: "application/json; charset=UTF-8",
-        }),
-      })
+      fetch(
+        ApiUrl + `/User/GetUser/email/${userEmail}/password/${userPassword}`,
+        {
+          method: "GET",
+          headers: new Headers({
+            "Content-Type": "application/json; charset=UTF-8",
+            Accept: "application/json; charset=UTF-8",
+          }),
+        }
+      )
         .then((res) => {
           console.log("status LOG IN", res.status);
           return res.json();
@@ -53,10 +59,11 @@ export default function SignIn() {
           (user) => {
             if (user.id > 0) {
               setloggedUser(user);
-              // navigation.navigate("Closet");
-              // navigation.navigate("UploadItem");
+
               navigation.navigate("MainLayout");
               // navigation.navigate("ItemsByCtegory");
+              // navigation.navigate("Closet");
+              // navigation.navigate("UploadItem");
             }
 
             //if deatails are incorrect

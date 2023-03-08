@@ -102,8 +102,7 @@ export default function Closet() {
                 ClosetDesc: ClosetDesc,
                 ClosetName: ClosetName,
               });
-              console.log("loggedUser", loggedUser);
-            }}
+              console.log("loggedUser", loggedUser);}}
           >
             <View
               style={{

@@ -10,7 +10,7 @@ import {
   FlatList,
 } from "react-native";
 import axios from "axios";
-import { Edit, Fail } from "../svg";
+import { Edit, Fail, HeartTwoSvg } from "../svg";
 import { BagSvg, HeartSvg, Facebook } from "../svg";
 import { Header, ContainerComponent, ProfileCategory } from "../components";
 import { COLORS, products, FONTS } from "../constants";
@@ -34,21 +34,15 @@ export default function Closet() {
     GetClosetDescription();
     GetClosetItems();
     GetItemPhotos();
-    // getShopItems();
+    getShopItems();
     getFavItems();
   }, []);
-
-  // useEffect(() => {
-  //       getFavItems();
-
-  // }, [UsersShopList, UsersFavList]);
 
   function GetClosetDescription() {
     axios
       .get(
         "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Closet/Get/" +
           loggedUser.closet_id
-          
       ) //לשנות כשדנה עושה החזרת הדיסקריפשן לפי איידי
       .then((res) => {
         //console.log("description", res.status);
@@ -76,7 +70,9 @@ export default function Closet() {
   }
   function GetItemPhotos() {
     axios
-      .get("https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemImageVideo")
+      .get(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemImageVideo"
+      )
       .then((res) => {
         setUsersItemPhotos(res.data);
       })
@@ -103,7 +99,8 @@ export default function Closet() {
                 ClosetDesc: ClosetDesc,
                 ClosetName: ClosetName,
               });
-              console.log("loggedUser", loggedUser);}}
+              console.log("loggedUser", loggedUser);
+            }}
           >
             <View
               style={{
@@ -166,7 +163,6 @@ export default function Closet() {
         console.log(res.data);
         const tempUsersFavList = res.data.map(({ item_id }) => item_id);
         setUsersFavList(tempUsersFavList);
-        console.log(tempUsersFavList);
       })
       .catch((err) => {
         alert("cant get fav");
@@ -201,59 +197,51 @@ export default function Closet() {
         console.log(newFav);
       });
   }
-  ///handle shop list
-  // function getShopItems() {
-  //   axios
-  //     .get(
-  //       "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserShopList/User_ID/" +
-  //         loggedUser.id
-  //     )
-  //     .then((res) => {
-  //       const tempUsersShopList = res.data.map(({ item_ID }) => item_ID);
-  //       setUsersShopList(tempUsersShopList);
-  //     })
-  //     .catch((err) => {
-  //       alert("cant get shop list");
-  //       console.log(err);
-  //     });
-  // }
-  // function AddToShopList(item_id) {
-  //   var newitemInBag = {
-  //     item_ID: item_id,
-  //     user_ID: loggedUser.ID,
-  //   };
-  //   axios
-  //     .post(
-  //       "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserShopList",
-  //       newitemInBag
-  //     )
-  //     .then((res) => {
-  //       getShopItems();
-  //       setUsersShopList((prevList) => [...prevList, { item_id }]);
-  //     })
-  //     .catch((err) => {
-  //       alert("cant add to shop list");
-  //       console.log(err);
-  //     });
-  // }
-  // function RemoveFromShopList(itemId) {
-  //   setUsersShopList((prevList) => prevList.filter((id) => id !== itemId));
-  //   alert("removed from shop list " + itemId);
-
-  //   axios
-  //     .delete(
-  //       "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList",
-  //       newFav
-  //     )
-  //     .then((res) => {
-  //       setUsersShopList((prevList) => prevList.filter((id) => id !== itemId));
-  //     })
-  //     .catch((err) => {
-  //       alert("cant add to fav");
-  //       console.log(err);
-  //       console.log(newFav);
-  //     });
-  // }
+  //handle shop list
+  function getShopItems() {
+    axios
+      .get(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetShopByUserID/UserID/" +
+          loggedUser.id
+      )
+      .then((res) => {
+        const tempUsersShopList = res.data.map(({ item_id }) => item_id);
+        setUsersShopList(tempUsersShopList);
+        console.log(tempUsersShopList);
+      })
+      .catch((err) => {
+        alert("cant get shop list");
+        console.log(err);
+      });
+  }
+  function AddToShopList(item_id) {
+    axios
+      .post(
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/PostShopItem/ItemID/${item_id}/UserID/${loggedUser.id}`
+      )
+      .then((res) => {
+        getShopItems();
+        setUsersShopList((prevList) => [...prevList, { item_id }]);
+      })
+      .catch((err) => {
+        alert("cant add to shop list");
+        console.log(err);
+      });
+  }
+  function RemoveFromShopList(itemId) {
+    axios
+      .delete(
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/DeleteShopItem/ItemID/${itemId}/UserID/${loggedUser.id}`
+      )
+      .then((res) => {
+        setUsersShopList((prevList) => prevList.filter((id) => id !== itemId));
+      })
+      .catch((err) => {
+        alert("cant add to fav");
+        console.log(err);
+        console.log(newFav);
+      });
+  }
   ///render items
   function renderClothes() {
     return (
@@ -373,29 +361,21 @@ export default function Closet() {
             {UsersShopList.includes(item.id) && (
               // render the filled heart SVG if the item ID is in the UsersFavList
               <TouchableOpacity
-                style={{ left: 12, top: 12 }}
-                onPress={() => RemoveFromFav(item.id)}
+                style={{ position: "absolute", right: 12, bottom: 12 }}
+                onPress={() => RemoveFromShopList (item.id)}
               >
-                <BagSvg color="black" />
+                <BagSvg color="#626262" inCart={true} />
               </TouchableOpacity>
             )}
             {!UsersShopList.includes(item.id) && (
               // render the unfilled heart SVG if the item ID is not in the UsersFavList
               <TouchableOpacity
-                style={{ left: 12, top: 12 }}
+                style={{ position: "absolute", right: 12, bottom: 12 }}
                 onPress={() => AddToShopList(item.id)}
               >
+                <BagSvg color="#D7BA7B" inCart={false} />
               </TouchableOpacity>
             )}
-            <TouchableOpacity
-              style={{
-                position: "absolute",
-                right: 12,
-                bottom: 12,
-              }}
-            >
-              <BagSvg />
-            </TouchableOpacity>
           </TouchableOpacity>
         )}
       />

@@ -8,9 +8,9 @@ import {
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { COLORS, FONTS, SIZES } from "../constants";
-import { Button } from "../components";
-import { BackSvg, Edit, HeartTwoSvg } from "../svg";
+import { AREA, COLORS, FONTS, SIZES } from "../constants";
+import { Button, Header } from "../components";
+import { Edit, HeartTwoSvg } from "../svg";
 import ButtonFollow from "../components/ButtonFollow";
 import { Alert } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
@@ -18,13 +18,14 @@ import Swiper from "react-native-swiper";
 import ShareSvg from "../svg/ShareSvg";
 import { userContext } from "../navigation/userContext";
 import axios from "axios";
-import debounce from "lodash.debounce";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ProductDetails(props) {
-  const item = props.route.params.item;
-
   const navigation = useNavigation();
   const { loggedUser } = useContext(userContext);
+  const item = props.route.params.item;
+
+  //item's info section
   const [follow, setFollow] = useState(false);
   const [shippingMethod] = useState(item.shipping_method);
   const [itemCtegories, setItemCtegories] = useState([]);
@@ -32,21 +33,20 @@ export default function ProductDetails(props) {
   const [UsersFavList, setUsersFavList] = useState([]);
   const [numOfFav, setNumOfFav] = useState("");
 
-  const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
+  //URL
+  const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
+  const ApiUrl_user = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User`;
 
   useEffect(() => {
+    getFavItems();
     GetItemCategories();
     GetItemImages();
     GetNumOfFav();
-    // getFavItems();
-  }, []);
-
-  // useEffect(() => {
-  //   getFavItems();
-  // }, [UsersFavList]);
+    console.log(`item`, item);
+  }, []); 
 
   const GetItemCategories = () => {
-    fetch(ApiUrl + `Item_in_category/Item_ID/${item.id}`, {
+    fetch(ApiUrl + `/GetItemCategortById/Item_ID/${item.id}`, {
       method: "GET",
       headers: new Headers({
         "Content-Type": "application/json; charset=UTF-8",
@@ -67,7 +67,7 @@ export default function ProductDetails(props) {
   };
 
   const GetItemImages = () => {
-    fetch(ApiUrl + `Item_Image_Video/Item_ID/${item.id}`, {
+    fetch(ApiUrl + `/GetItem_Image_VideoItemById/Item_ID/${item.id}`, {
       method: "GET",
       headers: new Headers({
         "Content-Type": "application/json; charset=UTF-8",
@@ -79,7 +79,7 @@ export default function ProductDetails(props) {
       })
       .then(
         (data) => {
-          setItemImages(data.map((item) => item.src));
+          setItemImages(data.map((item) => item.item_Src));
         },
         (error) => {
           console.log("Item_Image_Video error", error);
@@ -87,8 +87,55 @@ export default function ProductDetails(props) {
       );
   };
 
+  //gets all the items in the user's fav list
+  function getFavItems() {
+    axios
+      .get(ApiUrl_user + `/GetFavByUserID/${loggedUser.id}`)
+      .then((res) => {
+        const tempUsersFavList = res.data.map(({ item_id }) => item_id);
+        setUsersFavList(tempUsersFavList);
+        console.log("tempUsersFavList", tempUsersFavList);
+      })
+      .catch((err) => {
+        alert("cant get fav");
+        console.log(err);
+      });
+  }
+
+  //adds item in the user's fav list
+  function AddtoFav(item_id) {
+    axios
+      .post(
+        ApiUrl_user + `/PostFavItem/Item_ID/${item_id}/User_ID/${loggedUser.id}`
+      )
+      .then((res) => {
+        getFavItems();
+        setUsersFavList((prevList) => [...prevList, { item_id }]);
+      })
+      .catch((err) => {
+        console.log("cant add to fav", err);
+      });
+  }
+
+  //removes item in the user's fav list
+  function RemoveFromFav(itemId) {
+    axios
+      .delete(
+        ApiUrl_user +
+          `/DeleteFavItem/Item_ID/${itemId}/User_ID/${loggedUser.id}`
+      )
+      .then((res) => {
+        getFavItems();
+        setUsersFavList((prevList) => prevList.filter((id) => id !== itemId));
+      })
+      .catch((err) => {
+        console.log("cant remove from fav", err);
+      });
+  }
+
+  //shows the num of users that like the item
   const GetNumOfFav = () => {
-    fetch(ApiUrl + `UserFavList/Item_ID/${item.id}`, {
+    fetch(ApiUrl + `/GetItemFavByItemId/Item_ID/${item.id}`, {
       method: "GET",
       headers: new Headers({
         "Content-Type": "application/json; charset=UTF-8",
@@ -108,71 +155,12 @@ export default function ProductDetails(props) {
       );
   };
 
-  // function getFavItems() {
-  //   // var Email = loggedUser.email.replace("%40", "@");
-  //   var Email = loggedUser.email;
-
-  //   axios
-  //     .get(
-  //       "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList/User_Email/" +
-  //         Email
-  //     )
-  //     .then((res) => {
-  //       const tempUsersFavList = res.data.map(({ item_ID }) => item_ID);
-  //       setUsersFavList(tempUsersFavList);
-  //       // console.log("fav");
-  //     })
-  //     .catch((err) => {
-  //       // alert("cant get fav");
-  //       console.log(err);
-  //     });
-  // }
-
-  // function AddtoFav(item_id) {
-  //   var newFav = {
-  //     item_ID: item_id,
-  //     user_Email: loggedUser.email,
-  //   };
-  //   axios
-  //     .post(
-  //       "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList",
-  //       newFav
-  //     )
-  //     .then((res) => {
-  //       // alert("added");
-  //       console.log("AddtoFav");
-  //       setUsersFavList((prevList) => [...prevList, { item_id }]);
-  //       // getFavItems();
-  //     })
-  //     .catch((err) => {
-  //       alert("cant add to fav");
-  //       console.log(err);
-  //       // console.log(newFav);
-  //       // console.log(UsersFavList);
-  //       // console.log(
-  //       //   "פה " + UsersFavList.find((obj) => obj.item_ID === 15) !== undefined
-  //       // );
-  //     });
-  // }
-
-  // function RemoveFromFav(itemId) {
-  //   var Email = loggedUser.email.replace("%40", "@");
-
-  //   axios
-  //     .delete(
-  //       `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList/Item_ID/${itemId}/User_Email/${Email}`
-  //     )
-  //     .then((res) => {
-  //       setUsersFavList((prevList) => prevList.filter((id) => id !== itemId));
-  //       // alert("removed " + itemId);
-  //       // getFavItems();
-  //     })
-  //     .catch((err) => {
-  //       alert("cant remove from fav");
-  //       console.log(err);
-  //       console.log(newFav);
-  //     });
-  // }
+  //stringify all item's categories
+  const ArrayToStringCat = (dataObj) => {
+    const categoryNames = dataObj.map((item) => item.category_name);
+    const concatenatedString = categoryNames.join("#");
+    return "#" + concatenatedString;
+  };
 
   const followCloset = () => {
     Alert.alert("follow");
@@ -181,43 +169,34 @@ export default function ProductDetails(props) {
   const unfollowCloset = () => {
     Alert.alert("unfollow");
   };
-  //stringify all item's categories
-  const ArrayToStringCat = (dataObj) => {
-    const categoryNames = dataObj.map((item) => item.category_name);
-    const concatenatedString = categoryNames.join("#");
-    return concatenatedString;
-  };
 
   //need to delete and fix the view
-  function renderSlide() {
-    return (
-      <View style={{ flex: 1, backgroundColor: "#EFEDE6" }}>
-        <View style={styles.topIcons}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <BackSvg />
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            borderColor: COLORS.goldenTransparent_03,
-            borderWidth: 2,
-            paddingTop: 100,
-          }}></View>
-      </View>
-    );
-  }
+  // function renderSlide() {
+  //   return (
+  //     <View style={{ flex: 1, backgroundColor: "#EFEDE6" }}>
+  //       <View style={styles.topIcons}>
+  //         <TouchableOpacity onPress={() => navigation.goBack()}>
+  //           <BackSvg />
+  //         </TouchableOpacity>
+  //       </View>
+  //       <View
+  //         style={{
+  //           borderColor: COLORS.goldenTransparent_03,
+  //           borderWidth: 2,
+  //           paddingTop: 100,
+  //         }}></View>
+  //     </View>
+  //   );
+  // }
 
   function renderContent() {
     return (
       <View>
-        {/* {renderDots()} */}
-        {/* <View style={styles.container} /> */}
-
         <View style={styles.contentContainer}>
           <ScrollView>
             <View style={styles.Row}>
               <View>
-                {/* 12 זה גם משלוח וגם איסוף עצמי */}
+                {/* 12 זה גם משלוח וגם איסוף עצמי*/}
                 {(shippingMethod == 1 || shippingMethod == 12) && (
                   <Text
                     style={{
@@ -241,19 +220,20 @@ export default function ProductDetails(props) {
               </View>
 
               <View style={styles.Col}>
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate("EditItem", {
-                      item: item,
-                      itemImages: itemImages,
-                      itemCtegories: itemCtegories,
-                      // closet: ClosetData,
-                      // closet_id: loggedUser.closet_id,
-                    });
-                  }}>
-                  <Edit />
-                </TouchableOpacity>
-                <Text style={styles.itemHeader}>{item.name}</Text>
+                <View style={styles.Row}>
+                  <Text style={styles.itemHeader}>{item.name}</Text>
+                  <Text> </Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate("EditItem", {
+                        item: item,
+                        itemImages: itemImages,
+                        itemCtegories: itemCtegories,
+                      });
+                    }}>
+                    <Edit />
+                  </TouchableOpacity>
+                </View>
                 {numOfFav > 0 && (
                   <Text
                     style={{
@@ -272,20 +252,20 @@ export default function ProductDetails(props) {
                 <ImageBackground
                   key={index}
                   style={styles.image}
-                  source={{ uri: image }}>
-                  {/* in fav list */}
-                </ImageBackground>
+                  source={{ uri: image }}></ImageBackground>
               ))}
             </Swiper>
+
             {UsersFavList.includes(item.id) && (
+              // render the filled heart SVG if the item ID is in the UsersFavList
               <TouchableOpacity
                 style={styles.favIcon}
                 onPress={() => RemoveFromFav(item.id)}>
                 <HeartTwoSvg filled={true} />
               </TouchableOpacity>
             )}
-            {/* not in fav list */}
             {!UsersFavList.includes(item.id) && (
+              // render the unfilled heart SVG if the item ID is not in the UsersFavList
               <TouchableOpacity
                 style={styles.favIcon}
                 onPress={() => AddtoFav(item.id)}>
@@ -296,6 +276,7 @@ export default function ProductDetails(props) {
             <TouchableOpacity style={styles.shareIcon}>
               <ShareSvg></ShareSvg>
             </TouchableOpacity>
+
             <View style={styles.Row}>
               <View>
                 {!follow && (
@@ -394,11 +375,10 @@ export default function ProductDetails(props) {
                 </View>
               </View>
             </View>
-            <View></View>
             <View style={styles.dseContainer}>
               <Text style={styles.description}>
                 {ArrayToStringCat(itemCtegories)}
-                {"\n"} {item.description}
+                {","} {item.description}
               </Text>
             </View>
             <View>
@@ -414,30 +394,54 @@ export default function ProductDetails(props) {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: "#EFEDE6" }}>
-      {/* //need to delete and fix the view */}
-      {renderSlide()}
+    // <View style={{ flex: 1, backgroundColor: "#EFEDE6" }}>
+    //   {/* //need to delete and fix the view */}
+    //   {renderSlide()}
+    //   {renderContent()}
+    // </View>
+    <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
+      <Header onPress={() => navigation.goBack()} />
       {renderContent()}
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  topIcons: {
-    position: "absolute",
-    top: 0,
-    zIndex: 1,
-    paddingHorizontal: 20,
-    marginTop: 45,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: SIZES.width,
-    marginBottom: 30,
-  },
+  // topIcons: {
+  //   // position: "absolute",
+  //   top: 0,
+  //   zIndex: 1,
+  //   paddingHorizontal: 20,
+  //   marginTop: 45,
+  //   flexDirection: "row",
+  //   justifyContent: "space-between",
+  //   width: SIZES.width,
+  //   // marginBottom: 30,
+  // },
+  // dot: {
+  //   width: 10,
+  //   height: 10,
+  //   marginHorizontal: 5,
+  //   borderRadius: 5,
+  //   borderWidth: 2,
+  //   top: -50,
+  // },
+  // container: {
+  //   width: SIZES.width,
+  //   height: 15,
+  //   borderTopLeftRadius: 15,
+  //   borderTopRightRadius: 15,
+  //   position: "absolute",
+  //   top: -15,
+  //   // backgroundColor: COLORS.white,
+  //   zIndex: 9,
+  //   // backgroundColor: "#EFEDE6",
+  // },
+
   favIcon: {
     position: "absolute",
     left: 12,
-    top: 255,
+    top: 235,
     zIndex: 1,
     width: 38,
     height: 38,
@@ -449,7 +453,7 @@ const styles = StyleSheet.create({
   shareIcon: {
     position: "absolute",
     left: 12,
-    top: 300,
+    top: 280,
     zIndex: 1,
     width: 38,
     height: 38,
@@ -478,33 +482,13 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     marginBottom: 15,
   },
-  dot: {
-    width: 10,
-    height: 10,
-    marginHorizontal: 5,
-    borderRadius: 5,
-    borderWidth: 2,
-    top: -50,
-  },
-  // container: {
-  //   width: SIZES.width,
-  //   height: 15,
-  //   borderTopLeftRadius: 15,
-  //   borderTopRightRadius: 15,
-  //   position: "absolute",
-  //   top: -15,
-  //   // backgroundColor: COLORS.white,
-  //   zIndex: 9,
-  //   // backgroundColor: "#EFEDE6",
-  // },
-
   contentContainer: {
     paddingVertical: 30,
     paddingTop: 10,
-    // backgroundColor: COLORS.white,
-    backgroundColor: "#EFEDE6",
+    backgroundColor: COLORS.white,
     width: "100%",
     paddingHorizontal: 30,
+    borderRadius: 10,
   },
   itemHeader: {
     ...FONTS.Mulish_700Bold,

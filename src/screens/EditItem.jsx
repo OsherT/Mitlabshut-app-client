@@ -23,6 +23,7 @@ import { userContext } from "../navigation/userContext";
 export default function EditItem(props) {
   const item = props.route.params.item;
   const itemImages = props.route.params.itemImages;
+
   //take only the category name and not the all object
   const itemCtegories = props.route.params.itemCtegories.map(
     (item) => item.category_name
@@ -46,7 +47,7 @@ export default function EditItem(props) {
   const [categoriesFlag, setCategoriesFlag] = useState(false);
   // שהמערך תמונות יועתק פעם אחת בהתחלה כשנכנסים לדף ואז יתעדכן בהתאם למחיקה/ הוספה של תמונה בודדת או כמה
   let newImages = [...itemImage];
-  
+
   //lists
   const [brandsList, setBrandsList] = useState([]);
   const [categoriesList, setCategoriesList] = useState([]);
@@ -65,7 +66,7 @@ export default function EditItem(props) {
     { key: "4", value: "נלבש מספר פעמים" },
   ];
 
-  const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
+  const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
 
   useEffect(() => {
     GetBrandsList();
@@ -81,7 +82,7 @@ export default function EditItem(props) {
   }, []);
 
   const GetBrandsList = () => {
-    fetch(ApiUrl + "Item_brand", {
+    fetch(ApiUrl + "/GetBrand", {
       method: "GET",
       headers: new Headers({
         "Content-Type": "application/json; charset=UTF-8",
@@ -102,7 +103,7 @@ export default function EditItem(props) {
   };
 
   const GetCategoriesList = () => {
-    fetch(ApiUrl + "Item_category", {
+    fetch(ApiUrl + "/GetCategory", {
       method: "GET",
       headers: new Headers({
         "Content-Type": "application/json; charset=UTF-8",
@@ -123,7 +124,7 @@ export default function EditItem(props) {
   };
 
   const GetColorsList = () => {
-    fetch(ApiUrl + "Item_color", {
+    fetch(ApiUrl + "/GetColor", {
       method: "GET",
       headers: new Headers({
         "Content-Type": "application/json; charset=UTF-8",
@@ -144,7 +145,7 @@ export default function EditItem(props) {
   };
 
   const GetSizesList = () => {
-    fetch(ApiUrl + "Item_size", {
+    fetch(ApiUrl + "/GetItem_size", {
       method: "GET",
       headers: new Headers({
         "Content-Type": "application/json; charset=UTF-8",
@@ -165,7 +166,7 @@ export default function EditItem(props) {
   };
 
   const GetTypesList = () => {
-    fetch(ApiUrl + "Item_type", {
+    fetch(ApiUrl + "/GetItem_type", {
       method: "GET",
       headers: new Headers({
         "Content-Type": "application/json; charset=UTF-8",
@@ -186,23 +187,27 @@ export default function EditItem(props) {
   };
 
   const UpdateItem = () => {
+    console.log(`itemName`, itemName);
+
     const updateItem = {
-      ID: item.id,
-      Closet_ID: loggedUser.closet_id,
-      Name: itemName,
-      Price: itemPrice,
-      Type: itemType,
-      Size: itemSize,
-      Use_condition: itemCondition,
-      Color: itemColor,
-      Shipping_method: ArrayToStringShip(itemDeliveryMethod),
-      Brand: itemBrand,
-      Description: itemDescription,
-      Sale_status: true,
+      id: item.id,
+      closet_ID: loggedUser.closet_id,
+      name: itemName,
+      price: itemPrice,
+      type: itemType,
+      size: itemSize,
+      use_condition: itemCondition,
+      color: itemColor,
+      shipping_method: ArrayToStringShip(itemDeliveryMethod),
+      brand: itemBrand,
+      description: itemDescription,
+      sale_status: true,
     };
+    console.log(`itemName`, itemName);
+    console.log(`updateItem`, item);
 
     //update the item's data
-    fetch(ApiUrl + `Item`, {
+    fetch(ApiUrl + `/PutItem`, { 
       method: "PUT",
       body: JSON.stringify(updateItem),
       headers: new Headers({
@@ -236,7 +241,7 @@ export default function EditItem(props) {
   };
 
   const deleteCtegories = () => {
-    fetch(ApiUrl + `Item_in_category/${item.id}`, {
+    fetch(ApiUrl + `/DeleteItemsInCategory/Item_ID/${item.id}`, {
       method: "DELETE",
       headers: new Headers({
         "Content-type": "application/json; charset=UTF-8",
@@ -259,18 +264,18 @@ export default function EditItem(props) {
   //upload categories to Items_in_category table
   const postCtegories = (item_ID) => {
     for (let i = 0; i < itemCategory.length; i++) {
-      const new_categories = {
-        Item_ID: item_ID,
-        Category_name: itemCategory[i],
-      };
-      fetch(ApiUrl + `Item_in_category`, {
-        method: "POST",
-        body: JSON.stringify(new_categories),
-        headers: new Headers({
-          "Content-type": "application/json; charset=UTF-8",
-          Accept: "application/json; charset=UTF-8",
-        }),
-      })
+      fetch(
+        ApiUrl +
+          `/PostItemsInCategory/Item_ID/${item_ID}/Category_name/${itemCategory[i]}`,
+        {
+          method: "POST",
+          // body: JSON.stringify(new_categories),
+          headers: new Headers({
+            "Content-type": "application/json; charset=UTF-8",
+            Accept: "application/json; charset=UTF-8",
+          }),
+        }
+      )
         .then((res) => {
           return res.json();
         })

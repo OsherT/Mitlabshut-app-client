@@ -94,56 +94,60 @@ export default function Closet() {
           paddingTop: 25,
           paddingBottom: 40,
         }}
-        showsHorizontalScrollIndicator={false}>
+        showsHorizontalScrollIndicator={false}
+      >
         <ContainerComponent containerStyle={{ marginBottom: 20 }}>
           <TouchableOpacity
             onPress={() => {
               navigation.navigate("EditProfile");
-            }}>
+            }}
+          >
             <View
               style={{
                 position: "absolute",
                 right: 0,
                 bottom: -20,
-              }}>
+              }}
+            >
               <Edit />
-              
             </View>
-            </TouchableOpacity>
-            <ImageBackground
-              source={{
-                uri: loggedUser.user_image,
-              }}
-              style={{
-                width: 80,
-                height: 80,
-                alignSelf: "center",
-                marginBottom: 15,
-              }}
-              imageStyle={{ borderRadius: 40 }}></ImageBackground>
-            <Text
-              style={{
-                textAlign: "center",
-                ...FONTS.Mulish_700Bold,
-                fontSize: 16,
-                textTransform: "capitalize",
-                color: COLORS.black,
-                marginBottom: 4,
-                lineHeight: 16 * 1.2,
-              }}>
-              הארון של {closetName}
-            </Text>
-            <Text
-              style={{
-                textAlign: "center",
-                ...FONTS.Mulish_400Regular,
-                fontSize: 14,
-                color: COLORS.gray,
-                lineHeight: 14 * 1.7,
-              }}>
-              {closetDesc}
-            </Text>
-          
+          </TouchableOpacity>
+          <ImageBackground
+            source={{
+              uri: loggedUser.user_image,
+            }}
+            style={{
+              width: 80,
+              height: 80,
+              alignSelf: "center",
+              marginBottom: 15,
+            }}
+            imageStyle={{ borderRadius: 40 }}
+          ></ImageBackground>
+          <Text
+            style={{
+              textAlign: "center",
+              ...FONTS.Mulish_700Bold,
+              fontSize: 16,
+              textTransform: "capitalize",
+              color: COLORS.black,
+              marginBottom: 4,
+              lineHeight: 16 * 1.2,
+            }}
+          >
+            הארון של {closetName}
+          </Text>
+          <Text
+            style={{
+              textAlign: "center",
+              ...FONTS.Mulish_400Regular,
+              fontSize: 14,
+              color: COLORS.gray,
+              lineHeight: 14 * 1.7,
+            }}
+          >
+            {closetDesc}
+          </Text>
         </ContainerComponent>
       </View>
     );
@@ -278,12 +282,14 @@ export default function Closet() {
                       height: 128,
                     }}
                     imageStyle={{ borderRadius: 10 }}
-                    key={photo.ID}>
+                    key={photo.ID}
+                  >
                     {UsersFavList.includes(item.id) && (
                       // render the filled heart SVG if the item ID is in the UsersFavList
                       <TouchableOpacity
                         style={{ left: 12, top: 12 }}
-                        onPress={() => RemoveFromFav(item.id)}>
+                        onPress={() => RemoveFromFav(item.id)}
+                      >
                         <HeartSvg filled={true} />
                       </TouchableOpacity>
                     )}
@@ -291,7 +297,8 @@ export default function Closet() {
                       // render the unfilled heart SVG if the item ID is not in the UsersFavList
                       <TouchableOpacity
                         style={{ left: 12, top: 12 }}
-                        onPress={() => AddtoFav(item.id)}>
+                        onPress={() => AddtoFav(item.id)}
+                      >
                         <HeartSvg filled={false} />
                       </TouchableOpacity>
                     )}
@@ -303,7 +310,8 @@ export default function Closet() {
                 paddingHorizontal: 12,
                 paddingBottom: 15,
                 paddingTop: 12,
-              }}>
+              }}
+            >
               <Text
                 style={{
                   ...FONTS.Mulish_600SemiBold,
@@ -313,7 +321,8 @@ export default function Closet() {
                   color: COLORS.black,
                   marginBottom: 6,
                   textAlign: "right",
-                }}>
+                }}
+              >
                 {item.name}
               </Text>
               <Text
@@ -322,7 +331,8 @@ export default function Closet() {
                   ...FONTS.Mulish_400Regular,
                   fontSize: 14,
                   textAlign: "right",
-                }}>
+                }}
+              >
                 מידה: {item.size}
               </Text>
               <View
@@ -340,7 +350,8 @@ export default function Closet() {
                   color: COLORS.black,
                   //marginLeft: 70,
                   textAlign: "left",
-                }}>
+                }}
+              >
                 ₪ {item.price}
               </Text>
             </View>
@@ -348,7 +359,8 @@ export default function Closet() {
               // render the filled heart SVG if the item ID is in the UsersFavList
               <TouchableOpacity
                 style={{ position: "absolute", right: 12, bottom: 12 }}
-                onPress={() => RemoveFromShopList(item.id)}>
+                onPress={() => RemoveFromShopList(item.id)}
+              >
                 <BagSvg color="#626262" inCart={true} />
               </TouchableOpacity>
             )}
@@ -356,7 +368,8 @@ export default function Closet() {
               // render the unfilled heart SVG if the item ID is not in the UsersFavList
               <TouchableOpacity
                 style={{ position: "absolute", right: 12, bottom: 12 }}
-                onPress={() => AddToShopList(item.id)}>
+                onPress={() => AddToShopList(item.id)}
+              >
                 <BagSvg color="#D7BA7B" inCart={false} />
               </TouchableOpacity>
             )}
@@ -371,7 +384,9 @@ export default function Closet() {
       style={{
         flex: 1,
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-      }}>
+      }}
+    >
+      <Header title="הארון שלי" onPress={() => navigation.goBack()} />
       {/* <Header title="הארון של`{}`" goBack={false} /> */}
       {renderUserContent()}
       {renderClothes()}

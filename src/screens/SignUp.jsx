@@ -109,6 +109,7 @@ export default function SignUp() {
             placeholder="מייל"
             containerStyle={{ marginBottom: 10 }}
             onChangeText={(text) => setUserEmail(text)}
+            keyboardType="email-address"
           />
           <SafeAreaView style={styles.view}>
             <GooglePlacesAutocomplete

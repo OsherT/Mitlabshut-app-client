@@ -3,8 +3,8 @@ import Svg, { Circle, Path } from "react-native-svg";
 
 const Edit = (props) => (
     <Svg
-        width={20}
-        height={20}
+        width={80}
+        height={40}
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         {...props}

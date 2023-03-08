@@ -100,12 +100,14 @@ export default function Closet() {
             <View
               style={{
                 position: "absolute",
-                right: 330,
-                bottom: 140,
+                right: 200,
+                bottom: 4,
               }}
             >
               <Edit />
+              
             </View>
+            </TouchableOpacity>
             <ImageBackground
               source={{
                 uri: loggedUser.user_image,
@@ -142,7 +144,7 @@ export default function Closet() {
             >
               {closetDesc}
             </Text>
-          </TouchableOpacity>
+          
         </ContainerComponent>
       </View>
     );

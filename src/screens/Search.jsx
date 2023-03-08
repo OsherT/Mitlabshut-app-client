@@ -18,19 +18,21 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 
 export default function Search() {
   const navigation = useNavigation();
-  const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
+  const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api`;
 
   const [typeList, setTypeList] = useState([]);
   const [typeBySearch, setTypeBySearch] = useState("");
 
+  //renders the types when the page finishes to load
   useEffect(() => {
     getTypeList();
     return () => {};
   }, []);
 
+  //gets the types list
   const getTypeList = () => {
     axios
-      .get(ApiUrl + `Item_type`)
+      .get(ApiUrl + `/Item/GetItem_type`)
       .then((res) => {
         setTypeList(res.data);
 
@@ -41,6 +43,7 @@ export default function Search() {
       });
   };
 
+  //renders the search section (upper)
   function renderSearch() {
     return (
       <View
@@ -88,6 +91,7 @@ export default function Search() {
     );
   }
 
+  //renders the main content
   function renderTyps() {
     return (
       <KeyboardAwareScrollView>

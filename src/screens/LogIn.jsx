@@ -52,7 +52,6 @@ export default function SignIn() {
         }
       )
         .then((res) => {
-          console.log("status LOG IN", res.status);
           return res.json();
         })
         .then(

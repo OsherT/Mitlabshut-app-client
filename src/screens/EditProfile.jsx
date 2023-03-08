@@ -139,8 +139,8 @@ export default function EditProfile(props) {
                   <View
                     style={{
                       position: "absolute",
-                      right: 3,
-                      bottom: 3,
+                      right:-20,
+                      bottom: -20,
                     }}
                   >
                     <Edit />

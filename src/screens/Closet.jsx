@@ -34,8 +34,6 @@ export default function Closet() {
 
   useEffect(() => {
     if (isFocused) {
-      // Code to execute when the component is focused
-      // console.log(loggedUser);
       GetClosetDescription();
       GetClosetItems();
       GetItemPhotos();
@@ -105,8 +103,8 @@ export default function Closet() {
             <View
               style={{
                 position: "absolute",
-                right: 330,
-                bottom: 140,
+                right: 0,
+                bottom: -20,
               }}>
               <Edit />
               
@@ -158,7 +156,6 @@ export default function Closet() {
           loggedUser.id
       )
       .then((res) => {
-        console.log(res.data);
         const tempUsersFavList = res.data.map(({ item_id }) => item_id);
         setUsersFavList(tempUsersFavList);
       })

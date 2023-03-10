@@ -11,29 +11,37 @@ import {
 } from "react-native";
 import axios from "axios";
 import { Edit } from "../svg";
-import { BagSvg, HeartSvg } from "../svg";
-import { ContainerComponent, Header, ProfileCategory } from "../components";
+import { BagSvg, HeartSvg, Plus } from "../svg";
+import {
+  Button,
+  ContainerComponent,
+  Header,
+  ProfileCategory,
+} from "../components";
 import { COLORS, FONTS } from "../constants";
 import { useNavigation } from "@react-navigation/native";
 import { render } from "react-dom";
 import { useIsFocused } from "@react-navigation/native";
+import ProfileNumbers from "../components/ProfileNumbers";
 
 export default function Closet() {
   const { loggedUser, setclosetDesc, setclosetName, closetName, closetDesc } =
     useContext(userContext);
-  // const [ClosetDesc, setClosetDesc] = useState("");
-  // const [ClosetName, setClosetName] = useState("");
   const [UsersItems, setUsersItems] = useState([]);
   const [UsersItemPhotos, setUsersItemPhotos] = useState([]);
   const [UsersFavList, setUsersFavList] = useState([]);
   const [UsersShopList, setUsersShopList] = useState([]);
+  const [ClosetFollowers, setClosetFollowers] = useState([]);
+
   //להוסיף כפתור הוספת פריט
   const navigation = useNavigation();
   const isFocused = useIsFocused();
 
   useEffect(() => {
     if (isFocused) {
+      console.log(loggedUser);
       GetClosetDescription();
+      GetClosetFollowers();
       GetClosetItems();
       GetItemPhotos();
       getShopItems();
@@ -53,6 +61,21 @@ export default function Closet() {
       })
       .catch((err) => {
         alert("cant take description");
+        console.log(err);
+      });
+  }
+  function GetClosetFollowers() {
+    axios
+      .get(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetCountFollowingUsers/Closet_ID/" +
+          loggedUser.closet_id
+      )
+      .then((res) => {
+        setClosetFollowers(res.data);
+      })
+      .catch((err) => {
+        setClosetFollowers("0");
+        alert("cant take followers");
         console.log(err);
       });
   }
@@ -83,7 +106,6 @@ export default function Closet() {
         console.log(err);
       });
   }
-
   function renderUserContent() {
     return (
       <View
@@ -92,22 +114,37 @@ export default function Closet() {
           paddingHorizontal: 20,
           paddingTop: 25,
           paddingBottom: 40,
+          justifyContent: "center", // add this style
         }}
-        showsHorizontalScrollIndicator={false}>
+        showsHorizontalScrollIndicator={false}
+      >
         <ContainerComponent containerStyle={{ marginBottom: 20 }}>
           <TouchableOpacity
             onPress={() => {
               navigation.navigate("EditProfile");
-            }}>
+            }}
+          >
             <View
               style={{
                 position: "absolute",
                 right: 0,
                 bottom: -20,
-              }}>
+              }}
+            >
               <Edit />
             </View>
           </TouchableOpacity>
+          {UsersItems.length > 0 && (
+            <View
+              style={{
+                position: "absolute",
+                right: 34,
+                bottom: 170,
+              }}
+            >
+              {addItemButton()}
+            </View>
+          )}
           <ImageBackground
             source={{
               uri: loggedUser.user_image,
@@ -118,7 +155,8 @@ export default function Closet() {
               alignSelf: "center",
               marginBottom: 15,
             }}
-            imageStyle={{ borderRadius: 40 }}></ImageBackground>
+            imageStyle={{ borderRadius: 40 }}
+          ></ImageBackground>
           <Text
             style={{
               textAlign: "center",
@@ -126,11 +164,16 @@ export default function Closet() {
               fontSize: 16,
               textTransform: "capitalize",
               color: COLORS.black,
-              marginBottom: 4,
+              marginBottom: 10,
               lineHeight: 16 * 1.2,
-            }}>
+            }}
+          >
             הארון של {closetName}
           </Text>
+          <ProfileNumbers
+            followers={ClosetFollowers}
+            posts={UsersItems.length}
+          />
           <Text
             style={{
               textAlign: "center",
@@ -138,7 +181,9 @@ export default function Closet() {
               fontSize: 14,
               color: COLORS.gray,
               lineHeight: 14 * 1.7,
-            }}>
+              marginTop: 10,
+            }}
+          >
             {closetDesc}
           </Text>
         </ContainerComponent>
@@ -273,12 +318,14 @@ export default function Closet() {
                       height: 128,
                     }}
                     imageStyle={{ borderRadius: 10 }}
-                    key={photo.ID}>
+                    key={photo.ID}
+                  >
                     {UsersFavList.includes(item.id) && (
                       // render the filled heart SVG if the item ID is in the UsersFavList
                       <TouchableOpacity
                         style={{ left: 12, top: 12 }}
-                        onPress={() => RemoveFromFav(item.id)}>
+                        onPress={() => RemoveFromFav(item.id)}
+                      >
                         <HeartSvg filled={true} />
                       </TouchableOpacity>
                     )}
@@ -286,7 +333,8 @@ export default function Closet() {
                       // render the unfilled heart SVG if the item ID is not in the UsersFavList
                       <TouchableOpacity
                         style={{ left: 12, top: 12 }}
-                        onPress={() => AddtoFav(item.id)}>
+                        onPress={() => AddtoFav(item.id)}
+                      >
                         <HeartSvg filled={false} />
                       </TouchableOpacity>
                     )}
@@ -298,7 +346,8 @@ export default function Closet() {
                 paddingHorizontal: 12,
                 paddingBottom: 15,
                 paddingTop: 12,
-              }}>
+              }}
+            >
               <Text
                 style={{
                   ...FONTS.Mulish_600SemiBold,
@@ -308,7 +357,8 @@ export default function Closet() {
                   color: COLORS.black,
                   marginBottom: 6,
                   textAlign: "right",
-                }}>
+                }}
+              >
                 {item.name}
               </Text>
               <Text
@@ -317,7 +367,8 @@ export default function Closet() {
                   ...FONTS.Mulish_400Regular,
                   fontSize: 14,
                   textAlign: "right",
-                }}>
+                }}
+              >
                 מידה: {item.size}
               </Text>
               <View
@@ -335,7 +386,8 @@ export default function Closet() {
                   color: COLORS.black,
                   //marginLeft: 70,
                   textAlign: "left",
-                }}>
+                }}
+              >
                 ₪ {item.price}
               </Text>
             </View>
@@ -343,7 +395,8 @@ export default function Closet() {
               // render the filled heart SVG if the item ID is in the UsersFavList
               <TouchableOpacity
                 style={{ position: "absolute", right: 12, bottom: 12 }}
-                onPress={() => RemoveFromShopList(item.id)}>
+                onPress={() => RemoveFromShopList(item.id)}
+              >
                 <BagSvg color="#626262" inCart={true} />
               </TouchableOpacity>
             )}
@@ -351,7 +404,8 @@ export default function Closet() {
               // render the unfilled heart SVG if the item ID is not in the UsersFavList
               <TouchableOpacity
                 style={{ position: "absolute", right: 12, bottom: 12 }}
-                onPress={() => AddToShopList(item.id)}>
+                onPress={() => AddToShopList(item.id)}
+              >
                 <BagSvg color="#D7BA7B" inCart={false} />
               </TouchableOpacity>
             )}
@@ -360,16 +414,60 @@ export default function Closet() {
       />
     );
   }
+  function renderMessage() {
+    return (
+      <View>
+      <Text
+        style={{
+          textAlign: "center",
+          ...FONTS.Mulish_700Bold,
+          fontSize: 16,
+          textTransform: "capitalize",
+          color: COLORS.black,
+          marginBottom: 4,
+          lineHeight: 16 * 1.2,
+        }}
+      >
+        הארון ריק 
+      </Text>
+      <View
+              style={{
+                //position: "absolute",
+                left: 180,
+                top: 10,
+              }}
+            >
+              {addItemButton()}
+            </View>
+      </View>
+    );
+  }
+  function addItemButton() {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate("UploadItem");
+        }}
+      >
+        <View style={{ height: 48, width: 24 }}>
+          <Plus />
+        </View>
+      </TouchableOpacity>
+    );
+  }
 
   return (
     <SafeAreaView
       style={{
         flex: 1,
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-      }}>
+      }}
+    >
       <Header title="הארון שלי" onPress={() => navigation.goBack()} />
       {renderUserContent()}
-      {renderClothes()}
+
+      {UsersItems.length > 0 && renderClothes()}
+      {UsersItems.length == 0 && renderMessage()}
       {/* <MainLayout /> */}
     </SafeAreaView>
   );

@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 
 import { FONTS, COLORS } from "../constants";
-import { ArrowTwo, Bag, BagSvg, HeartTwoSvg } from "../svg";
+import { ArrowTwo, BagSvg, HeartTwoSvg } from "../svg";
 import { useNavigation } from "@react-navigation/native";
 import BagHeader from "../svg/BagHeader";
 

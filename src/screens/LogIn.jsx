@@ -163,7 +163,6 @@ export default function SignIn() {
 
   return (
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
-      <Header title="" onPress={() => navigation.goBack()} />
       {renderContent()}
     </SafeAreaView>
   );

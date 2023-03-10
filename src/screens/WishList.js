@@ -126,7 +126,7 @@ export default function WishList() {
 
     return (
         <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
-            <Header title="Wish List" goBack={false} />
+            <Header title="רשימת מועדפים" />
             {renderContent()}
         </SafeAreaView>
     );

@@ -45,6 +45,7 @@ import EditItem from "../screens/EditItem";
 import OrderSuccessful from "../screens/OrderSuccessful";
 import ItemUpdateSucc from "../screens/ItemUpdateSucc";
 import ItemsByCtegory from "../screens/ItemsByCtegory";
+import WishList from "../screens/WishList";
 
 
 const Stack = createStackNavigator();
@@ -59,7 +60,15 @@ export default function Navigation() {
 
   return (
     <NavigationContainer>
-      <userContext.Provider value={{ loggedUser, setloggedUser,closetDesc, setclosetDesc ,closetName, setclosetName}}>
+      <userContext.Provider
+        value={{
+          loggedUser,
+          setloggedUser,
+          closetDesc,
+          setclosetDesc,
+          closetName,
+          setclosetName,
+        }}>
         <Stack.Navigator
           screenOptions={{
             headerStyle: {
@@ -71,6 +80,7 @@ export default function Navigation() {
           }}
           initialRouteName="SignIn">
           <Stack.Screen name="SignIn" component={SignIn} />
+          <Stack.Screen name="WishList" component={WishList} />
           <Stack.Screen name="UploadItem" component={UploadItem} />
           <Stack.Screen name="OrderHistory" component={OrderHistory} />
           <Stack.Screen name="SignUp" component={SignUp} />

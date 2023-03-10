@@ -50,7 +50,6 @@ export default function ProductDetails(props) {
       GetNumOfFav();
       getFollowingList();
     }
-    console.log(UsersFollowingList);
   }, [isFocused]);
 
   const GetItemCategories = () => {
@@ -104,8 +103,7 @@ export default function ProductDetails(props) {
         setUsersFavList(tempUsersFavList);
       })
       .catch((err) => {
-        alert("cant get fav");
-        console.log(err);
+        console.log("cant get fav", err);
       });
   }
 
@@ -222,8 +220,6 @@ export default function ProductDetails(props) {
       .then((res) => {
         const tempUsersFollowList = res.data.map(({ closet_id }) => closet_id);
         setUsersFollowingList(tempUsersFollowList);
-        console.log("tempUsersFollowList", tempUsersFollowList);
-        console.log("res", res.data);
       })
       .catch((err) => {
         console.log("cant get shop list", err);
@@ -239,14 +235,13 @@ export default function ProductDetails(props) {
       .then((res) => {
         var closet_ID = item.closet_ID;
         setUsersFollowingList((prevList) => [...prevList, { closet_ID }]);
-        console.log(" follow", res.status);
         getFollowingList();
       })
       .catch((err) => {
         console.log("cant follow", err);
       });
   };
-
+  //check whay returns err when unfollow
   const unfollowCloset = () => {
     axios
       .delete(
@@ -355,7 +350,7 @@ export default function ProductDetails(props) {
               <TouchableOpacity
                 style={styles.favIcon}
                 onPress={() => RemoveFromFav(item.id)}>
-                <HeartTwoSvg filled={true} />
+                <HeartTwoSvg filled={true} strokeColor="red" />
               </TouchableOpacity>
             )}
             {!UsersFavList.includes(item.id) && (
@@ -363,7 +358,7 @@ export default function ProductDetails(props) {
               <TouchableOpacity
                 style={styles.favIcon}
                 onPress={() => AddtoFav(item.id)}>
-                <HeartTwoSvg filled={false} />
+                <HeartTwoSvg filled={false} strokeColor="red" />
               </TouchableOpacity>
             )}
             <TouchableOpacity style={styles.shareIcon}>
@@ -391,7 +386,7 @@ export default function ProductDetails(props) {
                   onPress={() => {
                     unfollowCloset();
                   }}
-                /> 
+                />
               )}
               <View
                 style={{
@@ -504,7 +499,7 @@ export default function ProductDetails(props) {
     //   {renderContent()}
     // </View>
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
-      <Header onPress={() => navigation.goBack()} />
+      <Header />
       {renderContent()}
     </SafeAreaView>
   );

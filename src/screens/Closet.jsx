@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import axios from "axios";
 import { Edit } from "../svg";
-import { BagSvg, HeartSvg, Facebook } from "../svg";
+import { BagSvg, HeartSvg } from "../svg";
 import { ContainerComponent, Header, ProfileCategory } from "../components";
 import { COLORS, FONTS } from "../constants";
 import { useNavigation } from "@react-navigation/native";
@@ -368,7 +368,6 @@ export default function Closet() {
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
       }}>
       <Header title="הארון שלי" onPress={() => navigation.goBack()} />
-      {/* <Header title="הארון של`{}`" goBack={false} /> */}
       {renderUserContent()}
       {renderClothes()}
       {/* <MainLayout /> */}

@@ -6,7 +6,7 @@ import { ArrowTwo, Bag, BagSvg, HeartTwoSvg } from "../svg";
 import { useNavigation } from "@react-navigation/native";
 import BagHeader from "../svg/BagHeader";
 
-export default function Header({onPress, title, titleStyle }) {
+export default function Header({ title, titleStyle }) {
   const navigation = useNavigation();
 
   return (

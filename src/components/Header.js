@@ -24,7 +24,7 @@ export default function Header({onPress, title, titleStyle }) {
           paddingHorizontal: 20,
         }}
         onPress={() => navigation.goBack()}>
-        <ArrowTwo />
+        <ArrowTwo /> 
       </TouchableOpacity>
       <TouchableOpacity
         style={{

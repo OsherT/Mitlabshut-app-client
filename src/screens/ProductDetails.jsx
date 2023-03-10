@@ -28,7 +28,6 @@ export default function ProductDetails(props) {
   const isFocused = useIsFocused();
 
   //item's info section
-  const [follow, setFollow] = useState(false);
   const [shippingMethod] = useState(item.shipping_method);
   const [itemCtegories, setItemCtegories] = useState([]);
   const [itemImages, setItemImages] = useState([]);
@@ -488,10 +487,10 @@ export default function ProductDetails(props) {
             </View>
           </ScrollView>
         </View>
-      </View>
+      </View> 
     );
   }
-
+ 
   return (
     // <View style={{ flex: 1, backgroundColor: "#EFEDE6" }}>
     //   {/* //need to delete and fix the view */}

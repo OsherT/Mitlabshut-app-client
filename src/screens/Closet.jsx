@@ -429,9 +429,9 @@ export default function Closet() {
         }}
       >
         הארון ריק 
-      </Text>
+      </Text> 
       <View
-              style={{
+              style={{ 
                 //position: "absolute",
                 left: 180,
                 top: 10,

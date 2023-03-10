@@ -8,10 +8,9 @@ import {
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
-
-import { Header, Line, RatingComponent } from "../components";
-import { AREA, COLORS, FONTS, products } from "../constants";
-import { BagSvg, FavoriteSvg } from "../svg";
+import { Header, Line, } from "../components";
+import { AREA, COLORS, FONTS } from "../constants";
+import { BagSvg } from "../svg";
 import axios from "axios";
 import { userContext } from "../navigation/userContext";
 
@@ -28,7 +27,7 @@ export default function WishList() {
     if (isFocused) {
       GetClosetItems();
       GetItemPhotos();
-      getFavItems();
+      getFavItems();  
       usersFavItemsObj();
       console.log("IsFocused:", isFocused);
 
@@ -112,6 +111,7 @@ export default function WishList() {
           paddingHorizontal: 20,
           paddingTop: 25,
           paddingBottom: 40,
+          backgroundColor: "#E9E9E9",
         }}
         showsHorizontalScrollIndicator={false}>
         {UsersFavListObj.map((item, index) => {
@@ -203,8 +203,8 @@ export default function WishList() {
     );
   }
 
-  return (
-    <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
+  return (  
+    <SafeAreaView style={{ ...AREA.AndroidSafeArea, backgroundColor: "none" }}>
       <Header title="רשימת מועדפים" />
       {renderContent()}
     </SafeAreaView>

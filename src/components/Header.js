@@ -17,14 +17,14 @@ export default function Header({ title, titleStyle }) {
         alignItems: "center",
         height: 42,
       }}>
-      <TouchableOpacity
+      <TouchableOpacity 
         style={{
           position: "absolute",
           left: 0,
           paddingHorizontal: 20,
         }}
         onPress={() => navigation.goBack()}>
-        <ArrowTwo /> 
+        <ArrowTwo />
       </TouchableOpacity>
       <TouchableOpacity
         style={{

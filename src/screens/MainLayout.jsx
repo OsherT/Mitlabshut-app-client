@@ -63,6 +63,7 @@ export default function MainLayout() {
               width: 54,
               height: 54,
               backgroundColor: COLORS.golden,
+              
               borderRadius: 30,
 
               justifyContent: "center",

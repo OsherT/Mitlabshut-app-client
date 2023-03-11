@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import Home from "./Home";
@@ -17,10 +17,13 @@ import {
   Bag,
 } from "../svg";
 import { COLORS, FONTS, cartItems, products } from "../constants";
+import { userContext } from "../navigation/userContext";
+
 
 export default function MainLayout() {
   const navigation = useNavigation();
   const [selectedTab, setSelectedTab] = useState("Home");
+  const { loggedUser} =useContext(userContext);
 
   const tabs = [
     {
@@ -68,6 +71,7 @@ export default function MainLayout() {
               justifyContent: "center",
               alignItems: "center",
             }}>
+
             <Bag />
             <View
               style={{
@@ -143,7 +147,10 @@ export default function MainLayout() {
               key={index}
               onPress={() =>
                 item.screen == "Closet" && products.length !== 0
-                  ? navigation.navigate("Closet")
+                  ? navigation.navigate("Closet", {
+                    closet: loggedUser.closet_id,
+                    owner:loggedUser
+                  })
                   : setSelectedTab(item.screen)
               }>
               {item.icon}

@@ -13,6 +13,7 @@ import { AREA, COLORS, FONTS } from "../constants";
 import { BagSvg } from "../svg";
 import axios from "axios";
 import { userContext } from "../navigation/userContext";
+import TrashCanIcon from "../svg/TrashCanIcon";
 
 export default function WishList() {
   const navigation = useNavigation();
@@ -208,7 +209,7 @@ export default function WishList() {
                       color: "red",
                     }}
                   >
-                    הסירי
+                   <TrashCanIcon width={24} height={24} color="#000" />
                   </Text>
                   {/* <FavoriteSvg/>  */}
                 </TouchableOpacity>

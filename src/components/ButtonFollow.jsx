@@ -13,8 +13,8 @@ export default function ButtonFollow({
   return (
     <TouchableOpacity
       style={{
-        height: 50,
-        width: 170,
+        height: 40,
+        width: 150,
         backgroundColor: backgroundColor,
         borderRadius: 25,
         justifyContent: "center",

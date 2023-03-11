@@ -24,7 +24,9 @@ import { render } from "react-dom";
 import { useIsFocused } from "@react-navigation/native";
 import ProfileNumbers from "../components/ProfileNumbers";
 
-export default function Closet() {
+export default function Closet(props) {
+  const closetId = props.route.params.closet;//owner
+  const owner = props.route.params.owner;
   const { loggedUser, setclosetDesc, setclosetName, closetName, closetDesc } =
     useContext(userContext);
   const [UsersItems, setUsersItems] = useState([]);
@@ -32,6 +34,8 @@ export default function Closet() {
   const [UsersFavList, setUsersFavList] = useState([]);
   const [UsersShopList, setUsersShopList] = useState([]);
   const [ClosetFollowers, setClosetFollowers] = useState([]);
+  const [myClosetFlag, setMyClosetFlag] = useState(false);
+
 
   //להוסיף כפתור הוספת פריט
   const navigation = useNavigation();
@@ -39,7 +43,8 @@ export default function Closet() {
 
   useEffect(() => {
     if (isFocused) {
-      console.log(loggedUser);
+      console.log(owner);
+      setMyClosetFlag(loggedUser.closet_id === closetId);
       GetClosetDescription();
       GetClosetFollowers();
       GetClosetItems();
@@ -52,14 +57,14 @@ export default function Closet() {
     axios
       .get(
         "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Closet/Get/" +
-          loggedUser.closet_id
+        closetId
       )
       .then((res) => {
         setclosetName(res.data[0].user_name);
         setclosetDesc(res.data[0].description);
       })
       .catch((err) => {
-        alert("cant take description");
+        //alert("cant take description");
         console.log(err);
       });
   }
@@ -67,14 +72,14 @@ export default function Closet() {
     axios
       .get(
         "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetCountFollowingUsers/Closet_ID/" +
-          loggedUser.closet_id
+        closetId
       )
       .then((res) => {
         setClosetFollowers(res.data);
       })
       .catch((err) => {
         setClosetFollowers("0");
-        alert("cant take followers");
+        //alert("cant take followers");
         console.log(err);
       });
   }
@@ -82,14 +87,14 @@ export default function Closet() {
     axios
       .get(
         "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemByClosetId/ClosetId/" +
-          loggedUser.closet_id
+        closetId
       )
       .then((res) => {
         setUsersItems(res.data);
         GetItemPhotos(res.data); // move the call here
       })
       .catch((err) => {
-        alert("cant take items");
+        //alert("cant take items");
         console.log(err);
       });
   }
@@ -107,7 +112,7 @@ export default function Closet() {
         setUsersItemPhotos(photos);
       })
       .catch((error) => {
-        alert("cant take photos");
+        //alert("cant take photos");
         console.log(error);
       });
   }
@@ -125,9 +130,12 @@ export default function Closet() {
         showsHorizontalScrollIndicator={false}
       >
         <ContainerComponent containerStyle={{ marginBottom: 20 }}>
+
+          {myClosetFlag&&(
           <TouchableOpacity
             onPress={() => {
               navigation.navigate("EditProfile");
+              
             }}
           >
             <View
@@ -139,8 +147,8 @@ export default function Closet() {
             >
               <Edit />
             </View>
-          </TouchableOpacity>
-          {UsersItems.length > 0 && (
+          </TouchableOpacity>)}
+          {myClosetFlag&&UsersItems.length > 0 && (
             <View
               style={{
                 position: "absolute",
@@ -153,7 +161,7 @@ export default function Closet() {
           )}
           <ImageBackground
             source={{
-              uri: loggedUser.user_image,
+              uri: owner.user_image,
             }}
             style={{
               width: 80,
@@ -163,6 +171,7 @@ export default function Closet() {
             }}
             imageStyle={{ borderRadius: 40 }}
           ></ImageBackground>
+          
           <Text
             style={{
               textAlign: "center",
@@ -326,7 +335,7 @@ export default function Closet() {
                     imageStyle={{ borderRadius: 10 }}
                     key={photo.ID}
                   >
-                    {UsersFavList.includes(item.id) && (
+                    {!myClosetFlag&&UsersFavList.includes(item.id) && (
                       // render the filled heart SVG if the item ID is in the UsersFavList
                       <TouchableOpacity
                         style={{ left: 12, top: 12 }}
@@ -335,7 +344,7 @@ export default function Closet() {
                         <HeartSvg filled={true} />
                       </TouchableOpacity>
                     )}
-                    {!UsersFavList.includes(item.id) && (
+                    {!myClosetFlag&&!UsersFavList.includes(item.id) && (
                       // render the unfilled heart SVG if the item ID is not in the UsersFavList
                       <TouchableOpacity
                         style={{ left: 12, top: 12 }}
@@ -397,7 +406,7 @@ export default function Closet() {
                 ₪ {item.price}
               </Text>
             </View>
-            {UsersShopList.includes(item.id) && (
+            {!myClosetFlag&&UsersShopList.includes(item.id) && (
               // render the filled heart SVG if the item ID is in the UsersFavList
               <TouchableOpacity
                 style={{ position: "absolute", right: 12, bottom: 12 }}
@@ -406,7 +415,7 @@ export default function Closet() {
                 <BagSvg color="#626262" inCart={true} />
               </TouchableOpacity>
             )}
-            {!UsersShopList.includes(item.id) && (
+            {!myClosetFlag&&!UsersShopList.includes(item.id) && (
               // render the unfilled heart SVG if the item ID is not in the UsersFavList
               <TouchableOpacity
                 style={{ position: "absolute", right: 12, bottom: 12 }}
@@ -469,7 +478,7 @@ export default function Closet() {
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
       }}
     >
-      <Header title="הארון שלי" onPress={() => navigation.goBack()} />
+      <Header onPress={() => navigation.goBack()} />
       {renderUserContent()}
 
       {UsersItems.length > 0 && renderClothes()}

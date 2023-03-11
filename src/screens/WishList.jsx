@@ -68,10 +68,10 @@ export default function WishList() {
           item.id
       );
     });
-
     Promise.all(promises)
       .then((responses) => {
         const photos = responses.flatMap((response) => response.data);
+        console.log(photos);
         setUsersItemPhotos(photos);
       })
       .catch((error) => {
@@ -120,7 +120,6 @@ export default function WishList() {
         // console.log(newFav);
       });
   }
-
   function renderContent() {
     return (
       <ScrollView
@@ -252,7 +251,6 @@ export default function WishList() {
       </ScrollView>
     );
   }
-
   return (
     <SafeAreaView style={{ ...AREA.AndroidSafeArea, backgroundColor: "none" }}>
       <Header title="רשימת מועדפים" />

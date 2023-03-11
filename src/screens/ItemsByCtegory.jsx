@@ -31,7 +31,7 @@ export default function ItemsByCtegory(props) {
 
   const getItemsByType = () => {
     axios
-      .get(ApiUrl + `Item/Type/${type}`)
+      .get(ApiUrl + `Item/GetItemByType/Type/${type}`)
       .then((res) => {
         setItemsByType(res.data);
         GetItemPhotos();

@@ -442,7 +442,8 @@ export default function EditItem(props) {
           </Text>
           <MultipleSelectList
             data={categoryOptions}
-            defaultOption={chosenCategory}
+            // defaultOption={chosenCategory}
+            defaultOption={categoryOptions}
             boxStyles={styles.dropdownInput}
             dropdownStyles={styles.dropdownContainer}
             setSelected={(val) => {

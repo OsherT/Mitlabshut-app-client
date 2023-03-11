@@ -23,7 +23,7 @@ import * as ImagePicker from "expo-image-picker";
 import { userContext } from "../navigation/userContext";
 import firebase from "firebase/app";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { firebaseApp } from "../../firebaseConfig";
+import { app } from "../../firebaseConfig";
 
 export default function UploadItem() {
   const navigation = useNavigation();
@@ -31,7 +31,7 @@ export default function UploadItem() {
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
 
   //fireBase
-  const storage = getStorage(firebaseApp);
+  const storage = getStorage(app);
 
   //להחליף מה שיושב סתם במערך ל"""
   //the section of the item information hooks
@@ -250,21 +250,25 @@ export default function UploadItem() {
   // const itemId = item.id;
   // const itemRef = ref(imagesRef, item_id);
 
-
   // Upload image to item's folder
   const uploadImageFB = async (uri) => {
     const userId = loggedUser.id;
     const imagesRef = ref(storage, `images/${userId}`);
-  const itemId = userId;
-  const itemRef = ref(imagesRef, itemId);
-    
+    const itemId = userId;
+    const itemRef = ref(imagesRef, itemId);
+
     const response = await fetch(uri);
     const blob = await response.blob();
     const imageName = `${new Date().getTime()}.jpg`; // generate unique image name
     const imageRef = ref(itemRef, imageName);
-    await uploadBytes(imageRef, blob);
-    const imageUrl = await getDownloadURL(imageRef);
-    console.log("Image uploaded successfully:", imageUrl);
+
+    if (typeof imageRef.child === "function" && typeof imageName === "string") {
+      await uploadBytes(imageRef, blob);
+      const imageUrl = await getDownloadURL(imageRef);
+      console.log("Image uploaded successfully:", imageUrl);
+    } else {
+      console.error("Invalid child path or image name:", itemRef, imageName);
+    }
   };
 
   // Call the uploadImage function for each item image URI
@@ -273,7 +277,24 @@ export default function UploadItem() {
     uploadImageFB(itemImageList[i]);
   }
 
-  //open image picker and inserts the url into an array
+  const pickImage = async (index) => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      aspect: [4, 3],
+      quality: 1,
+      allowsMultipleSelection: true
+    });
+
+    if (!result.canceled) {
+      let newImages = [...itemImage];
+      newImages[index] = result.uri;
+      setItemImage(newImages);
+
+      await uploadImageFB(result.uri); // Upload the selected image to Firebase
+    }
+  };
+
+  // open image picker and inserts the url into an array
   // const pickImage = async (index) => {
   //   let result = await ImagePicker.launchImageLibraryAsync({
   //     mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -360,6 +381,21 @@ export default function UploadItem() {
         showsHorizontalScrollIndicator={false}>
         <ContainerComponent>
           <Text style={styles.header}>פריט חדש</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}>
+            <Text
+              style={{ textAlign: "right", color: COLORS.grey3, left: 125 }}>
+              מחיר :
+            </Text>
+            <Text
+              style={{ textAlign: "right", color: COLORS.grey3, right: 15 }}>
+              שם פריט :
+            </Text>
+          </View>
           <View style={styles.doubleContainer}>
             <TextInput
               style={styles.textInput}

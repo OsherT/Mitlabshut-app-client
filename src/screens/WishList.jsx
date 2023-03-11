@@ -79,6 +79,7 @@ export default function WishList() {
         console.log(error);
       });
   }
+  
   function RemoveFromFav(itemId) {
     axios
       .delete(

@@ -8,34 +8,39 @@ import {
   FlatList,
   ImageBackground,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
-import { Button, Header } from "../components";
-import { COLORS, products, FONTS } from "../constants";
-import { FilterSvg, SearchSvg, BagSvg, HeartSvg, BackSvg } from "../svg";
+import React, { useContext, useEffect, useState } from "react";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
+import { Header } from "../components";
+import { COLORS, FONTS } from "../constants";
+import { FilterSvg, SearchSvg, BagSvg, HeartSvg } from "../svg";
 import axios from "axios";
-import OrderFailed from "./OrderFailed";
+import { userContext } from "../navigation/userContext";
 
 export default function ItemsByCtegory(props) {
   const navigation = useNavigation();
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
+  const { loggedUser } = useContext(userContext);
+  const isFocused = useIsFocused();
 
   const [itemsByType, setItemsByType] = useState([]);
   const [itemsImageByType, setItemsImageByType] = useState([]);
+  const [UsersFavList, setUsersFavList] = useState([]);
+
   const type = props.route.params.type;
 
   useEffect(() => {
-    getItemsByType();
-    return () => {};
-  }, []);
+    if (isFocused) {
+      getItemsByType();
+      getFavItems();
+      GetItemPhotos();
+    }
+  }, [isFocused]);
 
   const getItemsByType = () => {
     axios
       .get(ApiUrl + `Item/GetItemByType/Type/${type}`)
       .then((res) => {
         setItemsByType(res.data);
-        GetItemPhotos();
-        getFavItems();
       })
       .catch((err) => {
         console.log("err in itemsByType ", err);
@@ -44,7 +49,9 @@ export default function ItemsByCtegory(props) {
 
   const GetItemPhotos = () => {
     axios
-      .get("https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item_Image_Video")
+      .get(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemImageVideo"
+      )
       .then((res) => {
         console.log("res.data", res.data);
         setItemsImageByType(res.data);
@@ -56,22 +63,47 @@ export default function ItemsByCtegory(props) {
   };
 
   function getFavItems() {
-    var Email = loggedUser.email.replace("%40", "@");
-    // var Email = loggedUser.email;
-
     axios
       .get(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/UserFavList/User_Email/" +
-          Email
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetFavItemByUserId/User_ID/" +
+          loggedUser.id
       )
       .then((res) => {
         const tempUsersFavList = res.data.map(({ item_ID }) => item_ID);
-        console.log("fav");
         setUsersFavList(tempUsersFavList);
       })
       .catch((err) => {
-        // alert("cant get fav");
-        console.log(err);
+        console.log("cant get fav", err);
+      });
+  }
+
+  function AddtoFav(item_id) {
+    axios
+      .post(
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/PostFavItem/Item_ID/${item_id}/User_ID/${loggedUser.id}`
+      )
+      .then((res) => {
+        getFavItems();
+        setUsersFavList((prevList) => [...prevList, { item_id }]);
+      })
+      .catch((err) => {
+        // alert("cant add to fav");
+        console.log("cant add to fav", err);
+      });
+  }
+
+  function RemoveFromFav(itemId) {
+    axios
+      .delete(
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/DeleteFavItem/Item_ID/${itemId}/User_ID/${loggedUser.id}`
+      )
+      .then((res) => {
+        getFavItems();
+        setUsersFavList((prevList) => prevList.filter((id) => id !== itemId));
+      })
+      .catch((err) => {
+        // alert("");
+        console.log("cant remove from getFavItems", err);
       });
   }
 
@@ -166,25 +198,22 @@ export default function ItemsByCtegory(props) {
                       imageStyle={{ borderRadius: 10 }}
                       key={photo.ID}>
                       {/* //update when the add to fav works good//////////////////////////////////////////////////// */}
-                      {/* {UsersFavList.includes(item.id) && ( */}
-                      {/* // render the filled heart SVG if the item ID is in the
-                      UsersFavList */}
-                      <TouchableOpacity
-                        style={{ left: 12, top: 12 }}
-                        onPress={() => RemoveFromFav(item.id)}>
-                        <HeartSvg filled={true} />
-                      </TouchableOpacity>
-
-                      {/* )} */}
-                      {/* {!UsersFavList.includes(item.id) && ( */}
-                      {/* // render the unfilled heart SVG if the item ID is not in
-                      the UsersFavList */}
-                      {/* <TouchableOpacity
-                        style={{ left: 12, top: 12 }}
-                        onPress={() => AddtoFav(item.id)}>
-                        <HeartSvg filled={false} />
-                      </TouchableOpacity> */}
-                      {/* )} */}
+                      {UsersFavList.includes(item.id) && (
+                        // render the filled heart SVG if the item ID is in the UsersFavList
+                        <TouchableOpacity
+                          style={{ left: 12, top: 12 }}
+                          onPress={() => RemoveFromFav(item.id)}>
+                          <HeartSvg filled={true} />
+                        </TouchableOpacity>
+                      )}
+                      {!UsersFavList.includes(item.id) && (
+                        // render the unfilled heart SVG if the item ID is not in the UsersFavList */}
+                        <TouchableOpacity
+                          style={{ left: 12, top: 12 }}
+                          onPress={() => AddtoFav(item.id)}>
+                          <HeartSvg filled={false} />
+                        </TouchableOpacity>
+                      )}
                     </ImageBackground>
                   );
                 })}

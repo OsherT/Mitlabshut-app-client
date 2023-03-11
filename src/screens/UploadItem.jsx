@@ -21,11 +21,17 @@ import {
 import { AddSvg } from "../svg";
 import * as ImagePicker from "expo-image-picker";
 import { userContext } from "../navigation/userContext";
+import firebase from "firebase/app";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export default function UploadItem() {
   const navigation = useNavigation();
   const { loggedUser } = useContext(userContext);
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
+
+  //fireBase
+    const storage = getStorage();
+
 
   //להחליף מה שיושב סתם במערך ל"""
   //the section of the item information hooks
@@ -71,7 +77,6 @@ export default function UploadItem() {
   ////////////////////////////////////////
   //gets all the data from the dataBase//
   ////////////////////////////////////////
-
   const GetBrandsList = () => {
     fetch(ApiUrl + "/GetBrand", {
       method: "GET",
@@ -176,23 +181,47 @@ export default function UploadItem() {
         }
       );
   };
+
   ////////////////////////////////////////
-  //gets all the data from the dataBase//
+  ///uploads the image to the fireBase////
   ////////////////////////////////////////
+  // Get user's images folder reference
+  const userId = loggedUser.id;
+  const imagesRef = ref(storage, `images/${userId}`);
+  // Get item's folder reference
+  const itemId = item.id;
+  const itemRef = ref(imagesRef, item_id);
+
+  // Upload image to item's folder
+  const uploadImage = async (uri) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    const imageName = `${new Date().getTime()}.jpg`; // generate unique image name
+    const imageRef = ref(itemRef, imageName);
+    await uploadBytes(imageRef, blob);
+    const imageUrl = await getDownloadURL(imageRef);
+    console.log("Image uploaded successfully:", imageUrl);
+  };
+
+  // Call the uploadImage function for each item image URI
+  const itemImageList = ["uri1", "uri2", "uri3", "uri4", "uri5", "uri6"]; // replace with actual item image URIs
+  for (let i = 0; i < itemImageList.length; i++) {
+    uploadImage(itemImageList[i]);
+  }
 
   //open image picker and inserts the url into an array
-  const pickImage = async (index) => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+  // const pickImage = async (index) => {
+  //   let result = await ImagePicker.launchImageLibraryAsync({
+  //     mediaTypes: ImagePicker.MediaTypeOptions.All,
+  //     allowsEditing: true,
+  //     aspect: [4, 3],
+  //     quality: 1,
+  //   });
 
-    let newImages = [...itemImage];
-    newImages[index] = result.uri;
-    setItemImage(newImages);
-  };
+  //   let newImages = [...itemImage];
+  //   newImages[index] = result.uri;
+  //   setItemImage(newImages);
+  // };
 
   //upload images to Item_Image_Video table
   const uploadImages = (item_id) => {
@@ -202,7 +231,6 @@ export default function UploadItem() {
 
       fetch(ApiUrl + `/PostItemImageVideo/ItemId/${item_id}/SRC/${item_Src}`, {
         method: "POST",
-        // body: JSON.stringify(new_image),
         headers: new Headers({
           "Content-type": "application/json; charset=UTF-8",
           Accept: "application/json; charset=UTF-8",
@@ -249,8 +277,7 @@ export default function UploadItem() {
           return res;
         })
         .then(
-          (result) => {
-          },
+          (result) => {},
           (error) => {
             console.log("ERR in post categories", error);
           }

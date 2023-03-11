@@ -23,6 +23,7 @@ import * as ImagePicker from "expo-image-picker";
 import { userContext } from "../navigation/userContext";
 import firebase from "firebase/app";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { firebaseApp } from "../../firebaseConfig";
 
 export default function UploadItem() {
   const navigation = useNavigation();
@@ -30,8 +31,7 @@ export default function UploadItem() {
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
 
   //fireBase
-    const storage = getStorage();
-
+  const storage = getStorage(firebaseApp);
 
   //להחליף מה שיושב סתם במערך ל"""
   //the section of the item information hooks
@@ -182,18 +182,82 @@ export default function UploadItem() {
       );
   };
 
+  //checks if the user inserts all the required info and uploads the item into the item table
+  const UploadItem = () => {
+    if (
+      itemName == "" ||
+      itemPrice == "" ||
+      itemCategory == "" ||
+      itemType == "" ||
+      itemSize == "" ||
+      itemCondition == "" ||
+      itemColor == "" ||
+      itemDeliveryMethod == "" ||
+      itemBrand == "" ||
+      itemDescription == "" ||
+      itemImage == []
+    ) {
+      Alert.alert("אנא מלאי את כל הפרטים");
+    } else {
+      const item = {
+        Closet_ID: loggedUser.closet_id,
+        Name: itemName,
+        Price: itemPrice,
+        Type: itemType,
+        Size: itemSize,
+        Use_condition: itemCondition,
+        Color: itemColor,
+        Shipping_method: ArrayToStringShip(itemDeliveryMethod),
+        Brand: itemBrand,
+        Description: itemDescription,
+        Sale_status: true,
+      };
+
+      //posts to item table
+      fetch(ApiUrl + `/PostItem`, {
+        method: "POST",
+        body: JSON.stringify(item),
+        headers: new Headers({
+          "Content-type": "application/json; charset=UTF-8",
+          Accept: "application/json; charset=UTF-8",
+        }),
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then(
+          (item_ID) => {
+            Alert.alert("Item added in succ");
+            uploadImages(item_ID);
+            uploadCtegories(item_ID);
+
+            navigation.navigate("Closet");
+          },
+          (error) => {
+            console.log("ERR in upload item ", error);
+          }
+        );
+    }
+  };
+
   ////////////////////////////////////////
   ///uploads the image to the fireBase////
   ////////////////////////////////////////
+
   // Get user's images folder reference
-  const userId = loggedUser.id;
-  const imagesRef = ref(storage, `images/${userId}`);
+
   // Get item's folder reference
-  const itemId = item.id;
-  const itemRef = ref(imagesRef, item_id);
+  // const itemId = item.id;
+  // const itemRef = ref(imagesRef, item_id);
+
 
   // Upload image to item's folder
-  const uploadImage = async (uri) => {
+  const uploadImageFB = async (uri) => {
+    const userId = loggedUser.id;
+    const imagesRef = ref(storage, `images/${userId}`);
+  const itemId = userId;
+  const itemRef = ref(imagesRef, itemId);
+    
     const response = await fetch(uri);
     const blob = await response.blob();
     const imageName = `${new Date().getTime()}.jpg`; // generate unique image name
@@ -206,7 +270,7 @@ export default function UploadItem() {
   // Call the uploadImage function for each item image URI
   const itemImageList = ["uri1", "uri2", "uri3", "uri4", "uri5", "uri6"]; // replace with actual item image URIs
   for (let i = 0; i < itemImageList.length; i++) {
-    uploadImage(itemImageList[i]);
+    uploadImageFB(itemImageList[i]);
   }
 
   //open image picker and inserts the url into an array
@@ -280,64 +344,6 @@ export default function UploadItem() {
           (result) => {},
           (error) => {
             console.log("ERR in post categories", error);
-          }
-        );
-    }
-  };
-
-  //checks if the user inserts all the required info and uploads the item into the item table
-  const UploadItem = () => {
-    if (
-      itemName == "" ||
-      itemPrice == "" ||
-      itemCategory == "" ||
-      itemType == "" ||
-      itemSize == "" ||
-      itemCondition == "" ||
-      itemColor == "" ||
-      itemDeliveryMethod == "" ||
-      itemBrand == "" ||
-      itemDescription == "" ||
-      itemImage == []
-    ) {
-      Alert.alert("אנא מלאי את כל הפרטים");
-    } else {
-      const item = {
-        Closet_ID: loggedUser.closet_id,
-        Name: itemName,
-        Price: itemPrice,
-        Type: itemType,
-        Size: itemSize,
-        Use_condition: itemCondition,
-        Color: itemColor,
-        Shipping_method: ArrayToStringShip(itemDeliveryMethod),
-        Brand: itemBrand,
-        Description: itemDescription,
-        Sale_status: true,
-      };
-
-      //posts to item table
-      fetch(ApiUrl + `/PostItem`, {
-        method: "POST",
-        body: JSON.stringify(item),
-        headers: new Headers({
-          "Content-type": "application/json; charset=UTF-8",
-          Accept: "application/json; charset=UTF-8",
-        }),
-      })
-        .then((res) => {
-          return res.json();
-        })
-        .then(
-          (item_ID) => {
-            Alert.alert("Item added in succ");
-            uploadImages(item_ID);
-            uploadCtegories(item_ID);
-
-            navigation.navigate("Closet");
-          },
-          (error) => {
-            console.log("ERR in upload item ", error);
           }
         );
     }

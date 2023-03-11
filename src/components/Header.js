@@ -41,9 +41,9 @@ export default function Header({ title, titleStyle }) {
       <TouchableOpacity
         style={{
           position: "absolute",
-          left: 345,
+          right: 60,
           top: 12,
-          paddingHorizontal: 20,
+          //paddingHorizontal: 20,
         }}
         onPress={() => {
           navigation.navigate("Order");

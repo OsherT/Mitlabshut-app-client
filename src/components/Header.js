@@ -31,7 +31,6 @@ export default function Header({ title, titleStyle }) {
           position: "absolute",
           right: 0,
           top: 14,
-          paddingHorizontal: 20,
         }}
         onPress={() => {
           navigation.navigate("WishList");
@@ -41,9 +40,8 @@ export default function Header({ title, titleStyle }) {
       <TouchableOpacity
         style={{
           position: "absolute",
-          left: 345,
+          right: 60,
           top: 12,
-          paddingHorizontal: 20,
         }}
         onPress={() => {
           navigation.navigate("Order");

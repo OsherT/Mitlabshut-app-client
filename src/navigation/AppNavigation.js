@@ -46,6 +46,7 @@ import OrderSuccessful from "../screens/OrderSuccessful";
 import ItemUpdateSucc from "../screens/ItemUpdateSucc";
 import ItemsByCtegory from "../screens/ItemsByCtegory";
 import WishList from "../screens/WishList";
+import PasswordHasBeenResetScreen from "../screens/RessetPasswordNotice";
 
 
 const Stack = createStackNavigator();
@@ -96,7 +97,7 @@ export default function Navigation() {
           <Stack.Screen name="Reviews" component={Reviews} />
           <Stack.Screen name="ProductDetails" component={ProductDetails} />
           <Stack.Screen name="ItemsByCtegory" component={ItemsByCtegory} />
-
+          <Stack.Screen name="PasswordHasBeenResetScreen" component={PasswordHasBeenResetScreen} />
           <Stack.Screen
             name="PaymentMethodCheckout"
             component={PaymentMethodCheckout}

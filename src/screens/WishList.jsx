@@ -24,7 +24,6 @@ export default function WishList() {
 
   useEffect(() => {
     if (isFocused) {
-
       getItemsData();
       getShopItems();
     }
@@ -79,7 +78,6 @@ export default function WishList() {
         console.log(error);
       });
   }
-
   function RemoveFromFav(itemId) {
     axios
       .delete(

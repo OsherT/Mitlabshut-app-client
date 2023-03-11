@@ -13,9 +13,10 @@ import {
   ContainerComponent,
   RatingComponent,
   Button,
+  Line,
 } from "../components";
 import { AREA, COLORS, FONTS, SIZES, products } from "../constants";
-import { Plus, Minus, Check } from "../svg";
+import { Plus, Minus, Check, BagSvg } from "../svg";
 import axios from "axios";
 import { userContext } from "../navigation/userContext";
 
@@ -23,15 +24,65 @@ export default function Order() {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const { loggedUser } = useContext(userContext);
+  const [ItemsinCart, setItemsinCart] = useState([]);
+  const [UsersItemPhotos, setUsersItemPhotos] = useState([]);
 
 
   useEffect(() => {
-    if (useIsFocused) {
-
+    if (isFocused) {
+      getItemsData();
     }
   }, [isFocused]);
 
+  function getItemsData() {
+    axios
+      .get(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetShopItemByUserId/UserID/" +
+          loggedUser.id
+      )
+      .then((res) => {
+        console.log(res.data.length);
+        setItemsinCart(res.data);
+        GetItemPhotos(res.data); // Move this line inside the then block
+      })
+      .catch((err) => {
+        setItems("");
+      });
+  }
+  function GetItemPhotos(items) {
+    const promises = items.map((item) => {
+      return axios.get(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItem_Image_VideoItemById/Item_ID/" +
+          item.id
+      );
+    });
 
+    Promise.all(promises)
+      .then((responses) => {
+        const photos = responses.flatMap((response) => response.data);
+        setUsersItemPhotos(photos);
+      })
+      .catch((error) => {
+        alert("cant take photos");
+        console.log(error);
+      });
+  }
+  function RemoveFromShopList(itemId) {
+    axios
+      .delete(
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/DeleteShopItem/ItemID/${itemId}/UserID/${loggedUser.id}`
+      )
+      .then((res) => {
+        getItemsData();
+        setItems((prevList) => prevList.filter((id) => id !== itemId));
+        
+      })
+      .catch((err) => {
+        
+        console.log(err);
+        // console.log(newFav);
+      });
+  }
 
 
   function renderContent() {
@@ -43,102 +94,96 @@ export default function Order() {
           paddingVertical: 25,
         }}
         showsHorizontalScrollIndicator={false}>
-        {products.map((item, index) => {
-          return (
-            <TouchableOpacity
-              key={index}
-              style={{
-                backgroundColor: COLORS.white,
-                marginBottom: 15,
-                borderTopLeftRadius: 10,
-                borderBottomLeftRadius: 10,
-                flexDirection: "row",
-              }}>
-              <ImageBackground
-                source={item.photo_300x300}
+        {ItemsinCart && Array.isArray(ItemsinCart) && ItemsinCart.length > 0 ? (
+          ItemsinCart.map((item, index) => {
+            return (
+              <TouchableOpacity
+                key={index}
                 style={{
-                  width: 100,
+                  width: "100%",
                   height: 100,
+                  backgroundColor: COLORS.white,
+                  marginBottom: 15,
+                  borderRadius: 10,
+                  flexDirection: "row",
                 }}
-                imageStyle={{ borderRadius: 10 }}>
-                <RatingComponent
-                  item={item}
-                  containerStyle={{
-                    bottom: 2,
-                    left: 2,
-                    borderBottomLeftRadius: 10,
-                    borderTopRightRadius: 10,
-                  }}
-                />
-              </ImageBackground>
-              <View
-                style={{
-                  paddingVertical: 9,
-                  paddingHorizontal: 15,
-                  flex: 1,
-                }}>
-                <Text
-                  style={{
-                    ...FONTS.Mulish_600SemiBold,
-                    fontSize: 14,
-                    color: COLORS.black,
-                    lineHeight: 14 * 1.2,
-                    marginBottom: 6,
-                    textTransform: "capitalize",
-                  }}
-                  numberOfLines={1}>
-                  {item.name}
-                </Text>
-                <Text
-                  style={{
-                    ...FONTS.Mulish_400Regular,
-                    fontSize: 12,
-                    color: COLORS.gray,
-                  }}>
-                  Size: {item.size}
-                </Text>
+                onPress={() => {
+                  navigation.navigate("ProductDetails", {
+                    item: item,
+                  });
+                }}
+              >
+                {UsersItemPhotos.filter((photo) => photo.item_ID === item.id)
+                  .slice(0, 1)
+                  .map((photo) => {
+                    return (
+                      <ImageBackground
+                        source={{ uri: photo.item_Src }}
+                        style={{
+                          width: 100,
+                          height: 100,
+                        }}
+                        imageStyle={{ borderRadius: 10 }}
+                      ></ImageBackground>
+                    );
+                  })}
                 <View
                   style={{
-                    height: 1,
-                    width: SIZES.width * 0.45,
-                    backgroundColor: "#E9E9E9",
-                    marginVertical: 10,
+                    paddingHorizontal: 15,
+                    paddingVertical: 9,
+                    flex: 1,
                   }}
-                />
-                <Text
-                  style={{
-                    ...FONTS.Mulish_600SemiBold,
-                    fontSize: 14,
-                    color: COLORS.carrot,
-                  }}>
-                  ${item.price}
-                </Text>
-              </View>
-              <View
-                style={{
-                  paddingVertical: 9,
-                  paddingRight: 15,
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}>
-                <TouchableOpacity>
-                  <Plus />
-                </TouchableOpacity>
-                <Text
-                  style={{
-                    ...FONTS.Mulish_400Regular,
-                    fontSize: 14,
-                    color: COLORS.gray,
-                  }}>
-                  5
-                </Text>
-                <TouchableOpacity>
-                  <Minus />
-                </TouchableOpacity>
-              </View>
-            </TouchableOpacity>
-          );
-        })}
+                >
+                  <Text
+                    style={{
+                      ...FONTS.Mulish_600SemiBold,
+                      fontSize: 14,
+                      textTransform: "capitalize",
+                      marginBottom: 6,
+                      lineHeight: 14 * 1.2,
+                    }}
+                  >
+                    {item.name}
+                  </Text>
+                  <Text style={{ color: COLORS.gray }}>{item.size}</Text>
+                  <Line />
+                  <Text
+                    style={{
+                      ...FONTS.Mulish_600SemiBold,
+                      fontSize: 14,
+                      color: COLORS.carrot,
+                    }}
+                  >
+                    ₪ {item.price}
+                  </Text>
+                </View>
+                
+               
+                  <TouchableOpacity
+                    style={{ position: "absolute", right: 12, bottom: 12 }}
+                    onPress={() => RemoveFromShopList(item.id)}
+                  >
+                    <BagSvg color="#626262" inCart={true} />
+                  </TouchableOpacity>
+                
+                
+              </TouchableOpacity>
+            );
+          })
+        ) : (
+          <Text
+            style={{
+              textAlign: "center",
+              ...FONTS.Mulish_700Bold,
+              fontSize: 16,
+              textTransform: "capitalize",
+              color: COLORS.black,
+              marginBottom: 4,
+              lineHeight: 16 * 1.2,
+            }}
+          >
+סל הקניות שלך ריק          </Text>
+        )}
         <TouchableOpacity
           style={{
             backgroundColor: COLORS.white,

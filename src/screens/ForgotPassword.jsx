@@ -5,6 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import { Header, InputField, Button, ContainerComponent } from "../components";
 import { AREA, COLORS, FONTS } from "../constants";
+import axios from "axios";
 
 export default function ForgotPassword() {
   const navigation = useNavigation();
@@ -21,17 +22,48 @@ export default function ForgotPassword() {
       alert("אנא מלאי את כל השדות הנדרשים");
     } else {
       //לשלוח לשרת את המייל והטלפון ולקבל חזרה את יוזר
-      setflag(true);
-      setFirstStep(false);
-      setUser("user");
+      setUserEmail(userEmail.replace("%40", "@"));
+      axios
+        .get(
+          `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetUserEmailAndPhone/email/${userEmail}/Phone_number/${userPhone}`
+        )
+        .then((res) => {
+          console.log(res.data);
+          setUser(res.data);
+          setflag(true);
+          setFirstStep(false);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
   }
   function changePass() {
-    if (password!=rePassword) {
-      alert("הסיסמאות אינן זהות")
-    }
-    else{
-      //put to user
+    if (password != rePassword) {
+      alert("הסיסמאות אינן זהות");
+    } else {
+      const updateUser={
+        id: user.id,
+        email: user.email,
+        phone_number: user.phone_number,
+        full_name: user.full_name,
+        password: password,
+        address: user.address,
+        is_admin: user.is_admin,
+        closet_id: user.closet_id,
+        user_image: user.user_image
+      }
+      //https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/PutUser
+      axios
+      .put(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/PutUser",updateUser
+      )
+      .then((res) => {
+        navigation.navigate("PasswordHasBeenResetScreen")
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     }
   }
   function renderStepOne() {

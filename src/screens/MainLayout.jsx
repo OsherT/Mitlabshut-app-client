@@ -45,7 +45,6 @@ export default function MainLayout() {
     {
       id: "3",
       screen: "Closet",
-
       icon: (
         <View
           style={{

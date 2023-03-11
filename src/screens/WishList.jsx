@@ -26,31 +26,10 @@ export default function WishList() {
 
   useEffect(() => {
     if (isFocused) {
-      //getFavItems();
       getItemsData();
-      //GetClosetItems();
       GetItemPhotos();
-      //usersFavItemsObj();
-      // console.log("IsFocused:", isFocused);
-      // console.log("UsersFavListObj", UsersFavListObj);
-      // console.log("UsersItemPhotos", UsersItemPhotos);
     }
   }, [isFocused]);
-  // function getFavItems() {
-  //   axios
-  //     .get(
-  //       "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetFavByUserID/" +
-  //         loggedUser.id
-  //     )
-  //     .then((res) => {
-  //       const tempUsersFavList = res.data.map(({ item_id }) => item_id);
-  //       setUsersFavList(tempUsersFavList);
-  //       console.log("tempUsersFavList"+tempUsersFavList);
-  //     })
-  //     .catch((err) => {
-  //       console.log("cant get fav", err);
-  //     });
-  // }
 
   function getItemsData() {
     axios
@@ -68,21 +47,6 @@ export default function WishList() {
       });
   }
 
-  // function GetClosetItems() {
-  //   axios
-  //     .get(
-  //       "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemByClosetId/ClosetId/" +
-  //         loggedUser.closet_id
-  //     )
-  //     .then((res) => {
-  //       setUsersItems(res.data);
-  //     })
-  //     .catch((err) => {
-  //       alert("cant take items");
-  //       console.log(err);
-  //     });
-  // }
-
   function GetItemPhotos() {
     axios
       .get(
@@ -90,21 +54,12 @@ export default function WishList() {
       )
       .then((res) => {
         setUsersItemPhotos(res.data);
-        //console.log(res.data);
       })
       .catch((err) => {
         alert("cant take photos");
         console.log(err);
       });
   }
-
-  //filter the items that not in fav list and creat new obj array of fav items only--> delete after dana will create the correct get
-  // const usersFavItemsObj = () => {
-  //   const myFavItems = UsersItems.filter((item) =>
-  //     UsersFavList.includes(item.id)
-  //   ).map((item) => ({ ...item }));
-  //   setUsersFavListObj(myFavItems);
-  // };
 
   function RemoveFromFav(itemId) {
     axios
@@ -113,8 +68,6 @@ export default function WishList() {
       )
       .then((res) => {
         getItemsData();
-        //setUsersFavList((prevList) => prevList.filter((id) => id !== itemId));
-        //isFocused = true;
       })
       .catch((err) => {
         console.log("cant remove from getFavItems", err);

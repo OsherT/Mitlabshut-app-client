@@ -19,37 +19,68 @@ export default function WishList() {
   const isFocused = useIsFocused();
   const { loggedUser } = useContext(userContext);
   const [UsersItems, setUsersItems] = useState([]);
+  const [Items,setItems]=useState([]);
   const [UsersItemPhotos, setUsersItemPhotos] = useState([]);
   const [UsersFavList, setUsersFavList] = useState([]);   
   const [UsersFavListObj, setUsersFavListObj] = useState([]);
 
   useEffect(() => {
     if (isFocused) {
-      GetClosetItems();
+      getFavItems();
+      getItemsData();  
+      //GetClosetItems();
       GetItemPhotos();
-      getFavItems();  
       usersFavItemsObj();
-      console.log("IsFocused:", isFocused);
-
-      console.log("UsersFavListObj", UsersFavListObj);
-      console.log("UsersItemPhotos", UsersItemPhotos);
+      // console.log("IsFocused:", isFocused);
+      // console.log("UsersFavListObj", UsersFavListObj);
+      // console.log("UsersItemPhotos", UsersItemPhotos);
     }
   }, [isFocused]);
-
-  function GetClosetItems() {
+  function getFavItems() {
     axios
       .get(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemByClosetId/ClosetId/" +
-          loggedUser.closet_id
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetFavByUserID/" +
+          loggedUser.id
       )
       .then((res) => {
-        setUsersItems(res.data);
+        const tempUsersFavList = res.data.map(({ item_id }) => item_id);
+        setUsersFavList(tempUsersFavList);
+        console.log("tempUsersFavList"+tempUsersFavList);
       })
       .catch((err) => {
-        alert("cant take items");
-        console.log(err);
+        console.log("cant get fav", err);
       });
   }
+
+  function getItemsData(){
+    axios
+      .get(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetFavItemByUserId/User_ID/" +
+          loggedUser.id
+      )
+      .then((res) => {
+        setItems(res.data);
+        console.log("itemsss"+res.data[0].type);
+      })
+      .catch((err) => {
+        console.log("cant get fav", err);
+      });
+  }
+
+  // function GetClosetItems() {
+  //   axios
+  //     .get(
+  //       "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemByClosetId/ClosetId/" +
+  //         loggedUser.closet_id
+  //     )
+  //     .then((res) => {
+  //       setUsersItems(res.data);
+  //     })
+  //     .catch((err) => {
+  //       alert("cant take items");
+  //       console.log(err);
+  //     });
+  // }
 
   function GetItemPhotos() {
     axios
@@ -62,21 +93,6 @@ export default function WishList() {
       .catch((err) => {
         alert("cant take photos");
         console.log(err);
-      });
-  }
-
-  function getFavItems() {
-    axios
-      .get(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetFavByUserID/" +
-          loggedUser.id
-      )
-      .then((res) => {
-        const tempUsersFavList = res.data.map(({ item_id }) => item_id);
-        setUsersFavList(tempUsersFavList);
-      })
-      .catch((err) => {
-        console.log("cant get fav", err);
       });
   }
 

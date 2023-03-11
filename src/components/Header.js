@@ -29,8 +29,8 @@ export default function Header({ title, titleStyle }) {
       <TouchableOpacity
         style={{
           position: "absolute",
-          left: 370,
-          top: 13,
+          right: 0,
+          top: 14,
           paddingHorizontal: 20,
         }}
         onPress={() => {

@@ -43,7 +43,6 @@ export default function Closet() {
       GetClosetDescription();
       GetClosetFollowers();
       GetClosetItems();
-      GetItemPhotos();
       getShopItems();
       getFavItems();
     }
@@ -87,25 +86,32 @@ export default function Closet() {
       )
       .then((res) => {
         setUsersItems(res.data);
+        GetItemPhotos(res.data); // move the call here
       })
       .catch((err) => {
         alert("cant take items");
         console.log(err);
       });
   }
-  function GetItemPhotos() {
-    axios
-      .get(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemImageVideo"
-      )
-      .then((res) => {
-        setUsersItemPhotos(res.data);
+  function GetItemPhotos(items) { // pass the items array as a parameter
+    const promises = items.map((item) => { // use the passed items array
+      return axios.get(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItem_Image_VideoItemById/Item_ID/" +
+          item.id
+      );
+    });
+  
+    Promise.all(promises)
+      .then((responses) => {
+        const photos = responses.flatMap((response) => response.data);
+        setUsersItemPhotos(photos);
       })
-      .catch((err) => {
+      .catch((error) => {
         alert("cant take photos");
-        console.log(err);
+        console.log(error);
       });
   }
+
   function renderUserContent() {
     return (
       <View
@@ -417,28 +423,28 @@ export default function Closet() {
   function renderMessage() {
     return (
       <View>
-      <Text
-        style={{
-          textAlign: "center",
-          ...FONTS.Mulish_700Bold,
-          fontSize: 16,
-          textTransform: "capitalize",
-          color: COLORS.black,
-          marginBottom: 4,
-          lineHeight: 16 * 1.2,
-        }}
-      >
-        הארון ריק 
-      </Text> 
-      <View
-              style={{ 
-                //position: "absolute",
-                left: 180,
-                top: 10,
-              }}
-            >
-              {addItemButton()}
-            </View>
+        <Text
+          style={{
+            textAlign: "center",
+            ...FONTS.Mulish_700Bold,
+            fontSize: 16,
+            textTransform: "capitalize",
+            color: COLORS.black,
+            marginBottom: 4,
+            lineHeight: 16 * 1.2,
+          }}
+        >
+          הארון ריק
+        </Text>
+        <View
+          style={{
+            //position: "absolute",
+            left: 180,
+            top: 10,
+          }}
+        >
+          {addItemButton()}
+        </View>
       </View>
     );
   }

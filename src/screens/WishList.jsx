@@ -18,39 +18,17 @@ export default function WishList() {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const { loggedUser } = useContext(userContext);
-  const [UsersItems, setUsersItems] = useState([]);
   const [Items, setItems] = useState([]);
   const [UsersItemPhotos, setUsersItemPhotos] = useState([]);
-  const [UsersFavList, setUsersFavList] = useState([]);
-  const [UsersFavListObj, setUsersFavListObj] = useState([]);
+  const [shopList, setshopList] = useState([]);
 
   useEffect(() => {
     if (isFocused) {
-      //getFavItems();
+
       getItemsData();
-      //GetClosetItems();
-      GetItemPhotos();
-      //usersFavItemsObj();
-      // console.log("IsFocused:", isFocused);
-      // console.log("UsersFavListObj", UsersFavListObj);
-      // console.log("UsersItemPhotos", UsersItemPhotos);
+      getShopItems();
     }
   }, [isFocused]);
-  // function getFavItems() {
-  //   axios
-  //     .get(
-  //       "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetFavByUserID/" +
-  //         loggedUser.id
-  //     )
-  //     .then((res) => {
-  //       const tempUsersFavList = res.data.map(({ item_id }) => item_id);
-  //       setUsersFavList(tempUsersFavList);
-  //       console.log("tempUsersFavList"+tempUsersFavList);
-  //     })
-  //     .catch((err) => {
-  //       console.log("cant get fav", err);
-  //     });
-  // }
 
   function getItemsData() {
     axios
@@ -60,51 +38,47 @@ export default function WishList() {
       )
       .then((res) => {
         setItems(res.data);
-        console.log("itemsss" + res.data.map((item) => item.id)); //
+        GetItemPhotos(res.data);
       })
       .catch((err) => {
         setItems("");
-        //console.log("cant get fav", err);
       });
   }
-
-  // function GetClosetItems() {
-  //   axios
-  //     .get(
-  //       "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemByClosetId/ClosetId/" +
-  //         loggedUser.closet_id
-  //     )
-  //     .then((res) => {
-  //       setUsersItems(res.data);
-  //     })
-  //     .catch((err) => {
-  //       alert("cant take items");
-  //       console.log(err);
-  //     });
-  // }
-
-  function GetItemPhotos() {
+  function getShopItems() {
     axios
       .get(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemImageVideo"
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetShopByUserID/UserID/" +
+          loggedUser.id
       )
       .then((res) => {
-        setUsersItemPhotos(res.data);
-        //console.log(res.data);
+        const tempUsersShopList = res.data.map(({ item_id }) => item_id);
+        setshopList(tempUsersShopList);
       })
       .catch((err) => {
-        alert("cant take photos");
-        console.log(err);
+        // alert();
+        console.log("cant get shop list", err);
       });
   }
+  function GetItemPhotos(items) {
+    // pass the items array as a parameter
+    const promises = items.map((item) => {
+      // use the passed items array
+      return axios.get(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItem_Image_VideoItemById/Item_ID/" +
+          item.id
+      );
+    });
 
-  //filter the items that not in fav list and creat new obj array of fav items only--> delete after dana will create the correct get
-  // const usersFavItemsObj = () => {
-  //   const myFavItems = UsersItems.filter((item) =>
-  //     UsersFavList.includes(item.id)
-  //   ).map((item) => ({ ...item }));
-  //   setUsersFavListObj(myFavItems);
-  // };
+    Promise.all(promises)
+      .then((responses) => {
+        const photos = responses.flatMap((response) => response.data);
+        setUsersItemPhotos(photos);
+      })
+      .catch((error) => {
+        alert("cant take photos");
+        console.log(error);
+      });
+  }
 
   function RemoveFromFav(itemId) {
     axios
@@ -113,11 +87,38 @@ export default function WishList() {
       )
       .then((res) => {
         getItemsData();
-        //setUsersFavList((prevList) => prevList.filter((id) => id !== itemId));
-        //isFocused = true;
       })
       .catch((err) => {
         console.log("cant remove from getFavItems", err);
+      });
+  }
+  function AddToShopList(item_id) {
+    axios
+      .post(
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/PostShopItem/ItemID/${item_id}/UserID/${loggedUser.id}`
+      )
+      .then((res) => {
+        getShopItems();
+        setshopList((prevList) => [...prevList, { item_id }]);
+      })
+      .catch((err) => {
+        alert("cant add to shop list");
+        console.log(err);
+      });
+  }
+  function RemoveFromShopList(itemId) {
+    axios
+      .delete(
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/DeleteShopItem/ItemID/${itemId}/UserID/${loggedUser.id}`
+      )
+      .then((res) => {
+        getShopItems();
+        setshopList((prevList) => prevList.filter((id) => id !== itemId));
+      })
+      .catch((err) => {
+        alert("cant add to fav");
+        console.log(err);
+        // console.log(newFav);
       });
   }
 
@@ -209,24 +210,45 @@ export default function WishList() {
                       color: "red",
                     }}
                   >
-                    DELETE
+                    הסירי
                   </Text>
                   {/* <FavoriteSvg/>  */}
                 </TouchableOpacity>
-                <TouchableOpacity
-                  style={{
-                    position: "absolute",
-                    right: 15,
-                    bottom: 9,
-                  }}
-                >
-                  <BagSvg />
-                </TouchableOpacity>
+                {shopList.includes(item.id) && (
+                  // render the filled heart SVG if the item ID is in the UsersFavList
+                  <TouchableOpacity
+                    style={{ position: "absolute", right: 12, bottom: 12 }}
+                    onPress={() => RemoveFromShopList(item.id)}
+                  >
+                    <BagSvg color="#626262" inCart={true} />
+                  </TouchableOpacity>
+                )}
+                {!shopList.includes(item.id) && (
+                  // render the unfilled heart SVG if the item ID is not in the UsersFavList
+                  <TouchableOpacity
+                    style={{ position: "absolute", right: 12, bottom: 12 }}
+                    onPress={() => AddToShopList(item.id)}
+                  >
+                    <BagSvg color="#D7BA7B" inCart={false} />
+                  </TouchableOpacity>
+                )}
               </TouchableOpacity>
             );
           })
         ) : (
-          <Text>No items found</Text>
+          <Text
+            style={{
+              textAlign: "center",
+              ...FONTS.Mulish_700Bold,
+              fontSize: 16,
+              textTransform: "capitalize",
+              color: COLORS.black,
+              marginBottom: 4,
+              lineHeight: 16 * 1.2,
+            }}
+          >
+            לא קיימים פריטים מועדפים
+          </Text>
         )}
       </ScrollView>
     );

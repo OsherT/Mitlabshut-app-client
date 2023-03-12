@@ -111,14 +111,11 @@ export default function Navigation() {
           <Stack.Screen name="PaymentMethod" component={PaymentMethod} />
           <Stack.Screen name="EditProfile" component={EditProfile} />
           <Stack.Screen name="EditItem" component={EditItem} />
-
           <Stack.Screen name="OrderFailed" component={OrderFailed} />
           <Stack.Screen name="MainLayout" component={MainLayout} />
           <Stack.Screen name="OrderSuccessful" component={OrderSuccessful} />
           <Stack.Screen name="ItemUpdateSucc" component={ItemUpdateSucc} />
-
           <Stack.Screen name="Profile" component={Profile} />
-
           <Stack.Screen
             name="RessetPasswordNotice"
             component={RessetPasswordNotice}
@@ -131,7 +128,6 @@ export default function Navigation() {
           />
           <Stack.Screen name="AccountCreated" component={AccountCreated} />
           <Stack.Screen name="Search" component={Search} />
-
           <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
         </Stack.Navigator>
         <FlashMessage position="top" />

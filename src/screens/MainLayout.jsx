@@ -4,9 +4,9 @@ import { useNavigation } from "@react-navigation/native";
 
 import Home from "./Home";
 import Search from "./Search";
-import CartIsEmpty from "./CartIsEmpty";
 import WishList from "./WishList";
 import Profile from "./Profile";
+import Closet from "./Closet";
 
 import {
   HomeTab,
@@ -19,11 +19,10 @@ import {
 import { COLORS, FONTS, cartItems, products } from "../constants";
 import { userContext } from "../navigation/userContext";
 
-
 export default function MainLayout() {
   const navigation = useNavigation();
   const [selectedTab, setSelectedTab] = useState("Home");
-  const { loggedUser} =useContext(userContext);
+  const { loggedUser } = useContext(userContext);
 
   const tabs = [
     {
@@ -38,7 +37,6 @@ export default function MainLayout() {
     {
       id: "2",
       screen: "Search",
-
       icon: (
         <SearchTab
           color={selectedTab == "Search" ? COLORS.golden : COLORS.lightGray}
@@ -59,39 +57,21 @@ export default function MainLayout() {
             borderRadius: 30,
             justifyContent: "center",
             alignItems: "center",
-          }}>
+          }}
+        >
           <View
             style={{
               width: 54,
               height: 54,
               backgroundColor: COLORS.golden,
-              
               borderRadius: 30,
-
               justifyContent: "center",
               alignItems: "center",
-            }}>
-
-            <Bag />
-            <View
-              style={{
-                width: 18,
-                height: 18,
-                backgroundColor: COLORS.white,
-                borderRadius: 9,
-                justifyContent: "center",
-                alignItems: "center",
-                position: "absolute",
-                right: 10,
-                bottom: 10,
-              }}>
-              <Text
-                style={{
-                  fontSize: 10,
-                  color: COLORS.golden,
-                  ...FONTS.Mulish_700Bold,
-                }}></Text>
-            </View>
+            }}
+          >
+            <Bag
+              color={selectedTab == "Closet" ? COLORS.golden : COLORS.lightGray}
+            />
           </View>
         </View>
       ),
@@ -120,7 +100,7 @@ export default function MainLayout() {
     <View style={{ flex: 1, backgroundColor: COLORS.goldenTransparent_01 }}>
       {selectedTab == "Home" && <Home />}
       {selectedTab == "Search" && <Search />}
-      {selectedTab == "Closet" && <CartIsEmpty />}
+      {selectedTab == "Closet" && <Closet />}
       {selectedTab == "WishList" && <WishList />}
       {selectedTab == "Profile" && <Profile />}
 
@@ -129,7 +109,8 @@ export default function MainLayout() {
           alignSelf: "center",
           position: "absolute",
           bottom: 68,
-        }}>
+        }}
+      >
         <TabElement />
       </View>
       <View
@@ -140,20 +121,15 @@ export default function MainLayout() {
           paddingHorizontal: 28,
           backgroundColor: COLORS.white,
           paddingBottom: 10,
-        }}>
+        }}
+      >
         {tabs.map((item, index) => {
           return (
             <TouchableOpacity
               key={index}
-              onPress={() =>
-                item.screen == "Closet" && products.length !== 0
-                  ? navigation.navigate("Closet", {
-                    closet: loggedUser.closet_id,
-                    owner:loggedUser
-                  })
-                  : setSelectedTab(item.screen)
-              }>
-              {item.icon}
+              onPress={() => setSelectedTab(item.screen)}
+            >
+              <View>{item.icon}</View>
             </TouchableOpacity>
           );
         })}

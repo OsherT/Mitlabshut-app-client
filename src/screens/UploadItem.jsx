@@ -222,12 +222,10 @@ export default function UploadItem() {
         })
         .then(
           (item_ID) => {
-            // Alert.alert("Item added in succ");
             console.log("item_ID", item_ID);
             uploadCtegories(item_ID);
             uploadImageFB(item_ID);
-
-            // navigation.navigate("Closet");
+            // Alert.alert("Item added in succ");
           },
           (error) => {
             console.log("ERR in upload item ", error);
@@ -285,6 +283,7 @@ export default function UploadItem() {
     setUploading(false);
     setImage(null);
     Alert.alert("image uploadede!");
+    navigation.navigate("Closet");
   };
 
   const uploadImagesDB = (item_id, imageLink) => {
@@ -304,7 +303,7 @@ export default function UploadItem() {
       })
       .then(
         (result) => {
-          // console.log("suc in post imges= ", result);
+          console.log("suc in post imges= ", result);
         },
         (error) => {
           console.log("ERR in post imges", error);

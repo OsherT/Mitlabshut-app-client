@@ -29,6 +29,7 @@ export default function Home() {
     }
 //render the sliders dots
     function renderDots() {
+        console.log(loggedUser.closet_id);
         return (
             <View>
                 <View

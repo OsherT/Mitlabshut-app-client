@@ -47,6 +47,7 @@ export default function ProductDetails(props) {
   useEffect(() => {
     if (isFocused) {
       console.log(item);
+      console.log("userrrr "+user.user_image);
       GetClosetdata();
       getUser();
       getFavItems();
@@ -79,6 +80,7 @@ export default function ProductDetails(props) {
       if (userFiltered.id === loggedUser.id) {
         setotherUserFlag(true);
       }
+      else setotherUserFlag(false);
       getFollowingList();
     } catch (err) {
       alert("cant take description");
@@ -287,7 +289,6 @@ export default function ProductDetails(props) {
         setUsersFollowingList((prevList) =>
           prevList.filter((id) => id !== closet_ID)
         );
-        console.log("unfollow", err);
         getFollowingList();
       })
       .catch((err) => {
@@ -486,13 +487,15 @@ export default function ProductDetails(props) {
                 }}
                 onPress={() => {
                   navigation.navigate("Closet", {
-                    closet: user.closet_ID,
+                    closet: item.closet_ID,
+                    owner:user
                   });
                 }}
               >
                 <ImageBackground
                   source={{
                     uri: user.user_image,
+                    
                   }}
                   style={styles.userImage}
                   imageStyle={{ borderRadius: 40 }}

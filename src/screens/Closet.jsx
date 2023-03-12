@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { userContext } from "../navigation/userContext";
+import { useNavigation } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -12,30 +13,27 @@ import {
 import axios from "axios";
 import { Edit } from "../svg";
 import { BagSvg, HeartSvg, Plus } from "../svg";
-import {
-  Button,
-  ContainerComponent,
-  Header,
-  ProfileCategory,
-} from "../components";
-import { COLORS, FONTS } from "../constants";
-import { useNavigation } from "@react-navigation/native";
-import { render } from "react-dom";
+import { ContainerComponent, Header } from "../components";
+import { AREA, COLORS, FONTS } from "../constants";
 import { useIsFocused } from "@react-navigation/native";
 import ProfileNumbers from "../components/ProfileNumbers";
+import ButtonFollow from "../components/ButtonFollow";
+
 
 export default function Closet(props) {
-  const closetId = props.route.params.closet;//owner
-  const owner = props.route.params.owner;
   const { loggedUser, setclosetDesc, setclosetName, closetName, closetDesc } =
     useContext(userContext);
+  const { route } = props;
+  const closetId = route?.params?.closetId || loggedUser.closet_id;
+  const owner = route?.params?.owner || loggedUser;
   const [UsersItems, setUsersItems] = useState([]);
   const [UsersItemPhotos, setUsersItemPhotos] = useState([]);
   const [UsersFavList, setUsersFavList] = useState([]);
   const [UsersShopList, setUsersShopList] = useState([]);
   const [ClosetFollowers, setClosetFollowers] = useState([]);
   const [myClosetFlag, setMyClosetFlag] = useState(false);
-
+  const [UsersFollowingList, setUsersFollowingList] = useState([]);
+  const ApiUrl_user = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User`;
 
   //להוסיף כפתור הוספת פריט
   const navigation = useNavigation();
@@ -43,21 +41,23 @@ export default function Closet(props) {
 
   useEffect(() => {
     if (isFocused) {
-      console.log(owner);
+      console.log(loggedUser);
       setMyClosetFlag(loggedUser.closet_id === closetId);
+      console.log("flagggg " + myClosetFlag);
       GetClosetDescription();
-      GetClosetFollowers();
+      GetClosetFollowers_num();
       GetClosetItems();
       getShopItems();
       getFavItems();
+      getFollowingList();
     }
-  }, [isFocused]);
+  }, [isFocused, ClosetFollowers]);
 
   function GetClosetDescription() {
     axios
       .get(
         "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Closet/Get/" +
-        closetId
+          closetId
       )
       .then((res) => {
         setclosetName(res.data[0].user_name);
@@ -68,11 +68,11 @@ export default function Closet(props) {
         console.log(err);
       });
   }
-  function GetClosetFollowers() {
+  function GetClosetFollowers_num() {
     axios
       .get(
         "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetCountFollowingUsers/Closet_ID/" +
-        closetId
+          closetId
       )
       .then((res) => {
         setClosetFollowers(res.data);
@@ -87,7 +87,7 @@ export default function Closet(props) {
     axios
       .get(
         "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemByClosetId/ClosetId/" +
-        closetId
+          closetId
       )
       .then((res) => {
         setUsersItems(res.data);
@@ -98,14 +98,16 @@ export default function Closet(props) {
         console.log(err);
       });
   }
-  function GetItemPhotos(items) { // pass the items array as a parameter
-    const promises = items.map((item) => { // use the passed items array
+  function GetItemPhotos(items) {
+    // pass the items array as a parameter
+    const promises = items.map((item) => {
+      // use the passed items array
       return axios.get(
         "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItem_Image_VideoItemById/Item_ID/" +
           item.id
       );
     });
-  
+
     Promise.all(promises)
       .then((responses) => {
         const photos = responses.flatMap((response) => response.data);
@@ -130,25 +132,24 @@ export default function Closet(props) {
         showsHorizontalScrollIndicator={false}
       >
         <ContainerComponent containerStyle={{ marginBottom: 20 }}>
-
-          {myClosetFlag&&(
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("EditProfile");
-              
-            }}
-          >
-            <View
-              style={{
-                position: "absolute",
-                right: 0,
-                bottom: -20,
+          {myClosetFlag && (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("EditProfile");
               }}
             >
-              <Edit />
-            </View>
-          </TouchableOpacity>)}
-          {myClosetFlag&&UsersItems.length > 0 && (
+              <View
+                style={{
+                  position: "absolute",
+                  right: 0,
+                  bottom: -20,
+                }}
+              >
+                <Edit />
+              </View>
+            </TouchableOpacity>
+          )}
+          {myClosetFlag && UsersItems.length > 0 && (
             <View
               style={{
                 position: "absolute",
@@ -161,7 +162,7 @@ export default function Closet(props) {
           )}
           <ImageBackground
             source={{
-              uri: owner.user_image,
+              uri: owner.user_image ? owner.user_image : loggedUser.user_image,
             }}
             style={{
               width: 80,
@@ -171,7 +172,6 @@ export default function Closet(props) {
             }}
             imageStyle={{ borderRadius: 40 }}
           ></ImageBackground>
-          
           <Text
             style={{
               textAlign: "center",
@@ -201,6 +201,39 @@ export default function Closet(props) {
           >
             {closetDesc}
           </Text>
+          {myClosetFlag == false ? (
+            <View
+              style={{
+                //flexDirection: "row-reverse",
+                alignItems: "center",
+              }}
+            >
+              {!UsersFollowingList.includes(owner.closet_id) && (
+                <ButtonFollow
+                  title="עקבי"
+                  backgroundColor={COLORS.golden}
+                  textColor={COLORS.white}
+                  containerStyle={{ marginTop: 17, marginBottom: -14 }}
+                  onPress={() => {
+                    followCloset();
+                  }}
+                />
+              )}
+              {UsersFollowingList.includes(owner.closet_id) && (
+                <ButtonFollow
+                  title="הסירי עוקב"
+                  backgroundColor={COLORS.goldenTransparent_03}
+                  textColor={COLORS.black}
+                  containerStyle={{ marginTop: 17, marginBottom: -14 }}
+                  onPress={() => {
+                    unfollowCloset();
+                  }}
+                />
+              )}
+            </View>
+          ) : (
+            <Text> </Text>
+          )}
         </ContainerComponent>
       </View>
     );
@@ -293,6 +326,52 @@ export default function Closet(props) {
         // console.log(newFav);
       });
   }
+
+  //handle Follow button
+  function getFollowingList() {
+    axios
+      .get(ApiUrl_user + `/GetClosetByUserID/User_ID/${loggedUser.id}`)
+      .then((res) => {
+        const tempUsersFollowList = res.data.map(({ closet_id }) => closet_id);
+        setUsersFollowingList(tempUsersFollowList);
+      })
+      .catch((err) => {
+        console.log("cant get shop list", err);
+      });
+  }
+  const followCloset = () => {
+    axios
+      .post(
+        ApiUrl_user +
+          `/PostFollowingCloset/User_ID/${loggedUser.id}/Closet_ID/${owner.closet_id}`
+      )
+      .then((res) => {
+        var closet_id = owner.closet_id;
+        setUsersFollowingList((prevList) => [...prevList, { closet_id }]);
+        getFollowingList();
+        GetClosetFollowers_num();
+      })
+      .catch((err) => {
+        console.log("cant follow", err);
+      });
+  };
+  const unfollowCloset = () => {
+    axios
+      .delete(
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/Delete/Closet_ID/${owner.closet_id}/User_ID/${loggedUser.id}`
+      )
+      .then((res) => {
+        var closet_id = owner.closet_id;
+        setUsersFollowingList((prevList) =>
+          prevList.filter((id) => id !== closet_id)
+        );
+        getFollowingList();
+        GetClosetFollowers_num();
+      })
+      .catch((err) => {
+        console.log("cant unfollow");
+      });
+  };
   ///render items
   function renderClothes() {
     return (
@@ -335,7 +414,7 @@ export default function Closet(props) {
                     imageStyle={{ borderRadius: 10 }}
                     key={photo.ID}
                   >
-                    {!myClosetFlag&&UsersFavList.includes(item.id) && (
+                    {!myClosetFlag && UsersFavList.includes(item.id) && (
                       // render the filled heart SVG if the item ID is in the UsersFavList
                       <TouchableOpacity
                         style={{ left: 12, top: 12 }}
@@ -344,7 +423,7 @@ export default function Closet(props) {
                         <HeartSvg filled={true} />
                       </TouchableOpacity>
                     )}
-                    {!myClosetFlag&&!UsersFavList.includes(item.id) && (
+                    {!myClosetFlag && !UsersFavList.includes(item.id) && (
                       // render the unfilled heart SVG if the item ID is not in the UsersFavList
                       <TouchableOpacity
                         style={{ left: 12, top: 12 }}
@@ -406,7 +485,7 @@ export default function Closet(props) {
                 ₪ {item.price}
               </Text>
             </View>
-            {!myClosetFlag&&UsersShopList.includes(item.id) && (
+            {!myClosetFlag && UsersShopList.includes(item.id) && (
               // render the filled heart SVG if the item ID is in the UsersFavList
               <TouchableOpacity
                 style={{ position: "absolute", right: 12, bottom: 12 }}
@@ -415,7 +494,7 @@ export default function Closet(props) {
                 <BagSvg color="#626262" inCart={true} />
               </TouchableOpacity>
             )}
-            {!myClosetFlag&&!UsersShopList.includes(item.id) && (
+            {!myClosetFlag && !UsersShopList.includes(item.id) && (
               // render the unfilled heart SVG if the item ID is not in the UsersFavList
               <TouchableOpacity
                 style={{ position: "absolute", right: 12, bottom: 12 }}
@@ -472,18 +551,17 @@ export default function Closet(props) {
   }
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-      }}
-    >
-      <Header onPress={() => navigation.goBack()} />
-      {renderUserContent()}
-
-      {UsersItems.length > 0 && renderClothes()}
-      {UsersItems.length == 0 && renderMessage()}
-      {/* <MainLayout /> */}
-    </SafeAreaView>
+    <View style={{ flex: 1 }}>
+      <SafeAreaView
+        style={{ ...AREA.AndroidSafeArea, backgroundColor: "none" }}
+      >
+        <Header onPress={() => navigation.goBack()} />
+        <View style={{ flex: 1 }}>
+          {renderUserContent()}
+          {UsersItems.length > 0 && renderClothes()}
+          {UsersItems.length == 0 && renderMessage()}
+        </View>
+      </SafeAreaView>
+    </View>
   );
 }

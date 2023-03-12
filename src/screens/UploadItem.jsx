@@ -290,7 +290,12 @@ export default function UploadItem() {
     // for (let i = 0; i < itemImage.length; i++) {
     //   // item_Src: itemImage[i],
     //   const item_Src = "image";
+
     console.log("imageLink", imageLink);
+    const encodedLink = encodeURIComponent(imageLink);
+    console.log("encodedLink", encodedLink);
+    console.log("item_id", item_id);
+
     fetch(ApiUrl + `/PostItemImageVideo/ItemId/${item_id}/SRC/${"imageLink"}`, {
       method: "POST",
       headers: new Headers({
@@ -310,7 +315,6 @@ export default function UploadItem() {
         }
       );
   };
-  // };
 
   //converts the shipping method to string, shipping method in data base gets string only
   const ArrayToStringShip = (data) => {
@@ -519,11 +523,11 @@ export default function UploadItem() {
               />
             )}
             <Button title="Select Image" onPress={pickImage} />
-            {!uploading ? (
+            {/* {!uploading ? (
               <Button title="Upload Image" onPress={uploadImageFB} />
             ) : (
               <ActivityIndicator size={"small"} color="black" />
-            )}
+            )} */}
           </View>
 
           <Button title="הוספת פריט" onPress={UploadItem} />

@@ -264,6 +264,7 @@ export default function UploadItem() {
     setUploading(true);
     const response = await fetch(image.uri);
     const blob = await response.blob();
+    //for each item i open a folder
     const filename =
       item_ID + "/" + image.uri.substring(image.uri.lastIndexOf("/") + 1);
     // const filename = image.uri.substring(image.uri.lastIndexOf("/") + 1);
@@ -274,18 +275,16 @@ export default function UploadItem() {
 
     try {
       await ref;
-      console.log("upload to FB", error);
+      var imageRef = firebase.storage().ref().child(filename);
+      const imageLink = await imageRef.getDownloadURL(); // Get the download URL of the uploaded image
+      uploadImagesDB(item_ID, imageLink);
     } catch (error) {
       console.log("error in upload to FB", error);
     }
-    var imageRef = firebase.storage().ref().child(filename);
-    const imageLink = await imageRef.getDownloadURL(); // Get the download URL of the uploaded image
-    console.log("imageLink", imageLink);
 
     setUploading(false);
-    Alert.alert("image uploadede!");
     setImage(null);
-    uploadImagesDB(item_ID, imageLink);
+    Alert.alert("image uploadede!");
   };
 
   const uploadImagesDB = (item_id, imageLink) => {

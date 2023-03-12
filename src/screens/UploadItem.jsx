@@ -222,11 +222,12 @@ export default function UploadItem() {
         })
         .then(
           (item_ID) => {
-            Alert.alert("Item added in succ");
-            uploadImagesDB(item_ID);
+            // Alert.alert("Item added in succ");
+            console.log("item_ID", item_ID);
             uploadCtegories(item_ID);
+            uploadImageFB(item_ID);
 
-            navigation.navigate("Closet");
+            // navigation.navigate("Closet");
           },
           (error) => {
             console.log("ERR in upload item ", error);
@@ -236,9 +237,9 @@ export default function UploadItem() {
   };
 
   ////////////////////////////////////////
-  ///uploads the image to the fireBase////
+  ///uploads the image to the fireBase//// 
   ////////////////////////////////////////
-
+ 
   const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
 
@@ -259,17 +260,15 @@ export default function UploadItem() {
     // }
   };
 
-  const uploadImageFB = async () => {
-    console.log("in uploadImageFB");
-
+  const uploadImageFB = async (item_ID) => {
     setUploading(true);
     const response = await fetch(image.uri);
     const blob = await response.blob();
-    const filename = image.uri.substring(image.uri.lastIndexOf("/") + 1);
+    const filename = item_ID +"/" +image.uri.substring(image.uri.lastIndexOf("/") + 1);
+    // const filename = image.uri.substring(image.uri.lastIndexOf("/") + 1);
     console.log("filename", filename);
 
     var ref = firebase.storage().ref().child(filename).put(blob);
-    console.log("ref", ref);
 
     try {
       await ref;
@@ -278,80 +277,10 @@ export default function UploadItem() {
       console.log("error in upload to FB", error);
     }
     setUploading(false);
-    Alert.alert("image uploadede!!");
+    Alert.alert("image uploadede!");
     setImage(null);
   };
 
-  // const uploadImageFB = async () => {
-  //   console.log("in uploadImageFB ");
-  //   const blob = await new Promise((resolve, reject) => {
-  //     console.log("in blob ");
-
-  //     const xhr = new XMLHttpRequest();
-  //     xhr.onload = function () {
-  //       resolve(xhr.response);
-  //       console.log("in xhr.onload ");
-  //     };
-  //     xhr.onerror = function () {
-  //       reject(new TypeError("Network request failed"));
-  //       console.log("in onerror ");
-  //     };
-  //     xhr.responseType = "blob";
-  //     xhr.open("GET", image, true);
-  //     xhr.send(null);
-  //   });
-  //   const ref = firebase.storage().ref().child(`images/Image1`);
-  //   const snapshot = ref.put(blob);
-  //   snapshot.on(
-  //     firebase.storage.TaskEvent.STATE_CHANGED,
-
-  //     () => {
-  //       // setUploading(true);
-  //       // console.log("in firebase.storage.TaskEvent ");
-  //       try {
-  //         setUploading(true);
-  //         console.log("in firebase.storage.TaskEvent ");
-  //       } catch (error) {
-  //         console.log("error", error);
-  //       }
-  //     },
-  //     (error) => {
-  //       setUploading(false);
-  //       console.log("in setUploading(false)");
-
-  //       console.log(error);
-  //       blob.close();
-  //       return;
-  //     },
-  //     () => {
-  //       snapshot.snapshot.ref.getDownloadURL().then((url) => {
-  //         console.log("in .getDownloadURL().then((url) ");
-
-  //         setUploading(false);
-  //         console.log("Download URL: ", url);
-  //         setImage(url);
-  //         blob.close();
-  //         return url;
-  //       });
-  //     }
-  //   );
-  // };
-
-  // open image picker and inserts the url into an array
-  // const pickImage = async (index) => {
-  //   let result = await ImagePicker.launchImageLibraryAsync({
-  //     mediaTypes: ImagePicker.MediaTypeOptions.All,
-  //     allowsEditing: true,
-  //     aspect: [4, 3],
-  //     quality: 1,
-  //   });
-
-  //   let newImages = [...itemImage];
-  //   newImages[index] = result.uri;
-  //   setItemImage(newImages);
-  // };
-
-  //upload images to Item_Image_Video table
   const uploadImagesDB = (item_id) => {
     for (let i = 0; i < itemImage.length; i++) {
       // item_Src: itemImage[i],

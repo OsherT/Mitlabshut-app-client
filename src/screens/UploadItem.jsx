@@ -237,9 +237,9 @@ export default function UploadItem() {
   };
 
   ////////////////////////////////////////
-  ///uploads the image to the fireBase//// 
+  ///uploads the image to the fireBase////
   ////////////////////////////////////////
- 
+
   const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
 
@@ -264,11 +264,13 @@ export default function UploadItem() {
     setUploading(true);
     const response = await fetch(image.uri);
     const blob = await response.blob();
-    const filename = item_ID +"/" +image.uri.substring(image.uri.lastIndexOf("/") + 1);
+    const filename =
+      item_ID + "/" + image.uri.substring(image.uri.lastIndexOf("/") + 1);
     // const filename = image.uri.substring(image.uri.lastIndexOf("/") + 1);
     console.log("filename", filename);
 
     var ref = firebase.storage().ref().child(filename).put(blob);
+    console.log("ref", ref);
 
     try {
       await ref;
@@ -276,36 +278,41 @@ export default function UploadItem() {
     } catch (error) {
       console.log("error in upload to FB", error);
     }
+    var imageRef = firebase.storage().ref().child(filename);
+    const imageLink = await imageRef.getDownloadURL(); // Get the download URL of the uploaded image
+    console.log("imageLink", imageLink);
+
     setUploading(false);
     Alert.alert("image uploadede!");
     setImage(null);
+    uploadImagesDB(item_ID, imageLink);
   };
 
-  const uploadImagesDB = (item_id) => {
-    for (let i = 0; i < itemImage.length; i++) {
-      // item_Src: itemImage[i],
-      const item_Src = "image";
-
-      fetch(ApiUrl + `/PostItemImageVideo/ItemId/${item_id}/SRC/${item_Src}`, {
-        method: "POST",
-        headers: new Headers({
-          "Content-type": "application/json; charset=UTF-8",
-          Accept: "application/json; charset=UTF-8",
-        }),
+  const uploadImagesDB = (item_id, imageLink) => {
+    // for (let i = 0; i < itemImage.length; i++) {
+    //   // item_Src: itemImage[i],
+    //   const item_Src = "image";
+    console.log("imageLink", imageLink);
+    fetch(ApiUrl + `/PostItemImageVideo/ItemId/${item_id}/SRC/${"imageLink"}`, {
+      method: "POST",
+      headers: new Headers({
+        "Content-type": "application/json; charset=UTF-8",
+        Accept: "application/json; charset=UTF-8",
+      }),
+    })
+      .then((res) => {
+        return res.json();
       })
-        .then((res) => {
-          return res.json();
-        })
-        .then(
-          (result) => {
-            // console.log("suc in post imges= ", result);
-          },
-          (error) => {
-            console.log("ERR in post imges", error);
-          }
-        );
-    }
+      .then(
+        (result) => {
+          // console.log("suc in post imges= ", result);
+        },
+        (error) => {
+          console.log("ERR in post imges", error);
+        }
+      );
   };
+  // };
 
   //converts the shipping method to string, shipping method in data base gets string only
   const ArrayToStringShip = (data) => {

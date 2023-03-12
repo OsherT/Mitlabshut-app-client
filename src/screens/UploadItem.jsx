@@ -7,6 +7,7 @@ import {
   VirtualizedList,
   Image,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState, useContext } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -18,20 +19,14 @@ import {
   MultipleSelectList,
   SelectList,
 } from "react-native-dropdown-select-list";
-import { AddSvg } from "../svg";
 import * as ImagePicker from "expo-image-picker";
 import { userContext } from "../navigation/userContext";
-import firebase from "firebase/app";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { app } from "../../firebaseConfig";
+import { firebase } from "../../firebaseConfig";
 
 export default function UploadItem() {
   const navigation = useNavigation();
   const { loggedUser } = useContext(userContext);
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
-
-  //fireBase
-  const storage = getStorage(app);
 
   //להחליף מה שיושב סתם במערך ל"""
   //the section of the item information hooks
@@ -228,7 +223,7 @@ export default function UploadItem() {
         .then(
           (item_ID) => {
             Alert.alert("Item added in succ");
-            uploadImages(item_ID);
+            uploadImagesDB(item_ID);
             uploadCtegories(item_ID);
 
             navigation.navigate("Closet");
@@ -244,55 +239,103 @@ export default function UploadItem() {
   ///uploads the image to the fireBase////
   ////////////////////////////////////////
 
-  // Get user's images folder reference
+  const [image, setImage] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
-  // Get item's folder reference
-  // const itemId = item.id;
-  // const itemRef = ref(imagesRef, item_id);
-
-  // Upload image to item's folder
-  const uploadImageFB = async (uri) => {
-    const userId = loggedUser.id;
-    const imagesRef = ref(storage, `images/${userId}`);
-    const itemId = userId;
-    const itemRef = ref(imagesRef, itemId);
-
-    const response = await fetch(uri);
-    const blob = await response.blob();
-    const imageName = `${new Date().getTime()}.jpg`; // generate unique image name
-    const imageRef = ref(itemRef, imageName);
-
-    if (typeof imageRef.child === "function" && typeof imageName === "string") {
-      await uploadBytes(imageRef, blob);
-      const imageUrl = await getDownloadURL(imageRef);
-      console.log("Image uploaded successfully:", imageUrl);
-    } else {
-      console.error("Invalid child path or image name:", itemRef, imageName);
-    }
-  };
-
-  // Call the uploadImage function for each item image URI
-  const itemImageList = ["uri1", "uri2", "uri3", "uri4", "uri5", "uri6"]; // replace with actual item image URIs
-  for (let i = 0; i < itemImageList.length; i++) {
-    uploadImageFB(itemImageList[i]);
-  }
-
-  const pickImage = async (index) => {
+  const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.All, // We can specify whether we need only Images or Videos
+      allowsEditing: true,
       aspect: [4, 3],
-      quality: 1,
-      allowsMultipleSelection: true
+      quality: 1, // 0 means compress for small size, 1 means compress for maximum quality
     });
 
-    if (!result.canceled) {
-      let newImages = [...itemImage];
-      newImages[index] = result.uri;
-      setItemImage(newImages);
+    const source = { uri: result.uri };
+    console.log("source", source);
+    setImage(source);
 
-      await uploadImageFB(result.uri); // Upload the selected image to Firebase
-    }
+    // if (!result.cancelled) {
+    //   setImage(result.uri);
+    // }
   };
+
+  const uploadImageFB = async () => {
+    console.log("in uploadImageFB");
+
+    setUploading(true);
+    const response = await fetch(image.uri);
+    const blob = await response.blob();
+    const filename = image.uri.substring(image.uri.lastIndexOf("/") + 1);
+    console.log("filename", filename);
+
+    var ref = firebase.storage().ref().child(filename).put(blob);
+    console.log("ref", ref);
+
+    try {
+      await ref;
+      console.log("upload to FB", error);
+    } catch (error) {
+      console.log("error in upload to FB", error);
+    }
+    setUploading(false);
+    Alert.alert("image uploadede!!");
+    setImage(null);
+  };
+
+  // const uploadImageFB = async () => {
+  //   console.log("in uploadImageFB ");
+  //   const blob = await new Promise((resolve, reject) => {
+  //     console.log("in blob ");
+
+  //     const xhr = new XMLHttpRequest();
+  //     xhr.onload = function () {
+  //       resolve(xhr.response);
+  //       console.log("in xhr.onload ");
+  //     };
+  //     xhr.onerror = function () {
+  //       reject(new TypeError("Network request failed"));
+  //       console.log("in onerror ");
+  //     };
+  //     xhr.responseType = "blob";
+  //     xhr.open("GET", image, true);
+  //     xhr.send(null);
+  //   });
+  //   const ref = firebase.storage().ref().child(`images/Image1`);
+  //   const snapshot = ref.put(blob);
+  //   snapshot.on(
+  //     firebase.storage.TaskEvent.STATE_CHANGED,
+
+  //     () => {
+  //       // setUploading(true);
+  //       // console.log("in firebase.storage.TaskEvent ");
+  //       try {
+  //         setUploading(true);
+  //         console.log("in firebase.storage.TaskEvent ");
+  //       } catch (error) {
+  //         console.log("error", error);
+  //       }
+  //     },
+  //     (error) => {
+  //       setUploading(false);
+  //       console.log("in setUploading(false)");
+
+  //       console.log(error);
+  //       blob.close();
+  //       return;
+  //     },
+  //     () => {
+  //       snapshot.snapshot.ref.getDownloadURL().then((url) => {
+  //         console.log("in .getDownloadURL().then((url) ");
+
+  //         setUploading(false);
+  //         console.log("Download URL: ", url);
+  //         setImage(url);
+  //         blob.close();
+  //         return url;
+  //       });
+  //     }
+  //   );
+  // };
 
   // open image picker and inserts the url into an array
   // const pickImage = async (index) => {
@@ -309,7 +352,7 @@ export default function UploadItem() {
   // };
 
   //upload images to Item_Image_Video table
-  const uploadImages = (item_id) => {
+  const uploadImagesDB = (item_id) => {
     for (let i = 0; i < itemImage.length; i++) {
       // item_Src: itemImage[i],
       const item_Src = "image";
@@ -495,7 +538,7 @@ export default function UploadItem() {
             onChangeText={(text) => setItemDescription(text)}
           />
 
-          <View>
+          {/* <View>
             {itemImage.length < 3 && (
               <TouchableOpacity onPress={() => pickImage(itemImage.length)}>
                 <View style={styles.picturBtn}>
@@ -525,6 +568,27 @@ export default function UploadItem() {
                   />
                 ))}
               </View>
+            )}
+          </View> */}
+
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: "#fff",
+              alignItems: "center",
+              justifyContent: "center",
+            }}>
+            {image && (
+              <Image
+                source={{ uri: image.uri }}
+                style={{ width: 170, height: 200 }}
+              />
+            )}
+            <Button title="Select Image" onPress={pickImage} />
+            {!uploading ? (
+              <Button title="Upload Image" onPress={uploadImageFB} />
+            ) : (
+              <ActivityIndicator size={"small"} color="black" />
             )}
           </View>
 

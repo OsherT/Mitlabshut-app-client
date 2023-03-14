@@ -57,7 +57,7 @@ export default function ProductDetails(props) {
       GetItemCategories();
       GetItemImages();
       GetNumOfFav();
-      console.log(user);//
+      console.log(user);
     }
   }, [isFocused]);
 
@@ -179,6 +179,7 @@ export default function ProductDetails(props) {
       )
       .then((res) => {
         getFavItems();
+        GetNumOfFav();
         setUsersFavList((prevList) => prevList.filter((id) => id !== itemId));
       })
       .catch((err) => {

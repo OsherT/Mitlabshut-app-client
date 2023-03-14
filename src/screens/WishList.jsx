@@ -157,7 +157,7 @@ export default function WishList() {
                   .map((photo) => {
                     return (
                       <ImageBackground
-                        source={{ uri: photo.item_Src }}
+                        source={{ uri: photo.src }}
                         style={{
                           width: 100,
                           height: 100,

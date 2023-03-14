@@ -22,6 +22,7 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { userContext } from "../navigation/userContext";
 import { firebase } from "../../firebaseConfig";
+import { AddSvg } from "../svg";
 
 export default function UploadItem() {
   const navigation = useNavigation();
@@ -246,25 +247,27 @@ export default function UploadItem() {
 
   const [images, setImages] = useState([]);
   const [uploading, setUploading] = useState(false);
+  console.log("images", images);
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      aspect: [4, 3],
+      quality: 1,
+      allowsMultipleSelection: true, // Allow multiple image selection
+      
+    });
 
-const pickImage = async () => {
-  let result = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    aspect: [4, 3],
-    quality: 1,
-    allowsMultipleSelection: true, // Allow multiple image selection
-  });
-
-  if (!result.canceled) {
-    const selectedImages = result.assets.map((image, index) => ({
-      uri: image.uri,
-      key: index,
-    }));
-    setImages(selectedImages);
-    console.log("selectedImages", selectedImages);
-  }
-  console.log("result", result);
-};
+    if (!result.canceled) {
+      const selectedImages = result.assets.map((image, index) => ({
+        uri: image.uri,
+        key: index,
+      }));
+      setImages(selectedImages);
+      console.log("selectedImages", selectedImages);
+    }
+    console.log("result", result);
+    selectedImages = [];
+  };
 
   const uploadImageFB = async (item_ID) => {
     setUploading(true);
@@ -274,6 +277,8 @@ const pickImage = async () => {
       const response = await fetch(images[i].uri);
       const blob = await response.blob();
       const filename =
+        `${loggedUser.id}/`+
+        // "items/" +
         item_ID +
         "/" +
         images[i].uri.substring(images[i].uri.lastIndexOf("/") + 1);
@@ -295,7 +300,7 @@ const pickImage = async () => {
     setUploading(false);
 
     navigation.navigate("OrderSuccessful", {
-      message: "הפריט הועלה בהצלחה !",
+      message: "הפריט עלה בהצלחה !",
     });
   };
 
@@ -548,9 +553,9 @@ const pickImage = async () => {
             value={itemDescription}
           />
 
-          {/* <View>
-            {itemImage.length < 3 && (
-              <TouchableOpacity onPress={() => pickImage(itemImage.length)}>
+          <View>
+            {images.length < 3 && (
+              <TouchableOpacity onPress={() => pickImage(images.length)}>
                 <View style={styles.picturBtn}>
                   <Text
                     style={{
@@ -560,6 +565,7 @@ const pickImage = async () => {
                       textAlign: "center",
                     }}>
                     הוסיפי תמונות
+                   ({images.length}/3)
                   </Text>
                   <AddSvg></AddSvg>
                 </View>
@@ -567,59 +573,25 @@ const pickImage = async () => {
             )}
           </View>
 
-          <View>
-            {itemImage.length > 0 && (
-              <View style={styles.imageContainer}>
-                {itemImage.map((image, index) => (
-                  <Image
-                    key={index}
-                    source={{ uri: image }}
-                    style={styles.Image}
-                  />
-                ))}
-              </View>
-            )}
-          </View> */}
+  
 
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: "#fff",
-              alignItems: "center",
-              justifyContent: "center",
-            }}>
-            {images && (
-              <View style={{ flexDirection: "row" }}>
-                {images.map((item, index) => (
-                  <Image
-                    key={index}
-                    source={{ uri: item.uri }}
-                    style={{ width: 100, height: 100, margin: 5 }}
-                  />
-                ))}
-              </View>
-            )}
-            <Button title="Select Images" onPress={pickImage} />
-          </View>
-          {uploading && <ActivityIndicator size={"small"} color="black" />}
-          {/* FB /////////////////////////////////////////////////////////////////////*/}
-          {/* <View
-            style={{
-              flex: 1,
-              backgroundColor: "#fff",
-              alignItems: "center",
-              justifyContent: "center",
-            }}>
-            {image && (
-              <Image
-                source={{ uri: image.uri }}
-                style={{ width: 170, height: 200 }}
-              />
-            )}
-            <Button title="Select Image" onPress={pickImage} />
-          </View>
+          {images.length > 0 && (
+            <View style={styles.imageContainer}>
+              {images.map((item, index) => (
+                <Image
+                  key={index}
+                  source={{ uri: item.uri }}
+                  style={styles.Image}
+                />
+              ))}
+            </View>
+          )}
 
-          {uploading && <ActivityIndicator size={"small"} color="black" />} */}
+          {uploading && (
+            <View style={{ marginBottom: 30 }}>
+              <ActivityIndicator size={"small"} color="black" />
+            </View>
+          )}
 
           <Button title="הוספת פריט" onPress={UploadItem} />
         </ContainerComponent>

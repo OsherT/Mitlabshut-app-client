@@ -60,12 +60,10 @@ export default function EditProfile(props) {
         uri: result.uri,
         key: 1,
       });
-      console.log("image", image);
     }
   };
 
   const uploadImageFB = async (user_id) => {
-    console.log("in uploadImageFB, user_id", user_id);
 
     setUploading(true);
     const response = await fetch(image.uri);
@@ -127,10 +125,6 @@ export default function EditProfile(props) {
             )
             .then((res) => {
               setloggedUser(newUser);
-              console.log("newUser ", newUser);
-              console.log("loggeduser ", loggedUser);
-
-              console.log("suc in update user ", res.data);
               navigation.navigate("OrderSuccessful", {
                 message: "הפרטים עודכנו בהצלחה !",
               });

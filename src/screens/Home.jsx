@@ -12,10 +12,11 @@ import React, { useContext, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { showMessage } from "react-native-flash-message";
 
-import { promo, SIZES, COLORS, products, FONTS } from "../constants";
-import { RatingComponent, Line } from "../components";
+import { promo, SIZES, COLORS, products, FONTS, AREA } from "../constants";
+import { RatingComponent, Line, Header } from "../components";
 import { BagSvg, HeartSvg } from "../svg";
 import { userContext } from "../navigation/userContext";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Home() {
     const navigation = useNavigation();
@@ -344,7 +345,7 @@ export default function Home() {
                 flexGrow: 1,
             }}
             contentContainerStyle={{ paddingBottom: 30 }}
-            showsVerticalScrollIndicator={false}
+            showsVerticalScrollIndicator={false} 
         >
             {renderSlide()}
             {renderDots()}

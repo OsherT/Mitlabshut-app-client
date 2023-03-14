@@ -41,15 +41,12 @@ export default function ProductDetails(props) {
   const [UsersShopList, setUsersShopList] = useState([]);
   const [UsersFollowingList, setUsersFollowingList] = useState([]);
 
-  
   //URL
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
   const ApiUrl_user = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User`;
-  // const itemDeepLink = `Mitlabshut://src/screens/ProductDetails/${item.id}`;
 
   useEffect(() => {
     if (isFocused) {
-      console.log(item);
       GetClosetdata();
       getUser();
       getFavItems();
@@ -57,7 +54,6 @@ export default function ProductDetails(props) {
       GetItemCategories();
       GetItemImages();
       GetNumOfFav();
-      console.log(user);
     }
   }, [isFocused]);
 
@@ -89,10 +85,8 @@ export default function ProductDetails(props) {
         getFollowingList();
       })
       .catch((err) => {
-        console.log("cant take user"+err);
+        console.log("cant take user" + err);
       });
-
-    
   }
 
   const GetItemCategories = () => {
@@ -117,7 +111,6 @@ export default function ProductDetails(props) {
   };
 
   const GetItemImages = () => {
-    //item.id
     fetch(
       "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/ItemImages/GetItem_Image_VideoItemById/Item_ID/" +
         item.id,
@@ -147,11 +140,15 @@ export default function ProductDetails(props) {
     axios
       .get(ApiUrl_user + `/GetFavByUserID/${loggedUser.id}`)
       .then((res) => {
-        const tempUsersFavList = res.data.map(({ item_id }) => item_id);
-        setUsersFavList(tempUsersFavList);
+        if (res.data == "No items yet") {
+          setUsersFavList("");
+        } else {
+          const tempUsersFavList = res.data.map(({ item_id }) => item_id);
+          setUsersFavList(tempUsersFavList);
+        }
       })
       .catch((err) => {
-        console.log("cant get fav", err);
+        console.log("cant get fav", err); //
       });
   }
 
@@ -163,7 +160,7 @@ export default function ProductDetails(props) {
       )
       .then((res) => {
         getFavItems();
-        setUsersFavList((prevList) => [...prevList, { item_id }]);
+        GetNumOfFav();
       })
       .catch((err) => {
         console.log("cant add to fav", err);
@@ -180,7 +177,6 @@ export default function ProductDetails(props) {
       .then((res) => {
         getFavItems();
         GetNumOfFav();
-        setUsersFavList((prevList) => prevList.filter((id) => id !== itemId));
       })
       .catch((err) => {
         console.log("cant remove from fav", err);
@@ -218,9 +214,12 @@ export default function ProductDetails(props) {
             loggedUser.id
         )
         .then((res) => {
-          console.log(res.data);
-          const tempUsersShopList = res.data.map(({ item_id }) => item_id);
-          setUsersShopList(tempUsersShopList);
+          if (res.data == "No items yet") {
+            setUsersShopList("");
+          } else {
+            const tempUsersShopList = res.data.map(({ item_id }) => item_id);
+            setUsersShopList(tempUsersShopList);
+          }
         })
         .catch((err) => {
           console.log("cant get shop list", err); //
@@ -255,7 +254,6 @@ export default function ProductDetails(props) {
       .catch((err) => {
         alert("cant add to fav");
         console.log(err);
-        // console.log(newFav);
       });
   }
 
@@ -272,10 +270,14 @@ export default function ProductDetails(props) {
       axios
         .get(ApiUrl_user + `/GetClosetByUserID/User_ID/${loggedUser.id}`)
         .then((res) => {
-          const tempUsersFollowList = res.data.map(
-            ({ closet_id }) => closet_id
-          );
-          setUsersFollowingList(tempUsersFollowList);
+          if (res.data == "No closets yet") {
+            setUsersFollowingList("");
+          } else {
+            const tempUsersFollowList = res.data.map(
+              ({ closet_id }) => closet_id
+            );
+            setUsersFollowingList(tempUsersFollowList);
+          }
         })
         .catch((err) => {
           console.log("cant get following list", err);
@@ -371,7 +373,8 @@ export default function ProductDetails(props) {
                       textAlign: "right",
                       fontSize: 13,
                       marginBottom: 5,
-                    }}>
+                    }}
+                  >
                     ✓ איסוף עצמי
                   </Text>
                 )}
@@ -381,7 +384,8 @@ export default function ProductDetails(props) {
                       textAlign: "right",
                       fontSize: 13,
                       marginBottom: 5,
-                    }}>
+                    }}
+                  >
                     ✓ משלוח
                   </Text>
                 )}
@@ -399,7 +403,8 @@ export default function ProductDetails(props) {
                           itemImages: itemImages,
                           itemCtegories: itemCtegories,
                         });
-                      }}>
+                      }}
+                    >
                       <Edit />
                     </TouchableOpacity>
                   )}
@@ -410,7 +415,8 @@ export default function ProductDetails(props) {
                       textAlign: "right",
                       fontSize: 13,
                       marginBottom: 5,
-                    }}>
+                    }}
+                  >
                     ♡ {numOfFav} אהבו פריט זה
                   </Text>
                 )}
@@ -421,14 +427,16 @@ export default function ProductDetails(props) {
                 <ImageBackground
                   key={index}
                   style={styles.image}
-                  source={{ uri: image }}></ImageBackground>
+                  source={{ uri: image }}
+                ></ImageBackground>
               ))}
             </Swiper>
             {!otherUserFlag && UsersFavList.includes(item.id) && (
               // render the filled heart SVG if the item ID is in the UsersFavList
               <TouchableOpacity
                 style={styles.favIcon}
-                onPress={() => RemoveFromFav(item.id)}>
+                onPress={() => RemoveFromFav(item.id)}
+              >
                 <HeartTwoSvg filled={true} strokeColor="red" />
               </TouchableOpacity>
             )}
@@ -436,7 +444,8 @@ export default function ProductDetails(props) {
               // render the unfilled heart SVG if the item ID is not in the UsersFavList
               <TouchableOpacity
                 style={styles.favIcon}
-                onPress={() => AddtoFav(item.id)}>
+                onPress={() => AddtoFav(item.id)}
+              >
                 <HeartTwoSvg filled={false} strokeColor="red" />
               </TouchableOpacity>
             )}
@@ -444,7 +453,8 @@ export default function ProductDetails(props) {
               style={styles.shareIcon}
               onPress={() => {
                 onShare();
-              }}>
+              }}
+            >
               <ShareSvg></ShareSvg>
             </TouchableOpacity>
 
@@ -482,16 +492,18 @@ export default function ProductDetails(props) {
                   }}
                   onPress={() => {
                     navigation.navigate("Closet", {
-                      closet: item.closet_ID,
+                      closetId: item.closet_ID,
                       owner: user,
                     });
-                  }}>
+                  }}
+                >
                   <ImageBackground
                     source={{
                       uri: user.user_image,
                     }}
                     style={styles.userImage}
-                    imageStyle={{ borderRadius: 40 }}></ImageBackground>
+                    imageStyle={{ borderRadius: 40 }}
+                  ></ImageBackground>
 
                   <Text
                     style={{
@@ -499,7 +511,8 @@ export default function ProductDetails(props) {
                       fontSize: 16,
                       color: COLORS.gray,
                       lineHeight: 22 * 1.2,
-                    }}>
+                    }}
+                  >
                     הארון של
                   </Text>
                   <Text> </Text>
@@ -509,7 +522,8 @@ export default function ProductDetails(props) {
                       fontSize: 16,
                       color: COLORS.black,
                       lineHeight: 22 * 1.2,
-                    }}>
+                    }}
+                  >
                     {closetName}
                   </Text>
                 </TouchableOpacity>
@@ -525,14 +539,15 @@ export default function ProductDetails(props) {
                     closet: item.closet_ID,
                     owner: user,
                   });
-                }}>
+                }}
+              >
                 <ImageBackground
                   source={{
                     uri: user.user_image,
-                    
                   }}
                   style={styles.userImage}
-                  imageStyle={{ borderRadius: 40 }}></ImageBackground>
+                  imageStyle={{ borderRadius: 40 }}
+                ></ImageBackground>
 
                 <Text
                   style={{
@@ -540,7 +555,8 @@ export default function ProductDetails(props) {
                     fontSize: 16,
                     color: COLORS.gray,
                     lineHeight: 22 * 1.2,
-                  }}>
+                  }}
+                >
                   הארון שלי{" "}
                 </Text>
                 <Text> </Text>

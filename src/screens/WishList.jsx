@@ -51,11 +51,14 @@ export default function WishList() {
           loggedUser.id
       )
       .then((res) => {
-        const tempUsersShopList = res.data.map(({ item_id }) => item_id);
-        setshopList(tempUsersShopList);
+        if (res.data == "No items yet") {
+          setshopList("");
+        } else {
+          const tempUsersShopList = res.data.map(({ item_id }) => item_id);
+          setshopList(tempUsersShopList);
+        }
       })
       .catch((err) => {
-        // alert();
         console.log("cant get shop list", err);
       });
   }
@@ -79,7 +82,7 @@ export default function WishList() {
         console.log(error);
       });
   }
-  
+
   function RemoveFromFav(itemId) {
     axios
       .delete(
@@ -209,7 +212,7 @@ export default function WishList() {
                       color: "red",
                     }}
                   >
-                   <TrashCanIcon width={24} height={24} color="#000" />
+                    <TrashCanIcon width={24} height={24} color="#000" />
                   </Text>
                   {/* <FavoriteSvg/>  */}
                 </TouchableOpacity>
@@ -253,7 +256,13 @@ export default function WishList() {
     );
   }
   return (
-    <SafeAreaView style={{ ...AREA.AndroidSafeArea, backgroundColor: "none" }}>
+    <SafeAreaView
+      style={{
+        ...AREA.AndroidSafeArea,
+        backgroundColor: "none",
+        showsVerticalScrollIndicator: false,
+      }}
+    >
       <Header title="רשימת מועדפים" />
       {renderContent()}
     </SafeAreaView>

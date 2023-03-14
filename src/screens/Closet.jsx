@@ -33,16 +33,12 @@ export default function Closet(props) {
   const [myClosetFlag, setMyClosetFlag] = useState(false);
   const [UsersFollowingList, setUsersFollowingList] = useState([]);
   const ApiUrl_user = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User`;
-
-  //להוסיף כפתור הוספת פריט
   const navigation = useNavigation();
   const isFocused = useIsFocused();
 
   useEffect(() => {
     if (isFocused) {
-      console.log(loggedUser);
       setMyClosetFlag(loggedUser.closet_id === closetId);
-      console.log("flag"+myClosetFlag);
       GetClosetDescription();
       GetClosetFollowers_num();
       GetClosetItems();
@@ -246,8 +242,12 @@ export default function Closet(props) {
             loggedUser.id
         )
         .then((res) => {
-          const tempUsersFavList = res.data.map(({ item_id }) => item_id);
-          setUsersFavList(tempUsersFavList);
+          if (res.data == "No items yet") {
+            setUsersFavList("");
+          } else {
+            const tempUsersFavList = res.data.map(({ item_id }) => item_id);
+            setUsersFavList(tempUsersFavList);
+          }
         })
         .catch((err) => {
           console.log("cant get fav", err);
@@ -291,14 +291,17 @@ export default function Closet(props) {
             loggedUser.id
         )
         .then((res) => {
-          const tempUsersShopList = res.data.map(({ item_id }) => item_id);
-          setUsersShopList(tempUsersShopList);
+          if (res.data == "No items yet") {
+            setUsersShopList("");
+          } else {
+            const tempUsersShopList = res.data.map(({ item_id }) => item_id);
+            setUsersShopList(tempUsersShopList);
+          }
         })
         .catch((err) => {
           console.log("cant get shop list", err);
         });
-    }
-    else console.log("");
+    } else console.log("");
   }
   function AddToShopList(item_id) {
     axios
@@ -484,7 +487,6 @@ export default function Closet(props) {
                   ...FONTS.Mulish_600SemiBold,
                   fontSize: 14,
                   color: COLORS.black,
-                  //marginLeft: 70,
                   textAlign: "left",
                 }}
               >

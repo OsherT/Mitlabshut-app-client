@@ -27,6 +27,7 @@ export default function UploadItem() {
   const navigation = useNavigation();
   const { loggedUser } = useContext(userContext);
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
+  const ApiUrl_image = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/ItemImages`;
 
   //להחליף מה שיושב סתם במערך ל"""
   //the section of the item information hooks
@@ -225,7 +226,7 @@ export default function UploadItem() {
             console.log("item_ID", item_ID);
             uploadCtegories(item_ID);
             uploadImageFB(item_ID);
-            // Alert.alert("Item added in succ");
+            Alert.alert("Item added in succ");
           },
           (error) => {
             console.log("ERR in upload item ", error);
@@ -250,7 +251,6 @@ export default function UploadItem() {
     });
 
     const source = { uri: result.uri };
-    console.log("source", source);
     setImage(source);
 
     // if (!result.cancelled) {
@@ -269,7 +269,6 @@ export default function UploadItem() {
     console.log("filename", filename);
 
     var ref = firebase.storage().ref().child(filename).put(blob);
-    console.log("ref", ref);
 
     try {
       await ref;
@@ -292,12 +291,15 @@ export default function UploadItem() {
     //   const item_Src = "image";
 
     console.log("imageLink", imageLink);
-    const encodedLink = encodeURIComponent(imageLink);
-    console.log("encodedLink", encodedLink);
-    console.log("item_id", item_id);
 
-    fetch(ApiUrl + `/PostItemImageVideo/ItemId/${item_id}/SRC/${"imageLink"}`, {
+    const ItemImages = {
+      Item_ID: item_id,
+      Src: imageLink,
+    };
+
+    fetch(ApiUrl_image, {
       method: "POST",
+      body: JSON.stringify(ItemImages),
       headers: new Headers({
         "Content-type": "application/json; charset=UTF-8",
         Accept: "application/json; charset=UTF-8",
@@ -308,10 +310,10 @@ export default function UploadItem() {
       })
       .then(
         (result) => {
-          console.log("suc in post imges= ", result);
+          console.log("suc in post images to DB ", result);
         },
         (error) => {
-          console.log("ERR in post imges", error);
+          console.log("ERR in post images to DB", error);
         }
       );
   };

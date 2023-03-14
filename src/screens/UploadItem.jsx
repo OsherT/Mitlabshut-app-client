@@ -4,7 +4,6 @@ import {
   TouchableOpacity,
   SafeAreaView,
   StyleSheet,
-  VirtualizedList,
   Image,
   Alert,
   ActivityIndicator,

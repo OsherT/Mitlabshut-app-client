@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   StyleSheet,
+  ActivityIndicator,
 } from "react-native";
 import React, { useContext, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -13,9 +14,9 @@ import { AddSvg } from "../svg";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import axios from "axios";
 import { userContext } from "../navigation/userContext";
-import { ActivityIndicator } from "react-native-web";
 import { Image } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import { firebase } from "../../firebaseConfig";
 
 export default function SignUp() {
   const ApiUrl_image = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/ItemImages`;
@@ -76,17 +77,17 @@ export default function SignUp() {
               )
               .then((res) => {
                 setloggedUser(newUser); //לאחר ההרשמה היוזר מתחבר ומנווט ישר לארון שלו
-                // navigation.navigate("Closet");
                 console.log("succ in user", res.data);
                 uploadImageFB(res.data);
+                // navigation.navigate("Closet");
               })
               .catch((err) => {
-                console.log("Error in user", err);
+                console.log("Error in user 1", err);
               });
           }
         })
         .catch((err) => {
-          alert("Error in closet");
+          alert("Error in closet", err);
         });
     }
   };
@@ -107,58 +108,83 @@ export default function SignUp() {
     }
   };
 
-  const uploadImageFB = async (user_id) => {
-    setUploading(true);
+  const uploadImageFB = async (user) => {
+    console.log("in uploadImageFB, user", user);
 
+    setUploading(true);
     const response = await fetch(image.uri);
     const blob = await response.blob();
     const filename =
-      `${user_id}/` + image.uri.substring(image.uri.lastIndexOf("/") + 1);
+      `${user.id}/` + image.uri.substring(image.uri.lastIndexOf("/") + 1);
 
     try {
       var ref = firebase.storage().ref().child(filename).put(blob);
       await ref;
       var imageRef = firebase.storage().ref().child(filename);
       const imageLink = await imageRef.getDownloadURL();
+      setImage(null);
+      setUploading(false);
+      uploadImagesDB(user, imageLink);
+
+      navigation.navigate("OrderSuccessful", {
+        message: "הרשמתך בוצעה בהצלחה !",
+      });
     } catch (error) {
       console.log("error in upload to FB", error);
     }
-
-    // uploadImagesDB(user_id, imageLink);
-
-    setImage(null);
-    setUploading(false);
-
-    navigation.navigate("OrderSuccessful", {
-      message: "הרשמתך בוצעה בהצלחה !",
-    });
   };
 
-  const uploadImagesDB = (item_id, imageLink) => {
-    const new_itemImages = {
-      item_ID: item_id,
-      src: imageLink,
+  const uploadImagesDB = (user, imageLink) => {
+    const userWithImage = {
+      Email: user.email,
+      id: user.id,
+      closet_id: user.closet_id,
+      phone_number: user.phone_number,
+      full_name: user.full_name,
+      password: user.password,
+      address: user.address,
+      isAdmin: false,
+      user_image: imageLink,
     };
-
-    fetch(ApiUrl_image, {
-      method: "POST",
-      body: JSON.stringify(new_itemImages),
-      headers: new Headers({
-        "Content-type": "application/json; charset=UTF-8",
-        Accept: "application/json; charset=UTF-8",
-      }),
-    })
+    console.log("userWithImage", userWithImage);
+    axios
+      .put(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/PutUser",
+        userWithImage
+      )
       .then((res) => {
-        return res.json();
+        setloggedUser(userWithImage); //לאחר ההרשמה היוזר מתחבר ומנווט ישר לארון שלו
+        console.log("succ in user DB", res.data);
+        // navigation.navigate("Closet");
       })
-      .then(
-        (result) => {
-          console.log("suc in post images to DB ", result);
-        },
-        (error) => {
-          console.log("ERR in post images to DB", error);
-        }
-      );
+      .catch((err) => {
+        console.log("err in user DB 2", err);
+      });
+
+    // const new_itemImages = {
+    //   item_ID: item_id,
+    //   src: imageLink,
+    // };
+
+    // fetch(ApiUrl_image, {
+    //   method: "POST",
+    //   body: JSON.stringify(new_itemImages),
+    //   headers: new Headers({
+    //     "Content-type": "application/json; charset=UTF-8",
+    //     Accept: "application/json; charset=UTF-8",
+    //   }),
+    // })
+    //   .then((res) => {
+    //     return res.json();
+    //   })
+    //   .then(
+    //     (result) => {
+    //       console.log("suc in post images to DB ", result);
+    //     },
+    //     (error) => {
+    //       console.log("ERR in post images to DB", error);
+    //     }
+    //   );
   };
 
   function renderContent() {
@@ -194,7 +220,6 @@ export default function SignUp() {
               GooglePlacesSearchQuery={{ rankby: "distance" }}
               onPress={(data, details = null) => {
                 setAddress(data.description);
-                console.log(data.description);
               }}
               query={{
                 key: "AIzaSyAaCpPtzL7apvQuXnKdRhY0omPHiMdc--s",
@@ -268,7 +293,7 @@ export default function SignUp() {
           )}
 
           <View>
-            <Button title="הרשמה" onPress={SignUp} />
+            <Button title="הרשמה" onPress={() => SignUp()} />
           </View>
         </ContainerComponent>
 

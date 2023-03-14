@@ -158,7 +158,6 @@ export default function Search() {
       <Header title="חיפוש פריט" />
       {renderSearch()}
       {renderTyps()}
-      {/* {renderContent()} */}
     </SafeAreaView>
   );
 }

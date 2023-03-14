@@ -40,6 +40,8 @@ export default function ProductDetails(props) {
   const [numOfFav, setNumOfFav] = useState("");
   const [UsersShopList, setUsersShopList] = useState([]);
   const [UsersFollowingList, setUsersFollowingList] = useState([]);
+  const [distance, setDistance] = useState(null);
+
 
   //URL
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
@@ -54,6 +56,7 @@ export default function ProductDetails(props) {
       GetItemCategories();
       GetItemImages();
       GetNumOfFav();
+      calaD();
     }
   }, [isFocused]);
 
@@ -81,6 +84,7 @@ export default function ProductDetails(props) {
         setuser(res.data[0]);
         if (res.data[0].id === loggedUser.id) {
           setotherUserFlag(true);
+          
         } else setotherUserFlag(false);
         getFollowingList();
       })
@@ -339,7 +343,56 @@ export default function ProductDetails(props) {
       console.error(error.message);
     }
   };
+  const getLocationFromAddress = async (address) => {
+    try {
+      const response = await axios.get(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSyAaCpPtzL7apvQuXnKdRhY0omPHiMdc--s`
+      );
+  
+      if (response.data.status === 'OK') {
+        const { lat, lng } = response.data.results[0].geometry.location;
+        return { latitude: lat, longitude: lng };
+      } else {
+        console.warn(`Google Maps API error: ${response.data.status}`);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const calculateDistance = (location1, location2) => {
+    const R = 6371; // Earth's radius in kilometers
+    const dLat = toRadians(location2.latitude - location1.latitude);
+    const dLon = toRadians(location2.longitude - location1.longitude);
+    const lat1 = toRadians(location1.latitude);
+    const lat2 = toRadians(location2.latitude);
+  
+    const a =
+      Math.sin(dLat / 2) ** 2 +
+      Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = R * c;
+  
+    return distance;
+  };
+  const toRadians = (degrees) => {
+    return degrees * (Math.PI / 180);
+  };
+  function calaD(){
+    const getAddressLocations = async () => {
+      const address1 = loggedUser.address;
+      const address2 = user.address;
 
+      const location1 = await getLocationFromAddress(address1);
+      const location2 = await getLocationFromAddress(address2);
+
+      if (location1 && location2) {
+        const distanceInKm = calculateDistance(location1, location2);
+        setDistance(distanceInKm);
+      }
+    };
+
+    getAddressLocations();
+  }
   //need to delete and fix the view
   // function renderSlide() {
   //   return (
@@ -594,7 +647,8 @@ export default function ProductDetails(props) {
                   <Text style={styles.descriptionText}> צבע</Text>
                 </View>
                 <View>
-                  <Text style={styles.descriptionHeader}> 23 ק"מ (ידני)</Text>
+                {distance !== null ? (
+                  <Text style={styles.descriptionHeader}> {distance.toFixed(2)} km</Text>) : (<Text>Loading...</Text>)}
                   <Text style={styles.descriptionText}> מרחק ממך</Text>
                 </View>
               </View>

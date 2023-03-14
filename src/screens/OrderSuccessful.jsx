@@ -12,8 +12,9 @@ import { Button, ContainerComponent } from "../components";
 import { AREA, COLORS, FONTS } from "../constants";
 import { Success } from "../svg";
 
-export default function OrderSuccessful() {
+export default function OrderSuccessful(props) {
   const navigation = useNavigation();
+  const message = props.route.params.message;
 
   function renderContent() {
     return (
@@ -38,7 +39,7 @@ export default function OrderSuccessful() {
               color: COLORS.black,
               marginBottom: 18,
             }}>
-            השינויים בוצעו בהצלחה !
+            {message}
           </Text>
           {/* <Text
                         style={{

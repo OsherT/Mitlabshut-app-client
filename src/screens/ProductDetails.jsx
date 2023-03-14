@@ -57,6 +57,7 @@ export default function ProductDetails(props) {
       GetItemCategories();
       GetItemImages();
       GetNumOfFav();
+      console.log(user);//
     }
   }, [isFocused]);
 
@@ -81,22 +82,18 @@ export default function ProductDetails(props) {
           item.closet_ID
       )
       .then((res) => {
-        console.log(res.id);
-        console.log("user ID "+res.id);
-        setuser(res.data);
-        if (res.data.id === loggedUser.id) {
+        setuser(res.data[0]);
+        if (res.data[0].id === loggedUser.id) {
           setotherUserFlag(true);
         } else setotherUserFlag(false);
         getFollowingList();
       })
       .catch((err) => {
-        alert("cant take user");
-        console.log(err);
+        console.log("cant take user"+err);
       });
 
     
   }
-
 
   const GetItemCategories = () => {
     fetch(ApiUrl + `/GetItemCategortById/Item_ID/${item.id}`, {
@@ -137,7 +134,7 @@ export default function ProductDetails(props) {
       })
       .then(
         (data) => {
-          setItemImages(data.map((item) => item.item_Src));
+          setItemImages(data.map((item) => item.src));
         },
         (error) => {
           console.log("Item_Image_Video error", error);
@@ -530,6 +527,7 @@ export default function ProductDetails(props) {
                 <ImageBackground
                   source={{
                     uri: user.user_image,
+                    
                   }}
                   style={styles.userImage}
                   imageStyle={{ borderRadius: 40 }}></ImageBackground>

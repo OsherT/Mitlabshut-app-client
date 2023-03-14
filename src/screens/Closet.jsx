@@ -412,7 +412,7 @@ export default function Closet(props) {
               .map((photo) => {
                 return (
                   <ImageBackground
-                    source={{ uri: photo.item_Src }}
+                    source={{ uri: photo.src }}
                     style={{
                       width: "100%",
                       height: 128,

@@ -64,7 +64,6 @@ export default function EditProfile(props) {
   };
 
   const uploadImageFB = async (user_id) => {
-
     setUploading(true);
     const response = await fetch(image.uri);
     const blob = await response.blob();
@@ -72,10 +71,13 @@ export default function EditProfile(props) {
       `${user_id}/` + image.uri.substring(image.uri.lastIndexOf("/") + 1);
 
     try {
+      console.log("filename uploadImageFB", filename);
+
       var ref = firebase.storage().ref().child(filename).put(blob);
       await ref;
       var imageRef = firebase.storage().ref().child(filename);
       const imageLink = await imageRef.getDownloadURL();
+      // deleteImageFB();
       setImage(null);
       setUserImage(null);
       setUploading(false);
@@ -84,6 +86,23 @@ export default function EditProfile(props) {
       console.log("error in upload to FB", error);
     }
   };
+
+  // const deleteImageFB = async () => {
+  //   console.log("in deleteImageFB");
+
+  //   try {
+  //     const filename = userImage.substring(userImage.lastIndexOf("/") + 1);
+  //     console.log("filename to delete", filename);
+
+  //     const storageRef = firebase.storage().ref();
+  //     const imageRef = storageRef.child(`${loggedUser.id}/${filename}`);
+  //     await imageRef.delete();
+  //     console.log("Image deleted successfully");
+  //     setUserImage(null);
+  //   } catch (error) {
+  //     console.log("Error deleting image:", error);
+  //   }
+  // };
 
   //update users details
   const updateUser = (imageLink) => {

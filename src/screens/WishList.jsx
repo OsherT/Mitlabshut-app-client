@@ -64,7 +64,7 @@ export default function WishList() {
     const promises = items.map((item) => {
       // use the passed items array
       return axios.get(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItem_Image_VideoItemById/Item_ID/" +
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/ItemImages/GetItem_Image_VideoItemById/Item_ID/" +
           item.id
       );
     });

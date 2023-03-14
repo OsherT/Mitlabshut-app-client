@@ -19,7 +19,6 @@ import { useIsFocused } from "@react-navigation/native";
 import ProfileNumbers from "../components/ProfileNumbers";
 import ButtonFollow from "../components/ButtonFollow";
 
-
 export default function Closet(props) {
   const { loggedUser, setclosetDesc, setclosetName, closetName, closetDesc } =
     useContext(userContext);
@@ -43,7 +42,7 @@ export default function Closet(props) {
     if (isFocused) {
       console.log(loggedUser);
       setMyClosetFlag(loggedUser.closet_id === closetId);
-      console.log("flagggg " + myClosetFlag);
+      console.log("flag"+myClosetFlag);
       GetClosetDescription();
       GetClosetFollowers_num();
       GetClosetItems();
@@ -103,7 +102,7 @@ export default function Closet(props) {
     const promises = items.map((item) => {
       // use the passed items array
       return axios.get(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItem_Image_VideoItemById/Item_ID/" +
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/ItemImages/GetItem_Image_VideoItemById/Item_ID/" +
           item.id
       );
     });
@@ -240,19 +239,20 @@ export default function Closet(props) {
   }
   ///handle fav list
   function getFavItems() {
-    axios
-      .get(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetFavByUserID/" +
-          loggedUser.id
-      )
-      .then((res) => {
-        const tempUsersFavList = res.data.map(({ item_id }) => item_id);
-        setUsersFavList(tempUsersFavList);
-      })
-      .catch((err) => {
-        // alert("");
-        console.log("cant get fav", err);
-      });
+    if (myClosetFlag == false) {
+      axios
+        .get(
+          "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetFavByUserID/" +
+            loggedUser.id
+        )
+        .then((res) => {
+          const tempUsersFavList = res.data.map(({ item_id }) => item_id);
+          setUsersFavList(tempUsersFavList);
+        })
+        .catch((err) => {
+          console.log("cant get fav", err);
+        });
+    }
   }
   function AddtoFav(item_id) {
     axios
@@ -284,19 +284,21 @@ export default function Closet(props) {
   }
   //handle shop list
   function getShopItems() {
-    axios
-      .get(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetShopByUserID/UserID/" +
-          loggedUser.id
-      )
-      .then((res) => {
-        const tempUsersShopList = res.data.map(({ item_id }) => item_id);
-        setUsersShopList(tempUsersShopList);
-      })
-      .catch((err) => {
-        // alert();
-        console.log("cant get shop list", err);
-      });
+    if (myClosetFlag == false) {
+      axios
+        .get(
+          "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetShopByUserID/UserID/" +
+            loggedUser.id
+        )
+        .then((res) => {
+          const tempUsersShopList = res.data.map(({ item_id }) => item_id);
+          setUsersShopList(tempUsersShopList);
+        })
+        .catch((err) => {
+          console.log("cant get shop list", err);
+        });
+    }
+    else console.log("");
   }
   function AddToShopList(item_id) {
     axios
@@ -332,11 +334,15 @@ export default function Closet(props) {
     axios
       .get(ApiUrl_user + `/GetClosetByUserID/User_ID/${loggedUser.id}`)
       .then((res) => {
-        const tempUsersFollowList = res.data.map(({ closet_id }) => closet_id);
-        setUsersFollowingList(tempUsersFollowList);
+        if (res.data != "No closets yet") {
+          const tempUsersFollowList = res.data.map(
+            ({ closet_id }) => closet_id
+          );
+          setUsersFollowingList(tempUsersFollowList);
+        }
       })
       .catch((err) => {
-        console.log("cant get shop list", err);
+        console.log("cant get following list", err);
       });
   }
   const followCloset = () => {

@@ -39,7 +39,6 @@ export default function ProductDetails(props) {
   const [UsersShopList, setUsersShopList] = useState([]);
   const [UsersFollowingList, setUsersFollowingList] = useState([]);
 
-  
   //URL
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
   const ApiUrl_user = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User`;
@@ -47,7 +46,6 @@ export default function ProductDetails(props) {
   useEffect(() => {
     if (isFocused) {
       console.log(item);
-      console.log("userrrr "+user.user_image);
       GetClosetdata();
       getUser();
       getFavItems();
@@ -55,7 +53,6 @@ export default function ProductDetails(props) {
       GetItemCategories();
       GetItemImages();
       GetNumOfFav();
-      //getFollowingList();
     }
   }, [isFocused]);
   function GetClosetdata() {
@@ -72,22 +69,29 @@ export default function ProductDetails(props) {
         console.log(err);
       });
   }
-  async function getUser() {
-    try {
-      const res = await axios.get("https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetUser");
-      const userFiltered = res.data.filter((user) => user.closet_id === item.closet_ID).find((user) => user);
-      setuser(userFiltered);
-      if (userFiltered.id === loggedUser.id) {
-        setotherUserFlag(true);
-      }
-      else setotherUserFlag(false);
-      getFollowingList();
-    } catch (err) {
-      alert("cant take description");
-      console.log(err);
-    }
+  function getUser() {
+    axios
+      .get(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetUserByClosetId/Closet_ID/" +
+          item.closet_ID
+      )
+      .then((res) => {
+        console.log(res.id);
+        console.log("user ID "+res.id);
+        setuser(res.data);
+        if (res.data.id === loggedUser.id) {
+          setotherUserFlag(true);
+        } else setotherUserFlag(false);
+        getFollowingList();
+      })
+      .catch((err) => {
+        alert("cant take user");
+        console.log(err);
+      });
+
+    
   }
-  
+
   const GetItemCategories = () => {
     fetch(ApiUrl + `/GetItemCategortById/Item_ID/${item.id}`, {
       method: "GET",
@@ -110,13 +114,18 @@ export default function ProductDetails(props) {
   };
 
   const GetItemImages = () => {
-    fetch(ApiUrl + `/GetItem_Image_VideoItemById/Item_ID/${item.id}`, {
-      method: "GET",
-      headers: new Headers({
-        "Content-Type": "application/json; charset=UTF-8",
-        Accept: "application/json; charset=UTF-8",
-      }),
-    })
+    //item.id
+    fetch(
+      "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/ItemImages/GetItem_Image_VideoItemById/Item_ID/" +
+        item.id,
+      {
+        method: "GET",
+        headers: new Headers({
+          "Content-Type": "application/json; charset=UTF-8",
+          Accept: "application/json; charset=UTF-8",
+        }),
+      }
+    )
       .then((res) => {
         return res.json();
       })
@@ -198,18 +207,21 @@ export default function ProductDetails(props) {
 
   //gets all the items in the user's shop list
   function getShopItems() {
-    axios
-      .get(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetShopByUserID/UserID/" +
-          loggedUser.id
-      )
-      .then((res) => {
-        const tempUsersShopList = res.data.map(({ item_id }) => item_id);
-        setUsersShopList(tempUsersShopList);
-      })
-      .catch((err) => {
-        console.log("cant get shop list", err);
-      });
+    if (otherUserFlag == false) {
+      axios
+        .get(
+          "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetShopByUserID/UserID/" +
+            loggedUser.id
+        )
+        .then((res) => {
+          console.log(res.data);
+          const tempUsersShopList = res.data.map(({ item_id }) => item_id);
+          setUsersShopList(tempUsersShopList);
+        })
+        .catch((err) => {
+          console.log("cant get shop list", err); //
+        });
+    }
   }
 
   //adds item in the user's shopping list
@@ -249,17 +261,21 @@ export default function ProductDetails(props) {
     return "#" + concatenatedString;
   };
 
-  //gets all the items in the user's shop list
+  //מביא את רשימת העוקבים של היוזר כדי לדעת איזה כפתור עוקב להציג
   function getFollowingList() {
-    axios
-      .get(ApiUrl_user + `/GetClosetByUserID/User_ID/${loggedUser.id}`)
-      .then((res) => {
-        const tempUsersFollowList = res.data.map(({ closet_id }) => closet_id);
-        setUsersFollowingList(tempUsersFollowList);
-      })
-      .catch((err) => {
-        console.log("cant get shop list", err);
-      });
+    if (otherUserFlag == false) {
+      axios
+        .get(ApiUrl_user + `/GetClosetByUserID/User_ID/${loggedUser.id}`)
+        .then((res) => {
+          const tempUsersFollowList = res.data.map(
+            ({ closet_id }) => closet_id
+          );
+          setUsersFollowingList(tempUsersFollowList);
+        })
+        .catch((err) => {
+          console.log("cant get following list", err);
+        });
+    }
   }
 
   const followCloset = () => {
@@ -387,7 +403,7 @@ export default function ProductDetails(props) {
                 ></ImageBackground>
               ))}
             </Swiper>
-            {!otherUserFlag&&UsersFavList.includes(item.id) && (
+            {!otherUserFlag && UsersFavList.includes(item.id) && (
               // render the filled heart SVG if the item ID is in the UsersFavList
               <TouchableOpacity
                 style={styles.favIcon}
@@ -396,7 +412,7 @@ export default function ProductDetails(props) {
                 <HeartTwoSvg filled={true} strokeColor="red" />
               </TouchableOpacity>
             )}
-            {!otherUserFlag&&!UsersFavList.includes(item.id) && (
+            {!otherUserFlag && !UsersFavList.includes(item.id) && (
               // render the unfilled heart SVG if the item ID is not in the UsersFavList
               <TouchableOpacity
                 style={styles.favIcon}
@@ -408,7 +424,7 @@ export default function ProductDetails(props) {
             <TouchableOpacity style={styles.shareIcon}>
               <ShareSvg></ShareSvg>
             </TouchableOpacity>
-            
+
             {!otherUserFlag ? (
               <View style={styles.Row}>
                 <View style={styles.Row}>
@@ -444,7 +460,7 @@ export default function ProductDetails(props) {
                   onPress={() => {
                     navigation.navigate("Closet", {
                       closet: item.closet_ID,
-                      owner:user
+                      owner: user,
                     });
                   }}
                 >
@@ -488,14 +504,13 @@ export default function ProductDetails(props) {
                 onPress={() => {
                   navigation.navigate("Closet", {
                     closet: item.closet_ID,
-                    owner:user
+                    owner: user,
                   });
                 }}
               >
                 <ImageBackground
                   source={{
                     uri: user.user_image,
-                    
                   }}
                   style={styles.userImage}
                   imageStyle={{ borderRadius: 40 }}
@@ -558,27 +573,26 @@ export default function ProductDetails(props) {
               </Text>
             </View>
             {!otherUserFlag && (
-            <View>
-              {UsersShopList.includes(item.id) && (
-                <ButtonLogIn
-                  title="- הסירי מסל קניות"
-                  containerStyle={{ marginBottom: 13 }}
-                  onPress={() => {
-                    RemoveFromShopList(item.id);
-                  }}
-                />
-              )}
-              {!UsersShopList.includes(item.id) && (
-                <Button
-                  title="+ הוסיפי לסל קניות"
-                  containerStyle={{ marginBottom: 13 }}
-                  onPress={() => {
-                    AddToShopList(item.id);
-                  }}
-                />
-              )}
-              
-            </View>
+              <View>
+                {UsersShopList.includes(item.id) && (
+                  <ButtonLogIn
+                    title="- הסירי מסל קניות"
+                    containerStyle={{ marginBottom: 13 }}
+                    onPress={() => {
+                      RemoveFromShopList(item.id);
+                    }}
+                  />
+                )}
+                {!UsersShopList.includes(item.id) && (
+                  <Button
+                    title="+ הוסיפי לסל קניות"
+                    containerStyle={{ marginBottom: 13 }}
+                    onPress={() => {
+                      AddToShopList(item.id);
+                    }}
+                  />
+                )}
+              </View>
             )}
           </ScrollView>
         </View>

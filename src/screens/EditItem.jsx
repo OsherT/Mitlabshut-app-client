@@ -220,11 +220,6 @@ export default function EditItem(props) {
       .then(
         (data) => {
           navigation.navigate("OrderSuccessful");
-
-          //   Alert.alert("Item updated in succ");
-          //   console.log("upItem", updateItem);
-          //   updateImages(item_ID);
-          //   updateCtegories(item_ID);
         },
         (error) => {
           console.log("ERR in update item ", error);

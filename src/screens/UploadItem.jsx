@@ -225,9 +225,9 @@ export default function UploadItem() {
             console.log("item_ID", item_ID);
             uploadCtegories(item_ID);
             uploadImageFB(item_ID);
-            // Alert.alert("Item added in succ");
+            Alert.alert("Item added in succ");
           },
-          (error) => {
+          (error) => { 
             console.log("ERR in upload item ", error);
           }
         );
@@ -292,11 +292,8 @@ export default function UploadItem() {
     //   const item_Src = "image";
 
     console.log("imageLink", imageLink);
-    const encodedLink = encodeURIComponent(imageLink);
-    console.log("encodedLink", encodedLink);
-    console.log("item_id", item_id);
 
-    fetch(ApiUrl + `/PostItemImageVideo/ItemId/${item_id}/SRC/${"imageLink"}`, {
+    fetch(ApiUrl + `/PostItemImageVideo/ItemId/${item_id}/SRC/${imageLink}`, {
       method: "POST",
       headers: new Headers({
         "Content-type": "application/json; charset=UTF-8",

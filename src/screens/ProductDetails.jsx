@@ -5,6 +5,8 @@ import {
   TouchableOpacity,
   StyleSheet,
   Image,
+  Share,
+  Linking,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
@@ -39,15 +41,13 @@ export default function ProductDetails(props) {
   const [UsersShopList, setUsersShopList] = useState([]);
   const [UsersFollowingList, setUsersFollowingList] = useState([]);
 
-  
   //URL
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
   const ApiUrl_user = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User`;
+  // const itemDeepLink = `Mitlabshut://src/screens/ProductDetails/${item.id}`;
 
   useEffect(() => {
     if (isFocused) {
-      console.log(item);
-      console.log("userrrr "+user.user_image);
       GetClosetdata();
       getUser();
       getFavItems();
@@ -58,6 +58,7 @@ export default function ProductDetails(props) {
       //getFollowingList();
     }
   }, [isFocused]);
+
   function GetClosetdata() {
     axios
       .get(
@@ -72,22 +73,26 @@ export default function ProductDetails(props) {
         console.log(err);
       });
   }
+
   async function getUser() {
     try {
-      const res = await axios.get("https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetUser");
-      const userFiltered = res.data.filter((user) => user.closet_id === item.closet_ID).find((user) => user);
+      const res = await axios.get(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetUser"
+      );
+      const userFiltered = res.data
+        .filter((user) => user.closet_id === item.closet_ID)
+        .find((user) => user);
       setuser(userFiltered);
       if (userFiltered.id === loggedUser.id) {
         setotherUserFlag(true);
-      }
-      else setotherUserFlag(false);
+      } else setotherUserFlag(false);
       getFollowingList();
     } catch (err) {
       alert("cant take description");
       console.log(err);
     }
   }
-  
+
   const GetItemCategories = () => {
     fetch(ApiUrl + `/GetItemCategortById/Item_ID/${item.id}`, {
       method: "GET",
@@ -296,6 +301,27 @@ export default function ProductDetails(props) {
       });
   };
 
+  const onShare = async () => {
+    try {
+      const result = await Share.share({
+        message: "תראי איזה פריט שווה מצאתי !",
+        url: "https://example.com/page",
+        title: "מתלבשות",
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
   //need to delete and fix the view
   // function renderSlide() {
   //   return (
@@ -329,8 +355,7 @@ export default function ProductDetails(props) {
                       textAlign: "right",
                       fontSize: 13,
                       marginBottom: 5,
-                    }}
-                  >
+                    }}>
                     ✓ איסוף עצמי
                   </Text>
                 )}
@@ -340,8 +365,7 @@ export default function ProductDetails(props) {
                       textAlign: "right",
                       fontSize: 13,
                       marginBottom: 5,
-                    }}
-                  >
+                    }}>
                     ✓ משלוח
                   </Text>
                 )}
@@ -359,8 +383,7 @@ export default function ProductDetails(props) {
                           itemImages: itemImages,
                           itemCtegories: itemCtegories,
                         });
-                      }}
-                    >
+                      }}>
                       <Edit />
                     </TouchableOpacity>
                   )}
@@ -371,8 +394,7 @@ export default function ProductDetails(props) {
                       textAlign: "right",
                       fontSize: 13,
                       marginBottom: 5,
-                    }}
-                  >
+                    }}>
                     ♡ {numOfFav} אהבו פריט זה
                   </Text>
                 )}
@@ -383,32 +405,33 @@ export default function ProductDetails(props) {
                 <ImageBackground
                   key={index}
                   style={styles.image}
-                  source={{ uri: image }}
-                ></ImageBackground>
+                  source={{ uri: image }}></ImageBackground>
               ))}
             </Swiper>
-            {!otherUserFlag&&UsersFavList.includes(item.id) && (
+            {!otherUserFlag && UsersFavList.includes(item.id) && (
               // render the filled heart SVG if the item ID is in the UsersFavList
               <TouchableOpacity
                 style={styles.favIcon}
-                onPress={() => RemoveFromFav(item.id)}
-              >
+                onPress={() => RemoveFromFav(item.id)}>
                 <HeartTwoSvg filled={true} strokeColor="red" />
               </TouchableOpacity>
             )}
-            {!otherUserFlag&&!UsersFavList.includes(item.id) && (
+            {!otherUserFlag && !UsersFavList.includes(item.id) && (
               // render the unfilled heart SVG if the item ID is not in the UsersFavList
               <TouchableOpacity
                 style={styles.favIcon}
-                onPress={() => AddtoFav(item.id)}
-              >
+                onPress={() => AddtoFav(item.id)}>
                 <HeartTwoSvg filled={false} strokeColor="red" />
               </TouchableOpacity>
             )}
-            <TouchableOpacity style={styles.shareIcon}>
+            <TouchableOpacity
+              style={styles.shareIcon}
+              onPress={() => {
+                onShare();
+              }}>
               <ShareSvg></ShareSvg>
             </TouchableOpacity>
-            
+
             {!otherUserFlag ? (
               <View style={styles.Row}>
                 <View style={styles.Row}>
@@ -444,17 +467,15 @@ export default function ProductDetails(props) {
                   onPress={() => {
                     navigation.navigate("Closet", {
                       closet: item.closet_ID,
-                      owner:user
+                      owner: user,
                     });
-                  }}
-                >
+                  }}>
                   <ImageBackground
                     source={{
                       uri: user.user_image,
                     }}
                     style={styles.userImage}
-                    imageStyle={{ borderRadius: 40 }}
-                  ></ImageBackground>
+                    imageStyle={{ borderRadius: 40 }}></ImageBackground>
 
                   <Text
                     style={{
@@ -462,8 +483,7 @@ export default function ProductDetails(props) {
                       fontSize: 16,
                       color: COLORS.gray,
                       lineHeight: 22 * 1.2,
-                    }}
-                  >
+                    }}>
                     הארון של
                   </Text>
                   <Text> </Text>
@@ -473,8 +493,7 @@ export default function ProductDetails(props) {
                       fontSize: 16,
                       color: COLORS.black,
                       lineHeight: 22 * 1.2,
-                    }}
-                  >
+                    }}>
                     {closetName}
                   </Text>
                 </TouchableOpacity>
@@ -488,18 +507,15 @@ export default function ProductDetails(props) {
                 onPress={() => {
                   navigation.navigate("Closet", {
                     closet: item.closet_ID,
-                    owner:user
+                    owner: user,
                   });
-                }}
-              >
+                }}>
                 <ImageBackground
                   source={{
                     uri: user.user_image,
-                    
                   }}
                   style={styles.userImage}
-                  imageStyle={{ borderRadius: 40 }}
-                ></ImageBackground>
+                  imageStyle={{ borderRadius: 40 }}></ImageBackground>
 
                 <Text
                   style={{
@@ -507,8 +523,7 @@ export default function ProductDetails(props) {
                     fontSize: 16,
                     color: COLORS.gray,
                     lineHeight: 22 * 1.2,
-                  }}
-                >
+                  }}>
                   הארון שלי{" "}
                 </Text>
                 <Text> </Text>
@@ -558,27 +573,26 @@ export default function ProductDetails(props) {
               </Text>
             </View>
             {!otherUserFlag && (
-            <View>
-              {UsersShopList.includes(item.id) && (
-                <ButtonLogIn
-                  title="- הסירי מסל קניות"
-                  containerStyle={{ marginBottom: 13 }}
-                  onPress={() => {
-                    RemoveFromShopList(item.id);
-                  }}
-                />
-              )}
-              {!UsersShopList.includes(item.id) && (
-                <Button
-                  title="+ הוסיפי לסל קניות"
-                  containerStyle={{ marginBottom: 13 }}
-                  onPress={() => {
-                    AddToShopList(item.id);
-                  }}
-                />
-              )}
-              
-            </View>
+              <View>
+                {UsersShopList.includes(item.id) && (
+                  <ButtonLogIn
+                    title="- הסירי מסל קניות"
+                    containerStyle={{ marginBottom: 13 }}
+                    onPress={() => {
+                      RemoveFromShopList(item.id);
+                    }}
+                  />
+                )}
+                {!UsersShopList.includes(item.id) && (
+                  <Button
+                    title="+ הוסיפי לסל קניות"
+                    containerStyle={{ marginBottom: 13 }}
+                    onPress={() => {
+                      AddToShopList(item.id);
+                    }}
+                  />
+                )}
+              </View>
             )}
           </ScrollView>
         </View>

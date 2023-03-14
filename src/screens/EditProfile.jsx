@@ -23,21 +23,27 @@ import axios from "axios";
 import { ScrollView } from "react-native-gesture-handler";
 
 export default function EditProfile(props) {
-  const { loggedUser, setclosetDesc, setclosetName ,setloggedUser,closetName,closetDesc} = useContext(userContext);
+  const {
+    loggedUser,
+    setclosetDesc,
+    setclosetName,
+    setloggedUser,
+    closetName,
+    closetDesc,
+  } = useContext(userContext);
   const navigation = useNavigation();
   const [address, setAddress] = useState(loggedUser.address);
   const [userName, setUserName] = useState(loggedUser.full_name);
-  const [userEmail] = useState(loggedUser.email);
+  const [userEmail, setUserEmail] = useState(loggedUser.email);
+
   const [userPassword, setUserPassword] = useState(loggedUser.password);
   const [userPhone, setUserPhone] = useState(loggedUser.phone_number);
   const [userClosetId] = useState(loggedUser.closet_id);
   const [userImage, setUserImage] = useState(loggedUser.user_image);
-  
 
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
+  
   useEffect(() => {
-    console.log(loggedUser);
-    
   }, []);
 
   const pickImage = async () => {
@@ -99,10 +105,10 @@ export default function EditProfile(props) {
             )
             .then((res) => {
               setloggedUser(newUser);
-              console.log("suc in update user= ", result);
+              console.log("suc in update user ", res);
               navigation.navigate("OrderSuccessful");
             })
-            .catch((err) => {
+            .catch((error) => {
               console.log("ERR in update closet", error);
             });
         },
@@ -121,11 +127,9 @@ export default function EditProfile(props) {
               <TouchableOpacity
                 onPress={() => {
                   pickImage();
-                }}
-              >
+                }}>
                 <ImageBackground
                   source={{
-                    // uri: loggedUser.user_image,
                     uri: userImage,
                   }}
                   style={{
@@ -134,23 +138,20 @@ export default function EditProfile(props) {
                     alignSelf: "center",
                     marginBottom: 15,
                   }}
-                  imageStyle={{ borderRadius: 40 }}
-                >
+                  imageStyle={{ borderRadius: 40 }}>
                   <View
                     style={{
                       position: "absolute",
-                      right:-20,
+                      right: -20,
                       bottom: -20,
-                    }}
-                  >
+                    }}>
                     <Edit />
                   </View>
                 </ImageBackground>
               </TouchableOpacity>
 
               <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
-              >
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
                 שם מלא:
               </Text>
               <InputField
@@ -160,17 +161,19 @@ export default function EditProfile(props) {
                 onChangeText={(text) => setUserName(text)}
                 keyboardType="text"
               />
-              {/* <InputField
-          value={loggedUser.email}
-          icon={<EditTwo />}
-          containerStyle={{ marginBottom: 10 }}
-          onChangeText={(text) => setUserEmail(text)}
-          keyboardType="text"
-          
-        /> */}
               <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
-              >
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+                כתובת אימייל :
+              </Text>
+              <InputField
+                defaultValue={loggedUser.email}
+                icon={<EditTwo />}
+                containerStyle={{ marginBottom: 10 }}
+                onChangeText={(text) => setUserEmail(text)}
+                keyboardType="text"
+              />
+              <Text
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
                 כתובת מגורים:
               </Text>
 
@@ -202,8 +205,7 @@ export default function EditProfile(props) {
               </SafeAreaView>
 
               <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
-              >
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
                 מספר טלפון:
               </Text>
               <InputField
@@ -215,8 +217,7 @@ export default function EditProfile(props) {
               />
 
               <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
-              >
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
                 סיסמה:
               </Text>
               <InputField
@@ -228,8 +229,7 @@ export default function EditProfile(props) {
               />
 
               <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
-              >
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
                 תיאור ארון:
               </Text>
               <InputField
@@ -241,8 +241,7 @@ export default function EditProfile(props) {
               />
 
               <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
-              >
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
                 שם ארון:
               </Text>
               <InputField

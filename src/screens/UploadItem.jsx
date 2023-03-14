@@ -43,6 +43,8 @@ export default function UploadItem() {
   const [itemColor, setItemColor] = useState([]);
   const [itemDeliveryMethod, setItemDeliveryMethod] = useState("");
   const [itemBrand, setItemBrand] = useState([]);
+  const [images, setImages] = useState([]);
+  const [uploading, setUploading] = useState(false);
 
   //the section of the lists hooks
   const [brandsList, setBrandsList] = useState([]);
@@ -232,7 +234,6 @@ export default function UploadItem() {
             console.log("item_ID", item_ID);
             uploadCtegories(item_ID);
             uploadImageFB(item_ID);
-            Alert.alert("Item added in succ");
           },
           (error) => {
             console.log("ERR in upload item ", error);
@@ -245,16 +246,12 @@ export default function UploadItem() {
   ///uploads the image to the fireBase////
   ////////////////////////////////////////
 
-  const [images, setImages] = useState([]);
-  const [uploading, setUploading] = useState(false);
-  console.log("images", images);
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       aspect: [4, 3],
       quality: 1,
       allowsMultipleSelection: true, // Allow multiple image selection
-      
     });
 
     if (!result.canceled) {
@@ -277,7 +274,7 @@ export default function UploadItem() {
       const response = await fetch(images[i].uri);
       const blob = await response.blob();
       const filename =
-        `${loggedUser.id}/`+
+        `${loggedUser.id}/` +
         // "items/" +
         item_ID +
         "/" +
@@ -564,16 +561,13 @@ export default function UploadItem() {
                       paddingBottom: 30,
                       textAlign: "center",
                     }}>
-                    הוסיפי תמונות
-                   ({images.length}/3)
+                    הוסיפי תמונות ({images.length}/3)
                   </Text>
                   <AddSvg></AddSvg>
                 </View>
               </TouchableOpacity>
             )}
           </View>
-
-  
 
           {images.length > 0 && (
             <View style={styles.imageContainer}>

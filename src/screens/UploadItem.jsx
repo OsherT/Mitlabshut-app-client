@@ -31,17 +31,28 @@ export default function UploadItem() {
 
   //להחליף מה שיושב סתם במערך ל"""
   //the section of the item information hooks
-  const [itemName, setItemName] = useState("");
-  const [itemPrice, setItemPrice] = useState("");
-  const [itemCategory, setItemCategory] = useState([]);
-  const [itemType, setItemType] = useState([]);
-  const [itemSize, setItemSize] = useState([]);
-  const [itemCondition, setItemCondition] = useState("");
-  const [itemColor, setItemColor] = useState([]);
-  const [itemDeliveryMethod, setItemDeliveryMethod] = useState("");
-  const [itemBrand, setItemBrand] = useState([]);
-  const [itemImage, setItemImage] = useState([]);
-  const [itemDescription, setItemDescription] = useState("");
+  // const [itemName, setItemName] = useState("");
+  // const [itemPrice, setItemPrice] = useState("");
+  // const [itemCategory, setItemCategory] = useState([]);
+  // const [itemType, setItemType] = useState([]);
+  // const [itemSize, setItemSize] = useState([]);
+  // const [itemCondition, setItemCondition] = useState("");
+  // const [itemColor, setItemColor] = useState([]);
+  // const [itemDeliveryMethod, setItemDeliveryMethod] = useState("");
+  // const [itemBrand, setItemBrand] = useState([]);
+  //   const [itemDescription, setItemDescription] = useState("");
+
+  const [itemName, setItemName] = useState("FB");
+  const [itemPrice, setItemPrice] = useState(100);
+  const [itemCategory, setItemCategory] = useState(["קייצי"]);
+  const [itemType, setItemType] = useState(["כובע"]);
+  const [itemSize, setItemSize] = useState("L");
+  const [itemCondition, setItemCondition] = useState("כמו חדש");
+  const [itemColor, setItemColor] = useState("שחור");
+  const [itemDeliveryMethod, setItemDeliveryMethod] = useState("1");
+  const [itemBrand, setItemBrand] = useState("H&M");
+  const [itemDescription, setItemDescription] = useState("מושלם");
+  // const [itemImage, setItemImage] = useState([]);
 
   //the section of the lists hooks
   const [brandsList, setBrandsList] = useState([]);
@@ -268,9 +279,9 @@ export default function UploadItem() {
     // const filename = image.uri.substring(image.uri.lastIndexOf("/") + 1);
     console.log("filename", filename);
 
-    var ref = firebase.storage().ref().child(filename).put(blob);
-
     try {
+      var ref = firebase.storage().ref().child(filename).put(blob);
+
       await ref;
       var imageRef = firebase.storage().ref().child(filename);
       const imageLink = await imageRef.getDownloadURL(); // Get the download URL of the uploaded image
@@ -293,8 +304,8 @@ export default function UploadItem() {
     console.log("imageLink", imageLink);
 
     const ItemImages = {
-      Item_ID: item_id,
-      Src: imageLink,
+      item_ID: item_id,
+      src: imageLink,
     };
 
     fetch(ApiUrl_image, {
@@ -369,28 +380,23 @@ export default function UploadItem() {
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "space-between",
-            }}>
-            <Text
-              style={{ textAlign: "right", color: COLORS.grey3, left: 125 }}>
-              מחיר :
-            </Text>
-            <Text
-              style={{ textAlign: "right", color: COLORS.grey3, right: 15 }}>
-              שם פריט :
-            </Text>
-          </View>
+            }}></View>
           <View style={styles.doubleContainer}>
             <TextInput
               style={styles.textInput}
               placeholder="מחיר"
               keyboardType="phone-pad"
               onChangeText={(text) => setItemPrice(text)}
+              /////////////////////////לנוחות, למחוק אח"כ/////////////////////////
+              value={itemPrice.toString()}
             />
             <TextInput
               style={styles.textInput}
               placeholder="שם פריט"
               containerStyle={{ marginBottom: 10 }}
               onChangeText={(text) => setItemName(text)}
+              /////////////////////////לנוחות, למחוק אח"כ/////////////////////////
+              value={itemName}
             />
           </View>
 
@@ -399,13 +405,15 @@ export default function UploadItem() {
             searchPlaceholder="חיפוש"
             boxStyles={styles.dropdownInput}
             dropdownStyles={styles.dropdownContainer}
-            setSelected={(val) => setItemCategory(val)}
+            // setSelected={(val) => setItemCategory(val)}
             data={categoriesList}
             notFoundText="לא קיים מידע"
             save="value"
             label="קטגוריה"
             badgeStyles={{ backgroundColor: "white" }}
             badgeTextStyles={{ color: "black" }}
+            /////////////////////////לנוחות, למחוק אח"כ/////////////////////////
+            setSelected={itemCategory}
           />
 
           <SelectList
@@ -416,6 +424,8 @@ export default function UploadItem() {
             setSelected={(val) => setItemType(val)}
             data={typesList}
             notFoundText="לא קיים מידע"
+            /////////////////////////לנוחות, למחוק אח"כ/////////////////////////
+            defaultOption={itemType}
           />
           <SelectList
             placeholder="מידה "

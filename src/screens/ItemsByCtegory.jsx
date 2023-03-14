@@ -49,9 +49,7 @@ export default function ItemsByCtegory(props) {
 
   const GetItemPhotos = () => {
     axios
-      .get(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemImageVideo"
-      )
+      .get("https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/ItemImages")
       .then((res) => {
         console.log("res.data", res.data);
         setItemsImageByType(res.data);

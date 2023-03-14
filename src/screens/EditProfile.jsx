@@ -7,6 +7,7 @@ import {
   Text,
   StyleSheet,
   KeyboardAvoidingView,
+  ActivityIndicator,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -21,6 +22,7 @@ import * as ImagePicker from "expo-image-picker";
 import { colors } from "react-native-elements";
 import axios from "axios";
 import { ScrollView } from "react-native-gesture-handler";
+import { firebase } from "../../firebaseConfig";
 
 export default function EditProfile(props) {
   const {
@@ -40,30 +42,53 @@ export default function EditProfile(props) {
   const [userPhone, setUserPhone] = useState(loggedUser.phone_number);
   const [userClosetId] = useState(loggedUser.closet_id);
   const [userImage, setUserImage] = useState(loggedUser.user_image);
+  const [image, setImage] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
 
-  useEffect(() => {}, []);
-
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       aspect: [4, 3],
       quality: 1,
+      allowsEditing: true,
     });
 
-    // setUserImage(result.uri);
-    // setUserImage(
-    //   "https://scontent.ftlv18-1.fna.fbcdn.net/v/t1.6435-9/37673670_10157514945495278_8702446268250587136_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=e3f864&_nc_ohc=y3hGZ5pDXjoAX-m60Ia&_nc_ht=scontent.ftlv18-1.fna&oh=00_AfBnG6vLlmG8fKu4oTNCZQzr5NWKc5FnhMFG3m3zWitr5A&oe=64272285"
-    // );
-    setUserImage(
-      "https://scontent.ftlv18-1.fna.fbcdn.net/v/t39.30808-6/318441234_6279612948733570_8741695248983855855_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=730e14&_nc_ohc=_S6heIS7Ww0AX9gdDsW&_nc_ht=scontent.ftlv18-1.fna&oh=00_AfDwxnLI-9eF9snTq8sETCw9rv0LdqzDPw9KIZm4r8wzig&oe=6409E89C"
-    );
+    if (!result.cancelled) {
+      setImage({
+        uri: result.uri,
+        key: 1,
+      });
+      console.log("image", image);
+    }
+  };
+
+  const uploadImageFB = async (user_id) => {
+    console.log("in uploadImageFB, user_id", user_id);
+
+    setUploading(true);
+    const response = await fetch(image.uri);
+    const blob = await response.blob();
+    const filename =
+      `${user_id}/` + image.uri.substring(image.uri.lastIndexOf("/") + 1);
+
+    try {
+      var ref = firebase.storage().ref().child(filename).put(blob);
+      await ref;
+      var imageRef = firebase.storage().ref().child(filename);
+      const imageLink = await imageRef.getDownloadURL();
+      setImage(null);
+      setUserImage(null);
+      setUploading(false);
+      updateUser(imageLink);
+    } catch (error) {
+      console.log("error in upload to FB", error);
+    }
   };
 
   //update users details
-  const updateUser = () => {
+  const updateUser = (imageLink) => {
     const newUser = {
       email: userEmail,
       id: loggedUser.id,
@@ -73,7 +98,7 @@ export default function EditProfile(props) {
       password: userPassword,
       address: address,
       isAdmin: false,
-      user_image: userImage,
+      user_image: imageLink,
     };
 
     const newClosetData = {
@@ -81,8 +106,6 @@ export default function EditProfile(props) {
       description: closetDesc,
       user_name: closetName,
     };
-
-    console.log("newUser", newUser);
 
     fetch(ApiUrl + `User/PutUser`, {
       method: "PUT",
@@ -104,7 +127,10 @@ export default function EditProfile(props) {
             )
             .then((res) => {
               setloggedUser(newUser);
-              console.log("suc in update user ", res);
+              console.log("newUser ", newUser);
+              console.log("loggeduser ", loggedUser);
+
+              console.log("suc in update user ", res.data);
               navigation.navigate("OrderSuccessful", {
                 message: "הפרטים עודכנו בהצלחה !",
               });
@@ -129,26 +155,46 @@ export default function EditProfile(props) {
                 onPress={() => {
                   pickImage();
                 }}>
-                <ImageBackground
-                  source={{
-                    uri: userImage,
-                  }}
-                  style={{
-                    width: 80,
-                    height: 80,
-                    alignSelf: "center",
-                    marginBottom: 15,
-                  }}
-                  imageStyle={{ borderRadius: 40 }}>
-                  <View
+                {!image && (
+                  <ImageBackground
+                    source={{ uri: loggedUser.user_image }}
                     style={{
-                      position: "absolute",
-                      right: -20,
-                      bottom: -20,
-                    }}>
-                    <Edit />
-                  </View>
-                </ImageBackground>
+                      width: 80,
+                      height: 80,
+                      alignSelf: "center",
+                      marginBottom: 15,
+                    }}
+                    imageStyle={{ borderRadius: 40 }}>
+                    <View
+                      style={{
+                        position: "absolute",
+                        right: -20,
+                        bottom: -20,
+                      }}>
+                      <Edit />
+                    </View>
+                  </ImageBackground>
+                )}
+                {image && (
+                  <ImageBackground
+                    source={{ uri: image.uri }}
+                    style={{
+                      width: 80,
+                      height: 80,
+                      alignSelf: "center",
+                      marginBottom: 15,
+                    }}
+                    imageStyle={{ borderRadius: 40 }}>
+                    <View
+                      style={{
+                        position: "absolute",
+                        right: -20,
+                        bottom: -20,
+                      }}>
+                      <Edit />
+                    </View>
+                  </ImageBackground>
+                )}
               </TouchableOpacity>
 
               <Text
@@ -253,8 +299,17 @@ export default function EditProfile(props) {
                 keyboardType="text"
               />
 
+              {uploading && (
+                <View style={{ marginBottom: 30 }}>
+                  <ActivityIndicator size={"small"} color="black" />
+                </View>
+              )}
+
               <View style={{ marginTop: 40 }}>
-                <Button title="שמור שינויים " onPress={updateUser} />
+                <Button
+                  title="שמור שינויים "
+                  onPress={() => uploadImageFB(loggedUser.id)}
+                />
               </View>
             </ContainerComponent>
           </ScrollView>

@@ -109,7 +109,6 @@ export default function SignUp() {
   };
 
   const uploadImageFB = async (user) => {
-    console.log("in uploadImageFB, user", user);
 
     setUploading(true);
     const response = await fetch(image.uri);
@@ -134,6 +133,9 @@ export default function SignUp() {
     }
   };
 
+  //in order to upload the image to the correct place in the FaireBase i have to get the user's id,
+  //in FB we open a file to every user by his id, we get the id only after the  user's post
+  //so we must post the user and only then to updat user's image
   const uploadImagesDB = (user, imageLink) => {
     const userWithImage = {
       Email: user.email,
@@ -146,7 +148,6 @@ export default function SignUp() {
       isAdmin: false,
       user_image: imageLink,
     };
-    console.log("userWithImage", userWithImage);
     axios
       .put(
         "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/PutUser",
@@ -154,37 +155,11 @@ export default function SignUp() {
       )
       .then((res) => {
         setloggedUser(userWithImage); //לאחר ההרשמה היוזר מתחבר ומנווט ישר לארון שלו
-        console.log("succ in user DB", res.data);
         // navigation.navigate("Closet");
       })
       .catch((err) => {
         console.log("err in user DB 2", err);
       });
-
-    // const new_itemImages = {
-    //   item_ID: item_id,
-    //   src: imageLink,
-    // };
-
-    // fetch(ApiUrl_image, {
-    //   method: "POST",
-    //   body: JSON.stringify(new_itemImages),
-    //   headers: new Headers({
-    //     "Content-type": "application/json; charset=UTF-8",
-    //     Accept: "application/json; charset=UTF-8",
-    //   }),
-    // })
-    //   .then((res) => {
-    //     return res.json();
-    //   })
-    //   .then(
-    //     (result) => {
-    //       console.log("suc in post images to DB ", result);
-    //     },
-    //     (error) => {
-    //       console.log("ERR in post images to DB", error);
-    //     }
-    //   );
   };
 
   function renderContent() {

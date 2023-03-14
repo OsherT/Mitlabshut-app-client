@@ -31,8 +31,10 @@ export default function UploadItem() {
 
   //להחליף מה שיושב סתם במערך ל"""
   //the section of the item information hooks
-  const [itemName, setItemName] = useState("");
-  const [itemPrice, setItemPrice] = useState("");
+  // const [itemName, setItemName] = useState("");
+  // const [itemPrice, setItemPrice] = useState("");
+  // const [itemDescription, setItemDescription] = useState("");
+
   const [itemCategory, setItemCategory] = useState([]);
   const [itemType, setItemType] = useState([]);
   const [itemSize, setItemSize] = useState([]);
@@ -40,8 +42,6 @@ export default function UploadItem() {
   const [itemColor, setItemColor] = useState([]);
   const [itemDeliveryMethod, setItemDeliveryMethod] = useState("");
   const [itemBrand, setItemBrand] = useState([]);
-  const [itemImage, setItemImage] = useState([]);
-  const [itemDescription, setItemDescription] = useState("");
 
   //the section of the lists hooks
   const [brandsList, setBrandsList] = useState([]);
@@ -69,6 +69,11 @@ export default function UploadItem() {
     GetSizesList();
     GetTypesList();
   }, []);
+
+  /////////////////////////לנוחות, למחוק אח"כ/////////////////////////
+  const [itemName, setItemName] = useState("FB");
+  const [itemPrice, setItemPrice] = useState(100);
+  const [itemDescription, setItemDescription] = useState("מושלם");
 
   ////////////////////////////////////////
   //gets all the data from the dataBase//
@@ -191,7 +196,7 @@ export default function UploadItem() {
       itemDeliveryMethod == "" ||
       itemBrand == "" ||
       itemDescription == "" ||
-      itemImage == []
+      images == []
     ) {
       Alert.alert("אנא מלאי את כל הפרטים");
     } else {
@@ -239,86 +244,154 @@ export default function UploadItem() {
   ///uploads the image to the fireBase////
   ////////////////////////////////////////
 
-  const [image, setImage] = useState(null);
+  const [images, setImages] = useState([]);
   const [uploading, setUploading] = useState(false);
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All, // We can specify whether we need only Images or Videos
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1, // 0 means compress for small size, 1 means compress for maximum quality
-    });
+const pickImage = async () => {
+  let result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    aspect: [4, 3],
+    quality: 1,
+    allowsMultipleSelection: true, // Allow multiple image selection
+  });
 
-    const source = { uri: result.uri };
-    setImage(source);
-
-    // if (!result.cancelled) {
-    //   setImage(result.uri);
-    // }
-  };
+  if (!result.canceled) {
+    const selectedImages = result.assets.map((image, index) => ({
+      uri: image.uri,
+      key: index,
+    }));
+    setImages(selectedImages);
+    console.log("selectedImages", selectedImages);
+  }
+  console.log("result", result);
+};
 
   const uploadImageFB = async (item_ID) => {
     setUploading(true);
-    const response = await fetch(image.uri);
-    const blob = await response.blob();
-    //for each item i open a folder
-    const filename =
-      item_ID + "/" + image.uri.substring(image.uri.lastIndexOf("/") + 1);
-    // const filename = image.uri.substring(image.uri.lastIndexOf("/") + 1);
-    console.log("filename", filename);
+    const imageLinks = [];
 
-    var ref = firebase.storage().ref().child(filename).put(blob);
+    for (let i = 0; i < images.length; i++) {
+      const response = await fetch(images[i].uri);
+      const blob = await response.blob();
+      const filename =
+        item_ID +
+        "/" +
+        images[i].uri.substring(images[i].uri.lastIndexOf("/") + 1);
 
-    try {
-      await ref;
-      var imageRef = firebase.storage().ref().child(filename);
-      const imageLink = await imageRef.getDownloadURL(); // Get the download URL of the uploaded image
-      uploadImagesDB(item_ID, imageLink);
-    } catch (error) {
-      console.log("error in upload to FB", error);
+      try {
+        var ref = firebase.storage().ref().child(filename).put(blob);
+        await ref;
+        var imageRef = firebase.storage().ref().child(filename);
+        const imageLink = await imageRef.getDownloadURL();
+        imageLinks.push(imageLink);
+      } catch (error) {
+        console.log("error in upload to FB", error);
+      }
     }
 
+    uploadImagesDB(item_ID, imageLinks);
+
+    setImages([]);
     setUploading(false);
-    setImage(null);
-    Alert.alert("image uploadede!");
-    navigation.navigate("Closet");
+
+    navigation.navigate("OrderSuccessful", {
+      message: "הפריט הועלה בהצלחה !",
+    });
   };
 
-  const uploadImagesDB = (item_id, imageLink) => {
-    // for (let i = 0; i < itemImage.length; i++) {
-    //   // item_Src: itemImage[i],
-    //   const item_Src = "image";
+  const uploadImagesDB = (item_id, imageLinks) => {
+    for (let i = 0; i < imageLinks.length; i++) {
+      const new_itemImages = {
+        item_ID: item_id,
+        src: imageLinks[i],
+      };
 
-    console.log("imageLink", imageLink);
-
-    const ItemImages = {
-      Item_ID: item_id,
-      Src: imageLink,
-    };
-
-    fetch(ApiUrl_image, {
-      method: "POST",
-      body: JSON.stringify(ItemImages),
-      headers: new Headers({
-        "Content-type": "application/json; charset=UTF-8",
-        Accept: "application/json; charset=UTF-8",
-      }),
-    })
-      .then((res) => {
-        return res.json();
+      fetch(ApiUrl_image, {
+        method: "POST",
+        body: JSON.stringify(new_itemImages),
+        headers: new Headers({
+          "Content-type": "application/json; charset=UTF-8",
+          Accept: "application/json; charset=UTF-8",
+        }),
       })
-      .then(
-        (result) => {
-          console.log("suc in post images to DB ", result);
-        },
-        (error) => {
-          console.log("ERR in post images to DB", error);
-        }
-      );
+        .then((res) => {
+          return res.json();
+        })
+        .then(
+          (result) => {
+            console.log("suc in post images to DB ", result);
+          },
+          (error) => {
+            console.log("ERR in post images to DB", error);
+          }
+        );
+    }
   };
+
+  // const uploadImageFB = async (item_ID) => {
+  //   setUploading(true);
+  //   const response = await fetch(image.uri);
+  //   const blob = await response.blob();
+  //   //for each item i open a folder
+  //   const filename =
+  //     item_ID + "/" + image.uri.substring(image.uri.lastIndexOf("/") + 1);
+  //   // const filename = image.uri.substring(image.uri.lastIndexOf("/") + 1);
+  //   console.log("filename", filename);
+
+  //   try {
+  //     var ref = firebase.storage().ref().child(filename).put(blob);
+
+  //     await ref;
+  //     var imageRef = firebase.storage().ref().child(filename);
+  //     const imageLink = await imageRef.getDownloadURL(); // Get the download URL of the uploaded image
+  //     uploadImagesDB(item_ID, imageLink);
+  //   } catch (error) {
+  //     console.log("error in upload to FB", error);
+  //   }
+
+  //   setImage(null);
+  //   setUploading(false);
+
+  //   navigation.navigate("OrderSuccessful", {
+  //     message: "הפריט הועלה בהצלחה !",
+  //   });
+  // };
+
+  // const uploadImagesDB = (item_id, imageLink) => {
+  //   // for (let i = 0; i < itemImage.length; i++) {
+  //   //   // item_Src: itemImage[i],
+  //   //   const item_Src = "image";
+
+  //   console.log("imageLink", imageLink);
+
+  //   const ItemImages = {
+  //     item_ID: item_id,
+  //     src: imageLink,
+  //   };
+
+  //   fetch(ApiUrl_image, {
+  //     method: "POST",
+  //     body: JSON.stringify(ItemImages),
+  //     headers: new Headers({
+  //       "Content-type": "application/json; charset=UTF-8",
+  //       Accept: "application/json; charset=UTF-8",
+  //     }),
+  //   })
+  //     .then((res) => {
+  //       return res.json();
+  //     })
+  //     .then(
+  //       (result) => {
+  //         console.log("suc in post images to DB ", result);
+  //       },
+  //       (error) => {
+  //         console.log("ERR in post images to DB", error);
+  //       }
+  //     );
+  // };
 
   //converts the shipping method to string, shipping method in data base gets string only
+
   const ArrayToStringShip = (data) => {
     var string = "";
     for (let index = 0; index < data.length; index++) {
@@ -369,28 +442,23 @@ export default function UploadItem() {
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "space-between",
-            }}>
-            <Text
-              style={{ textAlign: "right", color: COLORS.grey3, left: 125 }}>
-              מחיר :
-            </Text>
-            <Text
-              style={{ textAlign: "right", color: COLORS.grey3, right: 15 }}>
-              שם פריט :
-            </Text>
-          </View>
+            }}></View>
           <View style={styles.doubleContainer}>
             <TextInput
               style={styles.textInput}
               placeholder="מחיר"
               keyboardType="phone-pad"
               onChangeText={(text) => setItemPrice(text)}
+              /////////////////////////לנוחות, למחוק אח"כ/////////////////////////
+              value={itemPrice.toString()}
             />
             <TextInput
               style={styles.textInput}
               placeholder="שם פריט"
               containerStyle={{ marginBottom: 10 }}
               onChangeText={(text) => setItemName(text)}
+              /////////////////////////לנוחות, למחוק אח"כ/////////////////////////
+              value={itemName}
             />
           </View>
 
@@ -476,6 +544,8 @@ export default function UploadItem() {
             placeholder=" תיאור מפורט  "
             containerStyle={{ marginBottom: 10 }}
             onChangeText={(text) => setItemDescription(text)}
+            /////////////////////////לנוחות, למחוק אח"כ/////////////////////////
+            value={itemDescription}
           />
 
           {/* <View>
@@ -518,6 +588,28 @@ export default function UploadItem() {
               alignItems: "center",
               justifyContent: "center",
             }}>
+            {images && (
+              <View style={{ flexDirection: "row" }}>
+                {images.map((item, index) => (
+                  <Image
+                    key={index}
+                    source={{ uri: item.uri }}
+                    style={{ width: 100, height: 100, margin: 5 }}
+                  />
+                ))}
+              </View>
+            )}
+            <Button title="Select Images" onPress={pickImage} />
+          </View>
+          {uploading && <ActivityIndicator size={"small"} color="black" />}
+          {/* FB /////////////////////////////////////////////////////////////////////*/}
+          {/* <View
+            style={{
+              flex: 1,
+              backgroundColor: "#fff",
+              alignItems: "center",
+              justifyContent: "center",
+            }}>
             {image && (
               <Image
                 source={{ uri: image.uri }}
@@ -525,12 +617,9 @@ export default function UploadItem() {
               />
             )}
             <Button title="Select Image" onPress={pickImage} />
-            {/* {!uploading ? (
-              <Button title="Upload Image" onPress={uploadImageFB} />
-            ) : (
-              <ActivityIndicator size={"small"} color="black" />
-            )} */}
           </View>
+
+          {uploading && <ActivityIndicator size={"small"} color="black" />} */}
 
           <Button title="הוספת פריט" onPress={UploadItem} />
         </ContainerComponent>

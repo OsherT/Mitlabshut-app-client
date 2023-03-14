@@ -77,7 +77,7 @@ export default function EditItem(props) {
       GetSizesList();
       GetTypesList();
       GetCategoriesList();
-  
+
       // console.log("categoryOptions", categoryOptions);
       // console.log("chosenCategory", chosenCategory);
       // console.log("categoriesList", categoriesList);
@@ -219,7 +219,9 @@ export default function EditItem(props) {
       })
       .then(
         (data) => {
-          navigation.navigate("OrderSuccessful");
+          navigation.navigate("OrderSuccessful", {
+            message: "הפרטים עודכנו בהצלחה !",
+          });
         },
         (error) => {
           console.log("ERR in update item ", error);

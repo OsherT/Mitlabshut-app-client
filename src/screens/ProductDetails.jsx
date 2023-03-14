@@ -258,6 +258,7 @@ export default function ProductDetails(props) {
         // console.log(newFav);
       });
   }
+
   //stringify all item's categories
   const ArrayToStringCat = (dataObj) => {
     const categoryNames = dataObj.map((item) => item.category_name);

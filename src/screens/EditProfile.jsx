@@ -42,9 +42,8 @@ export default function EditProfile(props) {
   const [userImage, setUserImage] = useState(loggedUser.user_image);
 
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
-  
-  useEffect(() => {
-  }, []);
+
+  useEffect(() => {}, []);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -106,7 +105,9 @@ export default function EditProfile(props) {
             .then((res) => {
               setloggedUser(newUser);
               console.log("suc in update user ", res);
-              navigation.navigate("OrderSuccessful");
+              navigation.navigate("OrderSuccessful", {
+                message: "הפרטים עודכנו בהצלחה !",
+              });
             })
             .catch((error) => {
               console.log("ERR in update closet", error);

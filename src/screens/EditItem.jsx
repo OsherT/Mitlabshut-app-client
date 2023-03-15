@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   StyleSheet,
   Image,
+  ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState, useContext } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -49,6 +50,11 @@ export default function EditItem(props) {
   const [categoriesFlag, setCategoriesFlag] = useState(false);
   // שהמערך תמונות יועתק פעם אחת בהתחלה כשנכנסים לדף ואז יתעדכן בהתאם למחיקה/ הוספה של תמונה בודדת או כמה
   let newImages = [...itemImage];
+
+
+  const [images, setImages] = useState([]);
+  const [uploading, setUploading] = useState(false);
+
 
   //lists
   const [brandsList, setBrandsList] = useState([]);
@@ -284,6 +290,96 @@ export default function EditItem(props) {
     }
   };
 
+  ////////////////////////////////////////
+  ///uploads the image to the fireBase////
+  ////////////////////////////////////////
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      aspect: [4, 3],
+      quality: 1,
+      allowsMultipleSelection: true, // Allow multiple image selection
+      selectionLimit: 3,
+      orderedSelection: true,
+    });
+
+    if (!result.canceled) {
+      const selectedImages = result.assets.map((image, index) => ({
+        uri: image.uri,
+        key: index,
+      }));
+      setImages(selectedImages);
+      console.log("selectedImages", selectedImages);
+    }
+    console.log("result", result);
+    selectedImages = [];
+  };
+
+  const uploadImageFB = async (item_ID) => {
+    setUploading(true);
+    const imageLinks = [];
+
+    for (let i = 0; i < images.length; i++) {
+      const response = await fetch(images[i].uri);
+      const blob = await response.blob();
+      const filename =
+        `${loggedUser.id}/` +
+        // "items/" +
+        item_ID +
+        "/" +
+        images[i].uri.substring(images[i].uri.lastIndexOf("/") + 1);
+
+      try {
+        var ref = firebase.storage().ref().child(filename).put(blob);
+        await ref;
+        var imageRef = firebase.storage().ref().child(filename);
+        const imageLink = await imageRef.getDownloadURL();
+        imageLinks.push(imageLink);
+      } catch (error) {
+        console.log("error in upload to FB", error);
+      }
+    }
+
+    uploadImagesDB(item_ID, imageLinks);
+
+    setImages([]);
+    setUploading(false);
+
+    navigation.navigate("OrderSuccessful", {
+      message: "הפריט עלה בהצלחה !",
+    });
+  };
+
+  const uploadImagesDB = (item_id, imageLinks) => {
+    for (let i = 0; i < imageLinks.length; i++) {
+      const new_itemImages = {
+        item_ID: item_id,
+        src: imageLinks[i],
+      };
+
+      fetch(ApiUrl_image, {
+        method: "POST",
+        body: JSON.stringify(new_itemImages),
+        headers: new Headers({
+          "Content-type": "application/json; charset=UTF-8",
+          Accept: "application/json; charset=UTF-8",
+        }),
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then(
+          (result) => {
+            console.log("suc in post images to DB ", result);
+          },
+          (error) => {
+            console.log("ERR in post images to DB", error);
+          }
+        );
+    }
+  };
+
   // const pickImage = async (index) => {
   //   let result = await ImagePicker.launchImageLibraryAsync({
   //     mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -299,76 +395,78 @@ export default function EditItem(props) {
 
   //to add only one image
 
-  const pickImage = async (index) => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+  // const pickImage = async (index) => {
+  //   let result = await ImagePicker.launchImageLibraryAsync({
+  //     mediaTypes: ImagePicker.MediaTypeOptions.All,
+  //     allowsEditing: true,
+  //     aspect: [4, 3],
+  //     quality: 1,
+  //   });
 
-    newImages[index] = result.uri;
-    setItemImage(newImages);
-  };
+  //   newImages[index] = result.uri;
+  //   setItemImage(newImages);
+  //   console.log("ItemImage", itemImage);
+  // };
 
-  //delete selected images from Item_Image_Video table
-  const deleteImage = () => {
-    //need to get the image id from item_image_video table
-    fetch(ApiUrl + `Item_Image_Video/${image_id}`, {
-      method: "DELETE",
-      headers: new Headers({
-        "Content-type": "application/json; charset=UTF-8",
-        Accept: "application/json; charset=UTF-8",
-      }),
-    })
-      .then((res) => {
-        return res;
-      })
-      .then(
-        (result) => {
-          console.log("suc in delete imges ", result);
-          //to remova the delet image from the array
-          itemImage.filter((imageSrc) => imageSrc !== src);
-        },
-        (error) => {
-          console.log("ERR in delete imges", error);
-        }
-      );
-  };
+  // //delete selected images from Item_Image_Video table
+  // const deleteImage = () => {
+  //   //need to get the image id from item_image_video table
+  //   fetch(ApiUrl + `Item_Image_Video/${image_id}`, {
+  //     method: "DELETE",
+  //     headers: new Headers({
+  //       "Content-type": "application/json; charset=UTF-8",
+  //       Accept: "application/json; charset=UTF-8",
+  //     }),
+  //   })
+  //     .then((res) => {
+  //       return res;
+  //     })
+  //     .then(
+  //       (result) => {
+  //         console.log("suc in delete imges ", result);
+  //         //to remova the delet image from the array
+  //         itemImage.filter((imageSrc) => imageSrc !== src);
+  //       },
+  //       (error) => {
+  //         console.log("ERR in delete imges", error);
+  //       }
+  //     );
+  // };
 
-  //uploade selected images to Item_Image_Video table
-  const uploadImage = (item_id) => {
-    for (let i = 0; i < itemImage.length; i++) {
-      const new_image = {
-        Id: 0,
-        Item_ID: item_id,
-        //use fireBase
-        // Src: itemImage[i],
-        Src: "https://scontent.ftlv18-1.fna.fbcdn.net/v/t1.6435-9/67385796_10220626621924962_2662861091951869952_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=cdbe9c&_nc_ohc=oIzma2hYUgkAX-ktGT2&_nc_ht=scontent.ftlv18-1.fna&oh=00_AfB1EXQF4k-4uGdo9C37lV0qMyF8qCGl-cpNxGWuh0PSbg&oe=64254AFE",
-      };
-      fetch(ApiUrl + `Item_Image_Video`, {
-        method: "POST",
-        body: JSON.stringify(new_image),
-        headers: new Headers({
-          "Content-type": "application/json; charset=UTF-8",
-          Accept: "application/json; charset=UTF-8",
-        }),
-      })
-        .then((res) => {
-          return res.json();
-        })
-        .then(
-          (result) => {
-            // console.log("suc in post imges= ", result);
-          },
-          (error) => {
-            console.log("ERR in post imges", error);
-          }
-        );
-    }
-  };
+  // //uploade selected images to Item_Image_Video table
+  // const uploadImage = (item_id) => {
+  //   for (let i = 0; i < itemImage.length; i++) {
+  //     const new_image = {
+  //       Id: 0,
+  //       Item_ID: item_id,
+  //       //use fireBase
+  //       // Src: itemImage[i],
+  //       Src: "https://scontent.ftlv18-1.fna.fbcdn.net/v/t1.6435-9/67385796_10220626621924962_2662861091951869952_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=cdbe9c&_nc_ohc=oIzma2hYUgkAX-ktGT2&_nc_ht=scontent.ftlv18-1.fna&oh=00_AfB1EXQF4k-4uGdo9C37lV0qMyF8qCGl-cpNxGWuh0PSbg&oe=64254AFE",
+  //     };
+  //     fetch(ApiUrl + `Item_Image_Video`, {
+  //       method: "POST",
+  //       body: JSON.stringify(new_image),
+  //       headers: new Headers({
+  //         "Content-type": "application/json; charset=UTF-8",
+  //         Accept: "application/json; charset=UTF-8",
+  //       }),
+  //     })
+  //       .then((res) => {
+  //         return res.json();
+  //       })
+  //       .then(
+  //         (result) => {
+  //           // console.log("suc in post imges= ", result);
+  //         },
+  //         (error) => {
+  //           console.log("ERR in post imges", error);
+  //         }
+  //       );
+  //   }
+  // };
 
   //to convert the shipping method to string,shipping method in data base gets string only
+
   const ArrayToStringShip = (data) => {
     var string = "";
     for (let index = 0; index < data.length; index++) {
@@ -557,7 +655,7 @@ export default function EditItem(props) {
                       paddingBottom: 30,
                       textAlign: "center",
                     }}>
-                    הוסיפי תמונות
+                    בחרי תמונות
                   </Text>
                   <AddSvg></AddSvg>
                 </View>
@@ -577,6 +675,13 @@ export default function EditItem(props) {
               </View>
             )}
           </View>
+
+          {uploading && (
+            <View style={{ marginBottom: 30 }}>
+              <ActivityIndicator size={"small"} color="black" />
+            </View>
+          )}
+
           <Button
             title="עדכן פרטים "
             onPress={() => {

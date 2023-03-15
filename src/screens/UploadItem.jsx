@@ -251,6 +251,8 @@ export default function UploadItem() {
       aspect: [4, 3],
       quality: 1,
       allowsMultipleSelection: true, // Allow multiple image selection
+      selectionLimit: 3,
+      orderedSelection: true,
     });
 
     if (!result.canceled) {
@@ -260,7 +262,7 @@ export default function UploadItem() {
       }));
       setImages(selectedImages);
       console.log("selectedImages", selectedImages);
-    }
+    } 
     console.log("result", result);
     selectedImages = [];
   };

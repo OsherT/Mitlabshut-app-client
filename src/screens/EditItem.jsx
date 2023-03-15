@@ -21,6 +21,7 @@ import { AddSvg } from "../svg";
 import * as ImagePicker from "expo-image-picker";
 import { userContext } from "../navigation/userContext";
 import { colors } from "react-native-elements";
+import { firebase } from "../../firebaseConfig";
 
 export default function EditItem(props) {
   const item = props.route.params.item;
@@ -42,19 +43,12 @@ export default function EditItem(props) {
   const [itemCondition, setItemCondition] = useState(item.use_condition);
   const [itemColor, setItemColor] = useState(item.color);
   const [itemBrand, setItemBrand] = useState(item.brand);
-  const [itemImage, setItemImage] = useState(itemImages);
+  // const [itemImage, setItemImage] = useState(itemImages);
   const [itemDescription, setItemDescription] = useState(item.description);
   const [itemDeliveryMethod, setItemDeliveryMethod] = useState(
     item.shipping_method
   );
   const [categoriesFlag, setCategoriesFlag] = useState(false);
-  // שהמערך תמונות יועתק פעם אחת בהתחלה כשנכנסים לדף ואז יתעדכן בהתאם למחיקה/ הוספה של תמונה בודדת או כמה
-  let newImages = [...itemImage];
-
-
-  const [images, setImages] = useState([]);
-  const [uploading, setUploading] = useState(false);
-
 
   //lists
   const [brandsList, setBrandsList] = useState([]);
@@ -83,10 +77,7 @@ export default function EditItem(props) {
       GetSizesList();
       GetTypesList();
       GetCategoriesList();
-
-      // console.log("categoryOptions", categoryOptions);
-      // console.log("chosenCategory", chosenCategory);
-      // console.log("categoriesList", categoriesList);
+      console.log("item", item);
     }
   }, [isFocused]);
 
@@ -294,7 +285,12 @@ export default function EditItem(props) {
   ///uploads the image to the fireBase////
   ////////////////////////////////////////
 
+  const [images, setImages] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  const [flagForNewImg, setFlagForNewImg] = useState(false);
+
   const pickImage = async () => {
+    let selectedImages = []; // declare selectedImages with let
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       aspect: [4, 3],
@@ -305,7 +301,8 @@ export default function EditItem(props) {
     });
 
     if (!result.canceled) {
-      const selectedImages = result.assets.map((image, index) => ({
+      setFlagForNewImg(true);
+      selectedImages = result.assets.map((image, index) => ({
         uri: image.uri,
         key: index,
       }));
@@ -313,9 +310,9 @@ export default function EditItem(props) {
       console.log("selectedImages", selectedImages);
     }
     console.log("result", result);
-    selectedImages = [];
   };
 
+  //post images to the FB
   const uploadImageFB = async (item_ID) => {
     setUploading(true);
     const imageLinks = [];
@@ -325,7 +322,6 @@ export default function EditItem(props) {
       const blob = await response.blob();
       const filename =
         `${loggedUser.id}/` +
-        // "items/" +
         item_ID +
         "/" +
         images[i].uri.substring(images[i].uri.lastIndexOf("/") + 1);
@@ -340,17 +336,34 @@ export default function EditItem(props) {
         console.log("error in upload to FB", error);
       }
     }
-
+    deleteImagesFB();
+    console.log("imageLinks", imageLinks);
     uploadImagesDB(item_ID, imageLinks);
-
-    setImages([]);
+    UpdateItem();
     setUploading(false);
-
-    navigation.navigate("OrderSuccessful", {
-      message: "הפריט עלה בהצלחה !",
-    });
+    setImages([]);
   };
 
+  //delete images from the FB
+  const deleteImagesFB = async () => {
+    console.log("in delet fb");
+    try {
+      const storageRef = firebase.storage().ref();
+      console.log("itemImages", itemImages);
+      for (const itemImage of itemImages) {
+        const filename = itemImage.split("%2F").pop().split("?")[0];
+        console.log("itemImage", itemImage);
+        const imageRef = storageRef.child(
+          `${loggedUser.id}/${item.id}/${filename}`
+        );
+        await imageRef.delete();
+        console.log(`Image ${filename} deleted successfully`);
+      }
+    } catch (error) {
+      console.log("Error FB deleting images:", error);
+    }
+  };
+  //need to do delete the current images from the db, after that to post the new
   const uploadImagesDB = (item_id, imageLinks) => {
     for (let i = 0; i < imageLinks.length; i++) {
       const new_itemImages = {
@@ -358,20 +371,26 @@ export default function EditItem(props) {
         src: imageLinks[i],
       };
 
-      fetch(ApiUrl_image, {
-        method: "POST",
-        body: JSON.stringify(new_itemImages),
-        headers: new Headers({
-          "Content-type": "application/json; charset=UTF-8",
-          Accept: "application/json; charset=UTF-8",
-        }),
-      })
+      fetch(
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/ItemImages`,
+        {
+          method: "POST",
+          body: JSON.stringify(new_itemImages),
+          headers: new Headers({
+            "Content-type": "application/json; charset=UTF-8",
+            Accept: "application/json; charset=UTF-8",
+          }),
+        }
+      )
         .then((res) => {
           return res.json();
         })
         .then(
           (result) => {
             console.log("suc in post images to DB ", result);
+            navigation.navigate("OrderSuccessful", {
+              message: "הפריט עודכן בהצלחה !",
+            });
           },
           (error) => {
             console.log("ERR in post images to DB", error);
@@ -380,90 +399,8 @@ export default function EditItem(props) {
     }
   };
 
-  // const pickImage = async (index) => {
-  //   let result = await ImagePicker.launchImageLibraryAsync({
-  //     mediaTypes: ImagePicker.MediaTypeOptions.All,
-  //     allowsEditing: true,
-  //     aspect: [4, 3],
-  //     quality: 1,
-  //   });
-
-  //   let newImages = [...itemImage];
-  //   newImages[index] = result.uri;
-  //   setItemImage(newImages);
-  // };
-
-  //to add only one image
-
-  // const pickImage = async (index) => {
-  //   let result = await ImagePicker.launchImageLibraryAsync({
-  //     mediaTypes: ImagePicker.MediaTypeOptions.All,
-  //     allowsEditing: true,
-  //     aspect: [4, 3],
-  //     quality: 1,
-  //   });
-
-  //   newImages[index] = result.uri;
-  //   setItemImage(newImages);
-  //   console.log("ItemImage", itemImage);
-  // };
-
-  // //delete selected images from Item_Image_Video table
-  // const deleteImage = () => {
-  //   //need to get the image id from item_image_video table
-  //   fetch(ApiUrl + `Item_Image_Video/${image_id}`, {
-  //     method: "DELETE",
-  //     headers: new Headers({
-  //       "Content-type": "application/json; charset=UTF-8",
-  //       Accept: "application/json; charset=UTF-8",
-  //     }),
-  //   })
-  //     .then((res) => {
-  //       return res;
-  //     })
-  //     .then(
-  //       (result) => {
-  //         console.log("suc in delete imges ", result);
-  //         //to remova the delet image from the array
-  //         itemImage.filter((imageSrc) => imageSrc !== src);
-  //       },
-  //       (error) => {
-  //         console.log("ERR in delete imges", error);
-  //       }
-  //     );
-  // };
-
-  // //uploade selected images to Item_Image_Video table
-  // const uploadImage = (item_id) => {
-  //   for (let i = 0; i < itemImage.length; i++) {
-  //     const new_image = {
-  //       Id: 0,
-  //       Item_ID: item_id,
-  //       //use fireBase
-  //       // Src: itemImage[i],
-  //       Src: "https://scontent.ftlv18-1.fna.fbcdn.net/v/t1.6435-9/67385796_10220626621924962_2662861091951869952_n.jpg?_nc_cat=110&ccb=1-7&_nc_sid=cdbe9c&_nc_ohc=oIzma2hYUgkAX-ktGT2&_nc_ht=scontent.ftlv18-1.fna&oh=00_AfB1EXQF4k-4uGdo9C37lV0qMyF8qCGl-cpNxGWuh0PSbg&oe=64254AFE",
-  //     };
-  //     fetch(ApiUrl + `Item_Image_Video`, {
-  //       method: "POST",
-  //       body: JSON.stringify(new_image),
-  //       headers: new Headers({
-  //         "Content-type": "application/json; charset=UTF-8",
-  //         Accept: "application/json; charset=UTF-8",
-  //       }),
-  //     })
-  //       .then((res) => {
-  //         return res.json();
-  //       })
-  //       .then(
-  //         (result) => {
-  //           // console.log("suc in post imges= ", result);
-  //         },
-  //         (error) => {
-  //           console.log("ERR in post imges", error);
-  //         }
-  //       );
-  //   }
-  // };
+ const deleteImagesDB = async () => {
+ };
 
   //to convert the shipping method to string,shipping method in data base gets string only
 
@@ -521,7 +458,6 @@ export default function EditItem(props) {
               containerStyle={{ marginBottom: 10 }}
               onChangeText={(text) => {
                 setItemPrice(text.slice(2));
-                console.log(text.slice(1));
               }}
             />
 
@@ -537,8 +473,8 @@ export default function EditItem(props) {
           </Text>
           <MultipleSelectList
             data={categoryOptions}
-            // defaultOption={chosenCategory}
-            defaultOption={categoryOptions}
+            defaultOption={chosenCategory}
+            // defaultOption={categoryOptions}
             boxStyles={styles.dropdownInput}
             dropdownStyles={styles.dropdownContainer}
             setSelected={(val) => {
@@ -644,7 +580,57 @@ export default function EditItem(props) {
             containerStyle={{ marginBottom: 10 }}
             onChangeText={(text) => setItemDescription(text)}
           />
+
           <View>
+            {images.length < 3 && (
+              <TouchableOpacity onPress={() => pickImage(images.length)}>
+                <View style={styles.picturBtn}>
+                  <Text
+                    style={{
+                      color: "gray",
+                      paddingTop: 10,
+                      paddingBottom: 30,
+                      textAlign: "center",
+                    }}>
+                    עדכני תמונות ({images.length}/3)
+                  </Text>
+                  <AddSvg></AddSvg>
+                </View>
+              </TouchableOpacity>
+            )}
+          </View>
+
+          {!flagForNewImg && itemImages.length > 0 && (
+            <View style={styles.imageContainer}>
+              {itemImages.map((image, index) => (
+                <Image
+                  key={index}
+                  source={{ uri: image }}
+                  style={styles.Image}
+                />
+              ))}
+            </View>
+          )}
+
+          {images.length > 0 && (
+            <View style={styles.imageContainer}>
+              {images.map((image, index) => (
+                <Image
+                  key={index}
+                  source={{ uri: image.uri }}
+                  style={styles.Image}
+                />
+              ))}
+            </View>
+          )}
+
+          {uploading && (
+            <View style={{ marginBottom: 30 }}>
+              <ActivityIndicator size={"small"} color="black" />
+            </View>
+          )}
+
+          {/* <View>
             {itemImage.length < 3 && (
               <TouchableOpacity onPress={() => pickImage(itemImage.length)}>
                 <View style={styles.picturBtn}>
@@ -680,13 +666,13 @@ export default function EditItem(props) {
             <View style={{ marginBottom: 30 }}>
               <ActivityIndicator size={"small"} color="black" />
             </View>
-          )}
+          )} */}
 
           <Button
             title="עדכן פרטים "
             onPress={() => {
-              UpdateItem();
-              updateCtegories();
+              flagForNewImg ? uploadImageFB(item.id) : UpdateItem(),
+                updateCtegories();
             }}
           />
         </ContainerComponent>

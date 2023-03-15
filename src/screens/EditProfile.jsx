@@ -101,7 +101,6 @@ export default function EditProfile(props) {
 
   //update users details
   const updateUser = (imageLink) => {
-
     const newUser = {
       email: userEmail,
       id: loggedUser.id,

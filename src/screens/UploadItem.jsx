@@ -331,70 +331,7 @@ export default function UploadItem() {
     }
   };
 
-  // const uploadImageFB = async (item_ID) => {
-  //   setUploading(true);
-  //   const response = await fetch(image.uri);
-  //   const blob = await response.blob();
-  //   //for each item i open a folder
-  //   const filename =
-  //     item_ID + "/" + image.uri.substring(image.uri.lastIndexOf("/") + 1);
-  //   // const filename = image.uri.substring(image.uri.lastIndexOf("/") + 1);
-  //   console.log("filename", filename);
-
-  //   try {
-  //     var ref = firebase.storage().ref().child(filename).put(blob);
-
-  //     await ref;
-  //     var imageRef = firebase.storage().ref().child(filename);
-  //     const imageLink = await imageRef.getDownloadURL(); // Get the download URL of the uploaded image
-  //     uploadImagesDB(item_ID, imageLink);
-  //   } catch (error) {
-  //     console.log("error in upload to FB", error);
-  //   }
-
-  //   setImage(null);
-  //   setUploading(false);
-
-  //   navigation.navigate("OrderSuccessful", {
-  //     message: "הפריט הועלה בהצלחה !",
-  //   });
-  // };
-
-  // const uploadImagesDB = (item_id, imageLink) => {
-  //   // for (let i = 0; i < itemImage.length; i++) {
-  //   //   // item_Src: itemImage[i],
-  //   //   const item_Src = "image";
-
-  //   console.log("imageLink", imageLink);
-
-  //   const ItemImages = {
-  //     item_ID: item_id,
-  //     src: imageLink,
-  //   };
-
-  //   fetch(ApiUrl_image, {
-  //     method: "POST",
-  //     body: JSON.stringify(ItemImages),
-  //     headers: new Headers({
-  //       "Content-type": "application/json; charset=UTF-8",
-  //       Accept: "application/json; charset=UTF-8",
-  //     }),
-  //   })
-  //     .then((res) => {
-  //       return res.json();
-  //     })
-  //     .then(
-  //       (result) => {
-  //         console.log("suc in post images to DB ", result);
-  //       },
-  //       (error) => {
-  //         console.log("ERR in post images to DB", error);
-  //       }
-  //     );
-  // };
-
   //converts the shipping method to string, shipping method in data base gets string only
-
   const ArrayToStringShip = (data) => {
     var string = "";
     for (let index = 0; index < data.length; index++) {
@@ -477,6 +414,7 @@ export default function UploadItem() {
             label="קטגוריה"
             badgeStyles={{ backgroundColor: "white" }}
             badgeTextStyles={{ color: "black" }}
+            
           />
 
           <SelectList

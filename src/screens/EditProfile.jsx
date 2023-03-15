@@ -44,6 +44,7 @@ export default function EditProfile(props) {
   const [userImage, setUserImage] = useState(loggedUser.user_image);
   const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [flagForNewImg, setFlagForNewImg] = useState(false);
 
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
 
@@ -60,26 +61,24 @@ export default function EditProfile(props) {
         uri: result.uri,
         key: 1,
       });
+      setFlagForNewImg(true);
     }
   };
 
   const uploadImageFB = async (user_id) => {
     setUploading(true);
+
     const response = await fetch(image.uri);
     const blob = await response.blob();
     const filename =
       `${user_id}/` + image.uri.substring(image.uri.lastIndexOf("/") + 1);
 
     try {
-      console.log("filename uploadImageFB", filename);
-
       var ref = firebase.storage().ref().child(filename).put(blob);
       await ref;
       var imageRef = firebase.storage().ref().child(filename);
       const imageLink = await imageRef.getDownloadURL();
-      // deleteImageFB();
-      setImage(null);
-      setUserImage(null);
+      deleteImageFB();
       setUploading(false);
       updateUser(imageLink);
     } catch (error) {
@@ -87,25 +86,22 @@ export default function EditProfile(props) {
     }
   };
 
-  // const deleteImageFB = async () => {
-  //   console.log("in deleteImageFB");
-
-  //   try {
-  //     const filename = userImage.substring(userImage.lastIndexOf("/") + 1);
-  //     console.log("filename to delete", filename);
-
-  //     const storageRef = firebase.storage().ref();
-  //     const imageRef = storageRef.child(`${loggedUser.id}/${filename}`);
-  //     await imageRef.delete();
-  //     console.log("Image deleted successfully");
-  //     setUserImage(null);
-  //   } catch (error) {
-  //     console.log("Error deleting image:", error);
-  //   }
-  // };
+  const deleteImageFB = async () => {
+    try {
+      const filename = userImage.split("%2F").pop().split("?")[0];
+      const storageRef = firebase.storage().ref();
+      const imageRef = storageRef.child(`${loggedUser.id}/${filename}`);
+      await imageRef.delete();
+      console.log("Image FB deleted successfully");
+      setUserImage(null);
+    } catch (error) {
+      console.log("Error FB deleting image:", error);
+    }
+  };
 
   //update users details
   const updateUser = (imageLink) => {
+    console.log("imageLink", imageLink);
     const newUser = {
       email: userEmail,
       id: loggedUser.id,
@@ -144,6 +140,8 @@ export default function EditProfile(props) {
             )
             .then((res) => {
               setloggedUser(newUser);
+              setUserImage(imageLink);
+              setFlagForNewImg(false);
               navigation.navigate("OrderSuccessful", {
                 message: "הפרטים עודכנו בהצלחה !",
               });
@@ -321,7 +319,11 @@ export default function EditProfile(props) {
               <View style={{ marginTop: 40 }}>
                 <Button
                   title="שמור שינויים "
-                  onPress={() => uploadImageFB(loggedUser.id)}
+                  onPress={() => {
+                    flagForNewImg
+                      ? uploadImageFB(loggedUser.id)
+                      : updateUser(loggedUser.user_image);
+                  }}
                 />
               </View>
             </ContainerComponent>

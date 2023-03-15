@@ -41,6 +41,8 @@ export default function ProductDetails(props) {
   const [UsersShopList, setUsersShopList] = useState([]);
   const [UsersFollowingList, setUsersFollowingList] = useState([]);
   const [distance, setDistance] = useState(null);
+  const [address1, setaddress1] = useState(loggedUser.address);
+  const [address2, setaddress2] = useState("");
 
 
   //URL
@@ -56,7 +58,6 @@ export default function ProductDetails(props) {
       GetItemCategories();
       GetItemImages();
       GetNumOfFav();
-      calaD();
     }
   }, [isFocused]);
 
@@ -82,6 +83,8 @@ export default function ProductDetails(props) {
       )
       .then((res) => {
         setuser(res.data[0]);
+        setaddress2(res.data[0].address)
+        getAddressLocations();
         if (res.data[0].id === loggedUser.id) {
           setotherUserFlag(true);
           
@@ -346,14 +349,14 @@ export default function ProductDetails(props) {
   const getLocationFromAddress = async (address) => {
     try {
       const response = await axios.get(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSyAaCpPtzL7apvQuXnKdRhY0omPHiMdc--s`
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSyDarVyeqmQSsTsH9SzyEksCaIciizHroe0`
       );
   
       if (response.data.status === 'OK') {
         const { lat, lng } = response.data.results[0].geometry.location;
         return { latitude: lat, longitude: lng };
       } else {
-        console.warn(`Google Maps API error: ${response.data.status}`);
+        console.warn(`Google Maps API error: ${response.data.status}+${address}`);
       }
     } catch (error) {
       console.error(error);
@@ -377,22 +380,22 @@ export default function ProductDetails(props) {
   const toRadians = (degrees) => {
     return degrees * (Math.PI / 180);
   };
-  function calaD(){
-    const getAddressLocations = async () => {
-      const address1 = loggedUser.address;
-      const address2 = user.address;
+  const getAddressLocations = async () => {
+   
+    console.log("address1 " +address1 +"address2 "+address2);
+    
+    const location1 = await getLocationFromAddress(address1);
+    const location2 = await getLocationFromAddress(address2);
+  
 
-      const location1 = await getLocationFromAddress(address1);
-      const location2 = await getLocationFromAddress(address2);
-
-      if (location1 && location2) {
-        const distanceInKm = calculateDistance(location1, location2);
-        setDistance(distanceInKm);
-      }
-    };
-
-    getAddressLocations();
-  }
+    if (location1 && location2) {
+      const distanceInKm = calculateDistance(location1, location2);
+      setDistance(distanceInKm);
+    }
+  };
+  
+    
+  
   //need to delete and fix the view
   // function renderSlide() {
   //   return (

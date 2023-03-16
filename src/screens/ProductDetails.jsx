@@ -58,6 +58,7 @@ export default function ProductDetails(props) {
       GetItemCategories();
       GetItemImages();
       GetNumOfFav();
+      console.log("item id"),item;
     }
   }, [isFocused]);
 

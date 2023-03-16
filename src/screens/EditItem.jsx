@@ -646,44 +646,7 @@ export default function EditItem(props) {
             </View>
           )}
 
-          {/* <View>
-            {itemImage.length < 3 && (
-              <TouchableOpacity onPress={() => pickImage(itemImage.length)}>
-                <View style={styles.picturBtn}>
-                  <Text
-                    style={{
-                      color: "gray",
-                      paddingTop: 10,
-                      paddingBottom: 30,
-                      textAlign: "center",
-                    }}>
-                    בחרי תמונות
-                  </Text>
-                  <AddSvg></AddSvg>
-                </View>
-              </TouchableOpacity>
-            )}
-          </View>
-          <View>
-            {itemImage.length > 0 && (
-              <View style={styles.imageContainer}>
-                {itemImage.map((image, index) => (
-                  <Image
-                    key={index}
-                    source={{ uri: image }}
-                    style={styles.Image}
-                  />
-                ))}
-              </View>
-            )}
-          </View>
-
-          {uploading && (
-            <View style={{ marginBottom: 30 }}>
-              <ActivityIndicator size={"small"} color="black" />
-            </View>
-          )} */}
-
+         
           <Button
             title="עדכן פרטים "
             onPress={() => {

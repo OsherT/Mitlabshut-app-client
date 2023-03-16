@@ -22,10 +22,11 @@ import * as ImagePicker from "expo-image-picker";
 import { userContext } from "../navigation/userContext";
 import { colors } from "react-native-elements";
 import { firebase } from "../../firebaseConfig";
+import MultiSelect from "react-native-multiple-select";
 
 export default function EditItem(props) {
   const item = props.route.params.item;
-  const itemImages = props.route.params.itemImages;
+  const itemCurrentImages = props.route.params.itemImages;
   const isFocused = useIsFocused();
 
   //take only the category name and not the all object
@@ -43,7 +44,6 @@ export default function EditItem(props) {
   const [itemCondition, setItemCondition] = useState(item.use_condition);
   const [itemColor, setItemColor] = useState(item.color);
   const [itemBrand, setItemBrand] = useState(item.brand);
-  // const [itemImage, setItemImage] = useState(itemImages);
   const [itemDescription, setItemDescription] = useState(item.description);
   const [itemDeliveryMethod, setItemDeliveryMethod] = useState(
     item.shipping_method
@@ -285,7 +285,7 @@ export default function EditItem(props) {
   ///uploads the image to the fireBase////
   ////////////////////////////////////////
 
-  const [images, setImages] = useState([]);
+  const [itemNewImages, setItemNewImages] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [flagForNewImg, setFlagForNewImg] = useState(false);
 
@@ -306,7 +306,7 @@ export default function EditItem(props) {
         uri: image.uri,
         key: index,
       }));
-      setImages(selectedImages);
+      setItemNewImages(selectedImages);
       console.log("selectedImages", selectedImages);
     }
     console.log("result", result);
@@ -317,14 +317,16 @@ export default function EditItem(props) {
     setUploading(true);
     const imageLinks = [];
 
-    for (let i = 0; i < images.length; i++) {
-      const response = await fetch(images[i].uri);
+    for (let i = 0; i < itemNewImages.length; i++) {
+      const response = await fetch(itemNewImages[i].uri);
       const blob = await response.blob();
       const filename =
         `${loggedUser.id}/` +
         item_ID +
         "/" +
-        images[i].uri.substring(images[i].uri.lastIndexOf("/") + 1);
+        itemNewImages[i].uri.substring(
+          itemNewImages[i].uri.lastIndexOf("/") + 1
+        );
 
       try {
         var ref = firebase.storage().ref().child(filename).put(blob);
@@ -337,7 +339,7 @@ export default function EditItem(props) {
         deleteImagesDB(item_ID, imageLinks);
         UpdateItem();
         setUploading(false);
-        setImages([]);
+        setItemNewImages([]);
       } catch (error) {
         console.log("error in upload to FB", error);
       }
@@ -348,7 +350,7 @@ export default function EditItem(props) {
   const deleteImagesFB = async () => {
     try {
       const storageRef = firebase.storage().ref();
-      for (const itemImage of itemImages) {
+      for (const itemImage of itemCurrentImages) {
         const filename = itemImage.split("%2F").pop().split("?")[0];
         console.log("itemImage", itemImage);
         const imageRef = storageRef.child(
@@ -361,6 +363,7 @@ export default function EditItem(props) {
       console.log("Error FB deleting images:", error);
     }
   };
+
   //delete images from the DB and call thr post fun to DB
   const deleteImagesDB = async (item_ID, imageLinks) => {
     fetch(
@@ -386,6 +389,7 @@ export default function EditItem(props) {
         }
       );
   };
+
   //post images to the DB
   const uploadImagesDB = (item_id, imageLinks) => {
     for (let i = 0; i < imageLinks.length; i++) {
@@ -487,6 +491,21 @@ export default function EditItem(props) {
           <Text style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
             קטגוריה :
           </Text>
+
+          <MultiSelect
+            items={categoryOptions}
+            uniqueKey="key"
+            // ref={(component) => {
+            //   this.multiSelect = component;
+            // }}
+            onSelectedItemsChange={(val) => {
+              setItemCategory(val);
+              setCategoriesFlag(true);
+            }}
+            // selectedItems={chosenCategory}
+            selectedItems={categoryOptions}
+            selectText="Pick Items"></MultiSelect>
+
           <MultipleSelectList
             data={categoryOptions}
             defaultOption={chosenCategory}
@@ -598,8 +617,8 @@ export default function EditItem(props) {
           />
 
           <View>
-            {images.length < 3 && (
-              <TouchableOpacity onPress={() => pickImage(images.length)}>
+            {itemNewImages.length < 3 && (
+              <TouchableOpacity onPress={() => pickImage(itemNewImages.length)}>
                 <View style={styles.picturBtn}>
                   <Text
                     style={{
@@ -608,7 +627,7 @@ export default function EditItem(props) {
                       paddingBottom: 30,
                       textAlign: "center",
                     }}>
-                    עדכני תמונות ({images.length}/3)
+                    עדכני תמונות ({itemNewImages.length}/3)
                   </Text>
                   <AddSvg></AddSvg>
                 </View>
@@ -616,9 +635,9 @@ export default function EditItem(props) {
             )}
           </View>
 
-          {!flagForNewImg && itemImages.length > 0 && (
+          {!flagForNewImg && itemCurrentImages.length > 0 && (
             <View style={styles.imageContainer}>
-              {itemImages.map((image, index) => (
+              {itemCurrentImages.map((image, index) => (
                 <Image
                   key={index}
                   source={{ uri: image }}
@@ -628,9 +647,9 @@ export default function EditItem(props) {
             </View>
           )}
 
-          {images.length > 0 && (
+          {itemNewImages.length > 0 && (
             <View style={styles.imageContainer}>
-              {images.map((image, index) => (
+              {itemNewImages.map((image, index) => (
                 <Image
                   key={index}
                   source={{ uri: image.uri }}
@@ -646,7 +665,6 @@ export default function EditItem(props) {
             </View>
           )}
 
-         
           <Button
             title="עדכן פרטים "
             onPress={() => {

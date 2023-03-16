@@ -332,24 +332,22 @@ export default function EditItem(props) {
         var imageRef = firebase.storage().ref().child(filename);
         const imageLink = await imageRef.getDownloadURL();
         imageLinks.push(imageLink);
+        deleteImagesFB();
+
+        deleteImagesDB(item_ID, imageLinks);
+        UpdateItem();
+        setUploading(false);
+        setImages([]);
       } catch (error) {
         console.log("error in upload to FB", error);
       }
     }
-    deleteImagesFB();
-    console.log("imageLinks", imageLinks);
-    uploadImagesDB(item_ID, imageLinks);
-    UpdateItem();
-    setUploading(false);
-    setImages([]);
   };
 
   //delete images from the FB
   const deleteImagesFB = async () => {
-    console.log("in delet fb");
     try {
       const storageRef = firebase.storage().ref();
-      console.log("itemImages", itemImages);
       for (const itemImage of itemImages) {
         const filename = itemImage.split("%2F").pop().split("?")[0];
         console.log("itemImage", itemImage);
@@ -357,13 +355,38 @@ export default function EditItem(props) {
           `${loggedUser.id}/${item.id}/${filename}`
         );
         await imageRef.delete();
-        console.log(`Image ${filename} deleted successfully`);
+        console.log(`suc in delete images from DB`);
       }
     } catch (error) {
       console.log("Error FB deleting images:", error);
     }
   };
-  //need to do delete the current images from the db, after that to post the new
+  //delete images from the DB and call thr post fun to DB
+  const deleteImagesDB = async (item_ID, imageLinks) => {
+    fetch(
+      `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/ItemImages/DeleteItem_Image_Video/Item_ID/${item_ID}`,
+      {
+        method: "DELETE",
+        headers: new Headers({
+          "Content-type": "application/json; charset=UTF-8",
+          Accept: "application/json; charset=UTF-8",
+        }),
+      }
+    )
+      .then((res) => {
+        // return res.json();
+      })
+      .then(
+        (result) => {
+          console.log("suc in delete images from DB ");
+          uploadImagesDB(item_ID, imageLinks);
+        },
+        (error) => {
+          console.log("ERR in delete images from DB", error);
+        }
+      );
+  };
+  //post images to the DB
   const uploadImagesDB = (item_id, imageLinks) => {
     for (let i = 0; i < imageLinks.length; i++) {
       const new_itemImages = {
@@ -371,17 +394,14 @@ export default function EditItem(props) {
         src: imageLinks[i],
       };
 
-      fetch(
-        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/ItemImages`,
-        {
-          method: "POST",
-          body: JSON.stringify(new_itemImages),
-          headers: new Headers({
-            "Content-type": "application/json; charset=UTF-8",
-            Accept: "application/json; charset=UTF-8",
-          }),
-        }
-      )
+      fetch(`https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/ItemImages`, {
+        method: "POST",
+        body: JSON.stringify(new_itemImages),
+        headers: new Headers({
+          "Content-type": "application/json; charset=UTF-8",
+          Accept: "application/json; charset=UTF-8",
+        }),
+      })
         .then((res) => {
           return res.json();
         })
@@ -399,11 +419,7 @@ export default function EditItem(props) {
     }
   };
 
- const deleteImagesDB = async () => {
- };
-
   //to convert the shipping method to string,shipping method in data base gets string only
-
   const ArrayToStringShip = (data) => {
     var string = "";
     for (let index = 0; index < data.length; index++) {

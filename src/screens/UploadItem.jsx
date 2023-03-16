@@ -261,9 +261,7 @@ export default function UploadItem() {
         key: index,
       }));
       setImages(selectedImages);
-      console.log("selectedImages", selectedImages);
-    } 
-    console.log("result", result);
+    }
     selectedImages = [];
   };
 
@@ -276,7 +274,6 @@ export default function UploadItem() {
       const blob = await response.blob();
       const filename =
         `${loggedUser.id}/` +
-        // "items/" +
         item_ID +
         "/" +
         images[i].uri.substring(images[i].uri.lastIndexOf("/") + 1);
@@ -287,6 +284,7 @@ export default function UploadItem() {
         var imageRef = firebase.storage().ref().child(filename);
         const imageLink = await imageRef.getDownloadURL();
         imageLinks.push(imageLink);
+        console.log(`Image ${filename} uploaded successfully`);
       } catch (error) {
         console.log("error in upload to FB", error);
       }
@@ -414,7 +412,6 @@ export default function UploadItem() {
             label="קטגוריה"
             badgeStyles={{ backgroundColor: "white" }}
             badgeTextStyles={{ color: "black" }}
-            
           />
 
           <SelectList

@@ -45,7 +45,7 @@ export default function UploadItem() {
   const [itemSize, setItemSize] = useState("");
   const [itemCondition, setItemCondition] = useState("");
   const [itemColor, setItemColor] = useState("");
-  const [itemDeliveryMethod, setItemDeliveryMethod] = useState("");
+  const [itemDeliveryMethod, setItemDeliveryMethod] = useState([]);
   const [itemBrand, setItemBrand] = useState("");
   const [images, setImages] = useState([]);
   const [uploading, setUploading] = useState(false);
@@ -419,9 +419,13 @@ export default function UploadItem() {
     }
   };
 
-  const onSelectedCategoryChange = (selectedCategory) => {
-    setItemCategory({ selectedCategory });
-    console.log("selectedCategory", selectedCategory);
+  const onSelectedCategoryChange = (itemCategory) => {
+    setItemCategory( itemCategory );
+    console.log("selectedCategory", itemCategory);
+  };
+
+  const onSelectedDeliveryChange = (itemDeliveryMethod) => {
+    setItemDeliveryMethod(itemDeliveryMethod);
   };
 
   function renderContent() {
@@ -462,6 +466,7 @@ export default function UploadItem() {
 
           <MultiSelect
             items={categoriesList}
+            selectedItems={itemCategory}
             onSelectedItemsChange={onSelectedCategoryChange}
             hideTags={false}
             displayKey="value"
@@ -493,7 +498,7 @@ export default function UploadItem() {
             itemFontSize={14}
           />
 
-          <MultipleSelectList
+          {/* <MultipleSelectList
             placeholder=" קטגוריה"
             searchPlaceholder="חיפוש"
             boxStyles={styles.dropdownInput}
@@ -505,7 +510,7 @@ export default function UploadItem() {
             label="קטגוריה"
             badgeStyles={{ backgroundColor: "white" }}
             badgeTextStyles={{ color: "black" }}
-          />
+          /> */}
 
           <SelectList
             placeholder="  סוג פריט"
@@ -555,8 +560,40 @@ export default function UploadItem() {
             save="value"
             notFoundText="לא קיים מידע"
           />
-
-          <MultipleSelectList
+          <MultiSelect
+            items={deliveryMethodsList}
+            selectedItems={itemDeliveryMethod}
+            hideTags={false}
+            displayKey="value"
+            uniqueKey="key"
+            onSelectedItemsChange={onSelectedDeliveryChange}
+            selectText="שיטת מסירה"
+            searchInputPlaceholderText="חיפוש"
+            selectedText=" נבחרו"
+            submitButtonText="בחרי"
+            noItemsText="לא נמצא מידע"
+            itemTextColor="#000"
+            selectedItemTextColor="#000"
+            selectedItemIconColor="#000"
+            tagRemoveIconColor={COLORS.golden}
+            tagTextColor="#000"
+            altFontFamily="ProximaNova-Light"
+            tagBorderColor={COLORS.goldenTransparent_03}
+            searchInputStyle={{
+              color: "#000",
+              textAlign: "right",
+              backgroundColor: "#FBF8F2",
+              padding: 12,
+              borderRadius: 25,
+            }}
+            styleDropdownMenu={styles.dropdownContainer}
+            styleInputGroup={styles.InputGroup}
+            styleItemsContainer={styles.dropdownContainer}
+            styleDropdownMenuSubsection={{ backgroundColor: "#FBF8F2" }}
+            submitButtonColor={COLORS.golden}
+            itemFontSize={14}
+          />
+          {/* <MultipleSelectList
             placeholder="שיטת מסירה"
             searchPlaceholder="חיפוש"
             boxStyles={styles.dropdownInput}
@@ -568,7 +605,7 @@ export default function UploadItem() {
             maxHeight={200}
             badgeStyles={{ backgroundColor: "white" }}
             badgeTextStyles={{ color: "black" }}
-          />
+          /> */}
 
           <TextInput
             style={styles.bigInput}

@@ -22,6 +22,7 @@ import * as ImagePicker from "expo-image-picker";
 import { userContext } from "../navigation/userContext";
 import { firebase } from "../../firebaseConfig";
 import { AddSvg } from "../svg";
+import MultiSelect from "react-native-multiple-select";
 
 export default function UploadItem() {
   const navigation = useNavigation();
@@ -113,13 +114,40 @@ export default function UploadItem() {
       })
       .then(
         (data) => {
-          setCategoriesList(data.map((item) => item.category_name));
+          var categoryOptions = data.map((item) => item.category_name);
+          setCategoriesList(
+            categoryOptions.map((category) => ({
+              key: category,
+              value: category,
+            }))
+          );
         },
         (error) => {
           console.log("category error", error);
         }
       );
   };
+
+  // const GetCategoriesList = () => {
+  //   fetch(ApiUrl + "/GetCategory", {
+  //     method: "GET",
+  //     headers: new Headers({
+  //       "Content-Type": "application/json; charset=UTF-8",
+  //       Accept: "application/json; charset=UTF-8",
+  //     }),
+  //   })
+  //     .then((res) => {
+  //       return res.json();
+  //     })
+  //     .then(
+  //       (data) => {
+  //         setCategoriesList(data.map((item) => item.category_name));
+  //       },
+  //       (error) => {
+  //         console.log("category error", error);
+  //       }
+  //     );
+  // };
 
   const GetColorsList = () => {
     fetch(ApiUrl + "/GetColor", {
@@ -337,6 +365,34 @@ export default function UploadItem() {
     return string;
   };
 
+  //upload categories to Items_in_category table
+  // const postCtegories = (item_ID) => {
+  //   for (let i = 0; i < selectedCategory.length; i++) {
+  //     fetch(
+  //       ApiUrl +
+  //         `/PostItemsInCategory/Item_ID/${item_ID}/Category_name/${selectedCategory[i]}`,
+  //       {
+  //         method: "POST",
+  //         headers: new Headers({
+  //           "Content-type": "application/json; charset=UTF-8",
+  //           Accept: "application/json; charset=UTF-8",
+  //         }),
+  //       }
+  //     )
+  //       .then((res) => {
+  //         return res.json();
+  //       })
+  //       .then(
+  //         (result) => {
+  //           console.log("succ in post categories", result);
+  //         },
+  //         (error) => {
+  //           console.log("ERR in post categories", error);
+  //         }
+  //       );
+  //   }
+  // };
+
   //uploads categories to Items_in_category table
   const uploadCtegories = (item_ID) => {
     for (let i = 0; i < itemCategory.length; i++) {
@@ -361,6 +417,11 @@ export default function UploadItem() {
           }
         );
     }
+  };
+
+  const onSelectedCategoryChange = (selectedCategory) => {
+    setItemCategory({ selectedCategory });
+    console.log("selectedCategory", selectedCategory);
   };
 
   function renderContent() {
@@ -398,6 +459,39 @@ export default function UploadItem() {
               value={itemName}
             />
           </View>
+
+          <MultiSelect
+            items={categoriesList}
+            onSelectedItemsChange={onSelectedCategoryChange}
+            hideTags={false}
+            displayKey="value"
+            uniqueKey="key"
+            selectText="קטגוריה"
+            searchInputPlaceholderText="חיפוש"
+            selectedText=" נבחרו"
+            submitButtonText="בחרי"
+            noItemsText="לא נמצא מידע"
+            itemTextColor="#000"
+            selectedItemTextColor="#000"
+            selectedItemIconColor="#000"
+            tagRemoveIconColor={COLORS.golden}
+            tagTextColor="#000"
+            altFontFamily="ProximaNova-Light"
+            tagBorderColor={COLORS.goldenTransparent_03}
+            searchInputStyle={{
+              color: "#000",
+              textAlign: "right",
+              backgroundColor: "#FBF8F2",
+              padding: 12,
+              borderRadius: 25,
+            }}
+            styleDropdownMenu={styles.dropdownContainer}
+            styleInputGroup={styles.InputGroup}
+            styleItemsContainer={styles.dropdownContainer}
+            styleDropdownMenuSubsection={{ backgroundColor: "#FBF8F2" }}
+            submitButtonColor={COLORS.golden}
+            itemFontSize={14}
+          />
 
           <MultipleSelectList
             placeholder=" קטגוריה"
@@ -564,9 +658,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#FBF8F2",
     textAlign: "right",
   },
+
   dropdownInput: {
     width: "100%",
-    // height: 50,
     borderWidth: 1,
     borderRadius: 25,
     paddingHorizontal: 25,
@@ -579,17 +673,33 @@ const styles = StyleSheet.create({
     textAlign: "right",
   },
   dropdownContainer: {
+    // width: "100%",
+    // backgroundColor: "#FBF8F2",
+    // borderColor: COLORS.goldenTransparent_03,
+    // marginBottom: 30,
+    // borderWidth: 1,
+    // borderRadius: 25,
+    // paddingHorizontal: 25,
+    // textAlign: "right",
+    // flexDirection: "column-reverse",
+    // alignItems: "center",
+    // justifyContent: "space-between",
     width: "100%",
     backgroundColor: "#FBF8F2",
     borderColor: COLORS.goldenTransparent_03,
     marginBottom: 30,
+    marginTop: 10,
     borderWidth: 1,
     borderRadius: 25,
     paddingHorizontal: 25,
-    textAlign: "right",
-    flexDirection: "column-reverse",
-    alignItems: "center",
-    justifyContent: "space-between",
+  },
+  InputGroup: {
+    width: "100%",
+    backgroundColor: "#FBF8F2",
+    borderColor: COLORS.goldenTransparent_03,
+    borderWidth: 1,
+    borderRadius: 25,
+    paddingHorizontal: 25,
   },
   bigInput: {
     width: "100%",

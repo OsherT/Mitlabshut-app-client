@@ -216,9 +216,7 @@ export default function EditItem(props) {
       })
       .then(
         (data) => {
-          navigation.navigate("OrderSuccessful", {
-            message: "הפרטים עודכנו בהצלחה !",
-          });
+          console.log("succ in update item ", error);
         },
         (error) => {
           console.log("ERR in update item ", error);
@@ -301,15 +299,13 @@ export default function EditItem(props) {
     });
 
     if (!result.canceled) {
-      setFlagForNewImg(true);
       selectedImages = result.assets.map((image, index) => ({
         uri: image.uri,
         key: index,
       }));
       setItemNewImages(selectedImages);
-      console.log("selectedImages", selectedImages);
+      setFlagForNewImg(true);
     }
-    console.log("result", result);
   };
 
   //post images to the FB
@@ -334,16 +330,16 @@ export default function EditItem(props) {
         var imageRef = firebase.storage().ref().child(filename);
         const imageLink = await imageRef.getDownloadURL();
         imageLinks.push(imageLink);
-        deleteImagesFB();
-
-        deleteImagesDB(item_ID, imageLinks);
-        UpdateItem();
-        setUploading(false);
-        setItemNewImages([]);
+        console.log("upload to FB #", i);
       } catch (error) {
         console.log("error in upload to FB", error);
       }
     }
+    console.log("finish upload to FB");
+    //after uploading all the new images
+    deleteImagesFB();
+    deleteImagesDB(item_ID, imageLinks);
+    UpdateItem();
   };
 
   //delete images from the FB
@@ -352,7 +348,6 @@ export default function EditItem(props) {
       const storageRef = firebase.storage().ref();
       for (const itemImage of itemCurrentImages) {
         const filename = itemImage.split("%2F").pop().split("?")[0];
-        console.log("itemImage", itemImage);
         const imageRef = storageRef.child(
           `${loggedUser.id}/${item.id}/${filename}`
         );
@@ -377,7 +372,6 @@ export default function EditItem(props) {
       }
     )
       .then((res) => {
-        // return res.json();
       })
       .then(
         (result) => {
@@ -412,15 +406,15 @@ export default function EditItem(props) {
         .then(
           (result) => {
             console.log("suc in post images to DB ", result);
-            navigation.navigate("OrderSuccessful", {
-              message: "הפריט עודכן בהצלחה !",
-            });
           },
           (error) => {
             console.log("ERR in post images to DB", error);
           }
         );
     }
+    navigation.navigate("OrderSuccessful", {
+      message: "הפרטים עודכנו בהצלחה !",
+    });
   };
 
   //to convert the shipping method to string,shipping method in data base gets string only
@@ -668,8 +662,8 @@ export default function EditItem(props) {
           <Button
             title="עדכן פרטים "
             onPress={() => {
-              flagForNewImg ? uploadImageFB(item.id) : UpdateItem(),
-                updateCtegories();
+              updateCtegories();
+              flagForNewImg ? uploadImageFB(item.id) : UpdateItem();
             }}
           />
         </ContainerComponent>

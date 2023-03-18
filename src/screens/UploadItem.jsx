@@ -29,19 +29,23 @@ export default function UploadItem() {
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
   const ApiUrl_image = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/ItemImages`;
 
-  //להחליף מה שיושב סתם במערך ל"""
   //the section of the item information hooks
   // const [itemName, setItemName] = useState("");
   // const [itemPrice, setItemPrice] = useState("");
   // const [itemDescription, setItemDescription] = useState("");
+  /////////////////////////לנוחות, למחוק אח"כ/////////////////////////
+  const [itemName, setItemName] = useState("FB");
+  const [itemPrice, setItemPrice] = useState(100);
+  const [itemDescription, setItemDescription] = useState("מושלם");
+  /////////////////////////לנוחות, למחוק אח"כ/////////////////////////
 
   const [itemCategory, setItemCategory] = useState([]);
-  const [itemType, setItemType] = useState([]);
-  const [itemSize, setItemSize] = useState([]);
+  const [itemType, setItemType] = useState("");
+  const [itemSize, setItemSize] = useState("");
   const [itemCondition, setItemCondition] = useState("");
-  const [itemColor, setItemColor] = useState([]);
+  const [itemColor, setItemColor] = useState("");
   const [itemDeliveryMethod, setItemDeliveryMethod] = useState("");
-  const [itemBrand, setItemBrand] = useState([]);
+  const [itemBrand, setItemBrand] = useState("");
   const [images, setImages] = useState([]);
   const [uploading, setUploading] = useState(false);
 
@@ -71,11 +75,6 @@ export default function UploadItem() {
     GetSizesList();
     GetTypesList();
   }, []);
-
-  /////////////////////////לנוחות, למחוק אח"כ/////////////////////////
-  const [itemName, setItemName] = useState("FB");
-  const [itemPrice, setItemPrice] = useState(100);
-  const [itemDescription, setItemDescription] = useState("מושלם");
 
   ////////////////////////////////////////
   //gets all the data from the dataBase//

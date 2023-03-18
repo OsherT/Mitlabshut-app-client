@@ -783,7 +783,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 25,
     paddingHorizontal: 25,
-    textAlign: "right",
+    // textAlign: "right",
   },
   InputGroup: {
     width: "100%",

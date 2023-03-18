@@ -39,12 +39,14 @@ export default function EditItem(props) {
   const itemCtegories = props.route.params.itemCtegories.map(
     (item) => item.category_name
   );
-  const [itemCurrentCategory, setItemCurrentCategory] = useState(
-    itemCtegories.map((category) => ({
-      key: category,
-      value: category,
-    }))
-  );
+  console.log("itemCtegories", itemCtegories);
+
+  // const [itemCurrentCategory, setItemCurrentCategory] = useState(
+  //   itemCtegories.map((category) => ({
+  //     key: category,
+  //     value: category,
+  //   }))
+  // );
   const { loggedUser } = useContext(userContext);
   const navigation = useNavigation();
   const [itemName, setItemName] = useState(item.name);
@@ -277,10 +279,10 @@ export default function EditItem(props) {
 
   //upload categories to Items_in_category table
   const postCtegories = (item_ID) => {
-    for (let i = 0; i < new_categories.length; i++) {
+    for (let i = 0; i < selectedCategory.length; i++) {
       fetch(
         ApiUrl +
-          `/PostItemsInCategory/Item_ID/${item_ID}/Category_name/${new_categories[i]}`,
+          `/PostItemsInCategory/Item_ID/${item_ID}/Category_name/${selectedCategory[i]}`,
         {
           method: "POST",
           headers: new Headers({
@@ -445,13 +447,11 @@ export default function EditItem(props) {
     return string;
   };
 
-  const [new_categories, setNew_categories] = useState([]);
-  const [selectedItems, setselectedItems] = useState(itemCurrentCategory);
-
-  const onSelectedItemsChange = (selectedItems) => {
-    setselectedItems(selectedItems);
-    // setNew_categories(selectedItems);
-    // setCategoriesFlag(true);
+  const [selectedCategory, setselectedCategory] = useState(itemCtegories);
+  console.log("selectedItems", selectedCategory);
+  const onSelectedItemsChange = (selectedCategory) => {
+    setselectedCategory(selectedCategory);
+    setCategoriesFlag(true);
   };
 
   function renderContent() {
@@ -506,14 +506,14 @@ export default function EditItem(props) {
 
           <MultiSelect
             items={categoriesList}
-            selectedItems={selectedItems}
+            selectedItems={selectedCategory}
             hideTags={false}
             displayKey="value"
             uniqueKey="key"
             onSelectedItemsChange={onSelectedItemsChange}
             selectText=""
             searchInputPlaceholderText="חיפוש"
-            selectedText="כבר נבחרו"
+            selectedText=" נבחרו"
             submitButtonText="בחרי"
             noItemsText="לא נמצא מידע"
             itemTextColor="#000"
@@ -527,42 +527,22 @@ export default function EditItem(props) {
               color: "#000",
               textAlign: "right",
               backgroundColor: "#FBF8F2",
-              margin: 30,
-              padding: 10,
+              padding: 12,
               borderRadius: 25,
             }}
             styleDropdownMenu={styles.dropdownContainer}
+            styleInputGroup={styles.InputGroup}
+            styleItemsContainer={styles.dropdownContainer}
             styleDropdownMenuSubsection={{ backgroundColor: "#FBF8F2" }}
             submitButtonColor={COLORS.golden}
             itemFontSize={14}
-            // hideSubmitButton={true}
           />
-
-          {/* <MultipleSelectList
-            data={categoriesList}
-            defaultOption={itemCurrentCategory}
-            // defaultOption={categoryOptions}
-            boxStyles={styles.dropdownInput}
-            dropdownStyles={styles.dropdownContainer}
-            setSelected={(val) => {
-              setNew_categories(val);
-              setCategoriesFlag(true);
-            }}
-            notFoundText="לא קיים מידע"
-            save="value"
-            label="קטגוריה"
-            badgeStyles={{ backgroundColor: "white" }}
-            badgeTextStyles={{ color: "black" }}
-            placeholder=" קטגוריה"
-            searchPlaceholder="חיפוש"
-          /> */}
 
           <Text
             style={{
               textAlign: "right",
               color: colors.grey3,
               right: 15,
-              marginTop: 30,
             }}>
             סוג פריט :
           </Text>
@@ -632,6 +612,40 @@ export default function EditItem(props) {
           <Text style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
             שיטת איסוף :
           </Text>
+
+          {/* <MultiSelect
+            items={deliveryMethodsList}
+            selectedItems={selectedItems}
+            hideTags={false}
+            displayKey="value"
+            uniqueKey="key"
+            onSelectedItemsChange={onSelectedItemsChange}
+            selectText=""
+            searchInputPlaceholderText="חיפוש"
+            selectedText=" נבחרו"
+            submitButtonText="בחרי"
+            noItemsText="לא נמצא מידע"
+            itemTextColor="#000"
+            selectedItemTextColor="#000"
+            selectedItemIconColor="#000"
+            tagRemoveIconColor={COLORS.golden}
+            tagTextColor="#000"
+            altFontFamily="ProximaNova-Light"
+            tagBorderColor={COLORS.goldenTransparent_03}
+            searchInputStyle={{
+              color: "#000",
+              textAlign: "right",
+              backgroundColor: "#FBF8F2",
+              padding: 12,
+              borderRadius: 25,
+            }}
+            styleDropdownMenu={styles.dropdownContainer}
+            styleInputGroup={styles.InputGroup}
+            styleItemsContainer={styles.dropdownContainer}
+            styleDropdownMenuSubsection={{ backgroundColor: "#FBF8F2" }}
+            submitButtonColor={COLORS.golden}
+            itemFontSize={14}
+          /> */}
           {/* <MultipleSelectList
             boxStyles={styles.dropdownInput}
             dropdownStyles={styles.dropdownContainer}
@@ -770,10 +784,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#FBF8F2",
     borderColor: COLORS.goldenTransparent_03,
     marginBottom: 30,
+    marginTop: 10,
     borderWidth: 1,
     borderRadius: 25,
     paddingHorizontal: 25,
     textAlign: "right",
+  },
+  InputGroup: {
+    width: "100%",
+    backgroundColor: "#FBF8F2",
+    borderColor: COLORS.goldenTransparent_03,
+    borderWidth: 1,
+    borderRadius: 25,
+    paddingHorizontal: 25,
   },
   bigInput: {
     width: "100%",

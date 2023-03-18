@@ -21,6 +21,8 @@ export default function SearchRes(props) {
   const { loggedUser } = useContext(userContext);
   const isFocused = useIsFocused();
   const [search, setsearch] = useState("");
+  const [nextSearch, setnextSearch] = useState("");
+
   const [brandsList, setBrandsList] = useState([]);
   const [categoriesList, setCategoriesList] = useState([]);
   const [itemsBySearch, setitemsBySearch] = useState([]);
@@ -39,11 +41,10 @@ export default function SearchRes(props) {
     if (isFocused) {
       GetBrandsList();
       GetCategoriesList();
-  
       getShopItems();
       getFavItems();
     }
-  }, [isFocused]);
+  }, [isFocused,searchText]);
   
 
   const GetBrandsList = () => {
@@ -251,7 +252,7 @@ export default function SearchRes(props) {
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate("SearchRes", {
-                  searchText: search,
+                  searchText: nextSearch,
                 })
               }
             >
@@ -261,7 +262,7 @@ export default function SearchRes(props) {
           <TextInput
             style={{ flex: 1, textAlign: "right" }}
             placeholder="חפשי פריט..."
-            onChangeText={(text) => setsearch(text)}
+            onChangeText={(text) => setnextSearch(text)}
             keyboardType="web-search"
           />
           <TouchableOpacity

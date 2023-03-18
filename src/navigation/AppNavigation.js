@@ -47,6 +47,7 @@ import ItemUpdateSucc from "../screens/ItemUpdateSucc";
 import ItemsByCtegory from "../screens/ItemsByCtegory";
 import WishList from "../screens/WishList";
 import PasswordHasBeenResetScreen from "../screens/RessetPasswordNotice";
+import SearchRes from "../screens/SearchRes";
 
 
 const Stack = createStackNavigator();
@@ -85,6 +86,8 @@ export default function Navigation() {
           <Stack.Screen name="UploadItem" component={UploadItem} />
           <Stack.Screen name="OrderHistory" component={OrderHistory} />
           <Stack.Screen name="SignUp" component={SignUp} />
+          <Stack.Screen name="SearchRes" component={SearchRes} />
+
           <Stack.Screen name="NewCard" component={NewCard} />
           <Stack.Screen name="MyAddress" component={MyAddress} />
           <Stack.Screen name="NewAddress" component={NewAddress} />

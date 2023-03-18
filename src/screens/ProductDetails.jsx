@@ -30,7 +30,7 @@ export default function ProductDetails(props) {
   const isFocused = useIsFocused();
   const [closetName, setclosetName] = useState("");
   const [user, setuser] = useState("");
-  const [otherUserFlag, setotherUserFlag] = useState(false);
+  const [myitemFlag, setmyitemFlag] = useState(false);
 
   //item's info section
   const [shippingMethod] = useState(item.shipping_method);
@@ -43,7 +43,6 @@ export default function ProductDetails(props) {
   const [distance, setDistance] = useState(null);
   const [address1, setaddress1] = useState(loggedUser.address);
   const [address2, setaddress2] = useState("");
-
 
   //URL
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
@@ -58,9 +57,11 @@ export default function ProductDetails(props) {
       GetItemCategories();
       GetItemImages();
       GetNumOfFav();
-      console.log("item id"),item;
+      if (address1 && address2) {
+        getAddressLocations();
+      }
     }
-  }, [isFocused]);
+  }, [isFocused, address1, address2]);
 
   function GetClosetdata() {
     axios
@@ -84,12 +85,15 @@ export default function ProductDetails(props) {
       )
       .then((res) => {
         setuser(res.data[0]);
-        setaddress2(res.data[0].address)
-        getAddressLocations();
+        setaddress2(res.data[0].address);
+
         if (res.data[0].id === loggedUser.id) {
-          setotherUserFlag(true);
+          setmyitemFlag(true);
           
-        } else setotherUserFlag(false);
+        } else {
+          setmyitemFlag(false);
+          
+        }
         getFollowingList();
       })
       .catch((err) => {
@@ -145,19 +149,23 @@ export default function ProductDetails(props) {
 
   //gets all the items in the user's fav list
   function getFavItems() {
-    axios
-      .get(ApiUrl_user + `/GetFavByUserID/${loggedUser.id}`)
-      .then((res) => {
-        if (res.data == "No items yet") {
-          setUsersFavList("");
-        } else {
-          const tempUsersFavList = res.data.map(({ item_id }) => item_id);
-          setUsersFavList(tempUsersFavList);
-        }
-      })
-      .catch((err) => {
-        console.log("cant get fav", err); //
-      });
+    console.log("flag" + myitemFlag);
+    if (myitemFlag == false) {
+      axios
+        .get(ApiUrl_user + `/GetFavByUserID/${loggedUser.id}`)
+        .then((res) => {
+          console.log("fav" + res.data);
+          if (res.data == "No items yet") {
+            setUsersFavList("");
+          } else {
+            const tempUsersFavList = res.data.map(({ item_id }) => item_id);
+            setUsersFavList(tempUsersFavList);
+          }
+        })
+        .catch((err) => {
+          console.log("cant get fav", err); //
+        });
+    }
   }
 
   //adds item in the user's fav list
@@ -215,7 +223,7 @@ export default function ProductDetails(props) {
 
   //gets all the items in the user's shop list
   function getShopItems() {
-    if (otherUserFlag == false) {
+    if (myitemFlag == false) {
       axios
         .get(
           "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetShopByUserID/UserID/" +
@@ -274,7 +282,7 @@ export default function ProductDetails(props) {
 
   //מביא את רשימת העוקבים של היוזר כדי לדעת איזה כפתור עוקב להציג
   function getFollowingList() {
-    if (otherUserFlag == false) {
+    if (myitemFlag == false) {
       axios
         .get(ApiUrl_user + `/GetClosetByUserID/User_ID/${loggedUser.id}`)
         .then((res) => {
@@ -352,15 +360,17 @@ export default function ProductDetails(props) {
       const response = await axios.get(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSyDarVyeqmQSsTsH9SzyEksCaIciizHroe0`
       );
-  
-      if (response.data.status === 'OK') {
+
+      if (response.data.status === "OK") {
         const { lat, lng } = response.data.results[0].geometry.location;
         return { latitude: lat, longitude: lng };
       } else {
-        console.warn(`Google Maps API error: ${response.data.status}+${address}`);
+        console.warn(
+          `Google Maps API error: ${response.data.status}+${address}`
+        );
       }
     } catch (error) {
-      console.error(error);
+      console.error("בעיה בדיסטנס" + error);
     }
   };
   const calculateDistance = (location1, location2) => {
@@ -369,34 +379,29 @@ export default function ProductDetails(props) {
     const dLon = toRadians(location2.longitude - location1.longitude);
     const lat1 = toRadians(location1.latitude);
     const lat2 = toRadians(location2.latitude);
-  
+
     const a =
       Math.sin(dLat / 2) ** 2 +
       Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = R * c;
-  
+
     return distance;
   };
   const toRadians = (degrees) => {
     return degrees * (Math.PI / 180);
   };
   const getAddressLocations = async () => {
-   
-    console.log("address1 " +address1 +"address2 "+address2);
-    
+
     const location1 = await getLocationFromAddress(address1);
     const location2 = await getLocationFromAddress(address2);
-  
 
     if (location1 && location2) {
       const distanceInKm = calculateDistance(location1, location2);
       setDistance(distanceInKm);
     }
   };
-  
-    
-  
+
   //need to delete and fix the view
   // function renderSlide() {
   //   return (
@@ -452,7 +457,7 @@ export default function ProductDetails(props) {
                 <View style={styles.Row}>
                   <Text style={styles.itemHeader}>{item.name}</Text>
                   <Text> </Text>
-                  {otherUserFlag && (
+                  {myitemFlag && (
                     <TouchableOpacity
                       onPress={() => {
                         navigation.navigate("EditItem", {
@@ -488,7 +493,7 @@ export default function ProductDetails(props) {
                 ></ImageBackground>
               ))}
             </Swiper>
-            {!otherUserFlag && UsersFavList.includes(item.id) && (
+            {!myitemFlag && UsersFavList.includes(item.id) && (
               // render the filled heart SVG if the item ID is in the UsersFavList
               <TouchableOpacity
                 style={styles.favIcon}
@@ -497,7 +502,7 @@ export default function ProductDetails(props) {
                 <HeartTwoSvg filled={true} strokeColor="red" />
               </TouchableOpacity>
             )}
-            {!otherUserFlag && !UsersFavList.includes(item.id) && (
+            {!myitemFlag && !UsersFavList.includes(item.id) && (
               // render the unfilled heart SVG if the item ID is not in the UsersFavList
               <TouchableOpacity
                 style={styles.favIcon}
@@ -515,7 +520,7 @@ export default function ProductDetails(props) {
               <ShareSvg></ShareSvg>
             </TouchableOpacity>
 
-            {!otherUserFlag ? (
+            {!myitemFlag ? (
               <View style={styles.Row}>
                 <View style={styles.Row}>
                   {!UsersFollowingList.includes(item.closet_ID) && (
@@ -651,8 +656,14 @@ export default function ProductDetails(props) {
                   <Text style={styles.descriptionText}> צבע</Text>
                 </View>
                 <View>
-                {distance !== null ? (
-                  <Text style={styles.descriptionHeader}> {distance.toFixed(2)} km</Text>) : (<Text>Loading...</Text>)}
+                  {distance !== null ? (
+                    <Text style={styles.descriptionHeader}>
+                      {" "}
+                      {distance.toFixed(2)} km
+                    </Text>
+                  ) : (
+                    <Text>Loading...</Text>
+                  )}
                   <Text style={styles.descriptionText}> מרחק ממך</Text>
                 </View>
               </View>
@@ -663,7 +674,7 @@ export default function ProductDetails(props) {
                 {","} {item.description}
               </Text>
             </View>
-            {!otherUserFlag && (
+            {!myitemFlag && (
               <View>
                 {UsersShopList.includes(item.id) && (
                   <ButtonLogIn

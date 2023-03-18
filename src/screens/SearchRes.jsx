@@ -16,41 +16,88 @@ import { FilterSvg, SearchSvg, BagSvg, HeartSvg } from "../svg";
 import axios from "axios";
 import { userContext } from "../navigation/userContext";
 
-export default function ItemsByCtegory(props) {
+export default function SearchRes(props) {
   const navigation = useNavigation();
-  const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
   const { loggedUser } = useContext(userContext);
   const isFocused = useIsFocused();
   const [search, setsearch] = useState("");
-
-  const [itemsByType, setItemsByType] = useState([]);
+  const [brandsList, setBrandsList] = useState([]);
+  const [categoriesList, setCategoriesList] = useState([]);
+  const [itemsBySearch, setitemsBySearch] = useState([]);
   const [itemsImageByType, setItemsImageByType] = useState([]);
   const [UsersFavList, setUsersFavList] = useState([]);
   const [UsersShopList, setUsersShopList] = useState([]);
-  const type = props.route.params.type;
+  const searchText = props.route.params.searchText;
 
   useEffect(() => {
+    if (brandsList && categoriesList) {
+      GetSearcResults();
+    }
+  }, [brandsList, categoriesList]);
+  
+  useEffect(() => {
     if (isFocused) {
-      GetItemsByCategory();
+      GetBrandsList();
+      GetCategoriesList();
+  
       getShopItems();
       getFavItems();
     }
   }, [isFocused]);
+  
 
-  function GetItemsByCategory() {
-    const typeURL = hebrewToUrlEncoded(type);
+  const GetBrandsList = () => {
     axios
-      .get(
-        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemByType/Type/${typeURL}/UserId/${loggedUser.id}`
-      )
+      .get("https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetBrand")
       .then((res) => {
-        setItemsByType(res.data)
-        GetItemPhotos(res.data)
+        setBrandsList(res.data.map((item) => item.brand_name));
       })
       .catch((err) => {
-        
-        console.log(err);
+        console.log("cant get barnd", err);
       });
+  };
+
+  const GetCategoriesList = () => {
+    axios
+      .get("https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetCategory")
+      .then((res) => {
+        setCategoriesList(res.data.map((item) => item.category_name));
+      })
+      .catch((err) => {
+        console.log("cant get categories", err);
+      });
+  };
+
+  function GetSearcResults() {
+    if (brandsList && categoriesList) {
+      if (brandsList.includes(searchText)) {
+        axios
+          .get(
+            `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemByBrand/Brand/${searchText}/UserId/${loggedUser.id}`
+          )
+          .then((res) => {
+            setitemsBySearch(res.data);
+            GetItemPhotos(res.data);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    }
+    if (categoriesList.includes(searchText)) {
+      const categoriesURL = hebrewToUrlEncoded(searchText);
+      axios
+        .get(
+          `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemByCategory/Category_name/${categoriesURL}/UserId/${loggedUser.id}`
+        )
+        .then((res) => {
+          setitemsBySearch(res.data);
+          GetItemPhotos(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   }
   function GetItemPhotos(items) {
     // pass the items array as a parameter
@@ -84,28 +131,24 @@ export default function ItemsByCtegory(props) {
     }
     return encodedStr;
   }
-   ///handle fav list
-   function getFavItems() {
-    
-      axios
-        .get(
-          "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetFavByUserID/" +
-            loggedUser.id
-        )
-        .then((res) => {
-          console.log(res.data);
-          if (res.data == "No items yet") {
-            setUsersFavList("");
-          } else {
-            console.log("favvvv"+tempUsersFavList);
-            const tempUsersFavList = res.data.map(({ item_id }) => item_id);
-            setUsersFavList(tempUsersFavList);
-          }
-        })
-        .catch((err) => {
-          console.log("cant get fav", err);
-        });
-    
+  ///handle fav list
+  function getFavItems() {
+    axios
+      .get(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetFavByUserID/" +
+          loggedUser.id
+      )
+      .then((res) => {
+        if (res.data == "No items yet") {
+          setUsersFavList("");
+        } else {
+          const tempUsersFavList = res.data.map(({ item_id }) => item_id);
+          setUsersFavList(tempUsersFavList);
+        }
+      })
+      .catch((err) => {
+        console.log("cant get fav", err);
+      });
   }
   function AddtoFav(item_id) {
     axios
@@ -137,24 +180,22 @@ export default function ItemsByCtegory(props) {
   }
   //handle shop list
   function getShopItems() {
-    
-      axios
-        .get(
-          "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetShopByUserID/UserID/" +
-            loggedUser.id
-        )
-        .then((res) => {
-          if (res.data == "No items yet") {
-            setUsersShopList("");
-          } else {
-            const tempUsersShopList = res.data.map(({ item_id }) => item_id);
-            setUsersShopList(tempUsersShopList);
-          }
-        })
-        .catch((err) => {
-          console.log("cant get shop list", err);
-        });
-
+    axios
+      .get(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetShopByUserID/UserID/" +
+          loggedUser.id
+      )
+      .then((res) => {
+        if (res.data == "No items yet") {
+          setUsersShopList("");
+        } else {
+          const tempUsersShopList = res.data.map(({ item_id }) => item_id);
+          setUsersShopList(tempUsersShopList);
+        }
+      })
+      .catch((err) => {
+        console.log("cant get shop list", err);
+      });
   }
   function AddToShopList(item_id) {
     axios
@@ -184,18 +225,18 @@ export default function ItemsByCtegory(props) {
         // console.log(newFav);
       });
   }
-  
-  
+
   //need to do shearch by categories
   function renderSearch() {
-    // if (!itemsByType) {
+    // if (!itemsBySearch) {
     return (
       <View
         style={{
           paddingHorizontal: 20,
           marginTop: 10,
           marginBottom: 20,
-        }}>
+        }}
+      >
         <View
           style={{
             width: "100%",
@@ -204,14 +245,16 @@ export default function ItemsByCtegory(props) {
             borderRadius: 5,
             flexDirection: "row",
             alignItems: "center",
-          }}>
+          }}
+        >
           <View style={{ paddingLeft: 15, paddingRight: 10 }}>
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate("SearchRes", {
                   searchText: search,
                 })
-              }>
+              }
+            >
               <SearchSvg />
             </TouchableOpacity>
           </View>
@@ -226,7 +269,8 @@ export default function ItemsByCtegory(props) {
               paddingHorizontal: 15,
               paddingVertical: 5,
             }}
-            onPress={() => navigation.navigate("Filter")}>
+            onPress={() => navigation.navigate("Filter")}
+          >
             <FilterSvg />
           </TouchableOpacity>
         </View>
@@ -238,7 +282,7 @@ export default function ItemsByCtegory(props) {
   function renderItems() {
     return (
       <FlatList
-        data={itemsByType}
+        data={itemsBySearch}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
@@ -263,7 +307,8 @@ export default function ItemsByCtegory(props) {
             }}
             //Osherrrrrrrrrrrr///////////////////////////////////////////////
           >
-            {itemsImageByType.filter((photo) => photo.item_ID === item.id)
+            {itemsImageByType
+              .filter((photo) => photo.item_ID === item.id)
               .slice(0, 1)
               .map((photo) => {
                 return (
@@ -285,7 +330,7 @@ export default function ItemsByCtegory(props) {
                         <HeartSvg filled={true} />
                       </TouchableOpacity>
                     )}
-                    { !UsersFavList.includes(item.id) && (
+                    {!UsersFavList.includes(item.id) && (
                       // render the unfilled heart SVG if the item ID is not in the UsersFavList
                       <TouchableOpacity
                         style={{ left: 12, top: 12 }}
@@ -346,7 +391,7 @@ export default function ItemsByCtegory(props) {
                 ₪ {item.price}
               </Text>
             </View>
-            { UsersShopList.includes(item.id) && (
+            {UsersShopList.includes(item.id) && (
               // render the filled heart SVG if the item ID is in the UsersFavList
               <TouchableOpacity
                 style={{ position: "absolute", right: 12, bottom: 12 }}
@@ -355,7 +400,7 @@ export default function ItemsByCtegory(props) {
                 <BagSvg color="#626262" inCart={true} />
               </TouchableOpacity>
             )}
-            { !UsersShopList.includes(item.id) && (
+            {!UsersShopList.includes(item.id) && (
               // render the unfilled heart SVG if the item ID is not in the UsersFavList
               <TouchableOpacity
                 style={{ position: "absolute", right: 12, bottom: 12 }}
@@ -370,14 +415,18 @@ export default function ItemsByCtegory(props) {
     );
   }
 
-
   return (
     <SafeAreaView
       style={{
         flex: 1,
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-      }}>
-      <Header title={type} goBack={true} onPress={() => navigation.goBack()} />
+      }}
+    >
+      <Header
+        title={searchText}
+        goBack={true}
+        onPress={() => navigation.goBack()}
+      />
 
       {renderSearch()}
       {renderItems()}

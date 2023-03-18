@@ -149,6 +149,7 @@ export default function Order() {
                             height: 100,
                           }}
                           imageStyle={{ borderRadius: 10 }}
+                          key={photo.id}
                         ></ImageBackground>
                       );
                     })}

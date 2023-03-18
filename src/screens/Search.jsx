@@ -21,6 +21,7 @@ export default function Search() {
 
   const [typeList, setTypeList] = useState([]);
   const [typeBySearch, setTypeBySearch] = useState("");
+  const [search, setsearch] = useState("");
 
   //renders the types when the page finishes to load
   useEffect(() => {
@@ -62,8 +63,8 @@ export default function Search() {
           <View style={{ paddingLeft: 15, paddingRight: 10 }}>
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate("ItemsByCtegory", {
-                  type: typeBySearch,
+                navigation.navigate("SearchRes", {
+                  searchText: search,
                 })
               }>
               <SearchSvg />
@@ -72,7 +73,7 @@ export default function Search() {
           <TextInput
             style={{ flex: 1, textAlign: "right" }}
             placeholder="חפשי פריט..."
-            onChangeText={(text) => setTypeBySearch(text)}
+            onChangeText={(text) => setsearch(text)}
             keyboardType="web-search"
             defaultValue=""
           />

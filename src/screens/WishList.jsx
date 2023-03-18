@@ -166,6 +166,7 @@ export default function WishList() {
                           height: 100,
                         }}
                         imageStyle={{ borderRadius: 10 }}
+                        key={photo.id}
                       ></ImageBackground>
                     );
                   })}

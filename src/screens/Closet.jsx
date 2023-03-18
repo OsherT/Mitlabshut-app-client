@@ -421,7 +421,7 @@ export default function Closet(props) {
                       height: 128,
                     }}
                     imageStyle={{ borderRadius: 10 }}
-                    key={photo.ID}
+                    key={photo.id}
                   >
                     {!myClosetFlag && UsersFavList.includes(item.id) && (
                       // render the filled heart SVG if the item ID is in the UsersFavList

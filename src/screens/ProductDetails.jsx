@@ -4,9 +4,7 @@ import {
   ImageBackground,
   TouchableOpacity,
   StyleSheet,
-  Image,
   Share,
-  Linking,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
@@ -14,7 +12,6 @@ import { AREA, COLORS, FONTS, SIZES } from "../constants";
 import { Button, Header } from "../components";
 import { Edit, HeartTwoSvg } from "../svg";
 import ButtonFollow from "../components/ButtonFollow";
-import { Alert } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import Swiper from "react-native-swiper";
 import ShareSvg from "../svg/ShareSvg";
@@ -28,7 +25,7 @@ export default function ProductDetails(props) {
   const { loggedUser } = useContext(userContext);
   const item = props.route.params.item;
   const isFocused = useIsFocused();
-  const [closetName, setclosetName] = useState("");
+  const [closetName, setclosetName] = useState(""); 
   const [user, setuser] = useState("");
   const [myitemFlag, setmyitemFlag] = useState(false);
 
@@ -77,6 +74,7 @@ export default function ProductDetails(props) {
         console.log(err);
       });
   }
+
   function getUser() {
     axios
       .get(
@@ -89,10 +87,8 @@ export default function ProductDetails(props) {
 
         if (res.data[0].id === loggedUser.id) {
           setmyitemFlag(true);
-          
         } else {
           setmyitemFlag(false);
-          
         }
         getFollowingList();
       })
@@ -355,6 +351,7 @@ export default function ProductDetails(props) {
       console.error(error.message);
     }
   };
+
   const getLocationFromAddress = async (address) => {
     try {
       const response = await axios.get(
@@ -373,6 +370,7 @@ export default function ProductDetails(props) {
       console.error("בעיה בדיסטנס" + error);
     }
   };
+
   const calculateDistance = (location1, location2) => {
     const R = 6371; // Earth's radius in kilometers
     const dLat = toRadians(location2.latitude - location1.latitude);
@@ -388,11 +386,12 @@ export default function ProductDetails(props) {
 
     return distance;
   };
+
   const toRadians = (degrees) => {
     return degrees * (Math.PI / 180);
   };
+  
   const getAddressLocations = async () => {
-
     const location1 = await getLocationFromAddress(address1);
     const location2 = await getLocationFromAddress(address2);
 
@@ -435,8 +434,7 @@ export default function ProductDetails(props) {
                       textAlign: "right",
                       fontSize: 13,
                       marginBottom: 5,
-                    }}
-                  >
+                    }}>
                     ✓ איסוף עצמי
                   </Text>
                 )}
@@ -446,8 +444,7 @@ export default function ProductDetails(props) {
                       textAlign: "right",
                       fontSize: 13,
                       marginBottom: 5,
-                    }}
-                  >
+                    }}>
                     ✓ משלוח
                   </Text>
                 )}
@@ -465,8 +462,7 @@ export default function ProductDetails(props) {
                           itemImages: itemImages,
                           itemCtegories: itemCtegories,
                         });
-                      }}
-                    >
+                      }}>
                       <Edit />
                     </TouchableOpacity>
                   )}
@@ -477,8 +473,7 @@ export default function ProductDetails(props) {
                       textAlign: "right",
                       fontSize: 13,
                       marginBottom: 5,
-                    }}
-                  >
+                    }}>
                     ♡ {numOfFav} אהבו פריט זה
                   </Text>
                 )}
@@ -489,16 +484,14 @@ export default function ProductDetails(props) {
                 <ImageBackground
                   key={index}
                   style={styles.image}
-                  source={{ uri: image }}
-                ></ImageBackground>
+                  source={{ uri: image }}></ImageBackground>
               ))}
             </Swiper>
             {!myitemFlag && UsersFavList.includes(item.id) && (
               // render the filled heart SVG if the item ID is in the UsersFavList
               <TouchableOpacity
                 style={styles.favIcon}
-                onPress={() => RemoveFromFav(item.id)}
-              >
+                onPress={() => RemoveFromFav(item.id)}>
                 <HeartTwoSvg filled={true} strokeColor="red" />
               </TouchableOpacity>
             )}
@@ -506,8 +499,7 @@ export default function ProductDetails(props) {
               // render the unfilled heart SVG if the item ID is not in the UsersFavList
               <TouchableOpacity
                 style={styles.favIcon}
-                onPress={() => AddtoFav(item.id)}
-              >
+                onPress={() => AddtoFav(item.id)}>
                 <HeartTwoSvg filled={false} strokeColor="red" />
               </TouchableOpacity>
             )}
@@ -515,8 +507,7 @@ export default function ProductDetails(props) {
               style={styles.shareIcon}
               onPress={() => {
                 onShare();
-              }}
-            >
+              }}>
               <ShareSvg></ShareSvg>
             </TouchableOpacity>
 
@@ -557,15 +548,13 @@ export default function ProductDetails(props) {
                       closetId: item.closet_ID,
                       owner: user,
                     });
-                  }}
-                >
+                  }}>
                   <ImageBackground
                     source={{
                       uri: user.user_image,
                     }}
                     style={styles.userImage}
-                    imageStyle={{ borderRadius: 40 }}
-                  ></ImageBackground>
+                    imageStyle={{ borderRadius: 40 }}></ImageBackground>
 
                   <Text
                     style={{
@@ -573,8 +562,7 @@ export default function ProductDetails(props) {
                       fontSize: 16,
                       color: COLORS.gray,
                       lineHeight: 22 * 1.2,
-                    }}
-                  >
+                    }}>
                     הארון של
                   </Text>
                   <Text> </Text>
@@ -584,8 +572,7 @@ export default function ProductDetails(props) {
                       fontSize: 16,
                       color: COLORS.black,
                       lineHeight: 22 * 1.2,
-                    }}
-                  >
+                    }}>
                     {closetName}
                   </Text>
                 </TouchableOpacity>
@@ -601,15 +588,13 @@ export default function ProductDetails(props) {
                     closet: item.closet_ID,
                     owner: user,
                   });
-                }}
-              >
+                }}>
                 <ImageBackground
                   source={{
                     uri: user.user_image,
                   }}
                   style={styles.userImage}
-                  imageStyle={{ borderRadius: 40 }}
-                ></ImageBackground>
+                  imageStyle={{ borderRadius: 40 }}></ImageBackground>
 
                 <Text
                   style={{
@@ -617,8 +602,7 @@ export default function ProductDetails(props) {
                     fontSize: 16,
                     color: COLORS.gray,
                     lineHeight: 22 * 1.2,
-                  }}
-                >
+                  }}>
                   הארון שלי{" "}
                 </Text>
                 <Text> </Text>

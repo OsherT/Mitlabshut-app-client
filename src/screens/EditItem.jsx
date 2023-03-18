@@ -35,35 +35,36 @@ export default function EditItem(props) {
   const itemCurrentImages = props.route.params.itemImages;
   const isFocused = useIsFocused();
 
-  //take only the choosen category name and not the all object
-  const itemCtegories = props.route.params.itemCtegories.map(
-    (item) => item.category_name
-  );
-  console.log("itemCtegories", itemCtegories);
-
-  // const [itemCurrentCategory, setItemCurrentCategory] = useState(
-  //   itemCtegories.map((category) => ({
-  //     key: category,
-  //     value: category,
-  //   }))
-  // );
   const { loggedUser } = useContext(userContext);
   const navigation = useNavigation();
   const [itemName, setItemName] = useState(item.name);
   const [itemPrice, setItemPrice] = useState(item.price);
-
   const [itemType, setItemType] = useState(item.type);
   const [itemSize, setItemSize] = useState(item.size);
   const [itemCondition, setItemCondition] = useState(item.use_condition);
   const [itemColor, setItemColor] = useState(item.color);
   const [itemBrand, setItemBrand] = useState(item.brand);
   const [itemDescription, setItemDescription] = useState(item.description);
+
+  const getShippingOptions = (num) => {
+    if (num === "12") {
+      return ["1", "2"];
+    } else if (num === "2") {
+      return ["2"];
+    } else {
+      return ["1"];
+    }
+  };
+
   const [itemDeliveryMethod, setItemDeliveryMethod] = useState(
-    item.shipping_method
+    getShippingOptions(item.shipping_method)
   );
 
   //images & categories
   const [categoriesFlag, setCategoriesFlag] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(
+    props.route.params.itemCtegories.map((item) => item.category_name)
+  );
   const [itemNewImages, setItemNewImages] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [flagForNewImg, setFlagForNewImg] = useState(false);
@@ -95,7 +96,6 @@ export default function EditItem(props) {
       GetSizesList();
       GetTypesList();
       GetCategoriesList();
-      console.log("item", item);
     }
   }, [isFocused]);
 
@@ -140,7 +140,6 @@ export default function EditItem(props) {
               value: category,
             }))
           );
-          console.log("setCategoriesList", categoriesList);
         },
         (error) => {
           console.log("category error", error);
@@ -241,7 +240,13 @@ export default function EditItem(props) {
       })
       .then(
         (data) => {
-          console.log("succ in update item ", error);
+          console.log("succ in update item ", data);
+          if (!flagForNewImg) {
+            console.log("flagForNewImg", flagForNewImg);
+            navigation.navigate("OrderSuccessful", {
+              message: "הפרטים עודכנו בהצלחה !",
+            });
+          }
         },
         (error) => {
           console.log("ERR in update item ", error);
@@ -447,11 +452,13 @@ export default function EditItem(props) {
     return string;
   };
 
-  const [selectedCategory, setselectedCategory] = useState(itemCtegories);
-  console.log("selectedItems", selectedCategory);
-  const onSelectedItemsChange = (selectedCategory) => {
-    setselectedCategory(selectedCategory);
+  const onSelectedCategoryChange = (selectedCategory) => {
+    setSelectedCategory(selectedCategory);
     setCategoriesFlag(true);
+  };
+
+  const onSelectedDeliveryChange = (selectedDelivery) => {
+    setItemDeliveryMethod(selectedDelivery);
   };
 
   function renderContent() {
@@ -510,7 +517,7 @@ export default function EditItem(props) {
             hideTags={false}
             displayKey="value"
             uniqueKey="key"
-            onSelectedItemsChange={onSelectedItemsChange}
+            onSelectedItemsChange={onSelectedCategoryChange}
             selectText=""
             searchInputPlaceholderText="חיפוש"
             selectedText=" נבחרו"
@@ -613,13 +620,13 @@ export default function EditItem(props) {
             שיטת איסוף :
           </Text>
 
-          {/* <MultiSelect
+          <MultiSelect
             items={deliveryMethodsList}
-            selectedItems={selectedItems}
+            selectedItems={itemDeliveryMethod}
             hideTags={false}
             displayKey="value"
             uniqueKey="key"
-            onSelectedItemsChange={onSelectedItemsChange}
+            onSelectedItemsChange={onSelectedDeliveryChange}
             selectText=""
             searchInputPlaceholderText="חיפוש"
             selectedText=" נבחרו"
@@ -645,20 +652,8 @@ export default function EditItem(props) {
             styleDropdownMenuSubsection={{ backgroundColor: "#FBF8F2" }}
             submitButtonColor={COLORS.golden}
             itemFontSize={14}
-          /> */}
-          {/* <MultipleSelectList
-            boxStyles={styles.dropdownInput}
-            dropdownStyles={styles.dropdownContainer}
-            badgeStyles={{ backgroundColor: "white" }}
-            badgeTextStyles={{ color: "black" }}
-            setSelected={(val) => setItemDeliveryMethod(val)}
-            data={deliveryMethodsList}
-            placeholder="שיטת מסירה"
-            searchPlaceholder="חיפוש"
-            notFoundText="לא קיים מידע"
-            label="שיטת מסירה"
-            maxHeight={200}
-          /> */}
+          />
+
           <Text style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
             תיאור פריט :
           </Text>

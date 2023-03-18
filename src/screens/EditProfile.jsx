@@ -79,7 +79,6 @@ export default function EditProfile(props) {
       var imageRef = firebase.storage().ref().child(filename);
       const imageLink = await imageRef.getDownloadURL();
       deleteImageFB();
-      setUploading(false);
       updateUser(imageLink);
     } catch (error) {
       console.log("error in upload to FB", error);

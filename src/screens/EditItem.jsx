@@ -7,7 +7,13 @@ import {
   Image,
   ActivityIndicator,
 } from "react-native";
-import React, { useEffect, useState, useContext } from "react";
+import React, {
+  useEffect,
+  useState,
+  useContext,
+  useRef,
+  useCallback,
+} from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { Header, Button, ContainerComponent } from "../components";
@@ -29,16 +35,21 @@ export default function EditItem(props) {
   const itemCurrentImages = props.route.params.itemImages;
   const isFocused = useIsFocused();
 
-  //take only the category name and not the all object
+  //take only the choosen category name and not the all object
   const itemCtegories = props.route.params.itemCtegories.map(
     (item) => item.category_name
   );
-
+  const [itemCurrentCategory, setItemCurrentCategory] = useState(
+    itemCtegories.map((category) => ({
+      key: category,
+      value: category,
+    }))
+  );
   const { loggedUser } = useContext(userContext);
   const navigation = useNavigation();
   const [itemName, setItemName] = useState(item.name);
   const [itemPrice, setItemPrice] = useState(item.price);
-  const [itemCategory, setItemCategory] = useState(itemCtegories);
+
   const [itemType, setItemType] = useState(item.type);
   const [itemSize, setItemSize] = useState(item.size);
   const [itemCondition, setItemCondition] = useState(item.use_condition);
@@ -48,7 +59,12 @@ export default function EditItem(props) {
   const [itemDeliveryMethod, setItemDeliveryMethod] = useState(
     item.shipping_method
   );
+
+  //images & categories
   const [categoriesFlag, setCategoriesFlag] = useState(false);
+  const [itemNewImages, setItemNewImages] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  const [flagForNewImg, setFlagForNewImg] = useState(false);
 
   //lists
   const [brandsList, setBrandsList] = useState([]);
@@ -115,7 +131,14 @@ export default function EditItem(props) {
       })
       .then(
         (data) => {
-          setCategoriesList(data.map((item) => item.category_name));
+          var categoryOptions = data.map((item) => item.category_name);
+          setCategoriesList(
+            categoryOptions.map((category) => ({
+              key: category,
+              value: category,
+            }))
+          );
+          console.log("setCategoriesList", categoriesList);
         },
         (error) => {
           console.log("category error", error);
@@ -254,13 +277,12 @@ export default function EditItem(props) {
 
   //upload categories to Items_in_category table
   const postCtegories = (item_ID) => {
-    for (let i = 0; i < itemCategory.length; i++) {
+    for (let i = 0; i < new_categories.length; i++) {
       fetch(
         ApiUrl +
-          `/PostItemsInCategory/Item_ID/${item_ID}/Category_name/${itemCategory[i]}`,
+          `/PostItemsInCategory/Item_ID/${item_ID}/Category_name/${new_categories[i]}`,
         {
           method: "POST",
-          // body: JSON.stringify(new_categories),
           headers: new Headers({
             "Content-type": "application/json; charset=UTF-8",
             Accept: "application/json; charset=UTF-8",
@@ -271,7 +293,9 @@ export default function EditItem(props) {
           return res.json();
         })
         .then(
-          (result) => {},
+          (result) => {
+            console.log("succ in post categories", result);
+          },
           (error) => {
             console.log("ERR in post categories", error);
           }
@@ -282,10 +306,6 @@ export default function EditItem(props) {
   ////////////////////////////////////////
   ///uploads the image to the fireBase////
   ////////////////////////////////////////
-
-  const [itemNewImages, setItemNewImages] = useState([]);
-  const [uploading, setUploading] = useState(false);
-  const [flagForNewImg, setFlagForNewImg] = useState(false);
 
   const pickImage = async () => {
     let selectedImages = []; // declare selectedImages with let
@@ -371,8 +391,7 @@ export default function EditItem(props) {
         }),
       }
     )
-      .then((res) => {
-      })
+      .then((res) => {})
       .then(
         (result) => {
           console.log("suc in delete images from DB ");
@@ -426,17 +445,14 @@ export default function EditItem(props) {
     return string;
   };
 
-  //options ia obj
-  const categoryOptions = categoriesList.map((category) => ({
-    key: category,
-    value: category,
-  }));
+  const [new_categories, setNew_categories] = useState([]);
+  const [selectedItems, setselectedItems] = useState(itemCurrentCategory);
 
-  //options ia obj
-  const chosenCategory = itemCategory.map((category) => ({
-    key: category,
-    value: category,
-  }));
+  const onSelectedItemsChange = (selectedItems) => {
+    setselectedItems(selectedItems);
+    // setNew_categories(selectedItems);
+    // setCategoriesFlag(true);
+  };
 
   function renderContent() {
     return (
@@ -464,6 +480,7 @@ export default function EditItem(props) {
               שם פריט :
             </Text>
           </View>
+
           <View style={styles.doubleContainer}>
             <TextInput
               style={styles.textInput}
@@ -482,32 +499,53 @@ export default function EditItem(props) {
               onChangeText={(text) => setItemName(text)}
             />
           </View>
+
           <Text style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
             קטגוריה :
           </Text>
 
           <MultiSelect
-            items={categoryOptions}
+            items={categoriesList}
+            selectedItems={selectedItems}
+            hideTags={false}
+            displayKey="value"
             uniqueKey="key"
-            // ref={(component) => {
-            //   this.multiSelect = component;
-            // }}
-            onSelectedItemsChange={(val) => {
-              setItemCategory(val);
-              setCategoriesFlag(true);
+            onSelectedItemsChange={onSelectedItemsChange}
+            selectText=""
+            searchInputPlaceholderText="חיפוש"
+            selectedText="כבר נבחרו"
+            submitButtonText="בחרי"
+            noItemsText="לא נמצא מידע"
+            itemTextColor="#000"
+            selectedItemTextColor="#000"
+            selectedItemIconColor="#000"
+            tagRemoveIconColor={COLORS.golden}
+            tagTextColor="#000"
+            altFontFamily="ProximaNova-Light"
+            tagBorderColor={COLORS.goldenTransparent_03}
+            searchInputStyle={{
+              color: "#000",
+              textAlign: "right",
+              backgroundColor: "#FBF8F2",
+              margin: 30,
+              padding: 10,
+              borderRadius: 25,
             }}
-            // selectedItems={chosenCategory}
-            selectedItems={categoryOptions}
-            selectText="Pick Items"></MultiSelect>
+            styleDropdownMenu={styles.dropdownContainer}
+            styleDropdownMenuSubsection={{ backgroundColor: "#FBF8F2" }}
+            submitButtonColor={COLORS.golden}
+            itemFontSize={14}
+            // hideSubmitButton={true}
+          />
 
-          <MultipleSelectList
-            data={categoryOptions}
-            defaultOption={chosenCategory}
+          {/* <MultipleSelectList
+            data={categoriesList}
+            defaultOption={itemCurrentCategory}
             // defaultOption={categoryOptions}
             boxStyles={styles.dropdownInput}
             dropdownStyles={styles.dropdownContainer}
             setSelected={(val) => {
-              setItemCategory(val);
+              setNew_categories(val);
               setCategoriesFlag(true);
             }}
             notFoundText="לא קיים מידע"
@@ -517,8 +555,15 @@ export default function EditItem(props) {
             badgeTextStyles={{ color: "black" }}
             placeholder=" קטגוריה"
             searchPlaceholder="חיפוש"
-          />
-          <Text style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+          /> */}
+
+          <Text
+            style={{
+              textAlign: "right",
+              color: colors.grey3,
+              right: 15,
+              marginTop: 30,
+            }}>
             סוג פריט :
           </Text>
           <SelectList
@@ -587,7 +632,7 @@ export default function EditItem(props) {
           <Text style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
             שיטת איסוף :
           </Text>
-          <MultipleSelectList
+          {/* <MultipleSelectList
             boxStyles={styles.dropdownInput}
             dropdownStyles={styles.dropdownContainer}
             badgeStyles={{ backgroundColor: "white" }}
@@ -599,7 +644,7 @@ export default function EditItem(props) {
             notFoundText="לא קיים מידע"
             label="שיטת מסירה"
             maxHeight={200}
-          />
+          /> */}
           <Text style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
             תיאור פריט :
           </Text>
@@ -729,10 +774,6 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     paddingHorizontal: 25,
     textAlign: "right",
-    // textAlign: "right",
-    // flexDirection: "column",
-    // alignItems: "flex-end",
-    // justifyContent: "space-between",
   },
   bigInput: {
     width: "100%",

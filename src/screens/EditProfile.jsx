@@ -23,6 +23,7 @@ import { colors } from "react-native-elements";
 import axios from "axios";
 import { ScrollView } from "react-native-gesture-handler";
 import { firebase } from "../../firebaseConfig";
+import ButtonLogIn from "../components/ButtonLogIn";
 
 export default function EditProfile(props) {
   const {
@@ -324,6 +325,27 @@ export default function EditProfile(props) {
                   }}
                 />
               </View>
+              <View style={{ marginTop: 20 }}>
+                <ButtonLogIn
+                  title="ביטול  "
+                  onPress={() => {
+                    Alert.alert(
+                      "השינויים לא ישמרו",
+                      "האם את בטוחה שברצונך לחזור?",
+                      [
+                        {
+                          text: "אישור",
+                          onPress: () => navigation.goBack(),
+                        },
+                        {
+                          text: "ביטול",
+                          style: "cancel",
+                        },
+                      ]
+                    );
+                  }}
+                />
+              </View>
             </ContainerComponent>
           </ScrollView>
         </KeyboardAvoidingView>
@@ -333,7 +355,7 @@ export default function EditProfile(props) {
 
   return (
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
-      <Header title="עדכון פרטים אישיים" onPress={() => navigation.goBack()} />
+      <Header title="עדכון פרטים אישיים" flag={true} onEdit={true} />
       {renderContent()}
     </SafeAreaView>
   );

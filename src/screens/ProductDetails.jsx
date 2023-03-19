@@ -25,12 +25,12 @@ export default function ProductDetails(props) {
   const { loggedUser } = useContext(userContext);
   const item = props.route.params.item;
   const isFocused = useIsFocused();
-  const [closetName, setclosetName] = useState(""); 
+  const [closetName, setclosetName] = useState("");
   const [user, setuser] = useState("");
   const [myitemFlag, setmyitemFlag] = useState(false);
 
   //item's info section
-  const [shippingMethod] = useState(item.shipping_method);
+  const [shippingMethod, setShippingMethod] = useState(item.shipping_method);
   const [itemCtegories, setItemCtegories] = useState([]);
   const [itemImages, setItemImages] = useState([]);
   const [UsersFavList, setUsersFavList] = useState([]);
@@ -40,6 +40,7 @@ export default function ProductDetails(props) {
   const [distance, setDistance] = useState(null);
   const [address1, setaddress1] = useState(loggedUser.address);
   const [address2, setaddress2] = useState("");
+
 
   //URL
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
@@ -54,11 +55,15 @@ export default function ProductDetails(props) {
       GetItemCategories();
       GetItemImages();
       GetNumOfFav();
+      setShippingMethod(item.shipping_method);
       if (address1 && address2) {
         getAddressLocations();
       }
+      console.log("yy");
+      console.log("item.shipping_method", item.shipping_method);
+      console.log("shippingMethod", shippingMethod);
     }
-  }, [isFocused, address1, address2]);
+  }, [isFocused, address1, address2, shippingMethod]);
 
   function GetClosetdata() {
     axios
@@ -390,7 +395,7 @@ export default function ProductDetails(props) {
   const toRadians = (degrees) => {
     return degrees * (Math.PI / 180);
   };
-  
+
   const getAddressLocations = async () => {
     const location1 = await getLocationFromAddress(address1);
     const location2 = await getLocationFromAddress(address2);
@@ -427,8 +432,7 @@ export default function ProductDetails(props) {
           <ScrollView>
             <View style={styles.Row}>
               <View>
-                {/* 12 זה גם משלוח וגם איסוף עצמי*/}
-                {(shippingMethod == 1 || shippingMethod == 12) && (
+                {shippingMethod == 1 && (
                   <Text
                     style={{
                       textAlign: "right",
@@ -438,7 +442,7 @@ export default function ProductDetails(props) {
                     ✓ איסוף עצמי
                   </Text>
                 )}
-                {(shippingMethod == 2 || shippingMethod == 12) && (
+                {shippingMethod == 2 && (
                   <Text
                     style={{
                       textAlign: "right",
@@ -446,6 +450,16 @@ export default function ProductDetails(props) {
                       marginBottom: 5,
                     }}>
                     ✓ משלוח
+                  </Text>
+                )}
+                {shippingMethod == 12 && (
+                  <Text
+                    style={{
+                      textAlign: "right",
+                      fontSize: 13,
+                      marginBottom: 5,
+                    }}>
+                    ✓ משלוח ✓ איסוף עצמי
                   </Text>
                 )}
               </View>

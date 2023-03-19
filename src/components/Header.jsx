@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Alert } from "react-native";
 import React from "react";
 
 import { FONTS, COLORS } from "../constants";
@@ -6,7 +6,7 @@ import { ArrowTwo, BagSvg, HeartTwoSvg } from "../svg";
 import { useNavigation } from "@react-navigation/native";
 import BagHeader from "../svg/BagHeader";
 
-export default function Header({ title, titleStyle, flag }) {
+export default function Header({ title, titleStyle, flag, onEdit }) {
   const navigation = useNavigation();
 
   return (
@@ -23,7 +23,22 @@ export default function Header({ title, titleStyle, flag }) {
           left: 0,
           paddingHorizontal: 20,
         }}
-        onPress={() => navigation.goBack()}>
+        onPress={() => {
+          if (onEdit) {
+            Alert.alert("השינויים לא ישמרו", "האם את בטוחה שברצונך לחזור?", [
+              {
+                text: "אישור",
+                onPress: () => navigation.goBack(),
+              },
+              {
+                text: "ביטול",
+                style: "cancel",
+              },
+            ]);
+          } else {
+            navigation.goBack();
+          }
+        }}>
         <ArrowTwo />
       </TouchableOpacity>
 

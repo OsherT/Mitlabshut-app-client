@@ -6,27 +6,22 @@ import {
   StyleSheet,
   Image,
   ActivityIndicator,
+  Alert,
 } from "react-native";
-import React, {
-  useEffect,
-  useState,
-  useContext,
-} from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { Header, Button, ContainerComponent } from "../components";
 import { AREA, COLORS, FONTS } from "../constants";
 import { TextInput } from "react-native";
-import {
-  MultipleSelectList,
-  SelectList,
-} from "react-native-dropdown-select-list";
+import { SelectList } from "react-native-dropdown-select-list";
 import { AddSvg } from "../svg";
 import * as ImagePicker from "expo-image-picker";
 import { userContext } from "../navigation/userContext";
 import { colors } from "react-native-elements";
 import { firebase } from "../../firebaseConfig";
 import MultiSelect from "react-native-multiple-select";
+import ButtonLogIn from "../components/ButtonLogIn";
 
 export default function EditItem(props) {
   const item = props.route.params.item;
@@ -93,7 +88,7 @@ export default function EditItem(props) {
       GetColorsList();
       GetSizesList();
       GetTypesList();
-      GetCategoriesList(); 
+      GetCategoriesList();
     }
   }, [isFocused]);
 
@@ -209,47 +204,62 @@ export default function EditItem(props) {
   };
 
   const UpdateItem = () => {
-    const updateItem = {
-      id: item.id,
-      closet_ID: loggedUser.closet_id,
-      name: itemName,
-      price: itemPrice,
-      type: itemType,
-      size: itemSize,
-      use_condition: itemCondition,
-      color: itemColor,
-      shipping_method: ArrayToStringShip(itemDeliveryMethod),
-      brand: itemBrand,
-      description: itemDescription,
-      sale_status: true,
-    };
+    if (
+      itemName == "" ||
+      itemPrice == "" ||
+      itemType == "" ||
+      itemSize == "" ||
+      itemCondition == "" ||
+      itemColor == "" ||
+      itemDeliveryMethod == "" ||
+      itemBrand == "" ||
+      itemDescription == "" ||
+      selectedCategory.length == 0 ||
+      itemDeliveryMethod.length == 0
+    ) {
+      Alert.alert("אנא מלאי את כל הפרטים");
+    } else {
+      const updateItem = {
+        id: item.id,
+        closet_ID: loggedUser.closet_id,
+        name: itemName,
+        price: itemPrice,
+        type: itemType,
+        size: itemSize,
+        use_condition: itemCondition,
+        color: itemColor,
+        shipping_method: ArrayToStringShip(itemDeliveryMethod),
+        brand: itemBrand,
+        description: itemDescription,
+        sale_status: true,
+      };
 
-    //update the item's data
-    fetch(ApiUrl + `/PutItem`, {
-      method: "PUT",
-      body: JSON.stringify(updateItem),
-      headers: new Headers({
-        "Content-type": "application/json; charset=UTF-8",
-        Accept: "application/json; charset=UTF-8",
-      }),
-    })
-      .then((res) => {
-        return res.json();
+      //update the item's data
+      fetch(ApiUrl + `/PutItem`, {
+        method: "PUT",
+        body: JSON.stringify(updateItem),
+        headers: new Headers({
+          "Content-type": "application/json; charset=UTF-8",
+          Accept: "application/json; charset=UTF-8",
+        }),
       })
-      .then(
-        (data) => {
-          console.log("succ in update item ", data);
-          if (!flagForNewImg) {
-            console.log("flagForNewImg", flagForNewImg);
-            navigation.navigate("OrderSuccessful", {
-              message: "הפרטים עודכנו בהצלחה !",
-            });
+        .then((res) => {
+          return res.json();
+        })
+        .then(
+          (data) => {
+            console.log("succ in update item ", data);
+            if (!flagForNewImg) {
+              navigation.navigate("OrderSuccessful", {
+                message: "הפרטים עודכנו בהצלחה !",
+              });
+            }
+          },
+          (error) => {
+            console.log("ERR in update item ", error);
           }
-        },
-        (error) => {
-          console.log("ERR in update item ", error);
-        }
-      );
+        );
+    }
   };
 
   // update only after the array hsa been changed
@@ -450,11 +460,13 @@ export default function EditItem(props) {
     return string;
   };
 
+  //updates the new choosen categories
   const onSelectedCategoryChange = (selectedCategory) => {
     setSelectedCategory(selectedCategory);
     setCategoriesFlag(true);
   };
 
+  //updates the new choosen shipping method
   const onSelectedDeliveryChange = (selectedDelivery) => {
     setItemDeliveryMethod(selectedDelivery);
   };
@@ -526,7 +538,6 @@ export default function EditItem(props) {
             selectedItemIconColor="#000"
             tagRemoveIconColor={COLORS.golden}
             tagTextColor="#000"
-            altFontFamily="ProximaNova-Light"
             tagBorderColor={COLORS.goldenTransparent_03}
             searchInputStyle={{
               color: "#000",
@@ -635,7 +646,6 @@ export default function EditItem(props) {
             selectedItemIconColor="#000"
             tagRemoveIconColor={COLORS.golden}
             tagTextColor="#000"
-            altFontFamily="ProximaNova-Light"
             tagBorderColor={COLORS.goldenTransparent_03}
             searchInputStyle={{
               color: "#000",
@@ -712,23 +722,46 @@ export default function EditItem(props) {
           )}
 
           <Button
-            title="עדכן פרטים "
+            title="עדכני פרטים "
             onPress={() => {
               updateCtegories();
               flagForNewImg ? uploadImageFB(item.id) : UpdateItem();
             }}
           />
+
+          <View style={{ marginTop: 20 }}>
+            <ButtonLogIn
+              title="ביטול  "
+              onPress={() => {
+                Alert.alert(
+                  "השינויים לא ישמרו",
+                  "האם את בטוחה שברצונך לחזור?",
+                  [
+                    {
+                      text: "אישור",
+                      onPress: () => navigation.goBack(),
+                    },
+                    {
+                      text: "ביטול",
+                      style: "cancel",
+                    },
+                  ]
+                );
+              }}
+            />
+          </View>
         </ContainerComponent>
       </KeyboardAwareScrollView>
     );
   }
   return (
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
-      <Header onPress={() => navigation.goBack()} />
+      <Header flag={true} onEdit={true} />
       {renderContent()}
     </SafeAreaView>
   );
 }
+
 const styles = StyleSheet.create({
   header: {
     textAlign: "center",

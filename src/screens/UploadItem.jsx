@@ -23,6 +23,7 @@ import { userContext } from "../navigation/userContext";
 import { firebase } from "../../firebaseConfig";
 import { AddSvg } from "../svg";
 import MultiSelect from "react-native-multiple-select";
+import ButtonLogIn from "../components/ButtonLogIn";
 
 export default function UploadItem() {
   const navigation = useNavigation();
@@ -420,7 +421,7 @@ export default function UploadItem() {
   };
 
   const onSelectedCategoryChange = (itemCategory) => {
-    setItemCategory( itemCategory );
+    setItemCategory(itemCategory);
     console.log("selectedCategory", itemCategory);
   };
 
@@ -463,7 +464,6 @@ export default function UploadItem() {
               value={itemName}
             />
           </View>
-
           <MultiSelect
             items={categoriesList}
             selectedItems={itemCategory}
@@ -481,7 +481,6 @@ export default function UploadItem() {
             selectedItemIconColor="#000"
             tagRemoveIconColor={COLORS.golden}
             tagTextColor="#000"
-            altFontFamily="ProximaNova-Light"
             tagBorderColor={COLORS.goldenTransparent_03}
             searchInputStyle={{
               color: "#000",
@@ -497,7 +496,6 @@ export default function UploadItem() {
             submitButtonColor={COLORS.golden}
             itemFontSize={14}
           />
-
           {/* <MultipleSelectList
             placeholder=" קטגוריה"
             searchPlaceholder="חיפוש"
@@ -511,7 +509,6 @@ export default function UploadItem() {
             badgeStyles={{ backgroundColor: "white" }}
             badgeTextStyles={{ color: "black" }}
           /> */}
-
           <SelectList
             placeholder="  סוג פריט"
             searchPlaceholder="חיפוש"
@@ -548,7 +545,6 @@ export default function UploadItem() {
             data={brandsList}
             notFoundText="לא קיים מידע"
           />
-
           {/* לשנות שיכניס את המילה ולא את המפתח */}
           <SelectList
             placeholder=" מצב פריט"
@@ -577,7 +573,6 @@ export default function UploadItem() {
             selectedItemIconColor="#000"
             tagRemoveIconColor={COLORS.golden}
             tagTextColor="#000"
-            altFontFamily="ProximaNova-Light"
             tagBorderColor={COLORS.goldenTransparent_03}
             searchInputStyle={{
               color: "#000",
@@ -606,7 +601,6 @@ export default function UploadItem() {
             badgeStyles={{ backgroundColor: "white" }}
             badgeTextStyles={{ color: "black" }}
           /> */}
-
           <TextInput
             style={styles.bigInput}
             placeholder=" תיאור מפורט  "
@@ -615,7 +609,6 @@ export default function UploadItem() {
             /////////////////////////לנוחות, למחוק אח"כ/////////////////////////
             value={itemDescription}
           />
-
           <View>
             {images.length < 3 && (
               <TouchableOpacity onPress={() => pickImage(images.length)}>
@@ -634,7 +627,6 @@ export default function UploadItem() {
               </TouchableOpacity>
             )}
           </View>
-
           {images.length > 0 && (
             <View style={styles.imageContainer}>
               {images.map((item, index) => (
@@ -646,21 +638,41 @@ export default function UploadItem() {
               ))}
             </View>
           )}
-
           {uploading && (
             <View style={{ marginBottom: 30 }}>
               <ActivityIndicator size={"small"} color="black" />
             </View>
           )}
-
           <Button title="הוספת פריט" onPress={UploadItem} />
+
+          <View style={{ marginTop: 20 }}>
+            <ButtonLogIn
+              title="ביטול  "
+              onPress={() => {
+                Alert.alert(
+                  "השינויים לא ישמרו",
+                  "האם את בטוחה שברצונך לחזור?",
+                  [
+                    {
+                      text: "אישור",
+                      onPress: () => navigation.goBack(),
+                    },
+                    {
+                      text: "ביטול",
+                      style: "cancel",
+                    },
+                  ]
+                );
+              }}
+            />
+          </View>
         </ContainerComponent>
       </KeyboardAwareScrollView>
     );
   }
   return (
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
-      <Header onPress={() => navigation.goBack()} />
+      <Header flag={true} onEdit={true} />
       {renderContent()}
     </SafeAreaView>
   );

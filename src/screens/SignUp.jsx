@@ -17,6 +17,7 @@ import { userContext } from "../navigation/userContext";
 import { Image } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { firebase } from "../../firebaseConfig";
+import { ScrollView } from "react-native";
 
 export default function SignUp() {
   const ApiUrl_image = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/ItemImages`;
@@ -41,11 +42,16 @@ export default function SignUp() {
       userEmail == "" ||
       userPassword == "" ||
       userPhone == "" ||
-      image == ""
+      image == ""||
+      address==""
     ) {
       //אלו השדות חובה שלנו
       alert("אנא הכניסי את כל הפרטים הנדרשים");
-    } else {
+    } else if (address){
+      
+
+    }
+    {
       const newCloset = {
         //יצירת ארון חדש למשתמשת
         Id: 0,
@@ -177,6 +183,7 @@ export default function SignUp() {
             }}>
             הצטרפי לקהילה שלנו
           </Text>
+          <ScrollView keyboardShouldPersistTaps='handled'>
           <InputField
             placeholder="שם מלא"
             containerStyle={{ marginBottom: 10 }}
@@ -190,7 +197,7 @@ export default function SignUp() {
           />
           <SafeAreaView style={styles.view}>
             <GooglePlacesAutocomplete
-              placeholder="כתובת"
+              placeholder="רחוב, עיר, מדינה"
               fetchDetails={true}
               GooglePlacesSearchQuery={{ rankby: "distance" }}
               onPress={(data, details = null) => {
@@ -270,6 +277,7 @@ export default function SignUp() {
           <View>
             <Button title="הרשמה" onPress={() => SignUp()} />
           </View>
+          </ScrollView>
         </ContainerComponent>
 
         <View
@@ -279,8 +287,8 @@ export default function SignUp() {
             alignItems: "flex-end",
             marginBottom: 13,
             flexDirection: "row",
-            top: 745,
-            left: 130,
+            top: 700,
+            left:100
           }}>
           <TouchableOpacity onPress={() => navigation.navigate("SignIn")}>
             <Text

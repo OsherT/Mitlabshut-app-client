@@ -48,18 +48,104 @@ import ItemsByCtegory from "../screens/ItemsByCtegory";
 import WishList from "../screens/WishList";
 import PasswordHasBeenResetScreen from "../screens/RessetPasswordNotice";
 import SearchRes from "../screens/SearchRes";
-
+import axios from "axios";
 
 const Stack = createStackNavigator();
 
 export default function Navigation() {
-
+  const [itemCategories, setitemCategories] = useState([]);
   const [loggedUser, setloggedUser] = useState("");
   const [closetDesc, setclosetDesc] = useState("");
   const [closetName, setclosetName] = useState("");
+  const [UsersItems, setUsersItems] = useState([]);
+
+  function GetClosetItems(closetId) {
+    axios
+      .get(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemByClosetId/ClosetId/" +
+          closetId
+      )
+      .then((res) => {
+        setUsersItems(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+  const getItemCategories_ForAlgorithm = (
+    item_id,
+    score,
+    closetId,
+    loggedUser_id
+  ) => {
+    axios
+      .get(
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemCategortById/Item_ID/${item_id}`
+      )
+      .then((res) => {
+        const itemCategories = res.data.map((item) => item.category_name);
+        console.log("itemCategories " + itemCategories);
+        setitemCategories(itemCategories);
+        if (itemCategories.length > 0) {
+          const allCategoriesRetrieved = itemCategories.every((category) =>
+            Boolean(category)
+          );
+          if (allCategoriesRetrieved) {
+            algorithmFunc(
+              item_id,
+              score,
+              closetId,
+              loggedUser_id,
+              itemCategories
+            );
+          }
+        }
+      })
+      .catch((err) => {
+        console.log("cant get categories", err);
+      });
+  };
 
 
+  const algorithmFunc = (item_id, score, closetId, loggedUser_id) => {
+    let Temptype;
+    GetClosetItems(closetId); //לשנות לפי אייטם איידי
+    UsersItems.map((item) => {
+      if (item_id === item.id) {
+        Temptype = hebrewToUrlEncoded(item.type);
+      }
+    }); // עוברות על מערך הפריטים ומביאות את הטייפ של הפריט שבוצעה עליו פעולה
+    itemCategories.map((category_name) => {
+      axios
+        .post(
+          `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/SmartAlgoStepOne/category_name/${hebrewToUrlEncoded(
+            category_name
+          )}/item_type_name/${Temptype}/score/${score}/user_id/${loggedUser_id}`
+        )
+        .then((res) => {
+          console.log("yay");
+        })
+        .catch((err) => {
+          console.log("nay", err);
+        });
+    });
 
+    itemCategories.splice(0, itemCategories.length);
+  };
+
+  function hebrewToUrlEncoded(hebrewStr) {
+    const utf8EncodedStr = unescape(encodeURIComponent(hebrewStr));
+    let encodedStr = "";
+    for (let i = 0; i < utf8EncodedStr.length; i++) {
+      // Get the UTF-8 code unit for the character
+      const charCode = utf8EncodedStr.charCodeAt(i);
+      // Convert the code unit to its hexadecimal representation
+      const hexStr = charCode.toString(16).toUpperCase();
+      // Add a percent sign before the hexadecimal representation
+      encodedStr += "%" + hexStr;
+    }
+    return encodedStr;
+  }
   return (
     <NavigationContainer>
       <userContext.Provider
@@ -70,7 +156,9 @@ export default function Navigation() {
           setclosetDesc,
           closetName,
           setclosetName,
-        }}>
+          getItemCategories_ForAlgorithm,
+        }}
+      >
         <Stack.Navigator
           screenOptions={{
             headerStyle: {
@@ -80,7 +168,8 @@ export default function Navigation() {
             },
             headerShown: false,
           }}
-          initialRouteName="SignIn">
+          initialRouteName="SignIn"
+        >
           <Stack.Screen name="SignIn" component={SignIn} />
           <Stack.Screen name="WishList" component={WishList} />
           <Stack.Screen name="UploadItem" component={UploadItem} />
@@ -100,7 +189,10 @@ export default function Navigation() {
           <Stack.Screen name="Reviews" component={Reviews} />
           <Stack.Screen name="ProductDetails" component={ProductDetails} />
           <Stack.Screen name="ItemsByCtegory" component={ItemsByCtegory} />
-          <Stack.Screen name="PasswordHasBeenResetScreen" component={PasswordHasBeenResetScreen} />
+          <Stack.Screen
+            name="PasswordHasBeenResetScreen"
+            component={PasswordHasBeenResetScreen}
+          />
           <Stack.Screen
             name="PaymentMethodCheckout"
             component={PaymentMethodCheckout}

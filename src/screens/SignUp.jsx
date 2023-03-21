@@ -84,7 +84,7 @@ export default function SignUp() {
                 setloggedUser(newUser); //לאחר ההרשמה היוזר מתחבר ומנווט ישר לארון שלו
                 console.log("succ in user", res.data);
                 uploadImageFB(res.data);
-                // navigation.navigate("Closet");
+                navigation.navigate("MainLayout");
               })
               .catch((err) => {
                 console.log("Error in user 1", err);

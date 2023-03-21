@@ -106,9 +106,6 @@ export default function Navigation() {
     itemCategories
   ) => {
     itemCategories.map((category_name) => {
-      console.log(`https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/SmartAlgoStepOne/category_name/${hebrewToUrlEncoded(
-        category_name
-      )}/item_type_name/${item_type}/score/${score}/user_id/${loggedUser_id}`);
       axios
         .post(
           `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/SmartAlgoStepOne/category_name/${hebrewToUrlEncoded(

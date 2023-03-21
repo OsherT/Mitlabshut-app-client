@@ -18,7 +18,7 @@ import { userContext } from "../navigation/userContext";
 
 export default function SearchRes(props) {
   const navigation = useNavigation();
-  const { loggedUser } = useContext(userContext);
+  const { loggedUser,GetItemForAlgo} = useContext(userContext);
   const isFocused = useIsFocused();
   const [search, setsearch] = useState("");
   const [nextSearch, setnextSearch] = useState("");
@@ -159,6 +159,7 @@ export default function SearchRes(props) {
       .then((res) => {
         getFavItems();
         setUsersFavList((prevList) => [...prevList, { item_id }]);
+        GetItemForAlgo(item_id,4,loggedUser.id);
       })
       .catch((err) => {
         // alert("cant add to fav");
@@ -206,6 +207,7 @@ export default function SearchRes(props) {
       .then((res) => {
         getShopItems();
         setUsersShopList((prevList) => [...prevList, { item_id }]);
+        GetItemForAlgo(item_id,8,loggedUser.id);
       })
       .catch((err) => {
         alert("cant add to shop list");

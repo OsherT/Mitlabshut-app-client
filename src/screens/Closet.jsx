@@ -42,31 +42,6 @@ export default function Closet(props) {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
 
-  // function getItemCategories_ForAlgorithm(item_id, score) {
-  //   axios
-  //     .get(
-  //       `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemCategortById/Item_ID/${item_id}`
-  //     )
-  //     .then((res) => {
-  //       setitemCategories(res.data.map((item) => item.category_name));
-  //       if (itemCategories) {//מקבלים את כל הקטגוריות של הפריט שמבוצע עליו אחת מפעולות האלגוריתם
-  //         algorithmFunc(item_id, score);//שולחים לפונקציית האלגוריתם את האיידי של הפריט והניקוד מהפעולה
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.log("cant get categories", err);
-  //     });
-  // }
-
-  // function algorithmFunc(item_id, score) {
-  //   UsersItems.map((item) => item_id === item.id((type = item.type)));// עוברות על מערך הפריטים ומביאות את הטייפ של הפריט שבוצעה עליו פעולה
-  //   itemCategories.map((category_name) =>// עבור כל אחת מהקטגוריות נעשה פוסט לטבלת האלגוריתם
-  //     axios
-  //       .post(`${category_name}${type}${score}${loggedUser.id}`)
-  //       .then((res) => {})
-  //       .catch((err) => {})
-  //   );
-  // }
 
   useEffect(() => {
     if (isFocused) {
@@ -295,7 +270,7 @@ export default function Closet(props) {
       .then((res) => {
         getFavItems();
         setUsersFavList((prevList) => [...prevList, { item_id }]);
-        GetItemForAlgo(item_id,4,closetId,loggedUser.id);
+        GetItemForAlgo(item_id,4,loggedUser.id);
       })
       .catch((err) => {
         // alert("cant add to fav");
@@ -346,7 +321,7 @@ export default function Closet(props) {
       .then((res) => {
         getShopItems();
         setUsersShopList((prevList) => [...prevList, { item_id }]);
-        GetItemForAlgo(item_id,8,closetId,loggedUser.id);
+        GetItemForAlgo(item_id,8,loggedUser.id);
       })
       .catch((err) => {
         alert("cant add to shop list");

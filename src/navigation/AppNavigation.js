@@ -59,7 +59,7 @@ export default function Navigation() {
   const [closetName, setclosetName] = useState("");
 
 
-  function GetItemForAlgo(itemId, score, closetId, loggedUser_id) {
+  function GetItemForAlgo(itemId, score,  loggedUser_id) {
     axios
       .get(
         "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemById/Id/0" +
@@ -69,7 +69,7 @@ export default function Navigation() {
         getItemCategories_ForAlgorithm(
           itemId,
           score,
-          closetId,
+          
           loggedUser_id,
           res.data[0].type
         );
@@ -81,7 +81,7 @@ export default function Navigation() {
   const getItemCategories_ForAlgorithm = (
     item_id,
     score,
-    closetId,
+    
     loggedUser_id,
     item_type
   ) => {
@@ -91,7 +91,7 @@ export default function Navigation() {
       )
       .then((res) => {
         const itemCategories = res.data.map((item) => item.category_name);
-        algorithmFunc(item_id, score, closetId, loggedUser_id, item_type,itemCategories);
+        algorithmFunc(item_id, score, loggedUser_id, item_type,itemCategories);
       })
       .catch((err) => {
         console.log("cant get categories", err);
@@ -101,7 +101,6 @@ export default function Navigation() {
   const algorithmFunc = (
     item_id,
     score,
-    closetId,
     loggedUser_id,
     item_type,
     itemCategories

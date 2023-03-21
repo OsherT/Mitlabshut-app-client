@@ -18,6 +18,7 @@ import { Image } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { firebase } from "../../firebaseConfig";
 import { ScrollView } from "react-native";
+import UploadModal from "../components/Uploading";
 
 export default function SignUp() {
   const ApiUrl_image = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/ItemImages`;
@@ -42,15 +43,14 @@ export default function SignUp() {
       userEmail == "" ||
       userPassword == "" ||
       userPhone == "" ||
-      image == ""||
-      address==""
+      image == "" ||
+      address == ""
     ) {
       //אלו השדות חובה שלנו
       alert("אנא הכניסי את כל הפרטים הנדרשים");
-    } else if ((address.split(",").length < 3)){
-      alert("אנא הכניסי כתובת מלאה הכוללת שם רחובת עיר ומדינה")
-    }
-    else{
+    } else if (address.split(",").length < 3) {
+      alert("אנא הכניסי כתובת מלאה הכוללת שם רחובת עיר ומדינה");
+    } else {
       const newCloset = {
         //יצירת ארון חדש למשתמשת
         Id: 0,
@@ -84,7 +84,7 @@ export default function SignUp() {
                 setloggedUser(newUser); //לאחר ההרשמה היוזר מתחבר ומנווט ישר לארון שלו
                 console.log("succ in user", res.data);
                 uploadImageFB(res.data);
-                navigation.navigate("MainLayout");
+                // navigation.navigate("MainLayout");
               })
               .catch((err) => {
                 console.log("Error in user 1", err);
@@ -114,7 +114,6 @@ export default function SignUp() {
   };
 
   const uploadImageFB = async (user) => {
-
     setUploading(true);
     const response = await fetch(image.uri);
     const blob = await response.blob();
@@ -130,9 +129,11 @@ export default function SignUp() {
       setUploading(false);
       uploadImagesDB(user, imageLink);
 
-      navigation.navigate("OrderSuccessful", {
-        message: "הרשמתך בוצעה בהצלחה !",
-      });
+      if (!uploading) {
+        navigation.navigate("MainLayout", {
+          message: "ההרשמה בוצעה בהצלחה !",
+        });
+      }
     } catch (error) {
       console.log("error in upload to FB", error);
     }
@@ -182,100 +183,102 @@ export default function SignUp() {
             }}>
             הצטרפי לקהילה שלנו
           </Text>
-          <ScrollView keyboardShouldPersistTaps='handled'>
-          <InputField
-            placeholder="שם מלא"
-            containerStyle={{ marginBottom: 10 }}
-            onChangeText={(text) => setUserName(text)}
-          />
-          <InputField
-            placeholder="מייל"
-            containerStyle={{ marginBottom: 10 }}
-            onChangeText={(text) => setUserEmail(text)}
-            keyboardType="email-address"
-          />
-          <SafeAreaView style={styles.view}>
-            <GooglePlacesAutocomplete
-              placeholder="רחוב, עיר, מדינה"
-              fetchDetails={true}
-              GooglePlacesSearchQuery={{ rankby: "distance" }}
-              onPress={(data, details = null) => {
-                setAddress(data.description);
-              }}
-              query={{
-                key: "AIzaSyAaCpPtzL7apvQuXnKdRhY0omPHiMdc--s",
-                language: "he",
-              }}
-              textInputProps={{
-                textAlign: "right",
-                backgroundColor: "#FBF8F2",
-              }}
-              styles={{
-                container: {
-                  flex: 0,
-                  width: "100%",
-                  zIndex: 1,
-                },
-                listView: { position: "absolute", zIndex: 1, top: 50 },
-              }}
+          <ScrollView keyboardShouldPersistTaps="handled">
+            <InputField
+              placeholder="שם מלא"
+              containerStyle={{ marginBottom: 10 }}
+              onChangeText={(text) => setUserName(text)}
             />
-          </SafeAreaView>
+            <InputField
+              placeholder="מייל"
+              containerStyle={{ marginBottom: 10 }}
+              onChangeText={(text) => setUserEmail(text)}
+              keyboardType="email-address"
+            />
+            <SafeAreaView style={styles.view}>
+              <GooglePlacesAutocomplete
+                placeholder="רחוב, עיר, מדינה"
+                fetchDetails={true}
+                GooglePlacesSearchQuery={{ rankby: "distance" }}
+                onPress={(data, details = null) => {
+                  setAddress(data.description);
+                }}
+                query={{
+                  key: "AIzaSyAaCpPtzL7apvQuXnKdRhY0omPHiMdc--s",
+                  language: "he",
+                }}
+                textInputProps={{
+                  textAlign: "right",
+                  backgroundColor: "#FBF8F2",
+                }}
+                styles={{
+                  container: {
+                    flex: 0,
+                    width: "100%",
+                    zIndex: 1,
+                  },
+                  listView: { position: "absolute", zIndex: 1, top: 50 },
+                }}
+              />
+            </SafeAreaView>
 
-          <InputField
-            placeholder="סיסמה"
-            containerStyle={{ marginBottom: 10 }}
-            onChangeText={(text) => setUserPassword(text)}
-          />
+            <InputField
+              placeholder="סיסמה"
+              containerStyle={{ marginBottom: 10 }}
+              onChangeText={(text) => setUserPassword(text)}
+            />
 
-          <InputField
-            placeholder="מספר טלפון"
-            containerStyle={{ marginBottom: 10 }}
-            onChangeText={(text) => setUserPhone(text)}
-            keyboardType="phone-pad"
-          />
-          <InputField
-            placeholder="תיאור הארון החדש שלך"
-            containerStyle={{ marginBottom: 10 }}
-            onChangeText={(text) => setClosetDisc(text)}
-            keyboardType="text"
-          />
+            <InputField
+              placeholder="מספר טלפון"
+              containerStyle={{ marginBottom: 10 }}
+              onChangeText={(text) => setUserPhone(text)}
+              keyboardType="phone-pad"
+            />
+            <InputField
+              placeholder="תיאור הארון החדש שלך"
+              containerStyle={{ marginBottom: 10 }}
+              onChangeText={(text) => setClosetDisc(text)}
+              keyboardType="text"
+            />
 
-          <InputField
-            placeholder="הארון של..."
-            containerStyle={{ marginBottom: 20 }}
-            onChangeText={(text) => setClosetName(text)}
-            keyboardType="text"
-          />
-          {image ? (
-            <View style={{ alignSelf: "center" }}>
-              <Image source={{ uri: image.uri }} style={styles.Image} />
-            </View>
-          ) : (
+            <InputField
+              placeholder="הארון של..."
+              containerStyle={{ marginBottom: 20 }}
+              onChangeText={(text) => setClosetName(text)}
+              keyboardType="text"
+            />
+            {image ? (
+              <View style={{ alignSelf: "center" }}>
+                <Image source={{ uri: image.uri }} style={styles.Image} />
+              </View>
+            ) : (
+              <View>
+                <TouchableOpacity onPress={() => pickImage()}>
+                  <View style={styles.picturBtn}>
+                    <Text
+                      style={{
+                        color: "gray",
+                        textAlign: "center",
+                      }}>
+                      הוסיפי תמונת פרופיל
+                    </Text>
+                    <AddSvg></AddSvg>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            )}
+
+            {/* {uploading && (
+              <View style={{ marginBottom: 30 }}>
+                <ActivityIndicator size={"small"} color="black" />
+              </View>
+            )} */}
+            <UploadModal
+              uploading={uploading}
+              message="ההרשמה עלולה לקחת זמן, אנא המתן"></UploadModal>
             <View>
-              <TouchableOpacity onPress={() => pickImage()}>
-                <View style={styles.picturBtn}>
-                  <Text
-                    style={{
-                      color: "gray",
-                      textAlign: "center",
-                    }}>
-                    הוסיפי תמונת פרופיל
-                  </Text>
-                  <AddSvg></AddSvg>
-                </View>
-              </TouchableOpacity>
+              <Button title="הרשמה" onPress={() => SignUp()} />
             </View>
-          )}
-
-          {uploading && (
-            <View style={{ marginBottom: 30 }}>
-              <ActivityIndicator size={"small"} color="black" />
-            </View>
-          )}
-
-          <View>
-            <Button title="הרשמה" onPress={() => SignUp()} />
-          </View>
           </ScrollView>
         </ContainerComponent>
 
@@ -287,7 +290,7 @@ export default function SignUp() {
             marginBottom: 13,
             flexDirection: "row",
             top: 700,
-            left:100
+            left: 100,
           }}>
           <TouchableOpacity onPress={() => navigation.navigate("SignIn")}>
             <Text

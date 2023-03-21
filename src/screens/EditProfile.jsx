@@ -24,6 +24,7 @@ import axios from "axios";
 import { ScrollView } from "react-native-gesture-handler";
 import { firebase } from "../../firebaseConfig";
 import ButtonLogIn from "../components/ButtonLogIn";
+import UploadModal from "../components/Uploading";
 
 export default function EditProfile(props) {
   const {
@@ -141,9 +142,12 @@ export default function EditProfile(props) {
               setloggedUser(newUser);
               setUserImage(imageLink);
               setFlagForNewImg(false);
-              navigation.navigate("OrderSuccessful", {
-                message: "הפרטים עודכנו בהצלחה !",
-              });
+              setUploading(false);
+              if (!uploading) {
+                navigation.navigate("OrderSuccessful", {
+                  message: "הפרטים עודכנו בהצלחה !",
+                });
+              }
             })
             .catch((error) => {
               console.log("ERR in update closet", error);
@@ -309,11 +313,9 @@ export default function EditProfile(props) {
                 keyboardType="text"
               />
 
-              {uploading && (
-                <View style={{ marginBottom: 30 }}>
-                  <ActivityIndicator size={"small"} color="black" />
-                </View>
-              )}
+              <UploadModal
+                uploading={uploading}
+                message="עדכון פרטים עלול לקחת זמן, אנא המתן"></UploadModal>
 
               <View style={{ marginTop: 40 }}>
                 <Button

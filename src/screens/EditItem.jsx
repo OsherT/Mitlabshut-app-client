@@ -22,6 +22,7 @@ import { colors } from "react-native-elements";
 import { firebase } from "../../firebaseConfig";
 import MultiSelect from "react-native-multiple-select";
 import ButtonLogIn from "../components/ButtonLogIn";
+import UploadModal from "../components/Uploading";
 
 export default function EditItem(props) {
   const item = props.route.params.item;
@@ -446,9 +447,13 @@ export default function EditItem(props) {
           }
         );
     }
-    navigation.navigate("OrderSuccessful", {
-      message: "הפרטים עודכנו בהצלחה !",
-    });
+
+    setUploading(false);
+    if (!uploading) {
+      navigation.navigate("OrderSuccessful", {
+        message: "הפרטים עודכנו בהצלחה !",
+      });
+    }
   };
 
   //to convert the shipping method to string,shipping method in data base gets string only
@@ -715,11 +720,9 @@ export default function EditItem(props) {
             </View>
           )}
 
-          {uploading && (
-            <View style={{ marginBottom: 30 }}>
-              <ActivityIndicator size={"small"} color="black" />
-            </View>
-          )}
+          <UploadModal
+            uploading={uploading}
+            message="עדכון פרטים עלול לקחת זמן, אנא המתן"></UploadModal>
 
           <Button
             title="עדכני פרטים "

@@ -24,6 +24,7 @@ import { firebase } from "../../firebaseConfig";
 import { AddSvg } from "../svg";
 import MultiSelect from "react-native-multiple-select";
 import ButtonLogIn from "../components/ButtonLogIn";
+import UploadModal from "../components/Uploading";
 
 export default function UploadItem() {
   const navigation = useNavigation();
@@ -320,12 +321,13 @@ export default function UploadItem() {
 
     uploadImagesDB(item_ID, imageLinks);
 
-    setImages([]);
     setUploading(false);
 
-    navigation.navigate("OrderSuccessful", {
-      message: "הפריט עלה בהצלחה !",
-    });
+    if (!uploading) {
+      navigation.navigate("OrderSuccessful", {
+        message: "הפריט עלה בהצלחה !",
+      });
+    }
   };
 
   const uploadImagesDB = (item_id, imageLinks) => {
@@ -422,7 +424,6 @@ export default function UploadItem() {
 
   const onSelectedCategoryChange = (itemCategory) => {
     setItemCategory(itemCategory);
-    console.log("selectedCategory", itemCategory);
   };
 
   const onSelectedDeliveryChange = (itemDeliveryMethod) => {
@@ -496,19 +497,7 @@ export default function UploadItem() {
             submitButtonColor={COLORS.golden}
             itemFontSize={14}
           />
-          {/* <MultipleSelectList
-            placeholder=" קטגוריה"
-            searchPlaceholder="חיפוש"
-            boxStyles={styles.dropdownInput}
-            dropdownStyles={styles.dropdownContainer}
-            setSelected={(val) => setItemCategory(val)}
-            data={categoriesList}
-            notFoundText="לא קיים מידע"
-            save="value"
-            label="קטגוריה"
-            badgeStyles={{ backgroundColor: "white" }}
-            badgeTextStyles={{ color: "black" }}
-          /> */}
+
           <SelectList
             placeholder="  סוג פריט"
             searchPlaceholder="חיפוש"
@@ -588,19 +577,7 @@ export default function UploadItem() {
             submitButtonColor={COLORS.golden}
             itemFontSize={14}
           />
-          {/* <MultipleSelectList
-            placeholder="שיטת מסירה"
-            searchPlaceholder="חיפוש"
-            boxStyles={styles.dropdownInput}
-            dropdownStyles={styles.dropdownContainer}
-            setSelected={(val) => setItemDeliveryMethod(val)}
-            data={deliveryMethodsList}
-            notFoundText="לא קיים מידע"
-            label="שיטת מסירה"
-            maxHeight={200}
-            badgeStyles={{ backgroundColor: "white" }}
-            badgeTextStyles={{ color: "black" }}
-          /> */}
+
           <TextInput
             style={styles.bigInput}
             placeholder=" תיאור מפורט  "
@@ -638,11 +615,11 @@ export default function UploadItem() {
               ))}
             </View>
           )}
-          {uploading && (
-            <View style={{ marginBottom: 30 }}>
-              <ActivityIndicator size={"small"} color="black" />
-            </View>
-          )}
+
+          <UploadModal
+            uploading={uploading}
+            message="העלאת פריט עלולה לקחת זמן, אנא המתן"></UploadModal>
+
           <Button title="הוספת פריט" onPress={UploadItem} />
 
           <View style={{ marginTop: 20 }}>

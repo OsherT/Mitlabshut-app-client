@@ -27,7 +27,8 @@ export default function Closet(props) {
     closetName,
     closetDesc,
     GetItemForAlgo,
-    shopScore,favScore
+    shopScore,
+    favScore,
   } = useContext(userContext);
   const { route } = props;
   const closetId = route?.params?.closetId || loggedUser.closet_id;
@@ -42,7 +43,6 @@ export default function Closet(props) {
   const ApiUrl_user = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User`;
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-
 
   useEffect(() => {
     if (isFocused) {
@@ -79,11 +79,14 @@ export default function Closet(props) {
           closetId
       )
       .then((res) => {
-        setClosetFollowers(res.data);
+        if (res == "No followers yet") {
+          setClosetFollowers(0);
+        } else {
+          setClosetFollowers(res.data);
+        }
       })
       .catch((err) => {
-        setClosetFollowers("0");
-        //alert("cant take followers");
+        setClosetFollowers(0);
         console.log(err);
       });
   }
@@ -94,11 +97,15 @@ export default function Closet(props) {
           closetId
       )
       .then((res) => {
-        setUsersItems(res.data);
-        GetItemPhotos(res.data); // move the call here
+        if (res == "No items yet") {
+          setUsersItems("");
+          GetItemPhotos("");
+        } else {
+          setUsersItems(res.data);
+          GetItemPhotos(res.data);
+        }
       })
       .catch((err) => {
-        //alert("cant take items");
         console.log(err);
       });
   }
@@ -271,7 +278,7 @@ export default function Closet(props) {
       .then((res) => {
         getFavItems();
         setUsersFavList((prevList) => [...prevList, { item_id }]);
-        GetItemForAlgo(item_id,favScore,loggedUser.id);
+        GetItemForAlgo(item_id, favScore, loggedUser.id);
       })
       .catch((err) => {
         // alert("cant add to fav");
@@ -306,7 +313,6 @@ export default function Closet(props) {
           } else {
             const tempUsersShopList = res.data.map(({ item_id }) => item_id);
             setUsersShopList(tempUsersShopList);
-
           }
         })
         .catch((err) => {
@@ -322,7 +328,7 @@ export default function Closet(props) {
       .then((res) => {
         getShopItems();
         setUsersShopList((prevList) => [...prevList, { item_id }]);
-        GetItemForAlgo(item_id,shopScore,loggedUser.id);
+        GetItemForAlgo(item_id, shopScore, loggedUser.id);
       })
       .catch((err) => {
         alert("cant add to shop list");

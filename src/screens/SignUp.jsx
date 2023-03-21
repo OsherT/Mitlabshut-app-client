@@ -84,7 +84,6 @@ export default function SignUp() {
                 setloggedUser(newUser); //לאחר ההרשמה היוזר מתחבר ומנווט ישר לארון שלו
                 console.log("succ in user", res.data);
                 uploadImageFB(res.data);
-                // navigation.navigate("MainLayout");
               })
               .catch((err) => {
                 console.log("Error in user 1", err);
@@ -161,7 +160,6 @@ export default function SignUp() {
       )
       .then((res) => {
         setloggedUser(userWithImage); //לאחר ההרשמה היוזר מתחבר ומנווט ישר לארון שלו
-        // navigation.navigate("Closet");
       })
       .catch((err) => {
         console.log("err in user DB 2", err);
@@ -180,7 +178,8 @@ export default function SignUp() {
               marginBottom: 20,
               lineHeight: 32 * 1.2,
               textTransform: "capitalize",
-            }}>
+            }}
+          >
             הצטרפי לקהילה שלנו
           </Text>
           <ScrollView keyboardShouldPersistTaps="handled">
@@ -259,7 +258,8 @@ export default function SignUp() {
                       style={{
                         color: "gray",
                         textAlign: "center",
-                      }}>
+                      }}
+                    >
                       הוסיפי תמונת פרופיל
                     </Text>
                     <AddSvg></AddSvg>
@@ -275,7 +275,8 @@ export default function SignUp() {
             )} */}
             <UploadModal
               uploading={uploading}
-              message="ההרשמה עלולה לקחת זמן, אנא המתן"></UploadModal>
+              message="ההרשמה עלולה לקחת זמן, אנא המתן"
+            ></UploadModal>
             <View>
               <Button title="הרשמה" onPress={() => SignUp()} />
             </View>
@@ -291,14 +292,16 @@ export default function SignUp() {
             flexDirection: "row",
             top: 700,
             left: 100,
-          }}>
+          }}
+        >
           <TouchableOpacity onPress={() => navigation.navigate("SignIn")}>
             <Text
               style={{
                 ...FONTS.Mulish_400Regular,
                 fontSize: 16,
                 color: COLORS.black,
-              }}>
+              }}
+            >
               {" "}
               התחברי
             </Text>
@@ -308,7 +311,8 @@ export default function SignUp() {
               ...FONTS.Mulish_400Regular,
               fontSize: 16,
               color: COLORS.gray,
-            }}>
+            }}
+          >
             כבר חלק מהקהילה?{" "}
           </Text>
         </View>

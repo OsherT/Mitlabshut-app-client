@@ -47,11 +47,10 @@ export default function SignUp() {
     ) {
       //אלו השדות חובה שלנו
       alert("אנא הכניסי את כל הפרטים הנדרשים");
-    } else if (address){
-      
-
+    } else if ((address.split(",").length < 3)){
+      alert("אנא הכניסי כתובת מלאה הכוללת שם רחובת עיר ומדינה")
     }
-    {
+    else{
       const newCloset = {
         //יצירת ארון חדש למשתמשת
         Id: 0,

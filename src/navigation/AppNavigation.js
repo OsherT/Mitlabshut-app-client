@@ -57,7 +57,9 @@ export default function Navigation() {
   const [loggedUser, setloggedUser] = useState("");
   const [closetDesc, setclosetDesc] = useState("");
   const [closetName, setclosetName] = useState("");
-
+  const shopScore=8;
+  const favScore=6;
+  const viewScore=4;
 
   function GetItemForAlgo(itemId, score,  loggedUser_id) {
     axios
@@ -149,6 +151,7 @@ export default function Navigation() {
           setclosetName,
           getItemCategories_ForAlgorithm,
           GetItemForAlgo,
+          shopScore,favScore,viewScore
         }}
       >
         <Stack.Navigator

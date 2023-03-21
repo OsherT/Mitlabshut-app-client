@@ -19,7 +19,7 @@ import { userContext } from "../navigation/userContext";
 export default function ItemsByCtegory(props) {
   const navigation = useNavigation();
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
-  const { loggedUser,GetItemForAlgo } = useContext(userContext);
+  const { loggedUser,GetItemForAlgo, shopScore, favScore } = useContext(userContext);
   const isFocused = useIsFocused();
   const [search, setsearch] = useState("");
   const [itemsByType, setItemsByType] = useState([]);
@@ -113,7 +113,7 @@ export default function ItemsByCtegory(props) {
       .then((res) => {
         getFavItems();
         setUsersFavList((prevList) => [...prevList, { item_id }]);
-        GetItemForAlgo(item_id,4,loggedUser.id);
+        GetItemForAlgo(item_id,favScore,loggedUser.id);
 
       })
       .catch((err) => {
@@ -164,7 +164,7 @@ export default function ItemsByCtegory(props) {
       .then((res) => {
         getShopItems();
         setUsersShopList((prevList) => [...prevList, { item_id }]);
-        GetItemForAlgo(item_id,8,loggedUser.id);
+        GetItemForAlgo(item_id,shopScore,loggedUser.id);
       })
       .catch((err) => {
         alert("cant add to shop list");

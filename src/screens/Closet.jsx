@@ -27,6 +27,7 @@ export default function Closet(props) {
     closetName,
     closetDesc,
     GetItemForAlgo,
+    shopScore,favScore
   } = useContext(userContext);
   const { route } = props;
   const closetId = route?.params?.closetId || loggedUser.closet_id;
@@ -270,7 +271,7 @@ export default function Closet(props) {
       .then((res) => {
         getFavItems();
         setUsersFavList((prevList) => [...prevList, { item_id }]);
-        GetItemForAlgo(item_id,4,loggedUser.id);
+        GetItemForAlgo(item_id,favScore,loggedUser.id);
       })
       .catch((err) => {
         // alert("cant add to fav");
@@ -321,7 +322,7 @@ export default function Closet(props) {
       .then((res) => {
         getShopItems();
         setUsersShopList((prevList) => [...prevList, { item_id }]);
-        GetItemForAlgo(item_id,8,loggedUser.id);
+        GetItemForAlgo(item_id,shopScore,loggedUser.id);
       })
       .catch((err) => {
         alert("cant add to shop list");

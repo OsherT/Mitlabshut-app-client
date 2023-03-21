@@ -18,7 +18,8 @@ import { userContext } from "../navigation/userContext";
 
 export default function SearchRes(props) {
   const navigation = useNavigation();
-  const { loggedUser,GetItemForAlgo} = useContext(userContext);
+  const { loggedUser, GetItemForAlgo, shopScore, favScore } =
+    useContext(userContext);
   const isFocused = useIsFocused();
   const [search, setsearch] = useState("");
   const [nextSearch, setnextSearch] = useState("");
@@ -36,7 +37,7 @@ export default function SearchRes(props) {
       GetSearcResults();
     }
   }, [brandsList, categoriesList]);
-  
+
   useEffect(() => {
     if (isFocused) {
       GetBrandsList();
@@ -44,8 +45,7 @@ export default function SearchRes(props) {
       getShopItems();
       getFavItems();
     }
-  }, [isFocused,searchText]);
-  
+  }, [isFocused, searchText]);
 
   const GetBrandsList = () => {
     axios
@@ -159,7 +159,7 @@ export default function SearchRes(props) {
       .then((res) => {
         getFavItems();
         setUsersFavList((prevList) => [...prevList, { item_id }]);
-        GetItemForAlgo(item_id,4,loggedUser.id);
+        GetItemForAlgo(item_id, favScore, loggedUser.id);
       })
       .catch((err) => {
         // alert("cant add to fav");
@@ -207,7 +207,7 @@ export default function SearchRes(props) {
       .then((res) => {
         getShopItems();
         setUsersShopList((prevList) => [...prevList, { item_id }]);
-        GetItemForAlgo(item_id,8,loggedUser.id);
+        GetItemForAlgo(item_id, shopScore, loggedUser.id);
       })
       .catch((err) => {
         alert("cant add to shop list");

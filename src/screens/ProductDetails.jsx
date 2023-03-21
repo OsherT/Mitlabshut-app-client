@@ -22,7 +22,8 @@ import ButtonLogIn from "../components/ButtonLogIn";
 
 export default function ProductDetails(props) {
   const navigation = useNavigation();
-  const { loggedUser } = useContext(userContext);
+  const { loggedUser, GetItemForAlgo, shopScore, favScore, viewScore } =
+    useContext(userContext);
   const item = props.route.params.item;
   const isFocused = useIsFocused();
   const [closetName, setclosetName] = useState("");
@@ -41,7 +42,6 @@ export default function ProductDetails(props) {
   const [address1, setaddress1] = useState(loggedUser.address);
   const [address2, setaddress2] = useState("");
 
-
   //URL
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
   const ApiUrl_user = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User`;
@@ -49,7 +49,6 @@ export default function ProductDetails(props) {
   useEffect(() => {
     if (isFocused) {
       GetClosetdata();
-      getUser();
       getFavItems();
       getShopItems();
       GetItemCategories();
@@ -59,11 +58,14 @@ export default function ProductDetails(props) {
       if (address1 && address2) {
         getAddressLocations();
       }
-      console.log("yy");
-      console.log("item.shipping_method", item.shipping_method);
-      console.log("shippingMethod", shippingMethod);
+         }
+  }, [isFocused, address1, address2]);
+
+  useEffect(() => {
+    if (isFocused) {
+      getUser();
     }
-  }, [isFocused, address1, address2, shippingMethod]);
+  }, [isFocused]);
 
   function GetClosetdata() {
     axios
@@ -94,6 +96,8 @@ export default function ProductDetails(props) {
           setmyitemFlag(true);
         } else {
           setmyitemFlag(false);
+          GetItemForAlgo(item.id, viewScore, loggedUser.id);
+
         }
         getFollowingList();
       })
@@ -150,12 +154,10 @@ export default function ProductDetails(props) {
 
   //gets all the items in the user's fav list
   function getFavItems() {
-    console.log("flag" + myitemFlag);
     if (myitemFlag == false) {
       axios
         .get(ApiUrl_user + `/GetFavByUserID/${loggedUser.id}`)
         .then((res) => {
-          console.log("fav" + res.data);
           if (res.data == "No items yet") {
             setUsersFavList("");
           } else {
@@ -178,6 +180,7 @@ export default function ProductDetails(props) {
       .then((res) => {
         getFavItems();
         GetNumOfFav();
+        GetItemForAlgo(item_id, favScore, loggedUser.id);
       })
       .catch((err) => {
         console.log("cant add to fav", err);
@@ -253,6 +256,7 @@ export default function ProductDetails(props) {
       .then((res) => {
         getShopItems();
         setUsersShopList((prevList) => [...prevList, { item_id }]);
+        GetItemForAlgo(item_id, shopScore, loggedUser.id);
       })
       .catch((err) => {
         console.log("cant add to shop list", err);
@@ -406,25 +410,6 @@ export default function ProductDetails(props) {
     }
   };
 
-  //need to delete and fix the view
-  // function renderSlide() {
-  //   return (
-  //     <View style={{ flex: 1, backgroundColor: "#EFEDE6" }}>
-  //       <View style={styles.topIcons}>
-  //         <TouchableOpacity onPress={() => navigation.goBack()}>
-  //           <BackSvg />
-  //         </TouchableOpacity>
-  //       </View>
-  //       <View
-  //         style={{
-  //           borderColor: COLORS.goldenTransparent_03,
-  //           borderWidth: 2,
-  //           paddingTop: 100,
-  //         }}></View>
-  //     </View>
-  //   );
-  // }
-
   function renderContent() {
     return (
       <View>
@@ -460,7 +445,8 @@ export default function ProductDetails(props) {
                       textAlign: "right",
                       fontSize: 13,
                       marginBottom: 5,
-                    }}>
+                    }}
+                  >
                     ✓ משלוח ✓ איסוף עצמי
                   </Text>
                 )}
@@ -677,7 +663,6 @@ export default function ProductDetails(props) {
                   )}
                   {myitemFlag && (
                     <Text style={styles.descriptionHeader}>
-                      
                       🏠 {"        "}
                     </Text>
                   )}
@@ -721,11 +706,6 @@ export default function ProductDetails(props) {
   }
 
   return (
-    // <View style={{ flex: 1, backgroundColor: "#EFEDE6" }}>
-    //   {/* //need to delete and fix the view */}
-    //   {renderSlide()}
-    //   {renderContent()}
-    // </View>
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
       <Header />
       {renderContent()}

@@ -18,7 +18,7 @@ import TrashCanIcon from "../svg/TrashCanIcon";
 export default function WishList() {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-  const { loggedUser } = useContext(userContext);
+  const { loggedUser,GetItemForAlgo,shopScore } = useContext(userContext);
   const [Items, setItems] = useState([]);
   const [UsersItemPhotos, setUsersItemPhotos] = useState([]);
   const [shopList, setshopList] = useState([]);
@@ -105,6 +105,8 @@ export default function WishList() {
       .then((res) => {
         getShopItems();
         setshopList((prevList) => [...prevList, { item_id }]);
+        GetItemForAlgo(item_id,shopScore,loggedUser.id);
+
       })
       .catch((err) => {
         alert("cant add to shop list");

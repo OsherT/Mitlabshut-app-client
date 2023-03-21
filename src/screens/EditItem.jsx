@@ -23,11 +23,13 @@ import { firebase } from "../../firebaseConfig";
 import MultiSelect from "react-native-multiple-select";
 import ButtonLogIn from "../components/ButtonLogIn";
 import UploadModal from "../components/Uploading";
+import GoBackModal from "../components/GoBackModal";
 
 export default function EditItem(props) {
   const item = props.route.params.item;
   const itemCurrentImages = props.route.params.itemImages;
   const isFocused = useIsFocused();
+  // const [showModal, setShowModal] = useState(false);
 
   const { loggedUser } = useContext(userContext);
   const navigation = useNavigation();
@@ -502,7 +504,6 @@ export default function EditItem(props) {
               שם פריט :
             </Text>
           </View>
-
           <View style={styles.doubleContainer}>
             <TextInput
               style={styles.textInput}
@@ -521,11 +522,9 @@ export default function EditItem(props) {
               onChangeText={(text) => setItemName(text)}
             />
           </View>
-
           <Text style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
             קטגוריה :
           </Text>
-
           <MultiSelect
             items={categoriesList}
             selectedItems={selectedCategory}
@@ -558,7 +557,6 @@ export default function EditItem(props) {
             submitButtonColor={COLORS.golden}
             itemFontSize={14}
           />
-
           <Text
             style={{
               textAlign: "right",
@@ -633,7 +631,6 @@ export default function EditItem(props) {
           <Text style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
             שיטת איסוף :
           </Text>
-
           <MultiSelect
             items={deliveryMethodsList}
             selectedItems={itemDeliveryMethod}
@@ -666,7 +663,6 @@ export default function EditItem(props) {
             submitButtonColor={COLORS.golden}
             itemFontSize={14}
           />
-
           <Text style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
             תיאור פריט :
           </Text>
@@ -676,7 +672,6 @@ export default function EditItem(props) {
             containerStyle={{ marginBottom: 10 }}
             onChangeText={(text) => setItemDescription(text)}
           />
-
           <View>
             {itemNewImages.length < 3 && (
               <TouchableOpacity onPress={() => pickImage(itemNewImages.length)}>
@@ -695,7 +690,6 @@ export default function EditItem(props) {
               </TouchableOpacity>
             )}
           </View>
-
           {!flagForNewImg && itemCurrentImages.length > 0 && (
             <View style={styles.imageContainer}>
               {itemCurrentImages.map((image, index) => (
@@ -707,7 +701,6 @@ export default function EditItem(props) {
               ))}
             </View>
           )}
-
           {itemNewImages.length > 0 && (
             <View style={styles.imageContainer}>
               {itemNewImages.map((image, index) => (
@@ -719,11 +712,9 @@ export default function EditItem(props) {
               ))}
             </View>
           )}
-
           <UploadModal
             uploading={uploading}
             message="עדכון פרטים עלול לקחת זמן, אנא המתן"></UploadModal>
-
           <Button
             title="עדכני פרטים "
             onPress={() => {
@@ -731,11 +722,11 @@ export default function EditItem(props) {
               flagForNewImg ? uploadImageFB(item.id) : UpdateItem();
             }}
           />
-
           <View style={{ marginTop: 20 }}>
             <ButtonLogIn
               title="ביטול  "
               onPress={() => {
+
                 Alert.alert(
                   "השינויים לא ישמרו",
                   "האם את בטוחה שברצונך לחזור?",
@@ -753,6 +744,11 @@ export default function EditItem(props) {
               }}
             />
           </View>
+
+          {/* <View style={{ marginTop: 20 }}>
+            <ButtonLogIn title="ביטול  " onPress={() => setShowModal(true)} />
+          </View>
+          <GoBackModal showModal={showModal} setShowModal={setShowModal} /> */}
         </ContainerComponent>
       </KeyboardAwareScrollView>
     );

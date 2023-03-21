@@ -44,6 +44,7 @@ export default function WishList() {
         setItems("");
       });
   }
+
   function getShopItems() {
     axios
       .get(
@@ -62,6 +63,7 @@ export default function WishList() {
         console.log("cant get shop list", err);
       });
   }
+  
   function GetItemPhotos(items) {
     // pass the items array as a parameter
     const promises = items.map((item) => {

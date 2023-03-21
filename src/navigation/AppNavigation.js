@@ -57,16 +57,22 @@ export default function Navigation() {
   const [loggedUser, setloggedUser] = useState("");
   const [closetDesc, setclosetDesc] = useState("");
   const [closetName, setclosetName] = useState("");
-  const [UsersItems, setUsersItems] = useState([]);
 
-  function GetClosetItems(closetId) {
+
+  function GetItemForAlgo(itemId, score,  loggedUser_id) {
     axios
       .get(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemByClosetId/ClosetId/" +
-          closetId
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemById/Id/0" +
+          itemId
       )
       .then((res) => {
-        setUsersItems(res.data);
+        getItemCategories_ForAlgorithm(
+          itemId,
+          score,
+          
+          loggedUser_id,
+          res.data[0].type
+        );
       })
       .catch((err) => {
         console.log(err);
@@ -75,8 +81,9 @@ export default function Navigation() {
   const getItemCategories_ForAlgorithm = (
     item_id,
     score,
-    closetId,
-    loggedUser_id
+    
+    loggedUser_id,
+    item_type
   ) => {
     axios
       .get(
@@ -84,43 +91,26 @@ export default function Navigation() {
       )
       .then((res) => {
         const itemCategories = res.data.map((item) => item.category_name);
-        console.log("itemCategories " + itemCategories);
-        setitemCategories(itemCategories);
-        if (itemCategories.length > 0) {
-          const allCategoriesRetrieved = itemCategories.every((category) =>
-            Boolean(category)
-          );
-          if (allCategoriesRetrieved) {
-            algorithmFunc(
-              item_id,
-              score,
-              closetId,
-              loggedUser_id,
-              itemCategories
-            );
-          }
-        }
+        algorithmFunc(item_id, score, loggedUser_id, item_type,itemCategories);
       })
       .catch((err) => {
         console.log("cant get categories", err);
       });
   };
 
-
-  const algorithmFunc = (item_id, score, closetId, loggedUser_id) => {
-    let Temptype;
-    GetClosetItems(closetId); //לשנות לפי אייטם איידי
-    UsersItems.map((item) => {
-      if (item_id === item.id) {
-        Temptype = hebrewToUrlEncoded(item.type);
-      }
-    }); // עוברות על מערך הפריטים ומביאות את הטייפ של הפריט שבוצעה עליו פעולה
+  const algorithmFunc = (
+    item_id,
+    score,
+    loggedUser_id,
+    item_type,
+    itemCategories
+  ) => {
     itemCategories.map((category_name) => {
       axios
         .post(
           `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/SmartAlgoStepOne/category_name/${hebrewToUrlEncoded(
             category_name
-          )}/item_type_name/${Temptype}/score/${score}/user_id/${loggedUser_id}`
+          )}/item_type_name/${hebrewToUrlEncoded(item_type)}/score/${score}/user_id/${loggedUser_id}`
         )
         .then((res) => {
           console.log("yay");
@@ -146,6 +136,7 @@ export default function Navigation() {
     }
     return encodedStr;
   }
+
   return (
     <NavigationContainer>
       <userContext.Provider
@@ -157,6 +148,7 @@ export default function Navigation() {
           closetName,
           setclosetName,
           getItemCategories_ForAlgorithm,
+          GetItemForAlgo,
         }}
       >
         <Stack.Navigator

@@ -29,7 +29,8 @@ export default function EditItem(props) {
   const item = props.route.params.item;
   const itemCurrentImages = props.route.params.itemImages;
   const isFocused = useIsFocused();
-  // const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  // let showModal = false;
 
   const { loggedUser } = useContext(userContext);
   const navigation = useNavigation();
@@ -722,7 +723,7 @@ export default function EditItem(props) {
               flagForNewImg ? uploadImageFB(item.id) : UpdateItem();
             }}
           />
-          <View style={{ marginTop: 20 }}>
+          {/* <View style={{ marginTop: 20 }}>
             <ButtonLogIn
               title="ביטול  "
               onPress={() => {
@@ -743,12 +744,12 @@ export default function EditItem(props) {
                 );
               }}
             />
-          </View>
+          </View> */}
 
-          {/* <View style={{ marginTop: 20 }}>
+          <View style={{ marginTop: 20 }}>
             <ButtonLogIn title="ביטול  " onPress={() => setShowModal(true)} />
+           
           </View>
-          <GoBackModal showModal={showModal} setShowModal={setShowModal} /> */}
         </ContainerComponent>
       </KeyboardAwareScrollView>
     );
@@ -757,6 +758,9 @@ export default function EditItem(props) {
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
       <Header flag={true} onEdit={true} />
       {renderContent()}
+      {showModal && (
+        <GoBackModal showModal={showModal} setShowModal={setShowModal} />
+      )}
     </SafeAreaView>
   );
 }

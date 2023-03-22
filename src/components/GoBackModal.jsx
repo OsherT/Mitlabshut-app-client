@@ -1,8 +1,10 @@
 import { useNavigation } from "@react-navigation/native";
-import { Text, TouchableOpacity, View, Modal } from "react-native";
+import Modal from "react-native-modal";
+import { View, Text, TouchableOpacity } from "react-native";
+import React from "react";
 import { COLORS, FONTS, SIZES } from "../constants";
 
-export default function GoBackModal(props) {
+export default function GoBackModal({ showModal, setShowModal }) {
   const navigation = useNavigation();
 
   const handleCancel = () => {
@@ -11,18 +13,19 @@ export default function GoBackModal(props) {
 
   const handleSure = () => {
     setShowModal(false);
-    navigation.navigate("SignIn");
+    navigation.goBack();
   };
 
   return (
     <Modal
-      isVisible={props.showModal}
-      onBackdropPress={() => props.setShowModal(false)}
+      isVisible={!!showModal}
+      onBackdropPress={setShowModal}
       hideModalContentWhileAnimating={true}
       backdropTransitionOutTiming={0}
       style={{ margin: 0 }}
       animationIn="zoomIn"
-      animationOut="zoomOut">
+      animationOut="zoomOut"
+      useNativeDriver={true}>
       <View
         style={{
           width: SIZES.width - 60,
@@ -39,7 +42,7 @@ export default function GoBackModal(props) {
             fontSize: 20,
             marginBottom: 26,
           }}>
-          Are you sure you want to {"\n"} Sign Out ?
+          השינויים לא ישמרו {"\n"} האם את בטוחה ?
         </Text>
         <View
           style={{
@@ -59,9 +62,7 @@ export default function GoBackModal(props) {
               borderColor: COLORS.goldenTransparent_05,
               borderWidth: 1,
             }}
-            onPress={() => {
-              props.setShowModal(false);
-            }}>
+            onPress={handleCancel}>
             <Text
               style={{
                 color: COLORS.red,
@@ -69,7 +70,7 @@ export default function GoBackModal(props) {
                 fontSize: 14,
                 textTransform: "uppercase",
               }}>
-              Cancel
+              ביטול
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -90,7 +91,7 @@ export default function GoBackModal(props) {
                 fontSize: 14,
                 textTransform: "uppercase",
               }}>
-              Sure
+              אישור
             </Text>
           </TouchableOpacity>
         </View>

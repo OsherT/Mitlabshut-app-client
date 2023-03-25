@@ -165,6 +165,8 @@ export default function Order() {
                       item: item,
                     });
                   }}
+                  disabled={item.item_status === "sold" || item.item_status === "delete"}
+
                 >
                   {UsersItemPhotos.filter((photo) => photo.item_ID === item.id)
                     .slice(0, 1)

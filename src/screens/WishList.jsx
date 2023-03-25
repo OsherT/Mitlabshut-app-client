@@ -179,10 +179,13 @@ export default function WishList() {
                     flexDirection: "row",
                   }}
                   onPress={() => {
-                    navigation.navigate("ProductDetails", {
-                      item: item,
-                    });
+                    if (item.item_status !== "sold" && item.item_status !== "delete") {
+                      navigation.navigate("ProductDetails", {
+                        item: item,
+                      });
+                    }
                   }}
+                  disabled={item.item_status === "sold" || item.item_status === "delete"}
                 >
                   {UsersItemPhotos.filter((photo) => photo.item_ID === item.id)
                     .slice(0, 1)

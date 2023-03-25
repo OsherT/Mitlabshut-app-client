@@ -5,7 +5,6 @@ import {
   SafeAreaView,
   StyleSheet,
   Image,
-  ActivityIndicator,
   Alert,
 } from "react-native";
 import React, { useEffect, useState, useContext } from "react";
@@ -15,12 +14,12 @@ import { Header, Button, ContainerComponent } from "../components";
 import { AREA, COLORS, FONTS } from "../constants";
 import { TextInput } from "react-native";
 import { SelectList } from "react-native-dropdown-select-list";
+import MultiSelect from "react-native-multiple-select";
 import { AddSvg } from "../svg";
 import * as ImagePicker from "expo-image-picker";
 import { userContext } from "../navigation/userContext";
 import { colors } from "react-native-elements";
 import { firebase } from "../../firebaseConfig";
-import MultiSelect from "react-native-multiple-select";
 import ButtonLogIn from "../components/ButtonLogIn";
 import UploadModal from "../components/Uploading";
 import GoBackModal from "../components/GoBackModal";
@@ -30,7 +29,7 @@ export default function EditItem(props) {
   const itemCurrentImages = props.route.params.itemImages;
   const isFocused = useIsFocused();
   const [showModal, setShowModal] = useState(false);
-  // let showModal = false;
+  const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
 
   const { loggedUser } = useContext(userContext);
   const navigation = useNavigation();
@@ -84,8 +83,6 @@ export default function EditItem(props) {
     { key: "4", value: "נלבש מספר פעמים" },
   ];
 
-  const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
-
   useEffect(() => {
     if (isFocused) {
       GetBrandsList();
@@ -108,8 +105,9 @@ export default function EditItem(props) {
         return res.json();
       })
       .then(
-        (data) => {
-          setBrandsList(data.map((item) => item.brand_name));
+        (data) => {{
+        }
+          setBrandsList(data.map((item) => ({ value: item.brand_name })));
         },
         (error) => {
           console.log("barnd error", error);
@@ -157,7 +155,7 @@ export default function EditItem(props) {
       })
       .then(
         (data) => {
-          setColorsList(data.map((item) => item.color_name));
+          setColorsList(data.map((item) => ({value:item.color_name})));
         },
         (error) => {
           console.log("colors error", error);
@@ -178,7 +176,7 @@ export default function EditItem(props) {
       })
       .then(
         (data) => {
-          setSizesList(data.map((item) => item.size_name));
+          setSizesList(data.map((item) => ({value:item.size_name})));
         },
         (error) => {
           console.log("size error", error);
@@ -199,7 +197,7 @@ export default function EditItem(props) {
       })
       .then(
         (data) => {
-          setTypesList(data.map((item) => item.item_type_name));
+          setTypesList(data.map((item) => ({value:item.item_type_name})));
         },
         (error) => {
           console.log("type error", error);
@@ -576,6 +574,7 @@ export default function EditItem(props) {
             data={typesList}
             notFoundText="לא קיים מידע"
           />
+
           <Text style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
             מידה :
           </Text>
@@ -618,6 +617,7 @@ export default function EditItem(props) {
           <Text style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
             מצב שימוש :
           </Text>
+
           <SelectList
             placeholder={item.use_condition}
             defaultOption={item.use_condition}
@@ -748,7 +748,6 @@ export default function EditItem(props) {
 
           <View style={{ marginTop: 20 }}>
             <ButtonLogIn title="ביטול  " onPress={() => setShowModal(true)} />
-           
           </View>
         </ContainerComponent>
       </KeyboardAwareScrollView>

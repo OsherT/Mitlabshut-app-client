@@ -19,6 +19,7 @@ import * as ImagePicker from "expo-image-picker";
 import { firebase } from "../../firebaseConfig";
 import { ScrollView } from "react-native";
 import UploadModal from "../components/Uploading";
+import { SelectList } from "react-native-dropdown-select-list";
 
 export default function SignUp() {
   const ApiUrl_image = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/ItemImages`;
@@ -31,11 +32,18 @@ export default function SignUp() {
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const [userPhone, setUserPhone] = useState("");
+  const [userAge, setUserAge] = useState("");
   const [ClosetDisc, setClosetDisc] = useState("ברוכות הבאות לארון החדש שלי");
   const [ClosetName, setClosetName] = useState(userName);
   const { loggedUser, setloggedUser } = useContext(userContext);
   const [uploading, setUploading] = useState(false);
   const [image, setImage] = useState(null);
+
+const ageList = Array.from({ length: 109 }, (_, i) => ({
+  value: (i + 12).toString(),
+  label: `${i + 12}`,
+}));
+
 
   const SignUp = () => {
     if (
@@ -44,7 +52,8 @@ export default function SignUp() {
       userPassword == "" ||
       userPhone == "" ||
       image == "" ||
-      address == ""
+      address == "" ||
+      userAge == ""
     ) {
       //אלו השדות חובה שלנו
       alert("אנא הכניסי את כל הפרטים הנדרשים");
@@ -73,7 +82,8 @@ export default function SignUp() {
               Address: address,
               IsAdmin: false,
               Closet_ID: res.data, //הכנסת האיידי של הארון ליוזר החדש
-              User_image: difPic,
+              User_image: difPic, //בהתחלה נכניס תמונה דיפולטית
+              Age: userAge,
             };
             axios
               .post(
@@ -178,8 +188,7 @@ export default function SignUp() {
               marginBottom: 20,
               lineHeight: 32 * 1.2,
               textTransform: "capitalize",
-            }}
-          >
+            }}>
             הצטרפי לקהילה שלנו
           </Text>
           <ScrollView keyboardShouldPersistTaps="handled">
@@ -221,6 +230,16 @@ export default function SignUp() {
               />
             </SafeAreaView>
 
+            <SelectList
+              placeholder="גיל"
+              searchPlaceholder="חיפוש"
+              boxStyles={styles.dropdownInput}
+              dropdownStyles={styles.dropdownContainer}
+              setSelected={(val) => setUserAge(val)}
+              data={ageList}
+              save="value"
+              notFoundText="לא קיים מידע"
+            />
             <InputField
               placeholder="סיסמה"
               containerStyle={{ marginBottom: 10 }}
@@ -233,6 +252,13 @@ export default function SignUp() {
               onChangeText={(text) => setUserPhone(text)}
               keyboardType="phone-pad"
             />
+
+            <InputField
+              placeholder="שם הארון שלך"
+              containerStyle={{ marginBottom: 20 }}
+              onChangeText={(text) => setClosetName(text)}
+              keyboardType="text"
+            />
             <InputField
               placeholder="תיאור הארון החדש שלך"
               containerStyle={{ marginBottom: 10 }}
@@ -240,12 +266,6 @@ export default function SignUp() {
               keyboardType="text"
             />
 
-            <InputField
-              placeholder="הארון של..."
-              containerStyle={{ marginBottom: 20 }}
-              onChangeText={(text) => setClosetName(text)}
-              keyboardType="text"
-            />
             {image ? (
               <View style={{ alignSelf: "center" }}>
                 <Image source={{ uri: image.uri }} style={styles.Image} />
@@ -258,8 +278,7 @@ export default function SignUp() {
                       style={{
                         color: "gray",
                         textAlign: "center",
-                      }}
-                    >
+                      }}>
                       הוסיפי תמונת פרופיל
                     </Text>
                     <AddSvg></AddSvg>
@@ -268,15 +287,9 @@ export default function SignUp() {
               </View>
             )}
 
-            {/* {uploading && (
-              <View style={{ marginBottom: 30 }}>
-                <ActivityIndicator size={"small"} color="black" />
-              </View>
-            )} */}
             <UploadModal
               uploading={uploading}
-              message="ההרשמה עלולה לקחת זמן, אנא המתן"
-            ></UploadModal>
+              message="ההרשמה עלולה לקחת זמן, אנא המתן"></UploadModal>
             <View>
               <Button title="הרשמה" onPress={() => SignUp()} />
             </View>
@@ -292,16 +305,14 @@ export default function SignUp() {
             flexDirection: "row",
             top: 700,
             left: 100,
-          }}
-        >
+          }}>
           <TouchableOpacity onPress={() => navigation.navigate("SignIn")}>
             <Text
               style={{
                 ...FONTS.Mulish_400Regular,
                 fontSize: 16,
                 color: COLORS.black,
-              }}
-            >
+              }}>
               {" "}
               התחברי
             </Text>
@@ -311,8 +322,7 @@ export default function SignUp() {
               ...FONTS.Mulish_400Regular,
               fontSize: 16,
               color: COLORS.gray,
-            }}
-          >
+            }}>
             כבר חלק מהקהילה?{" "}
           </Text>
         </View>
@@ -366,5 +376,29 @@ const styles = StyleSheet.create({
     margin: 5,
     marginBottom: 20,
     borderRadius: 25,
+  },
+  dropdownInput: {
+    width: "100%",
+    borderWidth: 1,
+    borderRadius: 25,
+    paddingHorizontal: 25,
+    borderColor: COLORS.goldenTransparent_03,
+    flexDirection: "row-reverse",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "#FBF8F2",
+    marginBottom: 30,
+    textAlign: "right",
+  },
+  dropdownContainer: {
+    width: "100%",
+    backgroundColor: "#FBF8F2",
+    borderColor: COLORS.goldenTransparent_03,
+    marginBottom: 30,
+    marginTop: 10,
+    borderWidth: 1,
+    borderRadius: 25,
+    paddingHorizontal: 25,
+    // textAlign: "right",
   },
 });

@@ -95,7 +95,7 @@ export default function UploadItem() {
       })
       .then(
         (data) => {
-          setBrandsList(data.map((item) => item.brand_name));
+          setBrandsList(data.map((item) => ({value:item.brand_name})));
         },
         (error) => {
           console.log("barnd error", error);
@@ -164,7 +164,7 @@ export default function UploadItem() {
       })
       .then(
         (data) => {
-          setColorsList(data.map((item) => item.color_name));
+          setColorsList(data.map((item) => ({value:item.color_name})));
         },
         (error) => {
           console.log("colors error", error);
@@ -185,7 +185,7 @@ export default function UploadItem() {
       })
       .then(
         (data) => {
-          setSizesList(data.map((item) => item.size_name));
+          setSizesList(data.map((item) =>({ value:item.size_name})));
         },
         (error) => {
           console.log("size error", error);
@@ -206,7 +206,7 @@ export default function UploadItem() {
       })
       .then(
         (data) => {
-          setTypesList(data.map((item) => item.item_type_name));
+          setTypesList(data.map((item) => ({value:item.item_type_name})));
         },
         (error) => {
           console.log("type error", error);

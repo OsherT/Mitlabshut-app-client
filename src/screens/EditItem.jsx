@@ -22,7 +22,7 @@ import { colors } from "react-native-elements";
 import { firebase } from "../../firebaseConfig";
 import ButtonLogIn from "../components/ButtonLogIn";
 import UploadModal from "../components/Uploading";
-import GoBackModal from "../components/GoBackModal";
+import WarningModal from "../components/WarningModal";
 
 export default function EditItem(props) {
   const item = props.route.params.item;
@@ -783,7 +783,7 @@ export default function EditItem(props) {
       <Header flag={true} onEdit={true} />
       {renderContent()}
       {showModal && (
-        <GoBackModal showModal={showModal} setShowModal={setShowModal} />
+        <WarningModal showModal={showModal} setShowModal={setShowModal} />
       )}
     </SafeAreaView>
   );

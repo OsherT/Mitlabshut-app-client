@@ -14,15 +14,19 @@ import { BagSvg } from "../svg";
 import axios from "axios";
 import { userContext } from "../navigation/userContext";
 import TrashCanIcon from "../svg/TrashCanIcon";
+import { Swipeable } from "react-native-gesture-handler";
 
 export default function WishList() {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-  const { loggedUser,GetItemForAlgo,shopScore } = useContext(userContext);
+  const { loggedUser, GetItemForAlgo, shopScore } = useContext(userContext);
   const [Items, setItems] = useState([]);
   const [UsersItemPhotos, setUsersItemPhotos] = useState([]);
   const [shopList, setshopList] = useState([]);
-
+  const [swipeableRef, setSwipeableRef] = useState(null);
+  const closeSwipeable = () => {
+    swipeableRef && swipeableRef.close();
+  };
   useEffect(() => {
     if (isFocused) {
       getItemsData();
@@ -44,7 +48,6 @@ export default function WishList() {
         setItems("");
       });
   }
-
   function getShopItems() {
     axios
       .get(
@@ -63,7 +66,6 @@ export default function WishList() {
         console.log("cant get shop list", err);
       });
   }
-  
   function GetItemPhotos(items) {
     // pass the items array as a parameter
     const promises = items.map((item) => {
@@ -105,8 +107,7 @@ export default function WishList() {
       .then((res) => {
         getShopItems();
         setshopList((prevList) => [...prevList, { item_id }]);
-        GetItemForAlgo(item_id,shopScore,loggedUser.id);
-
+        GetItemForAlgo(item_id, shopScore, loggedUser.id);
       })
       .catch((err) => {
         alert("cant add to shop list");
@@ -143,103 +144,154 @@ export default function WishList() {
         {Items && Array.isArray(Items) && Items.length > 0 ? (
           Items.map((item, index) => {
             return (
-              <TouchableOpacity
+              <Swipeable
+                ref={(ref) => setSwipeableRef(ref)}
                 key={index}
-                style={{
-                  width: "100%",
-                  height: 100,
-                  backgroundColor: COLORS.white,
-                  marginBottom: 15,
-                  borderRadius: 10,
-                  flexDirection: "row",
-                }}
-                onPress={() => {
-                  navigation.navigate("ProductDetails", {
-                    item: item,
-                  });
-                }}
+                onSwipeableClose={closeSwipeable}
+                renderRightActions={() => (
+                  <TouchableOpacity
+                    style={{
+                      height: 100,
+                      borderRadius: 10,
+                      backgroundColor: COLORS.carrot,
+                      justifyContent: "center",
+                      alignItems: "flex-end",
+                      padding:20
+                    }}
+                    onPress={() => RemoveFromFav(item.id)}
+                  >
+                    <Text style={{ color: "#FFF", fontWeight: "bold" }}>
+                      הסירי
+                    </Text>
+                  </TouchableOpacity>
+                )}
               >
-                {UsersItemPhotos.filter((photo) => photo.item_ID === item.id)
-                  .slice(0, 1)
-                  .map((photo) => {
-                    return (
-                      <ImageBackground
-                        source={{ uri: photo.src }}
-                        style={{
-                          width: 100,
-                          height: 100,
-                        }}
-                        imageStyle={{ borderRadius: 10 }}
-                        key={photo.id}
-                      ></ImageBackground>
-                    );
-                  })}
-                <View
-                  style={{
-                    paddingHorizontal: 15,
-                    paddingVertical: 9,
-                    flex: 1,
-                  }}
-                >
-                  <Text
-                    style={{
-                      ...FONTS.Mulish_600SemiBold,
-                      fontSize: 14,
-                      textTransform: "capitalize",
-                      marginBottom: 6,
-                      lineHeight: 14 * 1.2,
-                    }}
-                  >
-                    {item.name}
-                  </Text>
-                  <Text style={{ color: COLORS.gray }}>{item.size}</Text>
-                  <Line />
-                  <Text
-                    style={{
-                      ...FONTS.Mulish_600SemiBold,
-                      fontSize: 14,
-                      color: COLORS.carrot,
-                    }}
-                  >
-                    ₪ {item.price}
-                  </Text>
-                </View>
                 <TouchableOpacity
+                  key={index}
                   style={{
-                    position: "absolute",
-                    right: 15,
-                    top: 9,
+                    width: "100%",
+                    height: 100,
+                    backgroundColor: COLORS.white,
+                    marginBottom: 15,
+                    borderRadius: 10,
+                    flexDirection: "row",
                   }}
-                  onPress={() => RemoveFromFav(item.id)}
+                  onPress={() => {
+                    navigation.navigate("ProductDetails", {
+                      item: item,
+                    });
+                  }}
                 >
-                  <Text
+                  {UsersItemPhotos.filter((photo) => photo.item_ID === item.id)
+                    .slice(0, 1)
+                    .map((photo) => {
+                      return (
+                        <ImageBackground
+                          source={{ uri: photo.src }}
+                          style={{
+                            width: 100,
+                            height: 100,
+                          }}
+                          imageStyle={{ borderRadius: 10 }}
+                          key={photo.id}
+                        ></ImageBackground>
+                      );
+                    })}
+                  {item.item_status === "sold" ||
+                  item.item_status === "delete" ? (
+                    <View
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100%",
+                        backgroundColor: COLORS.black,
+                        borderRadius: 10,
+                        opacity: 0.5,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        zIndex: "1",
+                      }}
+                    >
+                      <Text
+                        style={{
+                          color: "white",
+                          fontSize: 18,
+                          fontWeight: "bold",
+                        }}
+                      >
+                        לא זמין
+                      </Text>
+                    </View>
+                  ) : null}
+                  <View
                     style={{
-                      color: "red",
+                      paddingHorizontal: 15,
+                      paddingVertical: 9,
+                      flex: 1,
                     }}
                   >
-                    <TrashCanIcon width={24} height={24} color="#000" />
-                  </Text>
-                  {/* <FavoriteSvg/>  */}
+                    <Text
+                      style={{
+                        ...FONTS.Mulish_600SemiBold,
+                        fontSize: 14,
+                        textTransform: "capitalize",
+                        marginBottom: 6,
+                        lineHeight: 14 * 1.2,
+                      }}
+                    >
+                      {item.name}
+                    </Text>
+                    <Text style={{ color: COLORS.gray }}>{item.size}</Text>
+                    <Line />
+                    <Text
+                      style={{
+                        ...FONTS.Mulish_600SemiBold,
+                        fontSize: 14,
+                        color: COLORS.carrot,
+                      }}
+                    >
+                      ₪ {item.price}
+                    </Text>
+                  </View>
+                  <TouchableOpacity
+                    style={{
+                      position: "absolute",
+                      right: 15,
+                      top: 9,
+                    }}
+                    onPress={() => RemoveFromFav(item.id)}
+                  >
+                    {/* <Text
+                      style={{
+                        color: "red",
+                      }}
+                    >
+                      <TrashCanIcon width={24} height={24} color="#000" />
+                    </Text> */}
+                    {/* <FavoriteSvg/>  */}
+                  </TouchableOpacity>
+                  {shopList.includes(item.id) && (
+                    // render the filled heart SVG if the item ID is in the UsersFavList
+                    <TouchableOpacity
+                      style={{ position: "absolute", right: 12, bottom: 12 }}
+                      onPress={() => RemoveFromShopList(item.id)}
+                    >
+                      <BagSvg color="#626262" inCart={true} />
+                    </TouchableOpacity>
+                  )}
+                  {!shopList.includes(item.id) && (
+                    // render the unfilled heart SVG if the item ID is not in the UsersFavList
+                    <TouchableOpacity
+                      style={{ position: "absolute", right: 12, bottom: 12 }}
+                      onPress={() => AddToShopList(item.id)}
+                    >
+                      <BagSvg color="#D7BA7B" inCart={false} />
+                    </TouchableOpacity>
+                  )}
                 </TouchableOpacity>
-                {shopList.includes(item.id) && (
-                  // render the filled heart SVG if the item ID is in the UsersFavList
-                  <TouchableOpacity
-                    style={{ position: "absolute", right: 12, bottom: 12 }}
-                    onPress={() => RemoveFromShopList(item.id)}
-                  >
-                    <BagSvg color="#626262" inCart={true} />
-                  </TouchableOpacity>
-                )}
-                {!shopList.includes(item.id) && (
-                  // render the unfilled heart SVG if the item ID is not in the UsersFavList
-                  <TouchableOpacity
-                    style={{ position: "absolute", right: 12, bottom: 12 }}
-                    onPress={() => AddToShopList(item.id)}
-                  >
-                    <BagSvg color="#D7BA7B" inCart={false} />
-                  </TouchableOpacity>
-                )}
-              </TouchableOpacity>
+              </Swipeable>
             );
           })
         ) : (

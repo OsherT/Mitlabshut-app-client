@@ -26,7 +26,7 @@ export default function SignIn() {
   // const [userPassword, setUserPassword] = useState("");
 
   //לצורך נוחות כדי לא להקליד את הנתונים כל פעם////////////////////////
-  const [userEmail, setUserEmail] = useState("H@b.h"); 
+  const [userEmail, setUserEmail] = useState("o@g.c"); 
   const [userPassword, setUserPassword] = useState("123");
   //לצורך נוחות כדי לא להקליד את הנתונים כל פעם////////////////////////
 
@@ -107,7 +107,7 @@ export default function SignIn() {
             name="email"
             // onChangeText={(text) => setUserEmail(text.replace("%40", "@"))}
             //לצורך נוחות כדי לא להקליד את הנתונים כל פעם////////////////////////
-            value="H@b.h"
+            value="o@g.c"
             containerStyle={{ marginBottom: 10, textAlign: "right" }}
             ref={emailInputRef}
             keyboardType="email-address"

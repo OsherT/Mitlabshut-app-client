@@ -57,11 +57,11 @@ export default function Navigation() {
   const [loggedUser, setloggedUser] = useState("");
   const [closetDesc, setclosetDesc] = useState("");
   const [closetName, setclosetName] = useState("");
-  const shopScore=8;
-  const favScore=6;
-  const viewScore=4;
+  const shopScore = 8;
+  const favScore = 6;
+  const viewScore = 4;
 
-  function GetItemForAlgo(itemId, score,  loggedUser_id) {
+  function GetItemForAlgo(itemId, score, loggedUser_id) {
     axios
       .get(
         "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemById/Id/0" +
@@ -71,7 +71,7 @@ export default function Navigation() {
         getItemCategories_ForAlgorithm(
           itemId,
           score,
-          
+
           loggedUser_id,
           res.data[0].type
         );
@@ -83,7 +83,7 @@ export default function Navigation() {
   const getItemCategories_ForAlgorithm = (
     item_id,
     score,
-    
+
     loggedUser_id,
     item_type
   ) => {
@@ -93,7 +93,7 @@ export default function Navigation() {
       )
       .then((res) => {
         const itemCategories = res.data.map((item) => item.category_name);
-        algorithmFunc(item_id, score, loggedUser_id, item_type,itemCategories);
+        algorithmFunc(item_id, score, loggedUser_id, item_type, itemCategories);
       })
       .catch((err) => {
         console.log("cant get categories", err);
@@ -112,7 +112,9 @@ export default function Navigation() {
         .post(
           `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/SmartAlgoStepOne/category_name/${hebrewToUrlEncoded(
             category_name
-          )}/item_type_name/${hebrewToUrlEncoded(item_type)}/score/${score}/user_id/${loggedUser_id}`
+          )}/item_type_name/${hebrewToUrlEncoded(
+            item_type
+          )}/score/${score}/user_id/${loggedUser_id}`
         )
         .then((res) => {
           console.log("yay");
@@ -151,7 +153,9 @@ export default function Navigation() {
           setclosetName,
           getItemCategories_ForAlgorithm,
           GetItemForAlgo,
-          shopScore,favScore,viewScore
+          shopScore,
+          favScore,
+          viewScore,
         }}
       >
         <Stack.Navigator
@@ -171,7 +175,6 @@ export default function Navigation() {
           <Stack.Screen name="OrderHistory" component={OrderHistory} />
           <Stack.Screen name="SignUp" component={SignUp} />
           <Stack.Screen name="SearchRes" component={SearchRes} />
-
           <Stack.Screen name="NewCard" component={NewCard} />
           <Stack.Screen name="MyAddress" component={MyAddress} />
           <Stack.Screen name="NewAddress" component={NewAddress} />
@@ -202,7 +205,11 @@ export default function Navigation() {
           <Stack.Screen name="EditProfile" component={EditProfile} />
           <Stack.Screen name="EditItem" component={EditItem} />
           <Stack.Screen name="OrderFailed" component={OrderFailed} />
-          <Stack.Screen name="MainLayout" component={MainLayout} />
+          <Stack.Screen
+            name="MainLayout"
+            component={MainLayout}
+            options={{ gestureEnabled: false }}
+          />
           <Stack.Screen name="OrderSuccessful" component={OrderSuccessful} />
           <Stack.Screen name="ItemUpdateSucc" component={ItemUpdateSucc} />
           <Stack.Screen name="Profile" component={Profile} />

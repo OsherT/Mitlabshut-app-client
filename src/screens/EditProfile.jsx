@@ -366,7 +366,15 @@ export default function EditProfile(props) {
 
   return (
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
-      <Header title="עדכון פרטים אישיים" flag={true} onEdit={true} />
+      <Header
+        title="עדכון פרטים אישיים"
+        flag={true}
+        onEdit={true}
+        showModal={false}
+        setShowModal={setShowModal}
+        handleSure={() => navigation.goBack()}
+        massage={" השינויים לא ישמרו \n האם את בטוחה ?"}
+      />
       {renderContent()}
       {showModal && (
         <WarningModal

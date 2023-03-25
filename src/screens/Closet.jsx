@@ -20,6 +20,7 @@ import { useIsFocused } from "@react-navigation/native";
 import ProfileNumbers from "../components/ProfileNumbers";
 import ButtonFollow from "../components/ButtonFollow";
 import { StyleSheet } from "react-native";
+import WarningModal from "../components/WarningModal";
 
 export default function Closet(props) {
   const {
@@ -46,6 +47,8 @@ export default function Closet(props) {
   const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
   const [ModalItem, setModalItem] = useState("");
   const buttonRef = useRef(null);
+  const [showModal, setShowModal] = useState(false);
+    const [userChoice, setUserChoice] = useState("");
 
   const ApiUrl_user = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User`;
   const navigation = useNavigation();
@@ -486,7 +489,9 @@ export default function Closet(props) {
                 paddingVertical: 8,
                 textAlign: "center",
               }}
-              onPress={handleDeletePress}>
+              onPress={handleDeletePress}
+              // onPress={() => setShowModal(true)}
+              >
               <Text style={{ textAlign: "center" }}>מחקי את הפריט</Text>
             </TouchableOpacity>
           </View>
@@ -526,6 +531,8 @@ export default function Closet(props) {
 
   function handleSalePress() {
     setModalVisible(false);
+        setUserChoice("sold");
+
     axios
       .put(
         `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/updateItemSaleStatus/item_ID/${ModalItem.id}/item_status/sold`
@@ -541,6 +548,8 @@ export default function Closet(props) {
 
   function handleNotSalePress() {
     setModalVisible(false);
+            setUserChoice("unsold");
+
     axios
       .put(
         `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/updateItemSaleStatus/item_ID/${ModalItem.id}/item_status/active`
@@ -556,6 +565,7 @@ export default function Closet(props) {
 
   function handleDeletePress() {
     setModalVisible(false);
+    setUserChoice('delete')
     axios
       .put(
         `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/updateItemSaleStatus/item_ID/${ModalItem.id}/item_status/delete`
@@ -806,6 +816,16 @@ export default function Closet(props) {
       </TouchableOpacity>
     );
   }
+ 
+  // const handleSure = (userChoice) => {
+  //   if (userChoice === "delete") {
+  //    return handleDeletePress();
+  //   } else if (userChoice === "sold") {
+  //   return handleSalePress;
+  //   } else if (userChoice === "unsold") {
+  //    return handleNotSalePress;
+  //   }
+  // };
 
   return (
     <View style={{ flex: 1 }}>
@@ -815,6 +835,14 @@ export default function Closet(props) {
         <View style={{ flex: 1 }}>
           {renderUserContent()}
           {UsersItems.length !== 0 ? renderClothes() : renderMessage()}
+          {/* {showModal && (
+            <WarningModal
+              showModal={showModal}
+              setShowModal={setShowModal}
+              handleSure={handleSure}
+              massage={" השינויים לא ישמרו \n האם את בטוחה ?"}
+            />
+          )} */}
         </View>
       </SafeAreaView>
     </View>

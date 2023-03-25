@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ImageBackground,
+  Animated,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
@@ -27,6 +28,7 @@ export default function WishList() {
   const closeSwipeable = () => {
     swipeableRef && swipeableRef.close();
   };
+  
   useEffect(() => {
     if (isFocused) {
       getItemsData();
@@ -275,7 +277,7 @@ export default function WishList() {
                   {shopList.includes(item.id) && (
                     // render the filled heart SVG if the item ID is in the UsersFavList
                     <TouchableOpacity
-                      style={{ position: "absolute", right: 12, bottom: 12 }}
+                      style={{ position: "absolute", right: 12, bottom: 12,zIndex:2 }}
                       onPress={() => RemoveFromShopList(item.id)}
                     >
                       <BagSvg color="#626262" inCart={true} />
@@ -284,7 +286,7 @@ export default function WishList() {
                   {!shopList.includes(item.id) && (
                     // render the unfilled heart SVG if the item ID is not in the UsersFavList
                     <TouchableOpacity
-                      style={{ position: "absolute", right: 12, bottom: 12 }}
+                      style={{ position: "absolute", right: 12, bottom: 12,zIndex:2 }}
                       onPress={() => AddToShopList(item.id)}
                     >
                       <BagSvg color="#D7BA7B" inCart={false} />
@@ -312,6 +314,7 @@ export default function WishList() {
       </ScrollView>
     );
   }
+
   return (
     <SafeAreaView
       style={{
@@ -325,3 +328,4 @@ export default function WishList() {
     </SafeAreaView>
   );
 }
+

@@ -111,14 +111,13 @@ export default function Closet(props) {
           closetId
       )
       .then((res) => {
-        if (res == "No followers yet") {
+        if (res.data === "No followers yet") {
           setClosetFollowers(0);
         } else {
           setClosetFollowers(res.data);
         }
       })
       .catch((err) => {
-        setClosetFollowers(0);
         console.log(err);
       });
   }
@@ -129,9 +128,9 @@ export default function Closet(props) {
           closetId
       )
       .then((res) => {
-        if (res == "No items yet") {
-          setUsersItems("");
-          GetItemPhotos("");
+        if (res.data === "No items yet") {
+          setUsersItems([]);
+          GetItemPhotos([]);
         } else {
           setUsersItems(res.data);
           GetItemPhotos(res.data);
@@ -416,7 +415,7 @@ export default function Closet(props) {
         console.log("cant follow", err);
       });
   };
-  
+
   const unfollowCloset = () => {
     axios
       .delete(
@@ -462,50 +461,49 @@ export default function Closet(props) {
               style={{
                 paddingVertical: 8,
                 borderBottomWidth: 1,
-                textAlign: 'center',
+                textAlign: "center",
               }}
               onPress={handleEditPress}
             >
-              <Text style={{textAlign: 'center'}}>עריכת פריט</Text>
+              <Text style={{ textAlign: "center" }}>עריכת פריט</Text>
             </TouchableOpacity>
             {ModalItem.item_status === "sold" ? (
               <TouchableOpacity
                 style={{
                   paddingVertical: 8,
                   borderBottomWidth: 1,
-                  textAlign: 'center',
+                  textAlign: "center",
                 }}
                 onPress={handleNotSalePress}
               >
-                <Text style={{textAlign: 'center'}}> החזרי למכירה</Text>
+                <Text style={{ textAlign: "center" }}> החזרי למכירה</Text>
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
                 style={{
                   paddingVertical: 8,
                   borderBottomWidth: 1,
-                  textAlign: 'center',
+                  textAlign: "center",
                 }}
                 onPress={handleSalePress}
               >
-                <Text style={{textAlign: 'center'}}>סמני כנמכר</Text>
+                <Text style={{ textAlign: "center" }}>סמני כנמכר</Text>
               </TouchableOpacity>
             )}
             <TouchableOpacity
               style={{
                 paddingVertical: 8,
-                textAlign: 'center',
+                textAlign: "center",
               }}
               onPress={handleDeletePress}
             >
-              <Text style={{textAlign: 'center'}}>מחקי את הפריט</Text>
+              <Text style={{ textAlign: "center" }}>מחקי את הפריט</Text>
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
       </Modal>
     );
   }
-  
 
   function handleEditPress() {
     setModalVisible(false);
@@ -550,7 +548,7 @@ export default function Closet(props) {
         console.log(err);
       });
   }
-  
+
   function handleNotSalePress() {
     setModalVisible(false);
     axios
@@ -839,8 +837,7 @@ export default function Closet(props) {
         <Header onPress={() => navigation.goBack()} />
         <View style={{ flex: 1 }}>
           {renderUserContent()}
-          {UsersItems.length > 0 && renderClothes()}
-          {UsersItems.length == 0 && renderMessage()}
+          {UsersItems.length !== 0 ? renderClothes() : renderMessage()}
         </View>
       </SafeAreaView>
     </View>

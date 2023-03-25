@@ -448,18 +448,18 @@ export default function Closet(props) {
               backgroundColor: COLORS.white,
               borderRadius: 10,
               padding: 16,
-            }}
-          >
-            <TouchableOpacity
-              style={{
-                paddingVertical: 8,
-                borderBottomWidth: 1,
-                textAlign: 'center',
-              }}
-              onPress={handleEditPress}
-            >
-              <Text style={{textAlign: 'center'}}>עריכת פריט</Text>
-            </TouchableOpacity>
+            }}>
+            {ModalItem.item_status != "sold" && (
+              <TouchableOpacity
+                style={{
+                  paddingVertical: 8,
+                  borderBottomWidth: 1,
+                  textAlign: "center",
+                }}
+                onPress={handleEditPress}>
+                <Text style={{ textAlign: "center" }}>עריכת פריט</Text>
+              </TouchableOpacity>
+            )}
             {ModalItem.item_status === "sold" ? (
               <TouchableOpacity
                 style={{
@@ -467,9 +467,8 @@ export default function Closet(props) {
                   borderBottomWidth: 1,
                   textAlign: "center",
                 }}
-                onPress={handleNotSalePress}
-              >
-                <Text style={{textAlign: 'center'}}> החזרי למכירה</Text>
+                onPress={handleNotSalePress}>
+                <Text style={{ textAlign: "center" }}> החזרי למכירה</Text>
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
@@ -478,9 +477,8 @@ export default function Closet(props) {
                   borderBottomWidth: 1,
                   textAlign: "center",
                 }}
-                onPress={handleSalePress}
-              >
-                <Text style={{textAlign: 'center'}}>סמני כנמכר</Text>
+                onPress={handleSalePress}>
+                <Text style={{ textAlign: "center" }}>סמני כנמכר</Text>
               </TouchableOpacity>
             )}
             <TouchableOpacity
@@ -488,9 +486,8 @@ export default function Closet(props) {
                 paddingVertical: 8,
                 textAlign: "center",
               }}
-              onPress={handleDeletePress}
-            >
-              <Text style={{textAlign: 'center'}}>מחקי את הפריט</Text>
+              onPress={handleDeletePress}>
+              <Text style={{ textAlign: "center" }}>מחקי את הפריט</Text>
             </TouchableOpacity>
           </View>
         </TouchableOpacity>

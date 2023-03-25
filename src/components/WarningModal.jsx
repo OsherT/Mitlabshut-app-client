@@ -4,17 +4,13 @@ import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { COLORS, FONTS, SIZES } from "../constants";
 
-export default function WarningModal({ showModal, setShowModal }) {
+export default function WarningModal({
+  showModal,
+  setShowModal,
+  massage,
+  handleSure,
+}) {
   const navigation = useNavigation();
-
-  const handleCancel = () => {
-    setShowModal(false);
-  };
-
-  const handleSure = () => {
-    setShowModal(false);
-    navigation.goBack();
-  };
 
   return (
     <Modal
@@ -22,10 +18,7 @@ export default function WarningModal({ showModal, setShowModal }) {
       onBackdropPress={setShowModal}
       hideModalContentWhileAnimating={true}
       backdropTransitionOutTiming={0}
-      style={{ margin: 0 }}
-      animationIn="zoomIn"
-      animationOut="zoomOut"
-      useNativeDriver={true}>
+      style={{ margin: 0 }}>
       <View
         style={{
           width: SIZES.width - 60,
@@ -42,7 +35,7 @@ export default function WarningModal({ showModal, setShowModal }) {
             fontSize: 20,
             marginBottom: 26,
           }}>
-          השינויים לא ישמרו {"\n"} האם את בטוחה ?
+          {massage}
         </Text>
         <View
           style={{
@@ -62,15 +55,18 @@ export default function WarningModal({ showModal, setShowModal }) {
               borderColor: COLORS.goldenTransparent_05,
               borderWidth: 1,
             }}
-            onPress={handleCancel}>
+            onPress={() => {
+              setShowModal(false);
+              handleSure();
+            }}>
             <Text
               style={{
-                color: COLORS.red,
+                color: COLORS.black,
                 ...FONTS.Mulish_600SemiBold,
                 fontSize: 14,
                 textTransform: "uppercase",
               }}>
-              ביטול
+              אישור
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -83,15 +79,15 @@ export default function WarningModal({ showModal, setShowModal }) {
               alignItems: "center",
               marginHorizontal: 7.5,
             }}
-            onPress={handleSure}>
+            onPress={() => setShowModal(false)}>
             <Text
               style={{
-                color: COLORS.white,
+                color: COLORS.red,
                 ...FONTS.Mulish_600SemiBold,
                 fontSize: 14,
                 textTransform: "uppercase",
               }}>
-              אישור
+              ביטול
             </Text>
           </TouchableOpacity>
         </View>

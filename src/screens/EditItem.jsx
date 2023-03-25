@@ -748,28 +748,6 @@ export default function EditItem(props) {
               flagForNewImg ? uploadImageFB(item.id) : UpdateItem();
             }}
           />
-          {/* <View style={{ marginTop: 20 }}>
-            <ButtonLogIn
-              title="ביטול  "
-              onPress={() => {
-
-                Alert.alert(
-                  "השינויים לא ישמרו",
-                  "האם את בטוחה שברצונך לחזור?",
-                  [
-                    {
-                      text: "אישור",
-                      onPress: () => navigation.goBack(),
-                    },
-                    {
-                      text: "ביטול",
-                      style: "cancel",
-                    },
-                  ]
-                );
-              }}
-            />
-          </View> */}
 
           <View style={{ marginTop: 20 }}>
             <ButtonLogIn title="ביטול  " onPress={() => setShowModal(true)} />
@@ -780,10 +758,23 @@ export default function EditItem(props) {
   }
   return (
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
-      <Header flag={true} onEdit={true} />
+      <Header
+        flag={true}
+        onEdit={true}
+        showModal={false}
+        setShowModal={setShowModal}
+        handleSure={() => navigation.goBack()}
+        massage={" השינויים לא ישמרו \n האם את בטוחה ?"}
+      />
+
       {renderContent()}
       {showModal && (
-        <WarningModal showModal={showModal} setShowModal={setShowModal} />
+        <WarningModal
+          showModal={showModal}
+          setShowModal={setShowModal}
+          handleSure={() => navigation.goBack()}
+          massage={" השינויים לא ישמרו \n האם את בטוחה ?"}
+        />
       )}
     </SafeAreaView>
   );

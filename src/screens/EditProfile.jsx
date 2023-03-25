@@ -1,6 +1,5 @@
 import {
   SafeAreaView,
-  Image,
   TouchableOpacity,
   ImageBackground,
   View,
@@ -9,7 +8,7 @@ import {
   KeyboardAvoidingView,
   ActivityIndicator,
 } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useNavigation } from "@react-navigation/native";
 import { Header, InputField, Button, ContainerComponent } from "../components";
@@ -26,6 +25,7 @@ import { firebase } from "../../firebaseConfig";
 import ButtonLogIn from "../components/ButtonLogIn";
 import UploadModal from "../components/Uploading";
 import { SelectList } from "react-native-dropdown-select-list";
+import WarningModal from "../components/WarningModal";
 
 export default function EditProfile(props) {
   const {
@@ -36,7 +36,7 @@ export default function EditProfile(props) {
     closetName,
     closetDesc,
   } = useContext(userContext);
-  console.log("loggd", loggedUser);
+  const [showModal, setShowModal] = useState(false);
   const navigation = useNavigation();
   const [address, setAddress] = useState(loggedUser.address);
   const [userName, setUserName] = useState(loggedUser.full_name);
@@ -335,11 +335,10 @@ export default function EditProfile(props) {
                 onChangeText={(text) => setclosetName(text)}
                 keyboardType="text"
               />
-              
+
               <UploadModal
                 uploading={uploading}
                 message="עדכון פרטים עלול לקחת זמן, אנא המתן"></UploadModal>
-
 
               <View style={{ marginTop: 40 }}>
                 <Button
@@ -351,25 +350,11 @@ export default function EditProfile(props) {
                   }}
                 />
               </View>
+
               <View style={{ marginTop: 20 }}>
                 <ButtonLogIn
                   title="ביטול  "
-                  onPress={() => {
-                    Alert.alert(
-                      "השינויים לא ישמרו",
-                      "האם את בטוחה שברצונך לחזור?",
-                      [
-                        {
-                          text: "אישור",
-                          onPress: () => navigation.goBack(),
-                        },
-                        {
-                          text: "ביטול",
-                          style: "cancel",
-                        },
-                      ]
-                    );
-                  }}
+                  onPress={() => setShowModal(true)}
                 />
               </View>
             </ContainerComponent>
@@ -383,6 +368,14 @@ export default function EditProfile(props) {
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
       <Header title="עדכון פרטים אישיים" flag={true} onEdit={true} />
       {renderContent()}
+      {showModal && (
+        <WarningModal
+          showModal={showModal}
+          setShowModal={setShowModal}
+          handleSure={() => navigation.goBack()}
+          massage={" השינויים לא ישמרו \n האם את בטוחה ?"}
+        />
+      )}
     </SafeAreaView>
   );
 }
@@ -414,7 +407,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FBF8F2",
     marginBottom: 10,
     textAlign: "right",
-    height:50
+    height: 50,
   },
   dropdownContainer: {
     width: "100%",

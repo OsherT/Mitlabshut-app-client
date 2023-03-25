@@ -873,4 +873,5 @@ const styles = StyleSheet.create({
     alignItems: "left",
     justifyContent: "space-between",
   },
+  
 });

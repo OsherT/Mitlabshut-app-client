@@ -39,11 +39,10 @@ export default function SignUp() {
   const [uploading, setUploading] = useState(false);
   const [image, setImage] = useState(null);
 
-const ageList = Array.from({ length: 109 }, (_, i) => ({
-  value: (i + 12).toString(),
-  label: `${i + 12}`,
-}));
-
+  const ageList = Array.from({ length: 109 }, (_, i) => ({
+    value: (i + 12).toString(),
+    label: `${i + 12}`,
+  }));
 
   const SignUp = () => {
     if (
@@ -75,15 +74,15 @@ const ageList = Array.from({ length: 109 }, (_, i) => ({
           if (res.data != 0) {
             const newUser = {
               //יצירת יוזר חדש
-              Email: userEmail,
-              Phone_number: userPhone,
-              Full_name: userName,
-              Password: userPassword,
-              Address: address,
-              IsAdmin: false,
-              Closet_ID: res.data, //הכנסת האיידי של הארון ליוזר החדש
-              User_image: difPic, //בהתחלה נכניס תמונה דיפולטית
-              Age: userAge,
+              email: userEmail,
+              phone_number: userPhone,
+              full_name: userName,
+              password: userPassword,
+              address: address,
+              isAdmin: false,
+              closet_ID: res.data, //הכנסת האיידי של הארון ליוזר החדש
+              user_image: difPic, //בהתחלה נכניס תמונה דיפולטית
+              age: parseInt(userAge),
             };
             axios
               .post(
@@ -92,11 +91,13 @@ const ageList = Array.from({ length: 109 }, (_, i) => ({
               )
               .then((res) => {
                 setloggedUser(newUser); //לאחר ההרשמה היוזר מתחבר ומנווט ישר לארון שלו
+                console.log("newUser", newUser);
+
                 console.log("succ in user", res.data);
                 uploadImageFB(res.data);
               })
               .catch((err) => {
-                console.log("Error in user 1", err);
+                console.log("Error in user", err);
               });
           }
         })
@@ -153,7 +154,7 @@ const ageList = Array.from({ length: 109 }, (_, i) => ({
   //so we must post the user and only then to updat user's image
   const uploadImagesDB = (user, imageLink) => {
     const userWithImage = {
-      Email: user.email,
+      email: user.email,
       id: user.id,
       closet_id: user.closet_id,
       phone_number: user.phone_number,
@@ -162,6 +163,7 @@ const ageList = Array.from({ length: 109 }, (_, i) => ({
       address: user.address,
       isAdmin: false,
       user_image: imageLink,
+      age: parseInt(userAge),
     };
     axios
       .put(
@@ -298,13 +300,12 @@ const ageList = Array.from({ length: 109 }, (_, i) => ({
 
         <View
           style={{
-            position: "absolute",
+            // position: "absolute",
             justifyContent: "center",
             alignItems: "flex-end",
             marginBottom: 13,
             flexDirection: "row",
-            top: 700,
-            left: 100,
+            top: 20,
           }}>
           <TouchableOpacity onPress={() => navigation.navigate("SignIn")}>
             <Text
@@ -387,8 +388,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     backgroundColor: "#FBF8F2",
-    marginBottom: 30,
+    marginBottom: 10,
     textAlign: "right",
+    height: 50,
   },
   dropdownContainer: {
     width: "100%",

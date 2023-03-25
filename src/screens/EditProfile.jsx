@@ -25,6 +25,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import { firebase } from "../../firebaseConfig";
 import ButtonLogIn from "../components/ButtonLogIn";
 import UploadModal from "../components/Uploading";
+import { SelectList } from "react-native-dropdown-select-list";
 
 export default function EditProfile(props) {
   const {
@@ -35,10 +36,12 @@ export default function EditProfile(props) {
     closetName,
     closetDesc,
   } = useContext(userContext);
+  console.log("loggd", loggedUser);
   const navigation = useNavigation();
   const [address, setAddress] = useState(loggedUser.address);
   const [userName, setUserName] = useState(loggedUser.full_name);
   const [userEmail, setUserEmail] = useState(loggedUser.email);
+  const [userAge, setUserAge] = useState(loggedUser.age);
 
   const [userPassword, setUserPassword] = useState(loggedUser.password);
   const [userPhone, setUserPhone] = useState(loggedUser.phone_number);
@@ -49,6 +52,11 @@ export default function EditProfile(props) {
   const [flagForNewImg, setFlagForNewImg] = useState(false);
 
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
+
+  const ageList = Array.from({ length: 109 }, (_, i) => ({
+    value: (i + 12).toString(),
+    label: `${i + 12}`,
+  }));
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -112,6 +120,8 @@ export default function EditProfile(props) {
       address: address,
       isAdmin: false,
       user_image: imageLink,
+      // age: parseInt(userAge),
+      age: userAge,
     };
 
     const newClosetData = {
@@ -143,6 +153,7 @@ export default function EditProfile(props) {
               setUserImage(imageLink);
               setFlagForNewImg(false);
               setUploading(false);
+
               if (!uploading) {
                 navigation.navigate("OrderSuccessful", {
                   message: "הפרטים עודכנו בהצלחה !",
@@ -210,7 +221,6 @@ export default function EditProfile(props) {
                   </ImageBackground>
                 )}
               </TouchableOpacity>
-
               <Text
                 style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
                 שם מלא:
@@ -237,7 +247,6 @@ export default function EditProfile(props) {
                 style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
                 כתובת מגורים:
               </Text>
-
               <SafeAreaView style={styles.view}>
                 <GooglePlacesAutocomplete
                   placeholder={loggedUser.address}
@@ -267,6 +276,23 @@ export default function EditProfile(props) {
 
               <Text
                 style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+                גיל:
+              </Text>
+
+              <SelectList
+                defaultOption={loggedUser.age}
+                placeholder={loggedUser.age}
+                searchPlaceholder="חיפוש"
+                boxStyles={styles.dropdownInput}
+                dropdownStyles={styles.dropdownContainer}
+                setSelected={(val) => setUserAge(val)}
+                data={ageList}
+                save="value"
+                notFoundText="לא קיים מידע"
+              />
+
+              <Text
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
                 מספר טלפון:
               </Text>
               <InputField
@@ -276,7 +302,6 @@ export default function EditProfile(props) {
                 keyboardType="phone-pad"
                 onChangeText={(text) => setUserPhone(text)}
               />
-
               <Text
                 style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
                 סיסמה:
@@ -288,7 +313,6 @@ export default function EditProfile(props) {
                 onChangeText={(text) => setUserPassword(text)}
                 keyboardType="text"
               />
-
               <Text
                 style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
                 תיאור ארון:
@@ -300,7 +324,6 @@ export default function EditProfile(props) {
                 onChangeText={(text) => setclosetDesc(text)}
                 keyboardType="text"
               />
-
               <Text
                 style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
                 שם ארון:
@@ -312,11 +335,9 @@ export default function EditProfile(props) {
                 onChangeText={(text) => setclosetName(text)}
                 keyboardType="text"
               />
-
               <UploadModal
                 uploading={uploading}
                 message="עדכון פרטים עלול לקחת זמן, אנא המתן"></UploadModal>
-
               <View style={{ marginTop: 40 }}>
                 <Button
                   title="שמור שינויים "
@@ -377,5 +398,29 @@ const styles = StyleSheet.create({
     backgroundColor: "#FBF8F2",
     marginBottom: 10,
     zIndex: 1,
+  },
+  dropdownInput: {
+    width: "100%",
+    borderWidth: 1,
+    borderRadius: 25,
+    paddingHorizontal: 25,
+    borderColor: COLORS.goldenTransparent_03,
+    flexDirection: "row-reverse",
+    justifyContent: "space-between",
+    alignItems: "center",
+    backgroundColor: "#FBF8F2",
+    marginBottom: 10,
+    textAlign: "right",
+    height:50
+  },
+  dropdownContainer: {
+    width: "100%",
+    backgroundColor: "#FBF8F2",
+    borderColor: COLORS.goldenTransparent_03,
+    marginBottom: 30,
+    marginTop: 10,
+    borderWidth: 1,
+    borderRadius: 25,
+    paddingHorizontal: 25,
   },
 });

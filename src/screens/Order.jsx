@@ -19,6 +19,7 @@ import { AREA, COLORS, FONTS, SIZES, products } from "../constants";
 import { Plus, Minus, Check, BagSvg } from "../svg";
 import axios from "axios";
 import { userContext } from "../navigation/userContext";
+import { Swipeable } from "react-native-gesture-handler";
 
 export default function Order() {
   const navigation = useNavigation();
@@ -28,7 +29,10 @@ export default function Order() {
   const [UsersItemPhotos, setUsersItemPhotos] = useState([]);
   const [ItemsData, setItemsData] = useState([]);
   const [sumTotal, setsumTotal] = useState("");
-
+  const [swipeableRef, setSwipeableRef] = useState(null);
+  const closeSwipeable = () => {
+    swipeableRef && swipeableRef.close();
+  };
   useEffect(() => {
     if (isFocused) {
       getShopItems();
@@ -102,7 +106,9 @@ export default function Order() {
   function calSum(Items) {
     let totalPrice = 0;
     for (let i = 0; i < Items.length; i++) {
-      totalPrice += Items[i].price;
+      if (Items[i].item_status === "active") {
+        totalPrice += Items[i].price;
+      }
     }
     setsumTotal(totalPrice);
   }
@@ -122,6 +128,28 @@ export default function Order() {
           ItemsinCart.length > 0 ? (
             ItemsData.map((item, index) => {
               return (
+                <Swipeable
+                ref={(ref) => setSwipeableRef(ref)}
+                key={index}
+                onSwipeableClose={closeSwipeable}
+                renderRightActions={() => (
+                  <TouchableOpacity
+                    style={{
+                      height: 100,
+                      borderRadius: 10,
+                      backgroundColor: COLORS.carrot,
+                      justifyContent: "center",
+                      alignItems: "flex-end",
+                      padding:20
+                    }}
+                    onPress={() => RemoveFromShopList(item.id)}
+                  >
+                    <Text style={{ color: "#FFF", fontWeight: "bold" }}>
+                      הסירי
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              >
                 <TouchableOpacity
                   key={index}
                   style={{
@@ -153,6 +181,34 @@ export default function Order() {
                         ></ImageBackground>
                       );
                     })}
+                    {item.item_status === "sold" ||
+                  item.item_status === "delete" ? (
+                    <View
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        width: "100%",
+                        height: "100%",
+                        backgroundColor: COLORS.black,
+                        borderRadius: 10,
+                        opacity: 0.5,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        zIndex: "1",
+                      }}
+                    >
+                      <Text
+                        style={{
+                          color: "white",
+                          fontSize: 18,
+                          fontWeight: "bold",
+                        }}
+                      >
+                        לא זמין
+                      </Text>
+                    </View>
+                  ) : null}
                   <View
                     style={{
                       paddingHorizontal: 15,
@@ -184,13 +240,14 @@ export default function Order() {
                     </Text>
                   </View>
 
-                  <TouchableOpacity
-                    style={{ position: "absolute", right: 12, bottom: 12 }}
+                  {/* <TouchableOpacity
+                    style={{ position: "absolute", right: 12, bottom: 12 ,zIndex:2}}
                     onPress={() => RemoveFromShopList(item.id)}
                   >
                     <BagSvg color="#626262" inCart={true} />
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                 </TouchableOpacity>
+                </Swipeable>
               );
             })
           ) : (

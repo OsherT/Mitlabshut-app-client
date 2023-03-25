@@ -111,14 +111,13 @@ export default function Closet(props) {
           closetId
       )
       .then((res) => {
-        if (res == "No followers yet") {
+        if (res.data === "No followers yet") {
           setClosetFollowers(0);
         } else {
           setClosetFollowers(res.data);
         }
       })
       .catch((err) => {
-        setClosetFollowers(0);
         console.log(err);
       });
   }
@@ -129,9 +128,9 @@ export default function Closet(props) {
           closetId
       )
       .then((res) => {
-        if (res == "No items yet") {
-          setUsersItems("");
-          GetItemPhotos("");
+        if (res.data === "No items yet") {
+          setUsersItems([]);
+          GetItemPhotos([]);
         } else {
           setUsersItems(res.data);
           GetItemPhotos(res.data);
@@ -449,18 +448,18 @@ export default function Closet(props) {
               backgroundColor: COLORS.white,
               borderRadius: 10,
               padding: 16,
-            }}>
-            {ModalItem.item_status != "sold" && (
-              <TouchableOpacity
-                style={{
-                  paddingVertical: 8,
-                  borderBottomWidth: 1,
-                  textAlign: "center",
-                }}
-                onPress={handleEditPress}>
-                <Text style={{ textAlign: "center" }}>עריכת פריט</Text>
-              </TouchableOpacity>
-            )}
+            }}
+          >
+            <TouchableOpacity
+              style={{
+                paddingVertical: 8,
+                borderBottomWidth: 1,
+                textAlign: 'center',
+              }}
+              onPress={handleEditPress}
+            >
+              <Text style={{textAlign: 'center'}}>עריכת פריט</Text>
+            </TouchableOpacity>
             {ModalItem.item_status === "sold" ? (
               <TouchableOpacity
                 style={{
@@ -468,8 +467,9 @@ export default function Closet(props) {
                   borderBottomWidth: 1,
                   textAlign: "center",
                 }}
-                onPress={handleNotSalePress}>
-                <Text style={{ textAlign: "center" }}> החזרי למכירה</Text>
+                onPress={handleNotSalePress}
+              >
+                <Text style={{textAlign: 'center'}}> החזרי למכירה</Text>
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
@@ -478,8 +478,9 @@ export default function Closet(props) {
                   borderBottomWidth: 1,
                   textAlign: "center",
                 }}
-                onPress={handleSalePress}>
-                <Text style={{ textAlign: "center" }}>סמני כנמכר</Text>
+                onPress={handleSalePress}
+              >
+                <Text style={{textAlign: 'center'}}>סמני כנמכר</Text>
               </TouchableOpacity>
             )}
             <TouchableOpacity
@@ -487,8 +488,9 @@ export default function Closet(props) {
                 paddingVertical: 8,
                 textAlign: "center",
               }}
-              onPress={handleDeletePress}>
-              <Text style={{ textAlign: "center" }}>מחקי את הפריט</Text>
+              onPress={handleDeletePress}
+            >
+              <Text style={{textAlign: 'center'}}>מחקי את הפריט</Text>
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
@@ -815,8 +817,7 @@ export default function Closet(props) {
         <Header onPress={() => navigation.goBack()} />
         <View style={{ flex: 1 }}>
           {renderUserContent()}
-          {UsersItems.length > 0 && renderClothes()}
-          {UsersItems.length == 0 && renderMessage()}
+          {UsersItems.length !== 0 ? renderClothes() : renderMessage()}
         </View>
       </SafeAreaView>
     </View>

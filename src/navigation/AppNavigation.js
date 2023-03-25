@@ -80,6 +80,7 @@ export default function Navigation() {
         console.log(err);
       });
   }
+
   const getItemCategories_ForAlgorithm = (
     item_id,
     score,
@@ -140,6 +141,54 @@ export default function Navigation() {
     }
     return encodedStr;
   }
+
+  // function handleSalePress() {
+  //   setModalVisible(false);
+
+  //   axios
+  //     .put(
+  //       `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/updateItemSaleStatus/item_ID/${ModalItem.id}/item_status/sold`
+  //     )
+  //     .then((res) => {
+  //       GetClosetItems();
+  //       console.log(res);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }
+
+  // function handleNotSalePress() {
+  //   setModalVisible(false);
+
+  //   axios
+  //     .put(
+  //       `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/updateItemSaleStatus/item_ID/${ModalItem.id}/item_status/active`
+  //     )
+  //     .then((res) => {
+  //       GetClosetItems();
+  //       console.log(res);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }
+
+  // function handleDeletePress() {
+  //   setModalVisible(false);
+  //   axios
+  //     .put(
+  //       `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/updateItemSaleStatus/item_ID/${ModalItem.id}/item_status/delete`
+  //     )
+  //     .then((res) => {
+  //       GetClosetItems();
+  //       console.log(res);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // }
+
 
   return (
     <NavigationContainer>

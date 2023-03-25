@@ -3,6 +3,7 @@ import Modal from "react-native-modal";
 import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { COLORS, FONTS, SIZES } from "../constants";
+import { userContext } from "../navigation/userContext";
 
 export default function WarningModal({
   showModal,
@@ -11,7 +12,8 @@ export default function WarningModal({
   handleSure,
 }) {
   const navigation = useNavigation();
-
+  // const { handleSalePress, handleNotSalePress, handleDeletePress } =
+  //   userContext(userContext);
   return (
     <Modal
       isVisible={!!showModal}
@@ -58,6 +60,13 @@ export default function WarningModal({
             onPress={() => {
               setShowModal(false);
               handleSure();
+              // if (handleSure == "delete") {
+              //   handleDeletePress();
+              // } else if (handleSure == "sold") {
+              //   handleSalePress();
+              // } else if (handleSure == "unsold") {
+              //   handleNotSalePress();
+              // }
             }}>
             <Text
               style={{

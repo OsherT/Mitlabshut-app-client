@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { COLORS, FONTS, SIZES } from "../constants";
 
-export default function GoBackModal({ showModal, setShowModal }) {
+export default function WarningModal({ showModal, setShowModal }) {
   const navigation = useNavigation();
 
   const handleCancel = () => {

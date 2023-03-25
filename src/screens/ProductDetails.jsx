@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Share,
+  Alert,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
@@ -412,6 +413,50 @@ export default function ProductDetails(props) {
     }
   };
 
+  function handleDeletePress() {
+    console.log("in delete fun");
+    axios
+      .put(
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/updateItemSaleStatus/item_ID/${item.id}/item_status/delete`
+      )
+      .then((res) => {
+        navigation.navigate("Closet");
+        console.log("succ to delet item", item.id);
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  function handleSalePress() {
+    axios
+      .put(
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/updateItemSaleStatus/item_ID/${item.id}/item_status/sold`
+      )
+      .then((res) => {
+        navigation.navigate("Closet");
+        console.log("succ to sale item", item.id);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  function handleNotSalePress() { 
+    axios
+      .put(
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/updateItemSaleStatus/item_ID/${item.id}/item_status/active`
+      )
+      .then((res) => {
+        navigation.navigate("Closet");
+        console.log("succ to resale item", item.id);
+      })
+      .catch((err) => {
+        console.log("err in handleNotSalePress ", err);
+      });
+  }
+
   function renderContent() {
     return (
       <View>
@@ -468,8 +513,7 @@ export default function ProductDetails(props) {
                     </TouchableOpacity>
                   )}
                   {item.item_status == "sold" && (
-                    <Text style={{ height: 50 }}> {""}
-                    </Text>
+                    <Text style={{ height: 50 }}> {""}</Text>
                   )}
                 </View>
                 {numOfFav > 0 && (
@@ -703,6 +747,73 @@ export default function ProductDetails(props) {
                     }}
                   />
                 )}
+              </View>
+            )}
+
+            {myitemFlag && item.item_status != "sold" && (
+              <View>
+                <ButtonLogIn
+                  title="סמני כנמכר "
+                  containerStyle={{ marginBottom: 13 }}
+                  onPress={() => {
+                    Alert.alert(
+                      "פריט זה לא יהיה זמיו לקנייה ",
+                      "האם את בטוחה?",
+                      [
+                        {
+                          text: "אישור",
+                          onPress: handleSalePress,
+                        },
+                        {
+                          text: "ביטול",
+                          style: "cancel",
+                        },
+                      ]
+                    );
+                  }}
+                />
+              </View>
+            )}
+
+            {myitemFlag && item.item_status == "sold" && (
+              <View>
+                <ButtonLogIn
+                  title="החזירי למכירה  "
+                  containerStyle={{ marginBottom: 13 }}
+                  onPress={() => {
+                    Alert.alert("פריט זה יהיה זמיו לקנייה ", "האם את בטוחה?", [
+                      {
+                        text: "אישור",
+                        onPress: handleNotSalePress,
+                      },
+                      {
+                        text: "ביטול",
+                        style: "cancel",
+                      },
+                    ]);
+                  }}
+                />
+              </View>
+            )}
+
+            {myitemFlag && (
+              <View>
+                <Button
+                  title=" מחקי פריט זה  "
+                  containerStyle={{ marginBottom: 13 }}
+                  onPress={() => {
+                    Alert.alert("פריט זה ימחק לצמיתות   ", "האם את בטוחה?", [
+                      {
+                        text: "אישור",
+                        onPress: handleDeletePress,
+                      },
+                      {
+                        text: "ביטול",
+                        style: "cancel",
+                      },
+                    ]);
+                  }}
+                />
               </View>
             )}
           </ScrollView>

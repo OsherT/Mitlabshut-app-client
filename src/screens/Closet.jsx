@@ -172,22 +172,19 @@ export default function Closet(props) {
           paddingBottom: 40,
           justifyContent: "center", // add this style
         }}
-        showsHorizontalScrollIndicator={false}
-      >
+        showsHorizontalScrollIndicator={false}>
         <ContainerComponent containerStyle={{ marginBottom: 20 }}>
           {myClosetFlag && (
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate("EditProfile");
-              }}
-            >
+              }}>
               <View
                 style={{
                   position: "absolute",
                   right: 0,
                   bottom: -20,
-                }}
-              >
+                }}>
                 <Edit />
               </View>
             </TouchableOpacity>
@@ -198,8 +195,7 @@ export default function Closet(props) {
                 position: "absolute",
                 right: 34,
                 bottom: 170,
-              }}
-            >
+              }}>
               {addItemButton()}
             </View>
           )}
@@ -213,8 +209,7 @@ export default function Closet(props) {
               alignSelf: "center",
               marginBottom: 15,
             }}
-            imageStyle={{ borderRadius: 40 }}
-          ></ImageBackground>
+            imageStyle={{ borderRadius: 40 }}></ImageBackground>
           <Text
             style={{
               textAlign: "center",
@@ -224,8 +219,7 @@ export default function Closet(props) {
               color: COLORS.black,
               marginBottom: 10,
               lineHeight: 16 * 1.2,
-            }}
-          >
+            }}>
             הארון של {closetName}
           </Text>
           <ProfileNumbers
@@ -240,8 +234,7 @@ export default function Closet(props) {
               color: COLORS.gray,
               lineHeight: 14 * 1.7,
               marginTop: 10,
-            }}
-          >
+            }}>
             {closetDesc}
           </Text>
           {myClosetFlag == false ? (
@@ -249,8 +242,7 @@ export default function Closet(props) {
               style={{
                 //flexDirection: "row-reverse",
                 alignItems: "center",
-              }}
-            >
+              }}>
               {!UsersFollowingList.includes(owner.closet_id) && (
                 <ButtonFollow
                   title="עקבי"
@@ -302,6 +294,7 @@ export default function Closet(props) {
         });
     }
   }
+
   function AddtoFav(item_id) {
     axios
       .post(
@@ -317,6 +310,7 @@ export default function Closet(props) {
         console.log("cant add to fav", err);
       });
   }
+
   function RemoveFromFav(itemId) {
     axios
       .delete(
@@ -330,6 +324,7 @@ export default function Closet(props) {
         console.log("cant remove from getFavItems", err);
       });
   }
+
   //handle shop list
   function getShopItems() {
     if (myClosetFlag == false) {
@@ -416,7 +411,7 @@ export default function Closet(props) {
         console.log("cant follow", err);
       });
   };
-  
+
   const unfollowCloset = () => {
     axios
       .delete(
@@ -440,8 +435,7 @@ export default function Closet(props) {
       <Modal
         visible={modalVisible}
         transparent={true}
-        onRequestClose={() => setModalVisible(false)}
-      >
+        onRequestClose={() => setModalVisible(false)}>
         <TouchableOpacity
           style={{
             flex: 1,
@@ -449,63 +443,58 @@ export default function Closet(props) {
             justifyContent: "center",
             backgroundColor: "#00000099",
           }}
-          onPress={() => setModalVisible(false)}
-        >
+          onPress={() => setModalVisible(false)}>
           <View
             style={{
               backgroundColor: COLORS.white,
               borderRadius: 10,
               padding: 16,
-            }}
-          >
-            <TouchableOpacity
-              style={{
-                paddingVertical: 8,
-                borderBottomWidth: 1,
-                textAlign: 'center',
-              }}
-              onPress={handleEditPress}
-            >
-              <Text style={{textAlign: 'center'}}>עריכת פריט</Text>
-            </TouchableOpacity>
+            }}>
+            {ModalItem.item_status != "sold" && (
+              <TouchableOpacity
+                style={{
+                  paddingVertical: 8,
+                  borderBottomWidth: 1,
+                  textAlign: "center",
+                }}
+                onPress={handleEditPress}>
+                <Text style={{ textAlign: "center" }}>עריכת פריט</Text>
+              </TouchableOpacity>
+            )}
             {ModalItem.item_status === "sold" ? (
               <TouchableOpacity
                 style={{
                   paddingVertical: 8,
                   borderBottomWidth: 1,
-                  textAlign: 'center',
+                  textAlign: "center",
                 }}
-                onPress={handleNotSalePress}
-              >
-                <Text style={{textAlign: 'center'}}> החזרי למכירה</Text>
+                onPress={handleNotSalePress}>
+                <Text style={{ textAlign: "center" }}> החזרי למכירה</Text>
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
                 style={{
                   paddingVertical: 8,
                   borderBottomWidth: 1,
-                  textAlign: 'center',
+                  textAlign: "center",
                 }}
-                onPress={handleSalePress}
-              >
-                <Text style={{textAlign: 'center'}}>סמני כנמכר</Text>
+                onPress={handleSalePress}>
+                <Text style={{ textAlign: "center" }}>סמני כנמכר</Text>
               </TouchableOpacity>
             )}
             <TouchableOpacity
               style={{
                 paddingVertical: 8,
-                textAlign: 'center',
+                textAlign: "center",
               }}
-              onPress={handleDeletePress}
-            >
-              <Text style={{textAlign: 'center'}}>מחקי את הפריט</Text>
+              onPress={handleDeletePress}>
+              <Text style={{ textAlign: "center" }}>מחקי את הפריט</Text>
             </TouchableOpacity>
           </View>
         </TouchableOpacity>
       </Modal>
     );
   }
-  
 
   function handleEditPress() {
     setModalVisible(false);
@@ -550,7 +539,7 @@ export default function Closet(props) {
         console.log(err);
       });
   }
-  
+
   function handleNotSalePress() {
     setModalVisible(false);
     axios
@@ -565,6 +554,7 @@ export default function Closet(props) {
         console.log(err);
       });
   }
+
   function handleDeletePress() {
     setModalVisible(false);
     axios
@@ -579,6 +569,7 @@ export default function Closet(props) {
         console.log(err);
       });
   }
+
   ///render items
   function renderClothes() {
     return (
@@ -619,8 +610,7 @@ export default function Closet(props) {
                       height: 128,
                     }}
                     imageStyle={{ borderRadius: 10 }}
-                    key={photo.id}
-                  >
+                    key={photo.id}>
                     {item.item_status === "sold" && (
                       <View
                         style={{
@@ -633,16 +623,14 @@ export default function Closet(props) {
                           opacity: 0.5,
                           alignItems: "center",
                           justifyContent: "center",
-                        }}
-                      >
+                        }}>
                         <Text
                           style={{
                             color: COLORS.white,
                             ...FONTS.Mulish_600SemiBold,
                             fontSize: 20,
                             textAlign: "center",
-                          }}
-                        >
+                          }}>
                           נמכר
                         </Text>
                       </View>
@@ -651,8 +639,7 @@ export default function Closet(props) {
                       // render the filled heart SVG if the item ID is in the UsersFavList
                       <TouchableOpacity
                         style={{ left: 12, top: 12 }}
-                        onPress={() => RemoveFromFav(item.id)}
-                      >
+                        onPress={() => RemoveFromFav(item.id)}>
                         <HeartSvg filled={true} />
                       </TouchableOpacity>
                     )}
@@ -660,8 +647,7 @@ export default function Closet(props) {
                       // render the unfilled heart SVG if the item ID is not in the UsersFavList
                       <TouchableOpacity
                         style={{ left: 12, top: 12 }}
-                        onPress={() => AddtoFav(item.id)}
-                      >
+                        onPress={() => AddtoFav(item.id)}>
                         <HeartSvg filled={false} />
                       </TouchableOpacity>
                     )}
@@ -683,8 +669,7 @@ export default function Closet(props) {
                         onPress={() => {
                           handleOptionsMenuPress();
                           setModalItem(item);
-                        }}
-                      >
+                        }}>
                         <View
                           style={{
                             backgroundColor: COLORS.white,
@@ -722,8 +707,7 @@ export default function Closet(props) {
                 paddingHorizontal: 12,
                 paddingBottom: 15,
                 paddingTop: 12,
-              }}
-            >
+              }}>
               <Text
                 style={{
                   ...FONTS.Mulish_600SemiBold,
@@ -733,8 +717,7 @@ export default function Closet(props) {
                   color: COLORS.black,
                   marginBottom: 6,
                   textAlign: "right",
-                }}
-              >
+                }}>
                 {item.name}
               </Text>
               <Text
@@ -743,8 +726,7 @@ export default function Closet(props) {
                   ...FONTS.Mulish_400Regular,
                   fontSize: 14,
                   textAlign: "right",
-                }}
-              >
+                }}>
                 מידה: {item.size}
               </Text>
               <View
@@ -761,8 +743,7 @@ export default function Closet(props) {
                   fontSize: 14,
                   color: COLORS.black,
                   textAlign: "left",
-                }}
-              >
+                }}>
                 ₪ {item.price}
               </Text>
             </View>
@@ -770,8 +751,7 @@ export default function Closet(props) {
               // render the filled heart SVG if the item ID is in the UsersFavList
               <TouchableOpacity
                 style={{ position: "absolute", right: 12, bottom: 12 }}
-                onPress={() => RemoveFromShopList(item.id)}
-              >
+                onPress={() => RemoveFromShopList(item.id)}>
                 <BagSvg color="#626262" inCart={true} />
               </TouchableOpacity>
             )}
@@ -779,8 +759,7 @@ export default function Closet(props) {
               // render the unfilled heart SVG if the item ID is not in the UsersFavList
               <TouchableOpacity
                 style={{ position: "absolute", right: 12, bottom: 12 }}
-                onPress={() => AddToShopList(item.id)}
-              >
+                onPress={() => AddToShopList(item.id)}>
                 <BagSvg color="#D7BA7B" inCart={false} />
               </TouchableOpacity>
             )}
@@ -789,6 +768,7 @@ export default function Closet(props) {
       />
     );
   }
+
   function renderMessage() {
     return (
       <View>
@@ -801,8 +781,7 @@ export default function Closet(props) {
             color: COLORS.black,
             marginBottom: 4,
             lineHeight: 16 * 1.2,
-          }}
-        >
+          }}>
           הארון ריק
         </Text>
         <View
@@ -810,8 +789,7 @@ export default function Closet(props) {
             //position: "absolute",
             left: 180,
             top: 10,
-          }}
-        >
+          }}>
           {addItemButton()}
         </View>
       </View>
@@ -822,8 +800,7 @@ export default function Closet(props) {
       <TouchableOpacity
         onPress={() => {
           navigation.navigate("UploadItem");
-        }}
-      >
+        }}>
         <View style={{ height: 48, width: 24 }}>
           <Plus />
         </View>
@@ -834,8 +811,7 @@ export default function Closet(props) {
   return (
     <View style={{ flex: 1 }}>
       <SafeAreaView
-        style={{ ...AREA.AndroidSafeArea, backgroundColor: "none" }}
-      >
+        style={{ ...AREA.AndroidSafeArea, backgroundColor: "none" }}>
         <Header onPress={() => navigation.goBack()} />
         <View style={{ flex: 1 }}>
           {renderUserContent()}

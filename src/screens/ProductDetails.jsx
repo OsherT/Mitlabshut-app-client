@@ -49,7 +49,7 @@ export default function ProductDetails(props) {
   useEffect(() => {
     if (isFocused) {
       console.log(itemImages);
-      console.log(itemCtegories);//
+      console.log(itemCtegories); //
       GetClosetdata();
       getFavItems();
       getShopItems();
@@ -60,12 +60,13 @@ export default function ProductDetails(props) {
       if (address1 && address2) {
         getAddressLocations();
       }
-         }
+    }
   }, [isFocused, address1, address2]);
 
   useEffect(() => {
     if (isFocused) {
       getUser();
+      console.log("item", item);
     }
   }, [isFocused]);
 
@@ -99,7 +100,6 @@ export default function ProductDetails(props) {
         } else {
           setmyitemFlag(false);
           GetItemForAlgo(item.id, viewScore, loggedUser.id);
-
         }
         getFollowingList();
       })
@@ -425,8 +425,7 @@ export default function ProductDetails(props) {
                       textAlign: "right",
                       fontSize: 13,
                       marginBottom: 5,
-                    }}
-                  >
+                    }}>
                     ✓ איסוף עצמי
                   </Text>
                 )}
@@ -436,8 +435,7 @@ export default function ProductDetails(props) {
                       textAlign: "right",
                       fontSize: 13,
                       marginBottom: 5,
-                    }}
-                  >
+                    }}>
                     ✓ משלוח
                   </Text>
                 )}
@@ -447,8 +445,7 @@ export default function ProductDetails(props) {
                       textAlign: "right",
                       fontSize: 13,
                       marginBottom: 5,
-                    }}
-                  >
+                    }}>
                     ✓ משלוח ✓ איסוף עצמי
                   </Text>
                 )}
@@ -458,7 +455,7 @@ export default function ProductDetails(props) {
                 <View style={styles.Row}>
                   <Text style={styles.itemHeader}>{item.name}</Text>
                   <Text> </Text>
-                  {myitemFlag && (
+                  {myitemFlag && item.item_status != "sold" && (
                     <TouchableOpacity
                       onPress={() => {
                         navigation.navigate("EditItem", {
@@ -466,10 +463,13 @@ export default function ProductDetails(props) {
                           itemImages: itemImages,
                           itemCtegories: itemCtegories,
                         });
-                      }}
-                    >
+                      }}>
                       <Edit />
                     </TouchableOpacity>
+                  )}
+                  {item.item_status == "sold" && (
+                    <Text style={{ height: 50 }}> {""}
+                    </Text>
                   )}
                 </View>
                 {numOfFav > 0 && (
@@ -478,28 +478,40 @@ export default function ProductDetails(props) {
                       textAlign: "right",
                       fontSize: 13,
                       marginBottom: 5,
-                    }}
-                  >
+                    }}>
                     ♡ {numOfFav} אהבו פריט זה
                   </Text>
                 )}
               </View>
             </View>
+
             <Swiper style={styles.imageSwipperContainer}>
               {itemImages.map((image, index) => (
-                <ImageBackground
-                  key={index}
-                  style={styles.image}
-                  source={{ uri: image }}
-                ></ImageBackground>
+                <View key={index}>
+                  <ImageBackground style={styles.image} source={{ uri: image }}>
+                    {item.item_status === "sold" && (
+                      <View style={styles.soldStyle}>
+                        <Text
+                          style={{
+                            color: COLORS.white,
+                            ...FONTS.Mulish_600SemiBold,
+                            fontSize: 20,
+                            textAlign: "center",
+                          }}>
+                          נמכר
+                        </Text>
+                      </View>
+                    )}
+                  </ImageBackground>
+                </View>
               ))}
             </Swiper>
+
             {!myitemFlag && UsersFavList.includes(item.id) && (
               // render the filled heart SVG if the item ID is in the UsersFavList
               <TouchableOpacity
                 style={styles.favIcon}
-                onPress={() => RemoveFromFav(item.id)}
-              >
+                onPress={() => RemoveFromFav(item.id)}>
                 <HeartTwoSvg filled={true} strokeColor="red" />
               </TouchableOpacity>
             )}
@@ -507,8 +519,7 @@ export default function ProductDetails(props) {
               // render the unfilled heart SVG if the item ID is not in the UsersFavList
               <TouchableOpacity
                 style={styles.favIcon}
-                onPress={() => AddtoFav(item.id)}
-              >
+                onPress={() => AddtoFav(item.id)}>
                 <HeartTwoSvg filled={false} strokeColor="red" />
               </TouchableOpacity>
             )}
@@ -516,8 +527,7 @@ export default function ProductDetails(props) {
               style={styles.shareIcon}
               onPress={() => {
                 onShare();
-              }}
-            >
+              }}>
               <ShareSvg></ShareSvg>
             </TouchableOpacity>
 
@@ -558,15 +568,14 @@ export default function ProductDetails(props) {
                       closetId: item.closet_ID,
                       owner: user,
                     });
-                  }}
-                >
+                  }}>
                   <ImageBackground
                     source={{
                       uri: user.user_image,
                     }}
                     style={styles.userImage}
                     imageStyle={{ borderRadius: 40 }}
-                  ></ImageBackground>
+                  />
 
                   <Text
                     style={{
@@ -574,8 +583,7 @@ export default function ProductDetails(props) {
                       fontSize: 16,
                       color: COLORS.gray,
                       lineHeight: 22 * 1.2,
-                    }}
-                  >
+                    }}>
                     הארון של
                   </Text>
                   <Text> </Text>
@@ -585,8 +593,7 @@ export default function ProductDetails(props) {
                       fontSize: 16,
                       color: COLORS.black,
                       lineHeight: 22 * 1.2,
-                    }}
-                  >
+                    }}>
                     {closetName}
                   </Text>
                 </TouchableOpacity>
@@ -602,15 +609,13 @@ export default function ProductDetails(props) {
                     closet: item.closet_ID,
                     owner: user,
                   });
-                }}
-              >
+                }}>
                 <ImageBackground
                   source={{
                     uri: user.user_image,
                   }}
                   style={styles.userImage}
-                  imageStyle={{ borderRadius: 40 }}
-                ></ImageBackground>
+                  imageStyle={{ borderRadius: 40 }}></ImageBackground>
 
                 <Text
                   style={{
@@ -618,8 +623,7 @@ export default function ProductDetails(props) {
                     fontSize: 16,
                     color: COLORS.gray,
                     lineHeight: 22 * 1.2,
-                  }}
-                >
+                  }}>
                   הארון שלי{" "}
                 </Text>
                 <Text> </Text>
@@ -851,5 +855,15 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
     paddingTop: 15,
     marginTop: 15,
+  },
+  soldStyle: {
+    height: 280,
+    width: "100%",
+    marginBottom: 30,
+    alignSelf: "center",
+    backgroundColor: COLORS.black,
+    opacity: 0.5,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

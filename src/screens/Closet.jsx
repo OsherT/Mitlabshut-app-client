@@ -327,7 +327,6 @@ export default function Closet(props) {
         setUsersFavList((prevList) => prevList.filter((id) => id !== itemId));
       })
       .catch((err) => {
-        // alert("");
         console.log("cant remove from getFavItems", err);
       });
   }
@@ -352,6 +351,7 @@ export default function Closet(props) {
         });
     } else console.log("");
   }
+
   function AddToShopList(item_id) {
     axios
       .post(
@@ -367,6 +367,7 @@ export default function Closet(props) {
         console.log(err);
       });
   }
+
   function RemoveFromShopList(itemId) {
     axios
       .delete(
@@ -398,6 +399,7 @@ export default function Closet(props) {
         console.log("cant get following list", err);
       });
   }
+
   const followCloset = () => {
     axios
       .post(
@@ -414,6 +416,7 @@ export default function Closet(props) {
         console.log("cant follow", err);
       });
   };
+  
   const unfollowCloset = () => {
     axios
       .delete(
@@ -474,7 +477,7 @@ export default function Closet(props) {
                 }}
                 onPress={handleNotSalePress}
               >
-                <Text style={{textAlign: 'center'}}>סמני כלא נמכר</Text>
+                <Text style={{textAlign: 'center'}}> החזרי למכירה</Text>
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
@@ -532,6 +535,7 @@ export default function Closet(props) {
         console.log("cant take categories", err);
       });
   }
+
   function handleSalePress() {
     setModalVisible(false);
     axios
@@ -546,6 +550,7 @@ export default function Closet(props) {
         console.log(err);
       });
   }
+  
   function handleNotSalePress() {
     setModalVisible(false);
     axios

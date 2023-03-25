@@ -51,6 +51,7 @@ export default function UploadItem() {
   const [itemBrand, setItemBrand] = useState("");
   const [images, setImages] = useState([]);
   const [uploading, setUploading] = useState(false);
+  const [flagForNoImg, setFlagForNoImg] = useState(false);
 
   //the section of the lists hooks
   const [brandsList, setBrandsList] = useState([]);
@@ -95,7 +96,7 @@ export default function UploadItem() {
       })
       .then(
         (data) => {
-          setBrandsList(data.map((item) => ({value:item.brand_name})));
+          setBrandsList(data.map((item) => ({ value: item.brand_name })));
         },
         (error) => {
           console.log("barnd error", error);
@@ -164,7 +165,7 @@ export default function UploadItem() {
       })
       .then(
         (data) => {
-          setColorsList(data.map((item) => ({value:item.color_name})));
+          setColorsList(data.map((item) => ({ value: item.color_name })));
         },
         (error) => {
           console.log("colors error", error);
@@ -185,7 +186,7 @@ export default function UploadItem() {
       })
       .then(
         (data) => {
-          setSizesList(data.map((item) =>({ value:item.size_name})));
+          setSizesList(data.map((item) => ({ value: item.size_name })));
         },
         (error) => {
           console.log("size error", error);
@@ -206,7 +207,7 @@ export default function UploadItem() {
       })
       .then(
         (data) => {
-          setTypesList(data.map((item) => ({value:item.item_type_name})));
+          setTypesList(data.map((item) => ({ value: item.item_type_name })));
         },
         (error) => {
           console.log("type error", error);
@@ -227,7 +228,8 @@ export default function UploadItem() {
       itemDeliveryMethod == "" ||
       itemBrand == "" ||
       itemDescription == "" ||
-      images == []
+      images == [] ||
+      flagForNoImg == true
     ) {
       Alert.alert("אנא מלאי את כל הפרטים");
     } else {
@@ -242,7 +244,7 @@ export default function UploadItem() {
         Shipping_method: ArrayToStringShip(itemDeliveryMethod),
         Brand: itemBrand,
         Description: itemDescription,
-        Sale_status: true,
+        Item_status: "active",
       };
 
       //posts to item table
@@ -290,6 +292,7 @@ export default function UploadItem() {
         key: index,
       }));
       setImages(selectedImages);
+      setFlagForNoImg(false);
     }
     selectedImages = [];
   };
@@ -604,7 +607,29 @@ export default function UploadItem() {
               </TouchableOpacity>
             )}
           </View>
+
           {images.length > 0 && (
+            <View style={styles.imageContainer}>
+              {images.map((image, index) => (
+                <View key={index}>
+                  <Image source={{ uri: image.uri }} style={styles.Image} />
+                  <TouchableOpacity
+                    style={styles.deleteButton}
+                    onPress={() => {
+                      const newImages = [...images]; // Make a copy of the array
+                      newImages.splice(index, 1); // Remove the image at the given index
+                      setImages(newImages); // Update the state
+                      if (newImages.length == 0) {
+                        setFlagForNoImg(true);
+                      }
+                    }}>
+                    <Text style={styles.deleteButtonText}>X</Text>
+                  </TouchableOpacity>
+                </View>
+              ))}
+            </View>
+          )}
+          {/* {images.length > 0 && (
             <View style={styles.imageContainer}>
               {images.map((item, index) => (
                 <Image
@@ -614,7 +639,7 @@ export default function UploadItem() {
                 />
               ))}
             </View>
-          )}
+          )} */}
 
           <UploadModal
             uploading={uploading}
@@ -773,5 +798,21 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "left",
     justifyContent: "space-between",
+  },
+  deleteButton: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    width: 20,
+    height: 20,
+    backgroundColor: COLORS.golden,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  deleteButtonText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 14,
   },
 });

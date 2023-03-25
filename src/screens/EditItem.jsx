@@ -64,7 +64,7 @@ export default function EditItem(props) {
   const [itemNewImages, setItemNewImages] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [flagForNewImg, setFlagForNewImg] = useState(false);
-
+  const [flagForNoImg, setFlagForNoImg] = useState(false);
   //lists
   const [brandsList, setBrandsList] = useState([]);
   const [categoriesList, setCategoriesList] = useState([]);
@@ -105,8 +105,9 @@ export default function EditItem(props) {
         return res.json();
       })
       .then(
-        (data) => {{
-        }
+        (data) => {
+          {
+          }
           setBrandsList(data.map((item) => ({ value: item.brand_name })));
         },
         (error) => {
@@ -155,7 +156,7 @@ export default function EditItem(props) {
       })
       .then(
         (data) => {
-          setColorsList(data.map((item) => ({value:item.color_name})));
+          setColorsList(data.map((item) => ({ value: item.color_name })));
         },
         (error) => {
           console.log("colors error", error);
@@ -176,7 +177,7 @@ export default function EditItem(props) {
       })
       .then(
         (data) => {
-          setSizesList(data.map((item) => ({value:item.size_name})));
+          setSizesList(data.map((item) => ({ value: item.size_name })));
         },
         (error) => {
           console.log("size error", error);
@@ -197,7 +198,7 @@ export default function EditItem(props) {
       })
       .then(
         (data) => {
-          setTypesList(data.map((item) => ({value:item.item_type_name})));
+          setTypesList(data.map((item) => ({ value: item.item_type_name })));
         },
         (error) => {
           console.log("type error", error);
@@ -233,7 +234,7 @@ export default function EditItem(props) {
         shipping_method: ArrayToStringShip(itemDeliveryMethod),
         brand: itemBrand,
         description: itemDescription,
-        sale_status: true,
+        item_status: "active",
       };
 
       //update the item's data
@@ -342,41 +343,46 @@ export default function EditItem(props) {
       }));
       setItemNewImages(selectedImages);
       setFlagForNewImg(true);
+      setFlagForNoImg(false);
     }
   };
 
   //post images to the FB
   const uploadImageFB = async (item_ID) => {
-    setUploading(true);
-    const imageLinks = [];
+    if (flagForNoImg) {
+      Alert.alert("אנא מלאי את כל הפרטים");
+    } else {
+      setUploading(true);
+      const imageLinks = [];
 
-    for (let i = 0; i < itemNewImages.length; i++) {
-      const response = await fetch(itemNewImages[i].uri);
-      const blob = await response.blob();
-      const filename =
-        `${loggedUser.id}/` +
-        item_ID +
-        "/" +
-        itemNewImages[i].uri.substring(
-          itemNewImages[i].uri.lastIndexOf("/") + 1
-        );
+      for (let i = 0; i < itemNewImages.length; i++) {
+        const response = await fetch(itemNewImages[i].uri);
+        const blob = await response.blob();
+        const filename =
+          `${loggedUser.id}/` +
+          item_ID +
+          "/" +
+          itemNewImages[i].uri.substring(
+            itemNewImages[i].uri.lastIndexOf("/") + 1
+          );
 
-      try {
-        var ref = firebase.storage().ref().child(filename).put(blob);
-        await ref;
-        var imageRef = firebase.storage().ref().child(filename);
-        const imageLink = await imageRef.getDownloadURL();
-        imageLinks.push(imageLink);
-        console.log("upload to FB #", i);
-      } catch (error) {
-        console.log("error in upload to FB", error);
+        try {
+          var ref = firebase.storage().ref().child(filename).put(blob);
+          await ref;
+          var imageRef = firebase.storage().ref().child(filename);
+          const imageLink = await imageRef.getDownloadURL();
+          imageLinks.push(imageLink);
+          console.log("upload to FB #", i);
+        } catch (error) {
+          console.log("error in upload to FB", error);
+        }
       }
+      console.log("finish upload to FB");
+      //after uploading all the new images
+      deleteImagesFB();
+      deleteImagesDB(item_ID, imageLinks);
+      UpdateItem();
     }
-    console.log("finish upload to FB");
-    //after uploading all the new images
-    deleteImagesFB();
-    deleteImagesDB(item_ID, imageLinks);
-    UpdateItem();
   };
 
   //delete images from the FB
@@ -684,13 +690,15 @@ export default function EditItem(props) {
                       paddingBottom: 30,
                       textAlign: "center",
                     }}>
-                    עדכני תמונות ({itemNewImages.length}/3)
+                    בחרי תמונות חדשות ({itemNewImages.length}/3)
                   </Text>
                   <AddSvg></AddSvg>
                 </View>
               </TouchableOpacity>
             )}
           </View>
+
+          {/* מציג את התמונות הקיימות לפני השינוי */}
           {!flagForNewImg && itemCurrentImages.length > 0 && (
             <View style={styles.imageContainer}>
               {itemCurrentImages.map((image, index) => (
@@ -702,20 +710,37 @@ export default function EditItem(props) {
               ))}
             </View>
           )}
+
+          {/* מציג את התמונותהחדשות לאחר השינויים*/}
           {itemNewImages.length > 0 && (
             <View style={styles.imageContainer}>
               {itemNewImages.map((image, index) => (
-                <Image
-                  key={index}
-                  source={{ uri: image.uri }}
-                  style={styles.Image}
-                />
+                <View key={index}>
+                  <Image source={{ uri: image.uri }} style={styles.Image} />
+                  <TouchableOpacity
+                    style={styles.deleteButton}
+                    onPress={() => {
+                      const newImages = [...itemNewImages]; // Make a copy of the array
+                      newImages.splice(index, 1); // Remove the image at the given index
+                      setItemNewImages(newImages); // Update the state
+                      console.log("newImages 1", newImages);
+                      console.log("setItemNewImages 1", itemNewImages);
+
+                      if (newImages.length == 0) {
+                        setFlagForNoImg(true);
+                      }
+                    }}>
+                    <Text style={styles.deleteButtonText}>X</Text>
+                  </TouchableOpacity>
+                </View>
               ))}
             </View>
           )}
+
           <UploadModal
             uploading={uploading}
             message="עדכון פרטים עלול לקחת זמן, אנא המתן"></UploadModal>
+
           <Button
             title="עדכני פרטים "
             onPress={() => {
@@ -873,5 +898,20 @@ const styles = StyleSheet.create({
     alignItems: "left",
     justifyContent: "space-between",
   },
-  
+  deleteButton: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    width: 20,
+    height: 20,
+    backgroundColor: COLORS.golden,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  deleteButtonText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 14,
+  },
 });

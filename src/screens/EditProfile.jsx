@@ -335,9 +335,12 @@ export default function EditProfile(props) {
                 onChangeText={(text) => setclosetName(text)}
                 keyboardType="text"
               />
+              
               <UploadModal
                 uploading={uploading}
                 message="עדכון פרטים עלול לקחת זמן, אנא המתן"></UploadModal>
+
+
               <View style={{ marginTop: 40 }}>
                 <Button
                   title="שמור שינויים "

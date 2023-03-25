@@ -37,7 +37,7 @@ export default function SignUp() {
   const [ClosetName, setClosetName] = useState(userName);
   const { loggedUser, setloggedUser } = useContext(userContext);
   const [uploading, setUploading] = useState(false);
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState("");
 
   const ageList = Array.from({ length: 109 }, (_, i) => ({
     value: (i + 12).toString(),
@@ -55,7 +55,7 @@ export default function SignUp() {
       userAge == ""
     ) {
       //אלו השדות חובה שלנו
-      alert("אנא הכניסי את כל הפרטים הנדרשים");
+      alert("אנא מלאי את כל הפרטים הנדרשים");
     } else if (address.split(",").length < 3) {
       alert("אנא הכניסי כתובת מלאה הכוללת שם רחובת עיר ומדינה");
     } else {
@@ -271,6 +271,13 @@ export default function SignUp() {
             {image ? (
               <View style={{ alignSelf: "center" }}>
                 <Image source={{ uri: image.uri }} style={styles.Image} />
+                <TouchableOpacity
+                  style={styles.deleteButton}
+                  onPress={() => {
+                    setImage(""); // Update the state
+                  }}>
+                  <Text style={styles.deleteButtonText}>X</Text>
+                </TouchableOpacity>
               </View>
             ) : (
               <View>
@@ -402,5 +409,21 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     paddingHorizontal: 25,
     // textAlign: "right",
+  },
+  deleteButton: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    width: 20,
+    height: 20,
+    backgroundColor: COLORS.golden,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  deleteButtonText: {
+    color: "white",
+    fontWeight: "bold",
+    fontSize: 14,
   },
 });

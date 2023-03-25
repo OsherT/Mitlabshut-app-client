@@ -48,6 +48,8 @@ export default function ProductDetails(props) {
 
   useEffect(() => {
     if (isFocused) {
+      console.log(itemImages);
+      console.log(itemCtegories);//
       GetClosetdata();
       getFavItems();
       getShopItems();

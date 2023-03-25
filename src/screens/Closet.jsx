@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { userContext } from "../navigation/userContext";
 import { useNavigation } from "@react-navigation/native";
 import {
@@ -7,8 +7,9 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ImageBackground,
-  StatusBar,
+  Modal,
   FlatList,
+  Dimensions,
 } from "react-native";
 import axios from "axios";
 import { Edit } from "../svg";
@@ -18,6 +19,7 @@ import { AREA, COLORS, FONTS } from "../constants";
 import { useIsFocused } from "@react-navigation/native";
 import ProfileNumbers from "../components/ProfileNumbers";
 import ButtonFollow from "../components/ButtonFollow";
+import { StyleSheet } from "react-native";
 
 export default function Closet(props) {
   const {
@@ -40,6 +42,11 @@ export default function Closet(props) {
   const [ClosetFollowers, setClosetFollowers] = useState([]);
   const [myClosetFlag, setMyClosetFlag] = useState(false);
   const [UsersFollowingList, setUsersFollowingList] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
+  const [ModalItem, setModalItem] = useState("");
+  const buttonRef = useRef(null);
+
   const ApiUrl_user = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User`;
   const navigation = useNavigation();
   const isFocused = useIsFocused();
@@ -56,6 +63,32 @@ export default function Closet(props) {
       console.log(UsersItems);
     }
   }, [isFocused, ClosetFollowers]);
+
+  function handleOptionsMenuPress() {
+    const buttonWidth = 20;
+    const buttonHeight = 20;
+    const modalWidth = 120;
+    const modalHeight = 120;
+    const screenWidth = Dimensions.get("screen").width;
+    const screenHeight = Dimensions.get("screen").height;
+
+    buttonRef.current.measure((x, y, width, height, pageX, pageY) => {
+      const modalX = Math.min(
+        screenWidth - modalWidth,
+        Math.max(0, pageX - modalWidth / 2 + width / 2)
+      );
+      const modalY = Math.min(
+        screenHeight - modalHeight,
+        Math.max(0, pageY + height + 10)
+      );
+
+      setModalPosition({
+        x: modalX,
+        y: modalY,
+      });
+      setModalVisible(true);
+    });
+  }
 
   function GetClosetDescription() {
     axios
@@ -399,6 +432,149 @@ export default function Closet(props) {
         console.log("cant unfollow");
       });
   };
+
+  function renderModal() {
+    return (
+      <Modal
+        visible={modalVisible}
+        transparent={true}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <TouchableOpacity
+          style={{
+            flex: 1,
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#00000099",
+          }}
+          onPress={() => setModalVisible(false)}
+        >
+          <View
+            style={{
+              backgroundColor: COLORS.white,
+              borderRadius: 10,
+              padding: 16,
+            }}
+          >
+            <TouchableOpacity
+              style={{
+                paddingVertical: 8,
+                borderBottomWidth: 1,
+                textAlign: 'center',
+              }}
+              onPress={handleEditPress}
+            >
+              <Text style={{textAlign: 'center'}}>עריכת פריט</Text>
+            </TouchableOpacity>
+            {ModalItem.item_status === "sold" ? (
+              <TouchableOpacity
+                style={{
+                  paddingVertical: 8,
+                  borderBottomWidth: 1,
+                  textAlign: 'center',
+                }}
+                onPress={handleNotSalePress}
+              >
+                <Text style={{textAlign: 'center'}}>סמני כלא נמכר</Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={{
+                  paddingVertical: 8,
+                  borderBottomWidth: 1,
+                  textAlign: 'center',
+                }}
+                onPress={handleSalePress}
+              >
+                <Text style={{textAlign: 'center'}}>סמני כנמכר</Text>
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity
+              style={{
+                paddingVertical: 8,
+                textAlign: 'center',
+              }}
+              onPress={handleDeletePress}
+            >
+              <Text style={{textAlign: 'center'}}>מחקי את הפריט</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+      </Modal>
+    );
+  }
+  
+
+  function handleEditPress() {
+    setModalVisible(false);
+    axios
+      .get(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemCategortById/Item_ID/" +
+          ModalItem.id
+      )
+      .then((res1) => {
+        axios
+          .get(
+            "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/ItemImages/GetItem_Image_VideoItemById/Item_ID/" +
+              ModalItem.id
+          )
+          .then((res2) => {
+            navigation.navigate("EditItem", {
+              item: ModalItem,
+              itemImages: res2.data.map((item) => item.src),
+              itemCtegories: res1.data,
+            });
+          })
+          .catch((err) => {
+            console.log("cant take images", err);
+          });
+      })
+      .catch((err) => {
+        console.log("cant take categories", err);
+      });
+  }
+  function handleSalePress() {
+    setModalVisible(false);
+    axios
+      .put(
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/updateItemSaleStatus/item_ID/${ModalItem.id}/item_status/sold`
+      )
+      .then((res) => {
+        GetClosetItems();
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+  function handleNotSalePress() {
+    setModalVisible(false);
+    axios
+      .put(
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/updateItemSaleStatus/item_ID/${ModalItem.id}/item_status/active`
+      )
+      .then((res) => {
+        GetClosetItems();
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+  function handleDeletePress() {
+    setModalVisible(false);
+    axios
+      .put(
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/updateItemSaleStatus/item_ID/${ModalItem.id}/item_status/delete`
+      )
+      .then((res) => {
+        GetClosetItems();
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
   ///render items
   function renderClothes() {
     return (
@@ -441,6 +617,32 @@ export default function Closet(props) {
                     imageStyle={{ borderRadius: 10 }}
                     key={photo.id}
                   >
+                    {item.item_status === "sold" && (
+                      <View
+                        style={{
+                          backgroundColor: COLORS.black,
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          bottom: 0,
+                          opacity: 0.5,
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <Text
+                          style={{
+                            color: COLORS.white,
+                            ...FONTS.Mulish_600SemiBold,
+                            fontSize: 20,
+                            textAlign: "center",
+                          }}
+                        >
+                          נמכר
+                        </Text>
+                      </View>
+                    )}
                     {!myClosetFlag && UsersFavList.includes(item.id) && (
                       // render the filled heart SVG if the item ID is in the UsersFavList
                       <TouchableOpacity
@@ -459,6 +661,55 @@ export default function Closet(props) {
                         <HeartSvg filled={false} />
                       </TouchableOpacity>
                     )}
+                    {/* Render the edit/mark as sold/delete icon */}
+                    {myClosetFlag && (
+                      <TouchableOpacity
+                        style={{
+                          position: "absolute",
+                          right: 12,
+                          top: 12,
+                          width: 20,
+                          height: 20,
+                          backgroundColor: COLORS.goldenTransparent_05,
+                          borderRadius: 10,
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                        ref={buttonRef}
+                        onPress={() => {
+                          handleOptionsMenuPress();
+                          setModalItem(item);
+                        }}
+                      >
+                        <View
+                          style={{
+                            backgroundColor: COLORS.white,
+                            width: 3,
+                            height: 3,
+                            borderRadius: 1,
+                          }}
+                        />
+                        <View
+                          style={{
+                            backgroundColor: COLORS.white,
+                            width: 3,
+                            height: 3,
+                            borderRadius: 1,
+                            marginTop: 2,
+                          }}
+                        />
+                        <View
+                          style={{
+                            backgroundColor: COLORS.white,
+                            width: 3,
+                            height: 3,
+                            borderRadius: 1,
+                            marginTop: 2,
+                          }}
+                        />
+                      </TouchableOpacity>
+                    )}
+                    {renderModal()}
                   </ImageBackground>
                 );
               })}

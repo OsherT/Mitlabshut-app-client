@@ -60,7 +60,6 @@ export default function Closet(props) {
       getShopItems();
       getFavItems();
       getFollowingList();
-      console.log(UsersItems);
     }
   }, [isFocused, ClosetFollowers]);
 

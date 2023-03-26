@@ -12,8 +12,6 @@ export default function WarningModal({
 }) {
   const navigation = useNavigation();
 
-
-
   return (
     <Modal
       isVisible={!!showModal}

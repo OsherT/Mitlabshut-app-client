@@ -317,7 +317,7 @@ export default function Order() {
 
   return (
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
-      <Header title="סל קניות" onPress={() => navigation.goBack()} />
+      <Header title="סל קניות"  />
       {renderContent()}
     </SafeAreaView>
   );

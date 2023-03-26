@@ -108,7 +108,14 @@ import { useNavigation } from "@react-navigation/native";
 import BagHeader from "../svg/BagHeader";
 import WarningModal from "./WarningModal";
 
-export default function Header({ title, titleStyle, flag, onEdit, showModal }) {
+export default function Header({
+  title,
+  titleStyle,
+  flag,
+  onEdit,
+  showModal,
+  goBack,
+}) {
   const navigation = useNavigation();
   const [showModal2, setShowModal] = useState(showModal);
 
@@ -124,21 +131,23 @@ export default function Header({ title, titleStyle, flag, onEdit, showModal }) {
         alignItems: "center",
         height: 42,
       }}>
-      <TouchableOpacity
-        style={{
-          position: "absolute",
-          left: 0,
-          paddingHorizontal: 20,
-        }}
-        onPress={() => {
-          if (onEdit) {
-            setShowModal(true); // set showModal2 to true
-          } else {
-            navigation.goBack();
-          }
-        }}>
-        <ArrowTwo />
-      </TouchableOpacity>
+      {!goBack && (
+        <TouchableOpacity
+          style={{
+            position: "absolute",
+            left: 0,
+            paddingHorizontal: 20,
+          }}
+          onPress={() => {
+            if (onEdit) {
+              setShowModal(true); // set showModal2 to true
+            } else {
+              navigation.goBack();
+            }
+          }}>
+          <ArrowTwo />
+        </TouchableOpacity>
+      )}
 
       {!flag && (
         <TouchableOpacity
@@ -178,7 +187,6 @@ export default function Header({ title, titleStyle, flag, onEdit, showModal }) {
         {title}
       </Text>
 
-      {/* Add the WarningModal here */}
       {onEdit && (
         <WarningModal
           showModal={showModal2}
@@ -190,4 +198,3 @@ export default function Header({ title, titleStyle, flag, onEdit, showModal }) {
     </View>
   );
 }
-

@@ -77,8 +77,8 @@ export default function WarningModal({
               borderWidth: 1,
             }}
             onPress={() => {
-              setShowModal(false);
-              handleSure();
+               setShowModal(false);
+               handleSure();
             }}>
             <Text
               style={{

@@ -423,11 +423,9 @@ export default function SearchRes(props) {
       style={{
         flex: 1,
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-      }}
-    >
+      }}>
       <Header
         title={searchText}
-        goBack={true}
         onPress={() => navigation.goBack()}
       />
 

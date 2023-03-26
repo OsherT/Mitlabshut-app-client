@@ -324,9 +324,8 @@ export default function WishList() {
         ...AREA.AndroidSafeArea,
         backgroundColor: "none",
         showsVerticalScrollIndicator: false,
-      }}
-    >
-      <Header title="רשימת מועדפים" />
+      }}>
+      <Header title="רשימת מועדפים" goBack={true} />
       {renderContent()}
     </SafeAreaView>
   );

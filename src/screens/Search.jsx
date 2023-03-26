@@ -156,7 +156,7 @@ export default function Search() {
         flex: 1,
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
       }}>
-      <Header title="חיפוש פריט" />
+      <Header title="חיפוש פריט" goBack={true} />
       {renderSearch()}
       {renderTyps()}
     </SafeAreaView>

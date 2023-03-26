@@ -28,6 +28,8 @@ import {
   SignOutCategory,
 } from "../svg";
 import { userContext } from "../navigation/userContext";
+import { FlatList } from "react-native";
+import { Image } from "react-native";
 
 export default function Profile() {
   const navigation = useNavigation();
@@ -263,97 +265,203 @@ export default function Profile() {
   }
 
   function renderUsersFollow() {
+
     return (
-      <View style={{ paddingHorizontal: 20 }}>
-        <ScrollView>
-          <View
+      <View style={{ marginBottom: 40 }}>
+        <View
+          style={{
+            flexDirection: "row-reverse",
+            alignItems: "center",
+            justifyContent: "space-between",
+            paddingHorizontal: 20,
+            marginBottom: 16,
+          }}>
+          <Text
             style={{
-              position: "absolute",
-              flexDirection: "row-reverse",
-              justifyContent: "space-between",
-              marginBottom: 16,
-              // height: 350,
-              padding: 10,
-              // backgroundColor:"red",
+              ...FONTS.Mulish_700Bold,
+              fontSize: 20,
+              textTransform: "capitalize",
+              color: COLORS.black,
+              lineHeight: 20 * 1.2,
             }}>
-            <Text
-              style={{
-                ...FONTS.Mulish_700Bold,
-                fontSize: 20,
-                color: COLORS.black,
-                lineHeight: 20 * 1.2,
-              }}>
-              עוקבת אחרי...
-            </Text>
-          </View>
-          {usersFollow.map((item, index) => {
+            ארונות במעקב...  
+          </Text>
+        </View>
+        <FlatList
+          data={usersFollow}
+          horizontal={true}
+          keyExtractor={(user) => user.id}
+          renderItem={({ item: user, index }) => {
             return (
               <TouchableOpacity
-                key={index}
                 style={{
-                  width: "50%",
-                  // height: 100,
+                  height: "100%",
+                  width: 180,
                   backgroundColor: COLORS.white,
-                  marginBottom: 15,
+                  marginRight: 15,
                   borderRadius: 10,
-                  flexDirection: "row",
                 }}
-                // לתקן שיעביר למשתמש הרצוי
                 onPress={() =>
-                  navigation.navigate("Closet", {
+                  navigation.navigate("ProductDetails", {
                     productDetails: item,
                     productSlides: item.slides,
                   })
                 }>
+                <Image
+                  source={{ uri: loggedUser.user_image }}
+                  style={{
+                    width: "100%",
+                    height: 180,
+                    borderRadius: 10,
+                  }}
+                />
                 <View
                   style={{
                     paddingHorizontal: 15,
-                    paddingVertical: 11,
-                    flex: 1,
+                    paddingVertical: 12,
                   }}>
                   <Text
                     style={{
                       ...FONTS.Mulish_600SemiBold,
-                      fontSize: 14,
+                      fontSize: 15,
                       textTransform: "capitalize",
-                      marginBottom: 6,
+                      color: COLORS.black,
+                      marginBottom: 5,
+                      textAlign: "center",
                     }}>
-                    {item.closet_ID}
+                    הארון של {loggedUser.full_name}
                   </Text>
-                  <Text
+                  {/* <View
                     style={{
-                      color: COLORS.gray,
-                      ...FONTS.Mulish_400Regular,
-                      fontSize: 14,
+                      justifyContent: "center",
+                      alignItems: "center",
                     }}>
-                    {item.size}
-                  </Text>
-                  <Line />
-                  <Text
-                    style={{
-                      ...FONTS.Mulish_600SemiBold,
-                      fontSize: 14,
-                      color: COLORS.carrot,
-                    }}>
-                    {usersFollow.closet_ID}
-                  </Text>
+                    {!UsersFollowingList.includes(user.closet_id) && (
+                      <ButtonFollow
+                        title="עקבי"
+                        backgroundColor={COLORS.golden}
+                        textColor={COLORS.white}
+                        containerStyle={{ marginBottom: 13 }}
+                        onPress={() => {
+                          followCloset(user.closet_id);
+                        }}
+                      />
+                    )}
+                    {UsersFollowingList.includes(user.closet_id) && (
+                      <ButtonFollow
+                        title="הסירי עוקב"
+                        backgroundColor={COLORS.goldenTransparent_03}
+                        textColor={COLORS.black}
+                        containerStyle={{ marginBottom: 13 }}
+                        onPress={() => {
+                          unfollowCloset(user.closet_id);
+                        }}
+                      />
+                    )}
+                  </View> */}
                 </View>
-                <ImageBackground
-                  source={{
-                    uri: loggedUser.user_image,
-                  }}
-                  style={{
-                    width: 100,
-                    height: "100%",
-                  }}
-                  imageStyle={{ borderRadius: 10 }}></ImageBackground>
               </TouchableOpacity>
             );
-          })}
-        </ScrollView>
+          }}
+          contentContainerStyle={{ paddingLeft: 20 }}
+          showsHorizontalScrollIndicator={false}
+        />
       </View>
     );
   }
+
+  // function renderUsersFollow() {
+  //   return (
+  //     <View style={{ paddingHorizontal: 20 }}>
+  //       <ScrollView>
+  //         <View
+  //           style={{
+  //             position: "absolute",
+  //             flexDirection: "row-reverse",
+  //             justifyContent: "space-between",
+  //             marginBottom: 16,
+  //             // height: 350,
+  //             padding: 10,
+  //             // backgroundColor:"red",
+  //           }}>
+  //           <Text
+  //             style={{
+  //               ...FONTS.Mulish_700Bold,
+  //               fontSize: 20,
+  //               color: COLORS.black,
+  //               lineHeight: 20 * 1.2,
+  //             }}>
+  //             עוקבת אחרי...
+  //           </Text>
+  //         </View>
+  //         {usersFollow.map((item, index) => {
+  //           return (
+  //             <TouchableOpacity
+  //               key={index}
+  //               style={{
+  //                 width: "50%",
+  //                 // height: 100,
+  //                 backgroundColor: COLORS.white,
+  //                 marginBottom: 15,
+  //                 borderRadius: 10,
+  //                 flexDirection: "row",
+  //               }}
+  //               // לתקן שיעביר למשתמש הרצוי
+  //               onPress={() =>
+  //                 navigation.navigate("Closet", {
+  //                   productDetails: item,
+  //                   productSlides: item.slides,
+  //                 })
+  //               }>
+  //               <View
+  //                 style={{
+  //                   paddingHorizontal: 15,
+  //                   paddingVertical: 11,
+  //                   flex: 1,
+  //                 }}>
+  //                 <Text
+  //                   style={{
+  //                     ...FONTS.Mulish_600SemiBold,
+  //                     fontSize: 14,
+  //                     textTransform: "capitalize",
+  //                     marginBottom: 6,
+  //                   }}>
+  //                   {item.closet_ID}
+  //                 </Text>
+  //                 <Text
+  //                   style={{
+  //                     color: COLORS.gray,
+  //                     ...FONTS.Mulish_400Regular,
+  //                     fontSize: 14,
+  //                   }}>
+  //                   {item.size}
+  //                 </Text>
+  //                 <Line />
+  //                 <Text
+  //                   style={{
+  //                     ...FONTS.Mulish_600SemiBold,
+  //                     fontSize: 14,
+  //                     color: COLORS.carrot,
+  //                   }}>
+  //                   {usersFollow.closet_ID}
+  //                 </Text>
+  //               </View>
+  //               <ImageBackground
+  //                 source={{
+  //                   uri: loggedUser.user_image,
+  //                 }}
+  //                 style={{
+  //                   width: 100,
+  //                   height: "100%",
+  //                 }}
+  //                 imageStyle={{ borderRadius: 10 }}></ImageBackground>
+  //             </TouchableOpacity>
+  //           );
+  //         })}
+  //       </ScrollView>
+  //     </View>
+  //   );
+  // }
 
   return (
     <SafeAreaView
@@ -363,7 +471,7 @@ export default function Profile() {
       }}>
       <Header title="עמוד אישי" goBack={true} />
       {renderContent()}
-      {/* {renderUsersFollow()} */}
+      {renderUsersFollow()}
 
       {<SignOutModal />}
     </SafeAreaView>

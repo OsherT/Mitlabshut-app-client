@@ -25,13 +25,14 @@ export default function Home() {
   const { loggedUser, setloggedUser } = useContext(userContext);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [RecoUsers, setRecoUsers] = useState([]);
-  const [followFlag, setfollowFlag] = useState("");
+  const [OtherClosets, setOtherClosets] = useState([]);
   const ApiUrl_user = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User`;
   const [UsersFollowingList, setUsersFollowingList] = useState([]);
 
   useEffect(() => {
     if (isFocused) {
       getFollowingList();
+      GetUnfollowedClosets();
       GetRecommendedClosets();
     }
   }, [isFocused]);
@@ -43,30 +44,28 @@ export default function Home() {
           loggedUser.id
       )
       .then((res) => {
-        GetUsersData(res.data);
+        GetUsersData1(res.data);
       })
       .catch((err) => {
         console.log(err);
       });
   }
 
-  //   function GetClosetsData(closets){
-  //     closets.forEach((closet) => {
-  //         axios
-  //           .get(
-  //             "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Closet/Get/" +
-  //               closet.closet_ID
-  //           )
-  //           .then((res) => {
-  //             GetUsersData(res.data);
-  //           })
-  //           .catch((err) => {
-  //             console.log(err);
-  //           });
-  //       });
-  //   }
+  function GetUnfollowedClosets() {
+    axios
+      .get(
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Closet/GetClosetsByUserNotFollowing/UserId/24${loggedUser.id}`
+      )
+      .then((res) => {
+        console.log(res.data);
+        GetUsersData2(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
 
-  function GetUsersData(closets) {
+  function GetUsersData1(closets) {
     closets.forEach((closet) => {
       axios
         .get(
@@ -80,6 +79,21 @@ export default function Home() {
         });
     });
   }
+  function GetUsersData2(closets) {
+    closets.forEach((closet) => {
+      axios
+        .get(
+          `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetUserByClosetId/Closet_ID/${closet.closet_ID}`
+        )
+        .then((res) => {
+          setOtherClosets(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  }
+
   function getFollowingList() {
     axios
       .get(ApiUrl_user + `/GetClosetByUserID/User_ID/${loggedUser.id}`)
@@ -98,7 +112,6 @@ export default function Home() {
         console.log("cant get following list", err);
       });
   }
-
   const followCloset = (closetID) => {
     axios
       .post(
@@ -106,7 +119,6 @@ export default function Home() {
           `/PostFollowingCloset/User_ID/${loggedUser.id}/Closet_ID/${closetID}`
       )
       .then((res) => {
-        
         setUsersFollowingList((prevList) => [...prevList, { closetID }]);
         getFollowingList();
       })
@@ -114,15 +126,12 @@ export default function Home() {
         console.log("cant follow", err);
       });
   };
-  //check whay returns err when unfollow
   const unfollowCloset = (closetID) => {
     axios
       .delete(
-        ApiUrl_user +
-          `/Delete/Closet_ID/${closetID}/User_ID/${loggedUser.id}`
+        ApiUrl_user + `/Delete/Closet_ID/${closetID}/User_ID/${loggedUser.id}`
       )
       .then((res) => {
-       
         setUsersFollowingList((prevList) =>
           prevList.filter((id) => id !== closetID)
         );
@@ -132,25 +141,11 @@ export default function Home() {
         console.log("cant unfollow", err);
       });
   };
-  //   const followCloset = (closetID) => {
-  //     setfollowFlag(closetID);
-
-  //     axios
-  //       .post(
-  //         ApiUrl_user +
-  //           `/PostFollowingCloset/User_ID/${loggedUser.id}/Closet_ID/${closetID}`
-  //       )
-  //       .then((res) => {
-  //         setfollowFlag(closetID);
-  //         console.log("follow");
-  //       })
-  //       .catch((err) => {
-  //         console.log("cant follow", err);
-  //       });
-  //   };
 
   function renderBestSellers() {
-    console.log("RecoUsers " + RecoUsers); //
+    const combinedUsers = [...RecoUsers, ...OtherClosets];
+    console.log("combinedUsers"+combinedUsers);
+
     return (
       <View style={{ marginBottom: 40 }}>
         <View
@@ -175,15 +170,14 @@ export default function Home() {
           </Text>
         </View>
         <FlatList
-          data={RecoUsers}
+          data={combinedUsers}
           horizontal={true}
-          keyExtractor={(user) => user.id.toString()}
+          keyExtractor={(user) => user.id}
           renderItem={({ item: user, index }) => {
-           
             return (
               <TouchableOpacity
                 style={{
-                  height:"100%",
+                  height: "100%",
                   width: 180,
                   backgroundColor: COLORS.white,
                   marginRight: 15,
@@ -226,7 +220,6 @@ export default function Home() {
                     style={{
                       justifyContent: "center",
                       alignItems: "center",
-                     
                     }}
                   >
                     {!UsersFollowingList.includes(user.closet_id) && (

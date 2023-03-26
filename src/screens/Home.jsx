@@ -1,371 +1,497 @@
 import {
-    View,
-    Text,
-    FlatList,
-    TouchableOpacity,
-    Image,
-    ImageBackground,
-    StyleSheet,
-    ScrollView,
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  Image,
+  ImageBackground,
+  StyleSheet,
+  ScrollView,
 } from "react-native";
-import React, { useContext, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import React, { useContext, useEffect, useState } from "react";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { showMessage } from "react-native-flash-message";
 import { promo, SIZES, COLORS, products, FONTS, AREA } from "../constants";
 import { RatingComponent, Line, Header } from "../components";
 import { BagSvg, HeartSvg } from "../svg";
 import { userContext } from "../navigation/userContext";
 import { SafeAreaView } from "react-native-safe-area-context";
+import axios from "axios";
+import ButtonFollow from "../components/ButtonFollow";
 
 export default function Home() {
-    const navigation = useNavigation();
-    const {loggedUser,setloggedUser}=useContext(userContext)
-    const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+  const navigation = useNavigation();
+  const isFocused = useIsFocused();
+  const { loggedUser, setloggedUser } = useContext(userContext);
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+  const [RecoUsers, setRecoUsers] = useState([]);
+  const [followFlag, setfollowFlag] = useState("");
+  const ApiUrl_user = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User`;
+  const [UsersFollowingList, setUsersFollowingList] = useState([]);
 
-      
-      
-
-    function updateCurrentSlideIndex(e) {
-        const contentOffsetX = e.nativeEvent.contentOffset.x;
-        const currentIndex = Math.round(contentOffsetX / SIZES.width);
-        setCurrentSlideIndex(currentIndex);
+  useEffect(() => {
+    if (isFocused) {
+      getFollowingList();
+      GetRecommendedClosets();
     }
-//render the sliders dots
-    function renderDots() {
-        console.log(loggedUser.closet_id);
-        return (
-            <View>
-                <View
-                    style={{
-                        alignItems: "center",
-                        justifyContent: "center",
-                        flexDirection: "row",
-                      
-                    }}
-                >
-                    {promo.map((_, index) => {
-                        return (
-                            <View
-                                key={index}
-                                style={[
-                                    styles.dot,
-                                    currentSlideIndex == index && {
-                                        width: 22,
-                                    },
-                                ]}
-                            />
-                        );
-                    })}
-                </View>
-            </View>
+  }, [isFocused]);
+
+  function GetRecommendedClosets() {
+    axios
+      .get(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/cheackStep3/User_ID/" +
+          loggedUser.id
+      )
+      .then((res) => {
+        GetUsersData(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  //   function GetClosetsData(closets){
+  //     closets.forEach((closet) => {
+  //         axios
+  //           .get(
+  //             "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Closet/Get/" +
+  //               closet.closet_ID
+  //           )
+  //           .then((res) => {
+  //             GetUsersData(res.data);
+  //           })
+  //           .catch((err) => {
+  //             console.log(err);
+  //           });
+  //       });
+  //   }
+
+  function GetUsersData(closets) {
+    closets.forEach((closet) => {
+      axios
+        .get(
+          `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetUserByClosetId/Closet_ID/${closet.closet_ID}`
+        )
+        .then((res) => {
+          setRecoUsers(res.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    });
+  }
+  function getFollowingList() {
+    axios
+      .get(ApiUrl_user + `/GetClosetByUserID/User_ID/${loggedUser.id}`)
+      .then((res) => {
+        if (res.data == "No closets yet") {
+          setUsersFollowingList("");
+        } else {
+          const tempUsersFollowList = res.data.map(
+            ({ closet_id }) => closet_id
+          );
+          console.log(tempUsersFollowList);
+          setUsersFollowingList(tempUsersFollowList);
+        }
+      })
+      .catch((err) => {
+        console.log("cant get following list", err);
+      });
+  }
+
+  const followCloset = (closetID) => {
+    axios
+      .post(
+        ApiUrl_user +
+          `/PostFollowingCloset/User_ID/${loggedUser.id}/Closet_ID/${closetID}`
+      )
+      .then((res) => {
+        
+        setUsersFollowingList((prevList) => [...prevList, { closetID }]);
+        getFollowingList();
+      })
+      .catch((err) => {
+        console.log("cant follow", err);
+      });
+  };
+  //check whay returns err when unfollow
+  const unfollowCloset = (closetID) => {
+    axios
+      .delete(
+        ApiUrl_user +
+          `/Delete/Closet_ID/${closetID}/User_ID/${loggedUser.id}`
+      )
+      .then((res) => {
+       
+        setUsersFollowingList((prevList) =>
+          prevList.filter((id) => id !== closetID)
         );
-    }
+        getFollowingList();
+      })
+      .catch((err) => {
+        console.log("cant unfollow", err);
+      });
+  };
+  //   const followCloset = (closetID) => {
+  //     setfollowFlag(closetID);
 
-    //the big image in the page
-    function renderSlide() {
-        return (
-            <View
-                style={{
-                    borderBottomLeftRadius: 20,
-                    borderBottomRightRadius: 20,
-                    overflow: "hidden",
-                }}
-            >
-                <FlatList
-                    data={promo}
-                    keyExtractor={(item) => item.id.toString()}
-                    horizontal={true}
-                    pagingEnabled={true}
-                    showsHorizontalScrollIndicator={false}
-                    onMomentumScrollEnd={updateCurrentSlideIndex}
-                    renderItem={({ item, index, separators }) => (
-                        <View
-                            key={item.key}
-                            style={{ width: SIZES.width, height: 356 }}
-                        >
-                            <ImageBackground
-                                source={item.photo_1125x1068}
-                                style={{ width: "100%", height: "100%" }}
-                            ></ImageBackground>
-                        </View>
-                    )}
-                />
-            </View>
-        );
-    }
+  //     axios
+  //       .post(
+  //         ApiUrl_user +
+  //           `/PostFollowingCloset/User_ID/${loggedUser.id}/Closet_ID/${closetID}`
+  //       )
+  //       .then((res) => {
+  //         setfollowFlag(closetID);
+  //         console.log("follow");
+  //       })
+  //       .catch((err) => {
+  //         console.log("cant follow", err);
+  //       });
+  //   };
 
-    function renderBestSellers() {
-        return (
-            <View style={{ marginBottom: 40 }}>
-                <View
-                    style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        paddingHorizontal: 20,
-                        marginBottom: 16,
-                    }}
-                >
-                    <Text
-                        style={{
-                            ...FONTS.Mulish_700Bold,
-                            fontSize: 20,
-                            textTransform: "capitalize",
-                            color: COLORS.black,
-                            lineHeight: 20 * 1.2,
-                        }}
-                    >
-                        Best sellers
-                    </Text>
-                </View>
-                <FlatList
-                    data={products}
-                    horizontal={true}
-                    keyExtractor={(item) => item.id.toString()}
-                    renderItem={({ item, index }) => (
-                        <TouchableOpacity
-                            style={{
-                                width: 266,
-                                backgroundColor: COLORS.white,
-                                marginRight: 15,
-                                borderRadius: 10,
-                            }}
-                            onPress={() =>
-                                navigation.navigate("ProductDetails", {
-                                    productDetails: item,
-                                    productSlides: item.slides,
-                                })
-                            }
-                        >
-                            <Image
-                                source={item.photo_798x408}
-                                style={{
-                                    width: "100%",
-                                    height: 136,
-                                    borderRadius: 10,
-                                }}
-                            />
-                            <View
-                                style={{
-                                    paddingHorizontal: 15,
-                                    paddingVertical: 12,
-                                }}
-                            >
-                                <Text
-                                    style={{
-                                        ...FONTS.Mulish_600SemiBold,
-                                        fontSize: 16,
-                                        textTransform: "capitalize",
-                                        color: COLORS.black,
-                                        marginBottom: 5,
-                                    }}
-                                >
-                                    {item.name}
-                                </Text>
-                                <Text
-                                    style={{
-                                        ...FONTS.Mulish_400Regular,
-                                        fontSize: 12,
-                                        lineHeight: 12 * 1.2,
-                                        color: COLORS.gray,
-                                    }}
-                                >
-                                    Size: {item.size}
-                                </Text>
-                                <View
-                                    style={{
-                                        width: "80%",
-                                        height: 1,
-                                        backgroundColor: "#E9E9E9",
-                                        marginVertical: 7,
-                                    }}
-                                />
-                                <Text
-                                    style={{
-                                        ...FONTS.Mulish_600SemiBold,
-                                        fontSize: 14,
-                                        color: COLORS.carrot,
-                                        lineHeight: 14 * 1.2,
-                                    }}
-                                >
-                                    {item.price}
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
-                    )}
-                    contentContainerStyle={{ paddingLeft: 20 }}
-                    showsHorizontalScrollIndicator={false}
-                />
-            </View>
-        );
-    }
-
-    function renderFeaturedProducts() {
-        return (
-            <View style={{ paddingHorizontal: 20 }}>
-                <View
-                    style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        marginBottom: 16,
-                    }}
-                >
-                    <Text
-                        style={{
-                            ...FONTS.Mulish_700Bold,
-                            fontSize: 20,
-                            textTransform: "capitalize",
-                            color: COLORS.black,
-                            lineHeight: 20 * 1.2,
-                        }}
-                    >
-                        Featured Products
-                    </Text>
-                </View>
-                {products.map((item, index) => {
-                    return (
-                        item.featuredProducts === true && (
-                            <TouchableOpacity
-                                key={index}
-                                style={{
-                                    width: "100%",
-                                    height: 100,
-                                    backgroundColor: COLORS.white,
-                                    marginBottom: 15,
-                                    borderRadius: 10,
-                                    flexDirection: "row",
-                                }}
-                                onPress={() =>
-                                    navigation.navigate("ProductDetails", {
-                                        productDetails: item,
-                                        productSlides: item.slides,
-                                    })
-                                }
-                            >
-                                <ImageBackground
-                                    source={item.photo_300x300}
-                                    style={{
-                                        width: 100,
-                                        height: "100%",
-                                    }}
-                                    imageStyle={{ borderRadius: 10 }}
-                                >
-                                    <RatingComponent
-                                        item={item}
-                                        containerStyle={{
-                                            bottom: 2,
-                                            left: 2,
-                                            borderBottomLeftRadius: 10,
-                                            borderTopRightRadius: 10,
-                                        }}
-                                        onPress={() =>
-                                            navigation.navigate("Reviews")
-                                        }
-                                    />
-                                </ImageBackground>
-                                <View
-                                    style={{
-                                        paddingHorizontal: 15,
-                                        paddingVertical: 11,
-                                        flex: 1,
-                                    }}
-                                >
-                                    <Text
-                                        style={{
-                                            ...FONTS.Mulish_600SemiBold,
-                                            fontSize: 14,
-                                            textTransform: "capitalize",
-                                            marginBottom: 6,
-                                        }}
-                                    >
-                                        {item.name}
-                                    </Text>
-                                    <Text
-                                        style={{
-                                            color: COLORS.gray,
-                                            ...FONTS.Mulish_400Regular,
-                                            fontSize: 14,
-                                        }}
-                                    >
-                                        {item.size}
-                                    </Text>
-                                    <Line />
-                                    <Text
-                                        style={{
-                                            ...FONTS.Mulish_600SemiBold,
-                                            fontSize: 14,
-                                            color: COLORS.carrot,
-                                        }}
-                                    >
-                                        {item.price}
-                                    </Text>
-                                </View>
-                                <TouchableOpacity
-                                    style={{
-                                        position: "absolute",
-                                        width: 30,
-                                        height: 30,
-                                        right: 15,
-                                        bottom: 11,
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                    }}
-                                    onPress={() => {
-                                        showMessage({
-                                            message: `${item.name} has been added`,
-                                            type: "info",
-                                        });
-                                    }}
-                                >
-                                    <BagSvg />
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    style={{
-                                        position: "absolute",
-                                        width: 30,
-                                        height: 30,
-                                        right: 15,
-                                        top: 8,
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                    }}
-                                >
-                                    <HeartSvg />
-                                </TouchableOpacity>
-                            </TouchableOpacity>
-                        )
-                    );
-                })}
-            </View>
-        );
-    }
-
+  function renderBestSellers() {
+    console.log("RecoUsers " + RecoUsers); //
     return (
-        <ScrollView
-            style={{
-                flexGrow: 1,
-            }}
-            contentContainerStyle={{ paddingBottom: 30 }}
-            showsVerticalScrollIndicator={false} 
+      <View style={{ marginBottom: 40 }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            paddingHorizontal: 20,
+            marginBottom: 16,
+          }}
         >
-            {renderSlide()}
-            {renderDots()}
-            {renderBestSellers()}
-            {renderFeaturedProducts()}
-        </ScrollView>
+          <Text
+            style={{
+              ...FONTS.Mulish_700Bold,
+              fontSize: 20,
+              textTransform: "capitalize",
+              color: COLORS.black,
+              lineHeight: 20 * 1.2,
+            }}
+          >
+            ארונות מומלצים במיוחד בשבילך
+          </Text>
+        </View>
+        <FlatList
+          data={RecoUsers}
+          horizontal={true}
+          keyExtractor={(user) => user.id.toString()}
+          renderItem={({ item: user, index }) => {
+           
+            return (
+              <TouchableOpacity
+                style={{
+                  height:"100%",
+                  width: 180,
+                  backgroundColor: COLORS.white,
+                  marginRight: 15,
+                  borderRadius: 10,
+                }}
+                onPress={() =>
+                  navigation.navigate("ProductDetails", {
+                    productDetails: item,
+                    productSlides: item.slides,
+                  })
+                }
+              >
+                <Image
+                  source={{ uri: user.user_image }}
+                  style={{
+                    width: "100%",
+                    height: 180,
+                    borderRadius: 10,
+                  }}
+                />
+                <View
+                  style={{
+                    paddingHorizontal: 15,
+                    paddingVertical: 12,
+                  }}
+                >
+                  <Text
+                    style={{
+                      ...FONTS.Mulish_600SemiBold,
+                      fontSize: 15,
+                      textTransform: "capitalize",
+                      color: COLORS.black,
+                      marginBottom: 5,
+                      textAlign: "center",
+                    }}
+                  >
+                    הארון של {user.full_name}
+                  </Text>
+                  <View
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                     
+                    }}
+                  >
+                    {!UsersFollowingList.includes(user.closet_id) && (
+                      <ButtonFollow
+                        title="עקבי"
+                        backgroundColor={COLORS.golden}
+                        textColor={COLORS.white}
+                        containerStyle={{ marginBottom: 13 }}
+                        onPress={() => {
+                          followCloset(user.closet_id);
+                        }}
+                      />
+                    )}
+                    {UsersFollowingList.includes(user.closet_id) && (
+                      <ButtonFollow
+                        title="הסירי עוקב"
+                        backgroundColor={COLORS.goldenTransparent_03}
+                        textColor={COLORS.black}
+                        containerStyle={{ marginBottom: 13 }}
+                        onPress={() => {
+                          unfollowCloset(user.closet_id);
+                        }}
+                      />
+                    )}
+                  </View>
+                </View>
+              </TouchableOpacity>
+            );
+          }}
+          contentContainerStyle={{ paddingLeft: 20 }}
+          showsHorizontalScrollIndicator={false}
+        />
+      </View>
     );
+  }
+
+  //   function updateCurrentSlideIndex(e) {
+  //     const contentOffsetX = e.nativeEvent.contentOffset.x;
+  //     const currentIndex = Math.round(contentOffsetX / SIZES.width);
+  //     setCurrentSlideIndex(currentIndex);
+  //   }
+  //   //render the sliders dots
+  //   function renderDots() {
+  //     return (
+  //       <View>
+  //         <View
+  //           style={{
+  //             alignItems: "center",
+  //             justifyContent: "center",
+  //             flexDirection: "row",
+  //           }}
+  //         >
+  //           {promo.map((_, index) => {
+  //             return (
+  //               <View
+  //                 key={index}
+  //                 style={[
+  //                   styles.dot,
+  //                   currentSlideIndex == index && {
+  //                     width: 22,
+  //                   },
+  //                 ]}
+  //               />
+  //             );
+  //           })}
+  //         </View>
+  //       </View>
+  //     );
+  //   }
+
+  //   //the big image in the page
+  //   function renderSlide() {
+  //     return (
+  //       <View
+  //         style={{
+  //           borderBottomLeftRadius: 20,
+  //           borderBottomRightRadius: 20,
+  //           overflow: "hidden",
+  //         }}
+  //       >
+  //         <FlatList
+  //           data={promo}
+  //           keyExtractor={(item) => item.id.toString()}
+  //           horizontal={true}
+  //           pagingEnabled={true}
+  //           showsHorizontalScrollIndicator={false}
+  //           onMomentumScrollEnd={updateCurrentSlideIndex}
+  //           renderItem={({ item, index, separators }) => (
+  //             <View key={item.key} style={{ width: SIZES.width, height: 356 }}>
+  //               <ImageBackground
+  //                 source={item.photo_1125x1068}
+  //                 style={{ width: "100%", height: "100%" }}
+  //               ></ImageBackground>
+  //             </View>
+  //           )}
+  //         />
+  //       </View>
+  //     );
+  //   }
+
+  //   function renderFeaturedProducts() {
+  //     return (
+  //       <View style={{ paddingHorizontal: 20 }}>
+  //         <View
+  //           style={{
+  //             flexDirection: "row",
+  //             alignItems: "center",
+  //             justifyContent: "space-between",
+  //             marginBottom: 16,
+  //           }}
+  //         >
+  //           <Text
+  //             style={{
+  //               ...FONTS.Mulish_700Bold,
+  //               fontSize: 20,
+  //               textTransform: "capitalize",
+  //               color: COLORS.black,
+  //               lineHeight: 20 * 1.2,
+  //             }}
+  //           >
+  //             Featured Products
+  //           </Text>
+  //         </View>
+  //         {products.map((item, index) => {
+  //           return (
+  //             item.featuredProducts === true && (
+  //               <TouchableOpacity
+  //                 key={index}
+  //                 style={{
+  //                   width: "100%",
+  //                   height: 100,
+  //                   backgroundColor: COLORS.white,
+  //                   marginBottom: 15,
+  //                   borderRadius: 10,
+  //                   flexDirection: "row",
+  //                 }}
+  //                 onPress={() =>
+  //                   navigation.navigate("ProductDetails", {
+  //                     productDetails: item,
+  //                     productSlides: item.slides,
+  //                   })
+  //                 }
+  //               >
+  //                 <ImageBackground
+  //                   source={item.photo_300x300}
+  //                   style={{
+  //                     width: 100,
+  //                     height: "100%",
+  //                   }}
+  //                   imageStyle={{ borderRadius: 10 }}
+  //                 >
+  //                   <RatingComponent
+  //                     item={item}
+  //                     containerStyle={{
+  //                       bottom: 2,
+  //                       left: 2,
+  //                       borderBottomLeftRadius: 10,
+  //                       borderTopRightRadius: 10,
+  //                     }}
+  //                     onPress={() => navigation.navigate("Reviews")}
+  //                   />
+  //                 </ImageBackground>
+  //                 <View
+  //                   style={{
+  //                     paddingHorizontal: 15,
+  //                     paddingVertical: 11,
+  //                     flex: 1,
+  //                   }}
+  //                 >
+  //                   <Text
+  //                     style={{
+  //                       ...FONTS.Mulish_600SemiBold,
+  //                       fontSize: 14,
+  //                       textTransform: "capitalize",
+  //                       marginBottom: 6,
+  //                     }}
+  //                   >
+  //                     {item.name}
+  //                   </Text>
+  //                   <Text
+  //                     style={{
+  //                       color: COLORS.gray,
+  //                       ...FONTS.Mulish_400Regular,
+  //                       fontSize: 14,
+  //                     }}
+  //                   >
+  //                     {item.size}
+  //                   </Text>
+  //                   <Line />
+  //                   <Text
+  //                     style={{
+  //                       ...FONTS.Mulish_600SemiBold,
+  //                       fontSize: 14,
+  //                       color: COLORS.carrot,
+  //                     }}
+  //                   >
+  //                     {item.price}
+  //                   </Text>
+  //                 </View>
+  //                 <TouchableOpacity
+  //                   style={{
+  //                     position: "absolute",
+  //                     width: 30,
+  //                     height: 30,
+  //                     right: 15,
+  //                     bottom: 11,
+  //                     justifyContent: "center",
+  //                     alignItems: "center",
+  //                   }}
+  //                   onPress={() => {
+  //                     showMessage({
+  //                       message: `${item.name} has been added`,
+  //                       type: "info",
+  //                     });
+  //                   }}
+  //                 >
+  //                   <BagSvg />
+  //                 </TouchableOpacity>
+  //                 <TouchableOpacity
+  //                   style={{
+  //                     position: "absolute",
+  //                     width: 30,
+  //                     height: 30,
+  //                     right: 15,
+  //                     top: 8,
+  //                     justifyContent: "center",
+  //                     alignItems: "center",
+  //                   }}
+  //                 >
+  //                   <HeartSvg />
+  //                 </TouchableOpacity>
+  //               </TouchableOpacity>
+  //             )
+  //           );
+  //         })}
+  //       </View>
+  //     );
+  //   }
+
+  return (
+    <ScrollView
+      style={{
+        flexGrow: 1,
+        top: 50,
+      }}
+      contentContainerStyle={{ paddingBottom: 30 }}
+      showsVerticalScrollIndicator={false}
+    >
+      {/* {renderSlide()}
+      {renderDots()} */}
+      {renderBestSellers()}
+      {/* {renderFeaturedProducts()} */}
+    </ScrollView>
+  );
 }
 
 const styles = StyleSheet.create({
-    dot: {
-        width: 10,
-        height: 10,
-        marginHorizontal: 5,
-        borderRadius: 50,
-        borderWidth: 2,
-        borderColor: COLORS.black,
-        marginTop: 20,
-        marginBottom: 40,
-    },
+  dot: {
+    width: 10,
+    height: 10,
+    marginHorizontal: 5,
+    borderRadius: 50,
+    borderWidth: 2,
+    borderColor: COLORS.black,
+    marginTop: 20,
+    marginBottom: 40,
+  },
 });

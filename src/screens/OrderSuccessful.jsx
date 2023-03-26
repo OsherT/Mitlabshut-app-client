@@ -59,7 +59,7 @@ export default function OrderSuccessful(props) {
                         containerStyle={{ marginBottom: 23 }}
                         onPress={() => navigation.navigate("TrackYourOrder")}
                     /> */}
-          <TouchableOpacity onPress={() => navigation.navigate("Closet")}>
+          <TouchableOpacity onPress={() => navigation.navigate("MainLayout")}>
             <Text
               style={{
                 textAlign: "center",

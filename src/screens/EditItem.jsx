@@ -372,7 +372,7 @@ export default function EditItem(props) {
           var imageRef = firebase.storage().ref().child(filename);
           const imageLink = await imageRef.getDownloadURL();
           imageLinks.push(imageLink);
-          console.log("upload to FB #", i);
+          console.log("upload to FB #", i+1);
         } catch (error) {
           console.log("error in upload to FB", error);
         }

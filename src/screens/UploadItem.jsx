@@ -51,7 +51,6 @@ export default function UploadItem() {
   const [itemBrand, setItemBrand] = useState("");
   const [images, setImages] = useState([]);
   const [uploading, setUploading] = useState(false);
-  const [flagForNoImg, setFlagForNoImg] = useState(false);
 
   //the section of the lists hooks
   const [brandsList, setBrandsList] = useState([]);
@@ -228,10 +227,10 @@ export default function UploadItem() {
       itemDeliveryMethod == "" ||
       itemBrand == "" ||
       itemDescription == "" ||
-      images == [] ||
-      flagForNoImg == true
+      images.length == 0
     ) {
       Alert.alert("אנא מלאי את כל הפרטים");
+      console.log("images.length", images.length);
     } else {
       const item = {
         Closet_ID: loggedUser.closet_id,
@@ -292,7 +291,6 @@ export default function UploadItem() {
         key: index,
       }));
       setImages(selectedImages);
-      setFlagForNoImg(false);
     }
     selectedImages = [];
   };
@@ -619,9 +617,7 @@ export default function UploadItem() {
                       const newImages = [...images]; // Make a copy of the array
                       newImages.splice(index, 1); // Remove the image at the given index
                       setImages(newImages); // Update the state
-                      if (newImages.length == 0) {
-                        setFlagForNoImg(true);
-                      }
+                    
                     }}>
                     <Text style={styles.deleteButtonText}>X</Text>
                   </TouchableOpacity>

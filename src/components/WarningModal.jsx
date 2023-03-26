@@ -3,7 +3,6 @@ import Modal from "react-native-modal";
 import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { COLORS, FONTS, SIZES } from "../constants";
-import { userContext } from "../navigation/userContext";
 
 export default function WarningModal({
   showModal,
@@ -12,8 +11,9 @@ export default function WarningModal({
   handleSure,
 }) {
   const navigation = useNavigation();
-  // const { handleSalePress, handleNotSalePress, handleDeletePress } =
-  //   userContext(userContext);
+
+
+
   return (
     <Modal
       isVisible={!!showModal}
@@ -49,39 +49,6 @@ export default function WarningModal({
             style={{
               width: 130,
               height: 40,
-              backgroundColor: COLORS.white,
-              borderRadius: 20,
-              justifyContent: "center",
-              alignItems: "center",
-              marginHorizontal: 7.5,
-              borderColor: COLORS.goldenTransparent_05,
-              borderWidth: 1,
-            }}
-            onPress={() => {
-              setShowModal(false);
-              handleSure();
-              if (handleSure == "delete") {
-                handleDeletePress();
-              } else if (handleSure == "sold") {
-                handleSalePress();
-              } else if (handleSure == "unsold") {
-                handleNotSalePress();
-              }
-            }}>
-            <Text
-              style={{
-                color: COLORS.black,
-                ...FONTS.Mulish_600SemiBold,
-                fontSize: 14,
-                textTransform: "uppercase",
-              }}>
-              אישור
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              width: 130,
-              height: 40,
               backgroundColor: COLORS.golden,
               borderRadius: 20,
               justifyContent: "center",
@@ -97,6 +64,32 @@ export default function WarningModal({
                 textTransform: "uppercase",
               }}>
               ביטול
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{
+              width: 130,
+              height: 40,
+              backgroundColor: COLORS.white,
+              borderRadius: 20,
+              justifyContent: "center",
+              alignItems: "center",
+              marginHorizontal: 7.5,
+              borderColor: COLORS.goldenTransparent_05,
+              borderWidth: 1,
+            }}
+            onPress={() => {
+              setShowModal(false);
+              handleSure();
+            }}>
+            <Text
+              style={{
+                color: COLORS.black,
+                ...FONTS.Mulish_600SemiBold,
+                fontSize: 14,
+                textTransform: "uppercase",
+              }}>
+              אישור
             </Text>
           </TouchableOpacity>
         </View>

@@ -48,7 +48,7 @@ export default function Closet(props) {
   const [ModalItem, setModalItem] = useState("");
   const buttonRef = useRef(null);
   const [showModal, setShowModal] = useState(false);
-  const [userChoice, setUserChoice] = useState("");
+  const [userChoice, setUserChoice] = useState(null);
   const [massage, setMassage] = useState("");
 
   const ApiUrl_user = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User`;
@@ -474,7 +474,7 @@ export default function Closet(props) {
                 onPress={() => {
                   setShowModal(true);
                   setUserChoice(handleNotSalePress);
-                  setMassage("הפריט יהיה זמין למכירה {\n}  את בטוחה?");
+                  setMassage("הפריט יהיה זמין למכירה \n  את בטוחה?");
                 }}>
                 <Text style={{ textAlign: "center" }}> החזרי למכירה</Text>
               </TouchableOpacity>
@@ -488,7 +488,7 @@ export default function Closet(props) {
                 onPress={() => {
                   setShowModal(true);
                   setUserChoice(handleSalePress);
-                  setMassage("הפריט לא יהיה זמין למכירה {\n}  את בטוחה?");
+                  setMassage("הפריט לא יהיה זמין למכירה \n  את בטוחה?");
                 }}>
                 <Text style={{ textAlign: "center" }}>סמני כנמכר</Text>
               </TouchableOpacity>
@@ -501,7 +501,7 @@ export default function Closet(props) {
               onPress={() => {
                 setShowModal(true);
                 setUserChoice(handleDeletePress);
-                setMassage("הפריט ימחק לצמיתות {\n}  את בטוחה?");
+                setMassage("הפריט ימחק לצמיתות \n  את בטוחה?");
               }}
               // onPress={() => setShowModal(true)}
             >
@@ -576,6 +576,7 @@ export default function Closet(props) {
 
   function handleDeletePress() {
     setModalVisible(false);
+
     axios
       .put(
         `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/updateItemSaleStatus/item_ID/${ModalItem.id}/item_status/delete`
@@ -587,6 +588,14 @@ export default function Closet(props) {
       .catch((err) => {
         console.log(err);
       });
+  }
+
+
+  
+  function handleUserChoice() {
+    if (showModal && typeof userChoice === "function") {
+      userChoice();
+    }
   }
 
   ///render items
@@ -840,7 +849,7 @@ export default function Closet(props) {
             <WarningModal
               showModal={showModal}
               setShowModal={setShowModal}
-              handleSure={userChoice}
+              handleSure={handleUserChoice}
               massage={massage}
             />
           )}

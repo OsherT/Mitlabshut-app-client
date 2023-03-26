@@ -30,13 +30,16 @@ import {
 import { userContext } from "../navigation/userContext";
 import { FlatList } from "react-native";
 import { Image } from "react-native";
+import WarningModal from "../components/WarningModal";
 
 export default function Profile() {
   const navigation = useNavigation();
-  const [showModal, setShowModal] = useState(false);
   const { loggedUser, setloggedUser } = useContext(userContext);
   const isFocused = useIsFocused();
   const [usersFollow, setUsersFollow] = useState([]);
+
+  const [showModal, setShowModal] = useState(false);
+  const [massage, setMassage] = useState("");
 
   useEffect(() => {
     if (isFocused) {
@@ -70,96 +73,96 @@ export default function Profile() {
       );
   };
 
-  function SignOutModal() {
-    return (
-      <Modal
-        isVisible={showModal}
-        onBackdropPress={setShowModal}
-        hideModalContentWhileAnimating={true}
-        backdropTransitionOutTiming={0}
-        style={{ margin: 0 }}
-        animationIn="zoomIn"
-        animationOut="zoomOut">
-        <View
-          style={{
-            width: SIZES.width - 60,
-            backgroundColor: COLORS.white,
-            marginHorizontal: 30,
-            borderRadius: 10,
-            paddingHorizontal: 20,
-            paddingVertical: 34,
-          }}>
-          <Text
-            style={{
-              textAlign: "center",
-              ...FONTS.Mulish_600SemiBold,
-              fontSize: 20,
-              marginBottom: 26,
-            }}>
-            האם את בטוחה שאת רוצה{"\n"} להתנתק ?
-          </Text>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-            }}>
-            <TouchableOpacity
-              style={{
-                width: 130,
-                height: 40,
-                backgroundColor: COLORS.golden,
-                borderRadius: 20,
-                justifyContent: "center",
-                alignItems: "center",
-                marginHorizontal: 7.5,
-                borderColor: COLORS.goldenTransparent_05,
-                borderWidth: 1,
-              }}
-              onPress={() => setShowModal(false)}>
-              <Text
-                style={{
-                  color: COLORS.white,
-                  ...FONTS.Mulish_600SemiBold,
-                  fontSize: 14,
-                  color: COLORS.red,
-                  textTransform: "uppercase",
-                }}>
-                ביטול
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{
-                width: 130,
-                height: 40,
-                backgroundColor: COLORS.white,
-                borderRadius: 20,
-                justifyContent: "center",
-                alignItems: "center",
-                marginHorizontal: 7.5,
-                borderColor: COLORS.goldenTransparent_05,
-                borderWidth: 1,
-              }}
-              onPress={() => {
-                setShowModal(false);
-                setloggedUser(null);
-                navigation.navigate("SignIn");
-              }}>
-              <Text
-                style={{
-                  color: COLORS.black,
-                  ...FONTS.Mulish_600SemiBold,
-                  fontSize: 14,
-                  textTransform: "uppercase",
-                }}>
-                אישור
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-    );
-  }
+  // function SignOutModal() {
+  //   return (
+  //     <Modal
+  //       isVisible={showModal}
+  //       onBackdropPress={setShowModal}
+  //       hideModalContentWhileAnimating={true}
+  //       backdropTransitionOutTiming={0}
+  //       style={{ margin: 0 }}
+  //       animationIn="zoomIn"
+  //       animationOut="zoomOut">
+  //       <View
+  //         style={{
+  //           width: SIZES.width - 60,
+  //           backgroundColor: COLORS.white,
+  //           marginHorizontal: 30,
+  //           borderRadius: 10,
+  //           paddingHorizontal: 20,
+  //           paddingVertical: 34,
+  //         }}>
+  //         <Text
+  //           style={{
+  //             textAlign: "center",
+  //             ...FONTS.Mulish_600SemiBold,
+  //             fontSize: 20,
+  //             marginBottom: 26,
+  //           }}>
+  //           האם את בטוחה שאת רוצה{"\n"} להתנתק ?
+  //         </Text>
+  //         <View
+  //           style={{
+  //             flexDirection: "row",
+  //             alignItems: "center",
+  //             justifyContent: "center",
+  //           }}>
+  //           <TouchableOpacity
+  //             style={{
+  //               width: 130,
+  //               height: 40,
+  //               backgroundColor: COLORS.golden,
+  //               borderRadius: 20,
+  //               justifyContent: "center",
+  //               alignItems: "center",
+  //               marginHorizontal: 7.5,
+  //               borderColor: COLORS.goldenTransparent_05,
+  //               borderWidth: 1,
+  //             }}
+  //             onPress={() => setShowModal(false)}>
+  //             <Text
+  //               style={{
+  //                 color: COLORS.white,
+  //                 ...FONTS.Mulish_600SemiBold,
+  //                 fontSize: 14,
+  //                 color: COLORS.red,
+  //                 textTransform: "uppercase",
+  //               }}>
+  //               ביטול
+  //             </Text>
+  //           </TouchableOpacity>
+  //           <TouchableOpacity
+  //             style={{
+  //               width: 130,
+  //               height: 40,
+  //               backgroundColor: COLORS.white,
+  //               borderRadius: 20,
+  //               justifyContent: "center",
+  //               alignItems: "center",
+  //               marginHorizontal: 7.5,
+  //               borderColor: COLORS.goldenTransparent_05,
+  //               borderWidth: 1,
+  //             }}
+  //             onPress={() => {
+  //               setShowModal(false);
+  //               setloggedUser(null);
+  //               navigation.navigate("SignIn");
+  //             }}>
+  //             <Text
+  //               style={{
+  //                 color: COLORS.black,
+  //                 ...FONTS.Mulish_600SemiBold,
+  //                 fontSize: 14,
+  //                 textTransform: "uppercase",
+  //               }}>
+  //               אישור
+  //             </Text>
+  //           </TouchableOpacity>
+  //         </View>
+  //       </View>
+  //     </Modal>
+  //   );
+  // }
 
   function renderContent() {
     return (
@@ -227,7 +230,10 @@ export default function Profile() {
             title="התנתקי"
             containerStyle={{ marginBottom: 10 }}
             arrow={false}
-            onPress={() => setShowModal(true)}
+            onPress={() => {
+              setShowModal(true);
+              setMassage(" האם את בטוחה שאת רוצה \n להתנתק ?");
+            }}
           />
           {/* <ProfileCategory
             icon={<OrderCategory />}
@@ -265,7 +271,6 @@ export default function Profile() {
   }
 
   function renderUsersFollow() {
-
     return (
       <View style={{ marginBottom: 40 }}>
         <View
@@ -284,7 +289,7 @@ export default function Profile() {
               color: COLORS.black,
               lineHeight: 20 * 1.2,
             }}>
-            ארונות במעקב...  
+            ארונות במעקב...
           </Text>
         </View>
         <FlatList
@@ -462,6 +467,9 @@ export default function Profile() {
   //     </View>
   //   );
   // }
+  function handleUserChoice() {
+    navigation.navigate("SignIn");
+  }
 
   return (
     <SafeAreaView
@@ -472,8 +480,15 @@ export default function Profile() {
       <Header title="עמוד אישי" goBack={true} />
       {renderContent()}
       {renderUsersFollow()}
-
-      {<SignOutModal />}
+      {showModal && (
+        <WarningModal
+          showModal={showModal}
+          setShowModal={setShowModal}
+          massage={massage}
+          handleSure={handleUserChoice}
+        />
+      )}
+      {/* {<SignOutModal />} */}
     </SafeAreaView>
   );
 }

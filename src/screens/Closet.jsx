@@ -50,6 +50,7 @@ export default function Closet(props) {
   const [showModal, setShowModal] = useState(false);
   const [userChoice, setUserChoice] = useState(null);
   const [massage, setMassage] = useState("");
+  const [handleSure, setHandleSure] = useState("");
 
   const ApiUrl_user = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User`;
   const navigation = useNavigation();
@@ -468,9 +469,10 @@ export default function Closet(props) {
                   textAlign: "center",
                 }}
                 onPress={() => {
+                  setModalVisible(false);
                   setShowModal(true);
-                  setUserChoice(handleNotSalePress);
                   setMassage("הפריט יהיה זמין למכירה \n  את בטוחה?");
+                  setHandleSure(() => handleNotSalePress);
                 }}>
                 <Text style={{ textAlign: "center" }}> החזרי למכירה</Text>
               </TouchableOpacity>
@@ -481,26 +483,34 @@ export default function Closet(props) {
                   borderBottomWidth: 1,
                   textAlign: "center",
                 }}
+                // onPress={() => {
+                //   setModalVisible(false);
+                //   setShowModal(true);
+                //   setUserChoice(handleSalePress);
+                //   setMassage("הפריט לא יהיה זמין למכירה \n  את בטוחה?");
+                // }}
+
                 onPress={() => {
+                  setModalVisible(false);
                   setShowModal(true);
-                  setUserChoice(handleSalePress);
                   setMassage("הפריט לא יהיה זמין למכירה \n  את בטוחה?");
+                  setHandleSure(() => handleSalePress);
                 }}>
                 <Text style={{ textAlign: "center" }}>סמני כנמכר</Text>
               </TouchableOpacity>
             )}
+
             <TouchableOpacity
               style={{
                 paddingVertical: 8,
                 textAlign: "center",
               }}
               onPress={() => {
+                setModalVisible(false);
                 setShowModal(true);
-                setUserChoice(handleDeletePress);
                 setMassage("הפריט ימחק לצמיתות \n  את בטוחה?");
-              }}
-              // onPress={() => setShowModal(true)}
-            >
+                setHandleSure(() => handleDeletePress);
+              }}>
               <Text style={{ textAlign: "center" }}>מחקי את הפריט</Text>
             </TouchableOpacity>
           </View>
@@ -539,8 +549,6 @@ export default function Closet(props) {
   }
 
   function handleSalePress() {
-    setModalVisible(false);
-
     axios
       .put(
         `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/updateItemSaleStatus/item_ID/${ModalItem.id}/item_status/sold`
@@ -555,8 +563,6 @@ export default function Closet(props) {
   }
 
   function handleNotSalePress() {
-    setModalVisible(false);
-
     axios
       .put(
         `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/updateItemSaleStatus/item_ID/${ModalItem.id}/item_status/active`
@@ -571,7 +577,6 @@ export default function Closet(props) {
   }
 
   function handleDeletePress() {
-    setModalVisible(false);
     axios
       .put(
         `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/updateItemSaleStatus/item_ID/${ModalItem.id}/item_status/delete`
@@ -834,7 +839,7 @@ export default function Closet(props) {
     <View style={{ flex: 1 }}>
       <SafeAreaView
         style={{ ...AREA.AndroidSafeArea, backgroundColor: "none" }}>
-        <Header  goBack={true} />
+        <Header goBack={true} />
         <View style={{ flex: 1 }}>
           {renderUserContent()}
           {UsersItems.length !== 0 ? renderClothes() : renderMessage()}
@@ -842,7 +847,7 @@ export default function Closet(props) {
             <WarningModal
               showModal={showModal}
               setShowModal={setShowModal}
-              handleSure={handleUserChoice}
+              handleSure={handleSure}
               massage={massage}
             />
           )}

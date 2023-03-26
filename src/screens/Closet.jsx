@@ -597,16 +597,27 @@ export default function Closet(props) {
       });
   }
 
+  const [userConfirmed, setUserConfirmed] = useState(false);
 
-  
   function handleUserChoice() {
-    if (showModal && typeof userChoice === "function") {
+    if (showModal && typeof userChoice === "function" && userConfirmed) {
       userChoice();
+      setUserConfirmed(false); // Reset userConfirmed state variable
     }
   }
 
-  ///render items
+  function handleSure() {
+    setShowModal(false);
+    setUserConfirmed(true); // Set userConfirmed to true when user presses "אישור"
+  }
 
+  // function handleUserChoice() {
+  //   if (showModal && typeof userChoice === "function") {
+  //     userChoice();
+  //   }
+  // }
+
+  ///render items
   function renderClothes() {
     return (
       <FlatList
@@ -872,7 +883,7 @@ export default function Closet(props) {
             <WarningModal
               showModal={showModal}
               setShowModal={setShowModal}
-              handleSure={handleUserChoice}
+              handleSure={handleSure}
               massage={massage}
             />
           )}

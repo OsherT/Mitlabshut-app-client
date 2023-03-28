@@ -28,11 +28,11 @@ export default function Home() {
   const [OtherClosets, setOtherClosets] = useState([]);
   const ApiUrl_user = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User`;
   const [UsersFollowingList, setUsersFollowingList] = useState([]);
+  const [CombainedArray, setCombainedArray] = useState([])
 
   useEffect(() => {
     if (isFocused) {
       getFollowingList();
-      GetUnfollowedClosets();
       GetRecommendedClosets();
     }
   }, [isFocused]);
@@ -44,27 +44,13 @@ export default function Home() {
           loggedUser.id
       )
       .then((res) => {
+        
         GetUsersData1(res.data);
       })
       .catch((err) => {
         console.log(err);
       });
   }
-
-  function GetUnfollowedClosets() {
-    axios
-      .get(
-        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Closet/GetClosetsByUserNotFollowing/UserId/24${loggedUser.id}`
-      )
-      .then((res) => {
-        console.log(res.data);
-        GetUsersData2(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
-
   function GetUsersData1(closets) {
     closets.forEach((closet) => {
       axios
@@ -72,20 +58,38 @@ export default function Home() {
           `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetUserByClosetId/Closet_ID/${closet.closet_ID}`
         )
         .then((res) => {
+            console.log(res.data);
           setRecoUsers(res.data);
+          GetUnfollowedClosets();
         })
         .catch((err) => {
           console.log(err);
         });
     });
   }
+  function GetUnfollowedClosets() {
+    axios
+      .get(
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Closet/GetClosetsByUserNotFollowing/UserId/24${loggedUser.id}`
+      )
+      .then((res) => {
+        
+        GetUsersData2(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
   function GetUsersData2(closets) {
     closets.forEach((closet) => {
+        //console.log(`https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetUserByClosetId/Closet_ID/${closet.closet_ID}`);
+
       axios
         .get(
           `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetUserByClosetId/Closet_ID/${closet.closet_ID}`
         )
         .then((res) => {
+            setCombainedArray(...res.data,...RecoUsers)
           setOtherClosets(res.data);
         })
         .catch((err) => {
@@ -104,7 +108,7 @@ export default function Home() {
           const tempUsersFollowList = res.data.map(
             ({ closet_id }) => closet_id
           );
-          console.log(tempUsersFollowList);
+          //console.log(tempUsersFollowList);
           setUsersFollowingList(tempUsersFollowList);
         }
       })
@@ -143,117 +147,115 @@ export default function Home() {
   };
 
   function renderBestSellers() {
-    const combinedUsers = [...RecoUsers, ...OtherClosets];
-    console.log("combinedUsers"+combinedUsers);
-
-    return (
-      <View style={{ marginBottom: 40 }}>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            paddingHorizontal: 20,
-            marginBottom: 16,
-          }}
-        >
-          <Text
-            style={{
-              ...FONTS.Mulish_700Bold,
-              fontSize: 20,
-              textTransform: "capitalize",
-              color: COLORS.black,
-              lineHeight: 20 * 1.2,
-            }}
-          >
-            ארונות מומלצים במיוחד בשבילך
-          </Text>
-        </View>
-        <FlatList
-          data={combinedUsers}
-          horizontal={true}
-          keyExtractor={(user) => user.id}
-          renderItem={({ item: user, index }) => {
-            return (
-              <TouchableOpacity
-                style={{
-                  height: "100%",
-                  width: 180,
-                  backgroundColor: COLORS.white,
-                  marginRight: 15,
-                  borderRadius: 10,
-                }}
-                onPress={() =>
-                  navigation.navigate("ProductDetails", {
-                    productDetails: item,
-                    productSlides: item.slides,
-                  })
-                }
-              >
-                <Image
-                  source={{ uri: user.user_image }}
-                  style={{
-                    width: "100%",
-                    height: 180,
-                    borderRadius: 10,
-                  }}
-                />
-                <View
-                  style={{
-                    paddingHorizontal: 15,
-                    paddingVertical: 12,
-                  }}
-                >
-                  <Text
-                    style={{
-                      ...FONTS.Mulish_600SemiBold,
-                      fontSize: 15,
-                      textTransform: "capitalize",
-                      color: COLORS.black,
-                      marginBottom: 5,
-                      textAlign: "center",
-                    }}
-                  >
-                    הארון של {user.full_name}
-                  </Text>
-                  <View
-                    style={{
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    {!UsersFollowingList.includes(user.closet_id) && (
-                      <ButtonFollow
-                        title="עקבי"
-                        backgroundColor={COLORS.golden}
-                        textColor={COLORS.white}
-                        containerStyle={{ marginBottom: 13 }}
-                        onPress={() => {
-                          followCloset(user.closet_id);
-                        }}
-                      />
-                    )}
-                    {UsersFollowingList.includes(user.closet_id) && (
-                      <ButtonFollow
-                        title="הסירי עוקב"
-                        backgroundColor={COLORS.goldenTransparent_03}
-                        textColor={COLORS.black}
-                        containerStyle={{ marginBottom: 13 }}
-                        onPress={() => {
-                          unfollowCloset(user.closet_id);
-                        }}
-                      />
-                    )}
-                  </View>
-                </View>
-              </TouchableOpacity>
-            );
-          }}
-          contentContainerStyle={{ paddingLeft: 20 }}
-          showsHorizontalScrollIndicator={false}
-        />
-      </View>
-    );
+    console.log(CombainedArray);
+    //    return (
+    //   <View style={{ marginBottom: 40 }}>
+    //     <View
+    //       style={{
+    //         flexDirection: "row",
+    //         alignItems: "center",
+    //         justifyContent: "space-between",
+    //         paddingHorizontal: 20,
+    //         marginBottom: 16,
+    //       }}
+    //     >
+    //       <Text
+    //         style={{
+    //           ...FONTS.Mulish_700Bold,
+    //           fontSize: 20,
+    //           textTransform: "capitalize",
+    //           color: COLORS.black,
+    //           lineHeight: 20 * 1.2,
+    //         }}
+    //       >
+    //         ארונות מומלצים במיוחד בשבילך
+    //       </Text>
+    //     </View>
+    //     <FlatList
+    //       data={CombainedArray}
+    //       horizontal={true}
+    //       keyExtractor={(user) => user.id}
+    //       renderItem={({ item: user, index }) => {
+    //         return (
+    //           <TouchableOpacity
+    //             style={{
+    //               height: "100%",
+    //               width: 180,
+    //               backgroundColor: COLORS.white,
+    //               marginRight: 15,
+    //               borderRadius: 10,
+    //             }}
+    //             onPress={() =>
+    //               navigation.navigate("ProductDetails", {
+    //                 productDetails: item,
+    //                 productSlides: item.slides,
+    //               })
+    //             }
+    //           >
+    //             <Image
+    //               source={{ uri: user.user_image }}
+    //               style={{
+    //                 width: "100%",
+    //                 height: 180,
+    //                 borderRadius: 10,
+    //               }}
+    //             />
+    //             <View
+    //               style={{
+    //                 paddingHorizontal: 15,
+    //                 paddingVertical: 12,
+    //               }}
+    //             >
+    //               <Text
+    //                 style={{
+    //                   ...FONTS.Mulish_600SemiBold,
+    //                   fontSize: 15,
+    //                   textTransform: "capitalize",
+    //                   color: COLORS.black,
+    //                   marginBottom: 5,
+    //                   textAlign: "center",
+    //                 }}
+    //               >
+    //                 הארון של {user.full_name}
+    //               </Text>
+    //               <View
+    //                 style={{
+    //                   justifyContent: "center",
+    //                   alignItems: "center",
+    //                 }}
+    //               >
+    //                 {!UsersFollowingList.includes(user.closet_id) && (
+    //                   <ButtonFollow
+    //                     title="עקבי"
+    //                     backgroundColor={COLORS.golden}
+    //                     textColor={COLORS.white}
+    //                     containerStyle={{ marginBottom: 13 }}
+    //                     onPress={() => {
+    //                       followCloset(user.closet_id);
+    //                     }}
+    //                   />
+    //                 )}
+    //                 {UsersFollowingList.includes(user.closet_id) && (
+    //                   <ButtonFollow
+    //                     title="הסירי עוקב"
+    //                     backgroundColor={COLORS.goldenTransparent_03}
+    //                     textColor={COLORS.black}
+    //                     containerStyle={{ marginBottom: 13 }}
+    //                     onPress={() => {
+    //                       unfollowCloset(user.closet_id);
+    //                     }}
+    //                   />
+    //                 )}
+    //               </View>
+    //             </View>
+    //           </TouchableOpacity>
+    //         );
+    //       }}
+    //       contentContainerStyle={{ paddingLeft: 20 }}
+    //       showsHorizontalScrollIndicator={false}
+    //     />
+    //   </View>
+    // );
   }
 
   //   function updateCurrentSlideIndex(e) {

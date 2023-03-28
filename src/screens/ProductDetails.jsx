@@ -443,7 +443,7 @@ export default function ProductDetails(props) {
       });
   }
 
-  function handleNotSalePress() { 
+  function handleNotSalePress() {
     axios
       .put(
         `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/updateItemSaleStatus/item_ID/${item.id}/item_status/active`
@@ -551,29 +551,35 @@ export default function ProductDetails(props) {
               ))}
             </Swiper>
 
-            {!myitemFlag && UsersFavList.includes(item.id) && (
-              // render the filled heart SVG if the item ID is in the UsersFavList
+            {!myitemFlag &&
+              UsersFavList.includes(item.id) &&
+              item.item_status != "sold" && (
+                // render the filled heart SVG if the item ID is in the UsersFavList
+                <TouchableOpacity
+                  style={styles.favIcon}
+                  onPress={() => RemoveFromFav(item.id)}>
+                  <HeartTwoSvg filled={true} strokeColor="red" />
+                </TouchableOpacity>
+              )}
+            {!myitemFlag &&
+              !UsersFavList.includes(item.id) &&
+              item.item_status != "sold" && (
+                // render the unfilled heart SVG if the item ID is not in the UsersFavList
+                <TouchableOpacity
+                  style={styles.favIcon}
+                  onPress={() => AddtoFav(item.id)}>
+                  <HeartTwoSvg filled={false} strokeColor="red" />
+                </TouchableOpacity>
+              )}
+            {item.item_status != "sold" && (
               <TouchableOpacity
-                style={styles.favIcon}
-                onPress={() => RemoveFromFav(item.id)}>
-                <HeartTwoSvg filled={true} strokeColor="red" />
+                style={styles.shareIcon}
+                onPress={() => {
+                  onShare();
+                }}>
+                <ShareSvg></ShareSvg>
               </TouchableOpacity>
             )}
-            {!myitemFlag && !UsersFavList.includes(item.id) && (
-              // render the unfilled heart SVG if the item ID is not in the UsersFavList
-              <TouchableOpacity
-                style={styles.favIcon}
-                onPress={() => AddtoFav(item.id)}>
-                <HeartTwoSvg filled={false} strokeColor="red" />
-              </TouchableOpacity>
-            )}
-            <TouchableOpacity
-              style={styles.shareIcon}
-              onPress={() => {
-                onShare();
-              }}>
-              <ShareSvg></ShareSvg>
-            </TouchableOpacity>
 
             {!myitemFlag ? (
               <View style={styles.Row}>
@@ -708,7 +714,7 @@ export default function ProductDetails(props) {
                   {!myitemFlag && distance !== null && (
                     <Text style={styles.descriptionHeader}>
                       {" "}
-                      {distance.toFixed(2)} km
+                      {distance.toFixed(2)} ק"מ
                     </Text>
                   )}
                   {myitemFlag && (
@@ -727,7 +733,7 @@ export default function ProductDetails(props) {
                 {","} {item.description}
               </Text>
             </View>
-            {!myitemFlag && (
+            {!myitemFlag  && (
               <View>
                 {UsersShopList.includes(item.id) && (
                   <ButtonLogIn
@@ -738,7 +744,7 @@ export default function ProductDetails(props) {
                     }}
                   />
                 )}
-                {!UsersShopList.includes(item.id) && (
+                {!UsersShopList.includes(item.id)  && item.item_status != "sold"&& (
                   <Button
                     title="+ הוסיפי לסל קניות"
                     containerStyle={{ marginBottom: 13 }}

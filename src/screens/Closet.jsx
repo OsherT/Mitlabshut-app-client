@@ -661,15 +661,20 @@ export default function Closet(props) {
                         </Text>
                       </View>
                     )}
-                    {!myClosetFlag && UsersFavList.includes(item.id) && (
-                      // render the filled heart SVG if the item ID is in the UsersFavList
-                      <TouchableOpacity
-                        style={{ left: 12, top: 12 }}
-                        onPress={() => RemoveFromFav(item.id)}>
-                        <HeartSvg filled={true} />
-                      </TouchableOpacity>
-                    )}
-                    {!myClosetFlag && !UsersFavList.includes(item.id) && (
+                    {!myClosetFlag &&
+                      UsersFavList.includes(item.id) &&
+                      item.item_status !=
+                        "sold"&&(
+                          // render the filled heart SVG if the item ID is in the UsersFavList
+                          <TouchableOpacity
+                            style={{ left: 12, top: 12 }}
+                            onPress={() => RemoveFromFav(item.id)}>
+                            <HeartSvg filled={true} />
+                          </TouchableOpacity>
+                        )}
+                    {!myClosetFlag && !UsersFavList.includes(item.id) && 
+                      item.item_status !=
+                        "sold"&&(
                       // render the unfilled heart SVG if the item ID is not in the UsersFavList
                       <TouchableOpacity
                         style={{ left: 12, top: 12 }}
@@ -810,14 +815,16 @@ export default function Closet(props) {
           }}>
           הארון ריק
         </Text>
-        <View
-          style={{
-            //position: "absolute",
-            left: 180,
-            top: 10,
-          }}>
-          {addItemButton()}
-        </View>
+        {myClosetFlag &&(
+          <View
+            style={{
+              //position: "absolute",
+              left: 180,
+              top: 10,
+            }}>
+            {addItemButton()}
+          </View>
+        )}
       </View>
     );
   }

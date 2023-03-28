@@ -49,7 +49,7 @@ import WishList from "../screens/WishList";
 import PasswordHasBeenResetScreen from "../screens/RessetPasswordNotice";
 import SearchRes from "../screens/SearchRes";
 import axios from "axios";
-
+import Users from "../screens/Users";
 const Stack = createStackNavigator();
 
 export default function Navigation() {
@@ -142,7 +142,6 @@ export default function Navigation() {
     return encodedStr;
   }
 
-
   return (
     <NavigationContainer>
       <userContext.Provider
@@ -158,8 +157,7 @@ export default function Navigation() {
           shopScore,
           favScore,
           viewScore,
-        }}
-      >
+        }}>
         <Stack.Navigator
           screenOptions={{
             headerStyle: {
@@ -169,9 +167,10 @@ export default function Navigation() {
             },
             headerShown: false,
           }}
-          initialRouteName="SignIn"
-        >
+          initialRouteName="SignIn">
           <Stack.Screen name="SignIn" component={SignIn} />
+          <Stack.Screen name="Users" component={Users} />
+
           <Stack.Screen name="WishList" component={WishList} />
           <Stack.Screen name="UploadItem" component={UploadItem} />
           <Stack.Screen name="OrderHistory" component={OrderHistory} />

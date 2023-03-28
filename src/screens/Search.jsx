@@ -28,6 +28,7 @@ export default function Search() {
     getTypeList();
     return () => {};
   }, []);
+  
   //gets the types list
   const getTypeList = () => {
     axios

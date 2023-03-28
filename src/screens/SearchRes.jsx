@@ -100,6 +100,7 @@ export default function SearchRes(props) {
         });
     }
   }
+
   function GetItemPhotos(items) {
     // pass the items array as a parameter
     const promises = items.map((item) => {
@@ -119,6 +120,7 @@ export default function SearchRes(props) {
         console.log(error);
       });
   }
+
   function hebrewToUrlEncoded(hebrewStr) {
     const utf8EncodedStr = unescape(encodeURIComponent(hebrewStr));
     let encodedStr = "";
@@ -132,6 +134,7 @@ export default function SearchRes(props) {
     }
     return encodedStr;
   }
+
   ///handle fav list
   function getFavItems() {
     axios
@@ -151,6 +154,7 @@ export default function SearchRes(props) {
         console.log("cant get fav", err);
       });
   }
+
   function AddtoFav(item_id) {
     axios
       .post(
@@ -166,6 +170,7 @@ export default function SearchRes(props) {
         console.log("cant add to fav", err);
       });
   }
+  
   function RemoveFromFav(itemId) {
     axios
       .delete(

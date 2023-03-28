@@ -23,7 +23,8 @@ import ButtonLogIn from "../components/ButtonLogIn";
 
 export default function ProductDetails(props) {
   const navigation = useNavigation();
-  const { loggedUser, GetItemForAlgo, shopScore, favScore, viewScore } =
+  const { loggedUser, GetItemForAlgo, shopScore, favScore, viewScore, setClosetOwner,
+    setClosetID ,setSelectedTab} =
     useContext(userContext);
   const item = props.route.params.item;
   const isFocused = useIsFocused();

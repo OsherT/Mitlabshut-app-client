@@ -109,6 +109,7 @@ export default function Closet(props) {
         console.log(err);
       });
   }
+
   function GetClosetFollowers_num() {
     axios
       .get(
@@ -122,6 +123,7 @@ export default function Closet(props) {
         console.log(err);
       });
   }
+
   function GetClosetItems() {
     axios
       .get(
@@ -141,6 +143,7 @@ export default function Closet(props) {
         console.log(err);
       });
   }
+
   function GetItemPhotos(items) {
     // pass the items array as a parameter
     const promises = items.map((item) => {
@@ -483,12 +486,7 @@ export default function Closet(props) {
                   borderBottomWidth: 1,
                   textAlign: "center",
                 }}
-                // onPress={() => {
-                //   setModalVisible(false);
-                //   setShowModal(true);
-                //   setUserChoice(handleSalePress);
-                //   setMassage("הפריט לא יהיה זמין למכירה \n  את בטוחה?");
-                // }}
+            
 
                 onPress={() => {
                   setModalVisible(false);

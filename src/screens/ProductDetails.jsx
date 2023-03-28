@@ -20,6 +20,7 @@ import { userContext } from "../navigation/userContext";
 import axios from "axios";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ButtonLogIn from "../components/ButtonLogIn";
+import WarningModal from "../components/WarningModal";
 
 export default function ProductDetails(props) {
   const navigation = useNavigation();
@@ -30,6 +31,12 @@ export default function ProductDetails(props) {
   const [closetName, setclosetName] = useState("");
   const [user, setuser] = useState("");
   const [myitemFlag, setmyitemFlag] = useState(false);
+
+  //modal
+  const [showModal, setShowModal] = useState(false);
+  const [massage, setMassage] = useState("");
+  const [handleSure, setHandleSure] = useState("");
+  const [itemStatus, setItemStatus] = useState("");
 
   //item's info section
   const [shippingMethod, setShippingMethod] = useState(item.shipping_method);
@@ -67,9 +74,9 @@ export default function ProductDetails(props) {
   useEffect(() => {
     if (isFocused) {
       getUser();
-      console.log("item", item);
+      console.log("d");
     }
-  }, [isFocused]);
+  }, [isFocused, itemStatus]);
 
   function GetClosetdata() {
     axios
@@ -414,7 +421,6 @@ export default function ProductDetails(props) {
   };
 
   function handleDeletePress() {
-    console.log("in delete fun");
     axios
       .put(
         `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/updateItemSaleStatus/item_ID/${item.id}/item_status/delete`
@@ -422,7 +428,6 @@ export default function ProductDetails(props) {
       .then((res) => {
         navigation.navigate("Closet");
         console.log("succ to delet item", item.id);
-        console.log(res);
       })
       .catch((err) => {
         console.log(err);
@@ -430,13 +435,16 @@ export default function ProductDetails(props) {
   }
 
   function handleSalePress() {
+    console.log("in handleSalePress");
     axios
       .put(
         `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/updateItemSaleStatus/item_ID/${item.id}/item_status/sold`
       )
       .then((res) => {
-        navigation.navigate("Closet");
-        console.log("succ to sale item", item.id);
+        setItemStatus("sold");
+
+        console.log("succ to sale itemmmm", item.id);
+        // navigation.navigate("Closet");
       })
       .catch((err) => {
         console.log(err);
@@ -449,8 +457,8 @@ export default function ProductDetails(props) {
         `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/updateItemSaleStatus/item_ID/${item.id}/item_status/active`
       )
       .then((res) => {
-        navigation.navigate("Closet");
-        console.log("succ to resale item", item.id);
+        setItemStatus("active");
+        console.log("succ to sale item", item.id);
       })
       .catch((err) => {
         console.log("err in handleNotSalePress ", err);
@@ -533,7 +541,7 @@ export default function ProductDetails(props) {
               {itemImages.map((image, index) => (
                 <View key={index}>
                   <ImageBackground style={styles.image} source={{ uri: image }}>
-                    {item.item_status === "sold" && (
+                    {(item.item_status === "sold" || itemStatus === "sold") && (
                       <View style={styles.soldStyle}>
                         <Text
                           style={{
@@ -733,7 +741,7 @@ export default function ProductDetails(props) {
                 {","} {item.description}
               </Text>
             </View>
-            {!myitemFlag  && (
+            {!myitemFlag && (
               <View>
                 {UsersShopList.includes(item.id) && (
                   <ButtonLogIn
@@ -744,38 +752,30 @@ export default function ProductDetails(props) {
                     }}
                   />
                 )}
-                {!UsersShopList.includes(item.id)  && item.item_status != "sold"&& (
-                  <Button
-                    title="+ הוסיפי לסל קניות"
-                    containerStyle={{ marginBottom: 13 }}
-                    onPress={() => {
-                      AddToShopList(item.id);
-                    }}
-                  />
-                )}
+                {!UsersShopList.includes(item.id) &&
+                  item.item_status != "sold" && (
+                    <Button
+                      title="+ הוסיפי לסל קניות"
+                      containerStyle={{ marginBottom: 13 }}
+                      onPress={() => {
+                        AddToShopList(item.id);
+                      }}
+                    />
+                  )}
               </View>
             )}
 
-            {myitemFlag && item.item_status != "sold" && (
+            {(myitemFlag && item.item_status != "sold" || itemStatus != "sold") && (
               <View>
                 <ButtonLogIn
                   title="סמני כנמכר "
                   containerStyle={{ marginBottom: 13 }}
                   onPress={() => {
-                    Alert.alert(
-                      "פריט זה לא יהיה זמיו לקנייה ",
-                      "האם את בטוחה?",
-                      [
-                        {
-                          text: "אישור",
-                          onPress: handleSalePress,
-                        },
-                        {
-                          text: "ביטול",
-                          style: "cancel",
-                        },
-                      ]
+                    setShowModal(true);
+                    setMassage(
+                      "   ,פריט זה לא יהיה זמין למכירה  \n  את בטוחה?"
                     );
+                    setHandleSure(() => handleSalePress);
                   }}
                 />
               </View>
@@ -787,16 +787,9 @@ export default function ProductDetails(props) {
                   title="החזירי למכירה  "
                   containerStyle={{ marginBottom: 13 }}
                   onPress={() => {
-                    Alert.alert("פריט זה יהיה זמיו לקנייה ", "האם את בטוחה?", [
-                      {
-                        text: "אישור",
-                        onPress: handleNotSalePress,
-                      },
-                      {
-                        text: "ביטול",
-                        style: "cancel",
-                      },
-                    ]);
+                    setShowModal(true);
+                    setMassage(",הפריט יהיה זמין למכירה \n  את בטוחה?");
+                    setHandleSure(() => handleNotSalePress);
                   }}
                 />
               </View>
@@ -808,16 +801,9 @@ export default function ProductDetails(props) {
                   title=" מחקי פריט זה  "
                   containerStyle={{ marginBottom: 13 }}
                   onPress={() => {
-                    Alert.alert("פריט זה ימחק לצמיתות   ", "האם את בטוחה?", [
-                      {
-                        text: "אישור",
-                        onPress: handleDeletePress,
-                      },
-                      {
-                        text: "ביטול",
-                        style: "cancel",
-                      },
-                    ]);
+                    setShowModal(true);
+                    setMassage("   ,פריט זה ימחק לצמיתות \n  את בטוחה?");
+                    setHandleSure(() => handleDeletePress);
                   }}
                 />
               </View>
@@ -832,6 +818,14 @@ export default function ProductDetails(props) {
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
       <Header />
       {renderContent()}
+      {showModal && (
+        <WarningModal
+          showModal={showModal}
+          setShowModal={setShowModal}
+          handleSure={handleSure}
+          massage={massage}
+        />
+      )}
     </SafeAreaView>
   );
 }

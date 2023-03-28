@@ -68,7 +68,7 @@ export default function Profile() {
         }}
         showsHorizontalScrollIndicator={false}>
         <ContainerComponent containerStyle={{ marginBottom: 20 }}>
-          <TouchableOpacity onPress={() => navigation.navigate("EditProfile")}>
+          <TouchableOpacity onPress={() => navigation.navigate("Closet")}>
             <ImageBackground
               source={{
                 uri: loggedUser.user_image,
@@ -80,19 +80,7 @@ export default function Profile() {
                 marginBottom: 15,
               }}
               imageStyle={{ borderRadius: 40 }}></ImageBackground>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("EditProfile");
-              }}>
-              <View
-                style={{
-                  position: "absolute",
-                  right: 0,
-                  bottom: 70,
-                }}>
-                <Edit />
-              </View>
-            </TouchableOpacity>
+
             <Text
               style={{
                 textAlign: "center",
@@ -115,6 +103,19 @@ export default function Profile() {
               }}>
               {loggedUser.email}
             </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("EditProfile");
+            }}>
+            <View
+              style={{
+                position: "absolute",
+                right: 0,
+                bottom: 120,
+              }}>
+              <Edit />
+            </View>
           </TouchableOpacity>
         </ContainerComponent>
 

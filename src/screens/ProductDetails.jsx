@@ -36,7 +36,7 @@ export default function ProductDetails(props) {
   const [showModal, setShowModal] = useState(false);
   const [massage, setMassage] = useState("");
   const [handleSure, setHandleSure] = useState("");
-  const [itemStatus, setItemStatus] = useState("");
+  const [itemStatus, setItemStatus] = useState(item.item_status);
 
   //item's info section
   const [shippingMethod, setShippingMethod] = useState(item.shipping_method);
@@ -56,8 +56,6 @@ export default function ProductDetails(props) {
 
   useEffect(() => {
     if (isFocused) {
-      console.log(itemImages);
-      console.log(itemCtegories); //
       GetClosetdata();
       getFavItems();
       getShopItems();
@@ -65,18 +63,22 @@ export default function ProductDetails(props) {
       GetItemImages();
       GetNumOfFav();
       setShippingMethod(item.shipping_method);
+      console.log("item", item);
+      console.log("item status", item.item_status);
+      console.log("itemStatus", itemStatus);
+
       if (address1 && address2) {
         getAddressLocations();
       }
+      console.log("d");
     }
-  }, [isFocused, address1, address2]);
+  }, [isFocused, address1, address2, itemStatus]);
 
   useEffect(() => {
     if (isFocused) {
       getUser();
-      console.log("d");
     }
-  }, [isFocused, itemStatus]);
+  }, [isFocused]);
 
   function GetClosetdata() {
     axios
@@ -436,13 +438,15 @@ export default function ProductDetails(props) {
 
   function handleSalePress() {
     console.log("in handleSalePress");
+
     axios
       .put(
         `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/updateItemSaleStatus/item_ID/${item.id}/item_status/sold`
       )
       .then((res) => {
         console.log("succ to sale item", item.id);
-        navigation.navigate("Closet");
+        setItemStatus("sold");
+        // navigation.navigate("Closet");
       })
       .catch((err) => {
         console.log(err);
@@ -456,7 +460,9 @@ export default function ProductDetails(props) {
       )
       .then((res) => {
         console.log("succ to sale item", item.id);
-        navigation.navigate("Closet");
+        setItemStatus("active");
+
+        // navigation.navigate("Closet");
       })
       .catch((err) => {
         console.log("err in handleNotSalePress ", err);
@@ -506,7 +512,8 @@ export default function ProductDetails(props) {
                 <View style={styles.Row}>
                   <Text style={styles.itemHeader}>{item.name}</Text>
                   <Text> </Text>
-                  {myitemFlag && item.item_status != "sold" && (
+                  {/* {myitemFlag && item.item_status != "sold" && ( */}
+                  {myitemFlag && itemStatus != "sold" && (
                     <TouchableOpacity
                       onPress={() => {
                         navigation.navigate("EditItem", {
@@ -518,7 +525,8 @@ export default function ProductDetails(props) {
                       <Edit />
                     </TouchableOpacity>
                   )}
-                  {item.item_status == "sold" && (
+                  {/* {item.item_status == "sold" && ( */}
+                  {itemStatus == "sold" && (
                     <Text style={{ height: 50 }}> {""}</Text>
                   )}
                 </View>
@@ -539,7 +547,8 @@ export default function ProductDetails(props) {
               {itemImages.map((image, index) => (
                 <View key={index}>
                   <ImageBackground style={styles.image} source={{ uri: image }}>
-                    {item.item_status === "sold" && (
+                    {/* {item.item_status === "sold" && itemStatus === "sold" && ( */}
+                    {itemStatus === "sold" && (
                       <View style={styles.soldStyle}>
                         <Text
                           style={{
@@ -557,9 +566,12 @@ export default function ProductDetails(props) {
               ))}
             </Swiper>
 
+            {/* {!myitemFlag &&
+              UsersFavList.includes(item.id) &&
+              item.item_status != "sold" && ( */}
             {!myitemFlag &&
               UsersFavList.includes(item.id) &&
-              item.item_status != "sold" && (
+              itemStatus != "sold" && (
                 // render the filled heart SVG if the item ID is in the UsersFavList
                 <TouchableOpacity
                   style={styles.favIcon}
@@ -567,9 +579,12 @@ export default function ProductDetails(props) {
                   <HeartTwoSvg filled={true} strokeColor="red" />
                 </TouchableOpacity>
               )}
+            {/* {!myitemFlag &&
+              !UsersFavList.includes(item.id) &&
+              item.item_status != "sold" && ( */}
             {!myitemFlag &&
               !UsersFavList.includes(item.id) &&
-              item.item_status != "sold" && (
+              itemStatus != "sold" && (
                 // render the unfilled heart SVG if the item ID is not in the UsersFavList
                 <TouchableOpacity
                   style={styles.favIcon}
@@ -577,7 +592,8 @@ export default function ProductDetails(props) {
                   <HeartTwoSvg filled={false} strokeColor="red" />
                 </TouchableOpacity>
               )}
-            {item.item_status != "sold" && (
+            {/* {item.item_status != "sold" && ( */}
+            {itemStatus != "sold" && (
               <TouchableOpacity
                 style={styles.shareIcon}
                 onPress={() => {
@@ -734,6 +750,10 @@ export default function ProductDetails(props) {
               </View>
             </View>
             <View style={styles.dseContainer}>
+              <Text style={styles.Hdescription}>
+                קצת על הפריט: 
+              
+              </Text>
               <Text style={styles.description}>
                 {ArrayToStringCat(itemCtegories)}
                 {","} {item.description}
@@ -750,43 +770,48 @@ export default function ProductDetails(props) {
                     }}
                   />
                 )}
-                {!UsersShopList.includes(item.id) &&
-                  item.item_status != "sold" && (
-                    <Button
-                      title="+ הוסיפי לסל קניות"
-                      containerStyle={{ marginBottom: 13 }}
-                      onPress={() => {
-                        AddToShopList(item.id);
-                      }}
-                    />
-                  )}
+                {/* {!UsersShopList.includes(item.id) &&
+                  item.item_status != "sold" && ( */}
+                {!UsersShopList.includes(item.id) && itemStatus != "sold" && (
+                  <Button
+                    title="+ הוסיפי לסל קניות"
+                    containerStyle={{ marginBottom: 13 }}
+                    onPress={() => {
+                      AddToShopList(item.id);
+                    }}
+                  />
+                )}
               </View>
             )}
 
-            {myitemFlag && item.item_status != "sold" && (
+            {/* {myitemFlag &&
+              item.item_status != "sold" &&
+              itemStatus != "sold" && ( */}
+            {myitemFlag && itemStatus != "sold" && (
               <View>
                 <ButtonLogIn
                   title="סמני כנמכר "
                   containerStyle={{ marginBottom: 13 }}
                   onPress={() => {
                     setShowModal(true);
-                    setMassage(
-                      "   ,פריט זה לא יהיה זמין למכירה  \n  את בטוחה?"
-                    );
+                    setMassage("   הפריט לא יהיה זמין למכירה, \n  את בטוחה?");
                     setHandleSure(() => handleSalePress);
                   }}
                 />
               </View>
             )}
 
-            {myitemFlag && item.item_status == "sold" && (
+            {/* {myitemFlag &&
+              item.item_status == "sold" &&
+              itemStatus === "sold" && ( */}
+            {myitemFlag && itemStatus === "sold" && (
               <View>
                 <ButtonLogIn
                   title="החזירי למכירה  "
                   containerStyle={{ marginBottom: 13 }}
                   onPress={() => {
                     setShowModal(true);
-                    setMassage(",הפריט יהיה זמין למכירה \n  את בטוחה?");
+                    setMassage("הפריט יהיה זמין למכירה, \n  את בטוחה?");
                     setHandleSure(() => handleNotSalePress);
                   }}
                 />
@@ -800,7 +825,7 @@ export default function ProductDetails(props) {
                   containerStyle={{ marginBottom: 13 }}
                   onPress={() => {
                     setShowModal(true);
-                    setMassage("   ,פריט זה ימחק לצמיתות \n  את בטוחה?");
+                    setMassage("הפריט ימחק לצמיתות, \n  את בטוחה?");
                     setHandleSure(() => handleDeletePress);
                   }}
                 />
@@ -902,7 +927,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     alignSelf: "center",
-    marginBottom: 15,
+    marginBottom: 13,
     marginLeft: 15,
   },
   contentContainer: {
@@ -950,20 +975,28 @@ const styles = StyleSheet.create({
     lineHeight: 22 * 1.2,
     color: COLORS.gray,
     fontSize: 10,
-    marginBottom: 30,
+    marginBottom: 20,
   },
   dseContainer: {
-    height: 100,
+    borderRadius: 15,
+    backgroundColor: COLORS.goldenTransparent_03,
+    fontSize: 16,
+    padding: 10,
+    paddingVertical: 10,
+    marginBottom: 30,
+    borderRadius: 15,
+  },
+  Hdescription: {
+    ...FONTS.Mulish_700Bold,
+    textAlign: "right",
+    textDecorationLine: "underline",
+    textDecorationStyle: "solid",
+  
   },
   description: {
     ...FONTS.Mulish_700Bold,
-    backgroundColor: COLORS.goldenTransparent_03,
-    fontSize: 14,
     textAlign: "right",
-    padding: 5,
-    paddingBottom: 15,
-    paddingTop: 15,
-    marginTop: 15,
+
   },
   soldStyle: {
     height: 280,
@@ -974,5 +1007,6 @@ const styles = StyleSheet.create({
     opacity: 0.5,
     alignItems: "center",
     justifyContent: "center",
+    borderRadius: 10,
   },
 });

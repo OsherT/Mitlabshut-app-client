@@ -26,8 +26,7 @@ export default function ButtonLogIn({ title, containerStyle, onPress, icon }) {
           ...FONTS.Mulish_600SemiBold,
           fontSize: 16,
           textTransform: "uppercase",
-          paddingRight: 20,
-          paddingLeft: 20,
+          paddingHorizontal: 20,
         }}>
         {title}
       </Text>

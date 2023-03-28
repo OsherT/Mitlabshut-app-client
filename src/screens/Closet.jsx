@@ -35,7 +35,7 @@ export default function Closet(props) {
     ClosetOwner,
     ClosetID,
     setClosetOwner,
-    setClosetID
+    setClosetID,
   } = useContext(userContext);
   const { route } = props;
   const closetId = route?.params?.closetId || loggedUser.closet_id;
@@ -490,8 +490,6 @@ export default function Closet(props) {
                   borderBottomWidth: 1,
                   textAlign: "center",
                 }}
-            
-
                 onPress={() => {
                   setModalVisible(false);
                   setShowModal(true);
@@ -651,6 +649,7 @@ export default function Closet(props) {
                           opacity: 0.5,
                           alignItems: "center",
                           justifyContent: "center",
+                          borderRadius: 10,
                         }}>
                         <Text
                           style={{
@@ -665,25 +664,24 @@ export default function Closet(props) {
                     )}
                     {!myClosetFlag &&
                       UsersFavList.includes(item.id) &&
-                      item.item_status !=
-                        "sold"&&(
-                          // render the filled heart SVG if the item ID is in the UsersFavList
-                          <TouchableOpacity
-                            style={{ left: 12, top: 12 }}
-                            onPress={() => RemoveFromFav(item.id)}>
-                            <HeartSvg filled={true} />
-                          </TouchableOpacity>
-                        )}
-                    {!myClosetFlag && !UsersFavList.includes(item.id) && 
-                      item.item_status !=
-                        "sold"&&(
-                      // render the unfilled heart SVG if the item ID is not in the UsersFavList
-                      <TouchableOpacity
-                        style={{ left: 12, top: 12 }}
-                        onPress={() => AddtoFav(item.id)}>
-                        <HeartSvg filled={false} />
-                      </TouchableOpacity>
-                    )}
+                      item.item_status != "sold" && (
+                        // render the filled heart SVG if the item ID is in the UsersFavList
+                        <TouchableOpacity
+                          style={{ left: 12, top: 12 }}
+                          onPress={() => RemoveFromFav(item.id)}>
+                          <HeartSvg filled={true} />
+                        </TouchableOpacity>
+                      )}
+                    {!myClosetFlag &&
+                      !UsersFavList.includes(item.id) &&
+                      item.item_status != "sold" && (
+                        // render the unfilled heart SVG if the item ID is not in the UsersFavList
+                        <TouchableOpacity
+                          style={{ left: 12, top: 12 }}
+                          onPress={() => AddtoFav(item.id)}>
+                          <HeartSvg filled={false} />
+                        </TouchableOpacity>
+                      )}
                     {/* Render the edit/mark as sold/delete icon */}
                     {myClosetFlag && (
                       <TouchableOpacity
@@ -817,7 +815,7 @@ export default function Closet(props) {
           }}>
           הארון ריק
         </Text>
-        {myClosetFlag &&(
+        {myClosetFlag && (
           <View
             style={{
               //position: "absolute",

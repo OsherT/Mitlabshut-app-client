@@ -24,8 +24,7 @@ import WarningModal from "../components/WarningModal";
 
 export default function ProductDetails(props) {
   const navigation = useNavigation();
-  const { loggedUser, GetItemForAlgo, shopScore, favScore, viewScore, setClosetOwner,
-    setClosetID ,setSelectedTab} =
+  const { loggedUser, GetItemForAlgo, shopScore, favScore, viewScore } =
     useContext(userContext);
   const item = props.route.params.item;
   const isFocused = useIsFocused();
@@ -442,10 +441,8 @@ export default function ProductDetails(props) {
         `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/updateItemSaleStatus/item_ID/${item.id}/item_status/sold`
       )
       .then((res) => {
-        setItemStatus("sold");
-
-        console.log("succ to sale itemmmm", item.id);
-        // navigation.navigate("Closet");
+        console.log("succ to sale item", item.id);
+        navigation.navigate("Closet");
       })
       .catch((err) => {
         console.log(err);
@@ -458,8 +455,8 @@ export default function ProductDetails(props) {
         `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/updateItemSaleStatus/item_ID/${item.id}/item_status/active`
       )
       .then((res) => {
-        setItemStatus("active");
         console.log("succ to sale item", item.id);
+        navigation.navigate("Closet");
       })
       .catch((err) => {
         console.log("err in handleNotSalePress ", err);
@@ -542,7 +539,7 @@ export default function ProductDetails(props) {
               {itemImages.map((image, index) => (
                 <View key={index}>
                   <ImageBackground style={styles.image} source={{ uri: image }}>
-                    {(item.item_status === "sold" || itemStatus === "sold") && (
+                    {item.item_status === "sold" && (
                       <View style={styles.soldStyle}>
                         <Text
                           style={{
@@ -766,7 +763,7 @@ export default function ProductDetails(props) {
               </View>
             )}
 
-            {(myitemFlag && item.item_status != "sold" || itemStatus != "sold") && (
+            {myitemFlag && item.item_status != "sold" && (
               <View>
                 <ButtonLogIn
                   title="סמני כנמכר "

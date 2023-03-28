@@ -32,6 +32,10 @@ export default function Closet(props) {
     GetItemForAlgo,
     shopScore,
     favScore,
+    ClosetOwner,
+    ClosetID,
+    setClosetOwner,
+    setClosetID
   } = useContext(userContext);
   const { route } = props;
   const closetId = route?.params?.closetId || loggedUser.closet_id;

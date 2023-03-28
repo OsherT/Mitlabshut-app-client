@@ -846,7 +846,7 @@ export default function Closet(props) {
     <View style={{ flex: 1 }}>
       <SafeAreaView
         style={{ ...AREA.AndroidSafeArea, backgroundColor: "none" }}>
-        <Header goBack={true} />
+        <Header goBack={false} />
         <View style={{ flex: 1 }}>
           {renderUserContent()}
           {UsersItems.length !== 0 ? renderClothes() : renderMessage()}

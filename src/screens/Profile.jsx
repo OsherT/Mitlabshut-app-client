@@ -270,7 +270,7 @@ export default function Profile() {
         flex: 1,
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
       }}>
-      <Header title="עמוד אישי" goBack={true} />
+      <Header title="עמוד אישי" goBack={false} />
       {renderContent()}
       {showModal && (
         <WarningModal

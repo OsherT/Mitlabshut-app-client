@@ -131,7 +131,7 @@ export default function Header({
         alignItems: "center",
         height: 42,
       }}>
-      {!goBack && (
+      {goBack && (
         <TouchableOpacity
           style={{
             position: "absolute",

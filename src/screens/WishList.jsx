@@ -325,7 +325,7 @@ export default function WishList() {
         backgroundColor: "none",
         showsVerticalScrollIndicator: false,
       }}>
-      <Header title="רשימת מועדפים" goBack={true} />
+      <Header title="רשימת מועדפים" goBack={false} />
       {renderContent()}
     </SafeAreaView>
   );

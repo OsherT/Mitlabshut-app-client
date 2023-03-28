@@ -169,7 +169,7 @@ export default function Search() {
         flex: 1,
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
       }}>
-      <Header title="חיפוש משתמשים" goBack={false} />
+      <Header title=" משתמשים" goBack={true} />
       {renderSearch()}
       {renderUsers()}
     </SafeAreaView>

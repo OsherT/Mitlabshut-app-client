@@ -30,6 +30,8 @@ export default function SearchRes(props) {
   const [itemsImageByType, setItemsImageByType] = useState([]);
   const [UsersFavList, setUsersFavList] = useState([]);
   const [UsersShopList, setUsersShopList] = useState([]);
+  // const [usersFollow, setUsersFollow] = useState([]);
+
   const searchText = props.route.params.searchText;
 
   useEffect(() => {
@@ -44,6 +46,7 @@ export default function SearchRes(props) {
       GetCategoriesList();
       getShopItems();
       getFavItems();
+      // GetUsersFollow();
     }
   }, [isFocused, searchText]);
 
@@ -68,6 +71,31 @@ export default function SearchRes(props) {
         console.log("cant get categories", err);
       });
   };
+
+  // const GetUsersFollow = () => {
+  //   fetch(
+  //     "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetUserFollowingByUser/LoggedUser/" +
+  //       loggedUser.id,
+  //     {
+  //       method: "GET",
+  //       headers: new Headers({
+  //         "Content-Type": "application/json; charset=UTF-8",
+  //         Accept: "application/json; charset=UTF-8",
+  //       }),
+  //     }
+  //   )
+  //     .then((res) => {
+  //       return res.json();
+  //     })
+  //     .then(
+  //       (data) => {
+  //         setUsersFollow(data);
+  //       },
+  //       (error) => {
+  //         console.log("GetUsersFollow error", error);
+  //       }
+  //     );
+  // };
 
   function GetSearcResults() {
     if (brandsList && categoriesList) {
@@ -170,7 +198,7 @@ export default function SearchRes(props) {
         console.log("cant add to fav", err);
       });
   }
-  
+
   function RemoveFromFav(itemId) {
     axios
       .delete(
@@ -243,8 +271,7 @@ export default function SearchRes(props) {
           paddingHorizontal: 20,
           marginTop: 10,
           marginBottom: 20,
-        }}
-      >
+        }}>
         <View
           style={{
             width: "100%",
@@ -253,16 +280,14 @@ export default function SearchRes(props) {
             borderRadius: 5,
             flexDirection: "row",
             alignItems: "center",
-          }}
-        >
+          }}>
           <View style={{ paddingLeft: 15, paddingRight: 10 }}>
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate("SearchRes", {
                   searchText: nextSearch,
                 })
-              }
-            >
+              }>
               <SearchSvg />
             </TouchableOpacity>
           </View>
@@ -277,8 +302,7 @@ export default function SearchRes(props) {
               paddingHorizontal: 15,
               paddingVertical: 5,
             }}
-            onPress={() => navigation.navigate("Filter")}
-          >
+            onPress={() => navigation.navigate("Filter")}>
             <FilterSvg />
           </TouchableOpacity>
         </View>
@@ -327,14 +351,12 @@ export default function SearchRes(props) {
                       height: 128,
                     }}
                     imageStyle={{ borderRadius: 10 }}
-                    key={photo.id}
-                  >
+                    key={photo.id}>
                     {UsersFavList.includes(item.id) && (
                       // render the filled heart SVG if the item ID is in the UsersFavList
                       <TouchableOpacity
                         style={{ left: 12, top: 12 }}
-                        onPress={() => RemoveFromFav(item.id)}
-                      >
+                        onPress={() => RemoveFromFav(item.id)}>
                         <HeartSvg filled={true} />
                       </TouchableOpacity>
                     )}
@@ -342,8 +364,7 @@ export default function SearchRes(props) {
                       // render the unfilled heart SVG if the item ID is not in the UsersFavList
                       <TouchableOpacity
                         style={{ left: 12, top: 12 }}
-                        onPress={() => AddtoFav(item.id)}
-                      >
+                        onPress={() => AddtoFav(item.id)}>
                         <HeartSvg filled={false} />
                       </TouchableOpacity>
                     )}
@@ -355,8 +376,7 @@ export default function SearchRes(props) {
                 paddingHorizontal: 12,
                 paddingBottom: 15,
                 paddingTop: 12,
-              }}
-            >
+              }}>
               <Text
                 style={{
                   ...FONTS.Mulish_600SemiBold,
@@ -366,8 +386,7 @@ export default function SearchRes(props) {
                   color: COLORS.black,
                   marginBottom: 6,
                   textAlign: "right",
-                }}
-              >
+                }}>
                 {item.name}
               </Text>
               <Text
@@ -376,8 +395,7 @@ export default function SearchRes(props) {
                   ...FONTS.Mulish_400Regular,
                   fontSize: 14,
                   textAlign: "right",
-                }}
-              >
+                }}>
                 מידה: {item.size}
               </Text>
               <View
@@ -394,8 +412,7 @@ export default function SearchRes(props) {
                   fontSize: 14,
                   color: COLORS.black,
                   textAlign: "left",
-                }}
-              >
+                }}>
                 ₪ {item.price}
               </Text>
             </View>
@@ -403,8 +420,7 @@ export default function SearchRes(props) {
               // render the filled heart SVG if the item ID is in the UsersFavList
               <TouchableOpacity
                 style={{ position: "absolute", right: 12, bottom: 12 }}
-                onPress={() => RemoveFromShopList(item.id)}
-              >
+                onPress={() => RemoveFromShopList(item.id)}>
                 <BagSvg color="#626262" inCart={true} />
               </TouchableOpacity>
             )}
@@ -412,8 +428,7 @@ export default function SearchRes(props) {
               // render the unfilled heart SVG if the item ID is not in the UsersFavList
               <TouchableOpacity
                 style={{ position: "absolute", right: 12, bottom: 12 }}
-                onPress={() => AddToShopList(item.id)}
-              >
+                onPress={() => AddToShopList(item.id)}>
                 <BagSvg color="#D7BA7B" inCart={false} />
               </TouchableOpacity>
             )}
@@ -429,10 +444,7 @@ export default function SearchRes(props) {
         flex: 1,
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
       }}>
-      <Header
-        title={searchText}
-        onPress={() => navigation.goBack()}
-      />
+      <Header title={searchText} onPress={() => navigation.goBack()} />
 
       {renderSearch()}
       {renderItems()}

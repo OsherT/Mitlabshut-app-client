@@ -156,6 +156,13 @@ export default function Search() {
       style={{
         flex: 1,
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5, // Add this line for Android compatibility
       }}>
       <Header title="חיפוש פריט" goBack={false} />
       {renderSearch()}

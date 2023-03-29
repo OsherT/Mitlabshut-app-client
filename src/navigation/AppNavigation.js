@@ -50,6 +50,7 @@ import PasswordHasBeenResetScreen from "../screens/RessetPasswordNotice";
 import SearchRes from "../screens/SearchRes";
 import axios from "axios";
 import Users from "../screens/Users";
+
 const Stack = createStackNavigator();
 
 export default function Navigation() {
@@ -58,7 +59,7 @@ export default function Navigation() {
   const [closetDesc, setclosetDesc] = useState("");
   const [closetName, setclosetName] = useState("");
   const [ClosetOwner, setClosetOwner] = useState("");
-  
+
   const [ClosetID, setClosetID] = useState("");
   const shopScore = 8;
   const favScore = 6;
@@ -163,7 +164,7 @@ export default function Navigation() {
           ClosetOwner,
           ClosetID,
           setClosetOwner,
-          setClosetID
+          setClosetID,
         }}>
         <Stack.Navigator
           screenOptions={{

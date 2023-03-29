@@ -59,7 +59,6 @@ export default function SignIn() {
           (user) => {
             if (user.id > 0) {
               setloggedUser(user);
-
               navigation.navigate("MainLayout");
             }
 

@@ -8,7 +8,7 @@ import {
   StyleSheet,
   ScrollView,
 } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { showMessage } from "react-native-flash-message";
 import { promo, SIZES, COLORS, products, FONTS, AREA } from "../constants";
@@ -20,6 +20,7 @@ import axios from "axios";
 import ButtonFollow from "../components/ButtonFollow";
 import Quote from "../svg/Quote";
 import WarningModal from "../components/WarningModal";
+import PushNotification from "./PushNotification";
 
 export default function Home() {
   const navigation = useNavigation();
@@ -36,6 +37,39 @@ export default function Home() {
 
   const [showModal, setShowModal] = useState(false);
   const [massage, setMassage] = useState("");
+
+  ////////push/////////
+  // const [expoPushToken, setExpoPushToken] = useState("");
+  // const [notification, setNotification] = useState(false);
+  // const notificationListener = useRef();
+  // const responseListener = useRef();
+
+  // useEffect(() => {
+  //   registerForPushNotificationsAsync().then((token) =>
+  //     setExpoPushToken(token)
+  //   );
+
+  //   notificationListener.current =
+  //     Notifications.addNotificationReceivedListener((notification) => {
+  //       setNotification(notification);
+  //       // פה נעשה את הפעולה שנרצה לאחר שהמשתמש לחץ על ההתרא, לדוגמא ניווט לארון של היוזר שעקב אחריו
+  //     });
+
+  //   responseListener.current =
+  //     Notifications.addNotificationResponseReceivedListener((response) => {
+  //       console.log(response);
+
+  //       // פה נעשה את הפעולה שנרצה לאחר שהמשתמש לחץ על ההתרא, לדוגמא ניווט לארון של היוזר שעקב אחריו
+  //     });
+
+  //   return () => {
+  //     Notifications.removeNotificationSubscription(
+  //       notificationListener.current
+  //     );
+  //     Notifications.removeNotificationSubscription(responseListener.current);
+  //   };
+  // }, []);
+  ///////push//////////
 
   useEffect(() => {
     if (isFocused) {
@@ -271,6 +305,7 @@ export default function Home() {
   function handleUserChoice() {
     navigation.navigate("SignIn");
   }
+
   function renderBestSellers() {
     return (
       <View
@@ -615,6 +650,13 @@ export default function Home() {
           handleSure={handleUserChoice}
         />
       )}
+      {/* <PushNotification></PushNotification>
+      <Button
+        title="Press to Send Notification"
+        onPress={async () => {
+          await sendPushNotification(expoPushToken);
+        }}
+      /> */}
       {/* {renderFeaturedProducts()} */}
     </ScrollView>
   );

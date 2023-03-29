@@ -1,23 +1,13 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Text, View, Button, Platform } from "react-native";
-import * as Device from "expo-device";
-import * as Notifications from "expo-notifications";
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: false,
-    shouldSetBadge: false,
-  }),
-});
-
-// Can use this function below OR use Expo's Push Notification Tool from: https://expo.dev/notifications
+//קובץ חיצוני
 async function sendPushNotification(expoPushToken) {
   const message = {
     to: expoPushToken,
     sound: "default",
-    title: "Original Title",
-    body: "And here is the body!",
+    title: "מתלבשות",
+    body: "יש עדכון באפליקציה, היכנסי כדי להתעדכן",
     data: { someData: "goes here" },
   };
 
@@ -64,7 +54,23 @@ async function registerForPushNotificationsAsync() {
   return token;
 }
 
-export default function App() {
+
+
+
+//נדרש בכל דף שבו עושים התראה
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
+
+export default function PushNotification() {
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
@@ -78,11 +84,13 @@ export default function App() {
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
         setNotification(notification);
+        // פה נעשה את הפעולה שנרצה לאחר שהמשתמש לחץ על ההתרא, לדוגמא ניווט לארון של היוזר שעקב אחריו
       });
 
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
         console.log(response);
+        // פה נעשה את הפעולה שנרצה לאחר שהמשתמש לחץ על ההתרא, לדוגמא ניווט לארון של היוזר שעקב אחריו
       });
 
     return () => {
@@ -95,8 +103,12 @@ export default function App() {
 
   return (
     <View
-      style={{ flex: 1, alignItems: "center", justifyContent: "space-around" }}>
-      <Text>Your expo push token: {expoPushToken}</Text>
+      style={{
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "space-around",
+      }}>
+      {/* <Text>Your expo push token: {expoPushToken}</Text>
       <View style={{ alignItems: "center", justifyContent: "center" }}>
         <Text>
           Title: {notification && notification.request.content.title}{" "}
@@ -106,7 +118,7 @@ export default function App() {
           Data:{" "}
           {notification && JSON.stringify(notification.request.content.data)}
         </Text>
-      </View>
+      </View> */}
       <Button
         title="Press to Send Notification"
         onPress={async () => {

@@ -63,14 +63,10 @@ export default function ProductDetails(props) {
       GetItemImages();
       GetNumOfFav();
       setShippingMethod(item.shipping_method);
-      console.log("item", item);
-      console.log("item status", item.item_status);
-      console.log("itemStatus", itemStatus);
 
       if (address1 && address2) {
-        getAddressLocations();
+        getAddressLocations();  
       }
-      console.log("d");
     }
   }, [isFocused, address1, address2, itemStatus]);
 
@@ -750,10 +746,7 @@ export default function ProductDetails(props) {
               </View>
             </View>
             <View style={styles.dseContainer}>
-              <Text style={styles.Hdescription}>
-                קצת על הפריט: 
-              
-              </Text>
+              <Text style={styles.Hdescription}>קצת על הפריט:</Text>
               <Text style={styles.description}>
                 {ArrayToStringCat(itemCtegories)}
                 {","} {item.description}
@@ -991,12 +984,10 @@ const styles = StyleSheet.create({
     textAlign: "right",
     textDecorationLine: "underline",
     textDecorationStyle: "solid",
-  
   },
   description: {
     ...FONTS.Mulish_700Bold,
     textAlign: "right",
-
   },
   soldStyle: {
     height: 280,

@@ -20,6 +20,8 @@ import { Plus, Minus, Check, BagSvg } from "../svg";
 import axios from "axios";
 import { userContext } from "../navigation/userContext";
 import { Swipeable } from "react-native-gesture-handler";
+import WhatsAppSvg from "../svg/WhatsAppSvg";
+import { Linking } from "react-native";
 
 export default function Order() {
   const navigation = useNavigation();
@@ -112,8 +114,18 @@ export default function Order() {
     }
     setsumTotal(totalPrice);
   }
+  function sendWhatsAppMessage() {
+    const message = "Hello, this is a test message!";
+    const phone = "+9720542550772";
+
+    const url = `whatsapp://send?phone=${phone}&text=${encodeURIComponent(
+      message
+    )}`;
+
+    Linking.openURL(url);
+  }
   function renderContent() {
-    return (
+    return ( 
       <View>
         <ScrollView
           contentContainerStyle={{
@@ -121,142 +133,140 @@ export default function Order() {
             paddingHorizontal: 20,
             paddingVertical: 25,
           }}
-          showsHorizontalScrollIndicator={false}
-        >
+          showsHorizontalScrollIndicator={false}>
           {ItemsinCart &&
           Array.isArray(ItemsinCart) &&
           ItemsinCart.length > 0 ? (
             ItemsData.map((item, index) => {
               return (
                 <Swipeable
-                ref={(ref) => setSwipeableRef(ref)}
-                key={index}
-                onSwipeableClose={closeSwipeable}
-                renderRightActions={() => (
-                  <TouchableOpacity
-                    style={{
-                      height: 100,
-                      borderRadius: 10,
-                      backgroundColor: COLORS.carrot,
-                      justifyContent: "center",
-                      alignItems: "flex-end",
-                      padding:20
-                    }}
-                    onPress={() => RemoveFromShopList(item.id)}
-                  >
-                    <Text style={{ color: "#FFF", fontWeight: "bold" }}>
-                      הסירי
-                    </Text>
-                  </TouchableOpacity>
-                )}
-              >
-                <TouchableOpacity
+                  ref={(ref) => setSwipeableRef(ref)}
                   key={index}
-                  style={{
-                    width: "100%",
-                    height: 100,
-                    backgroundColor: COLORS.white,
-                    marginBottom: 15,
-                    borderRadius: 10,
-                    flexDirection: "row",
-                    shadowOffset: {
-                      width: 0,
-                      height: 2,
-                    },
-                    shadowOpacity: 0.25,
-                    shadowRadius: 2,
-                    elevation: 5,
-                  }}
-                  onPress={() => {
-                    navigation.navigate("ProductDetails", {
-                      item: item,
-                    });
-                  }}
-                  disabled={item.item_status === "sold" || item.item_status === "delete"}
-
-                >
-                  {UsersItemPhotos.filter((photo) => photo.item_ID === item.id)
-                    .slice(0, 1)
-                    .map((photo) => {
-                      return (
-                        <ImageBackground
-                          source={{ uri: photo.src }}
-                          style={{
-                            width: 100,
-                            height: 100,
-                          }}
-                          imageStyle={{ borderRadius: 10 }}
-                          key={photo.id}
-                        ></ImageBackground>
-                      );
-                    })}
+                  onSwipeableClose={closeSwipeable}
+                  renderRightActions={() => (
+                    <TouchableOpacity
+                      style={{
+                        height: 100,
+                        borderRadius: 10,
+                        backgroundColor: COLORS.carrot,
+                        justifyContent: "center",
+                        alignItems: "flex-end",
+                        padding: 20,
+                      }}
+                      onPress={() => RemoveFromShopList(item.id)}>
+                      <Text style={{ color: "#FFF", fontWeight: "bold" }}>
+                        הסירי
+                      </Text>
+                    </TouchableOpacity>
+                  )}>
+                  <TouchableOpacity
+                    key={index}
+                    style={{
+                      width: "100%",
+                      height: 100,
+                      backgroundColor: COLORS.white,
+                      marginBottom: 15,
+                      borderRadius: 10,
+                      flexDirection: "row",
+                      shadowOffset: {
+                        width: 0,
+                        height: 2,
+                      },
+                      shadowOpacity: 0.25,
+                      shadowRadius: 2,
+                      elevation: 5,
+                    }}
+                    onPress={() => {
+                      navigation.navigate("ProductDetails", {
+                        item: item,
+                      });
+                    }}
+                    disabled={
+                      item.item_status === "sold" ||
+                      item.item_status === "delete"
+                    }>
+                    {UsersItemPhotos.filter(
+                      (photo) => photo.item_ID === item.id
+                    )
+                      .slice(0, 1)
+                      .map((photo) => {
+                        return (
+                          <ImageBackground
+                            source={{ uri: photo.src }}
+                            style={{
+                              width: 100,
+                              height: 100,
+                            }}
+                            imageStyle={{ borderRadius: 10 }}
+                            key={photo.id}></ImageBackground>
+                        );
+                      })}
                     {item.item_status === "sold" ||
-                  item.item_status === "delete" ? (
+                    item.item_status === "delete" ? (
+                      <View
+                        style={{
+                          position: "absolute",
+                          top: 0,
+                          left: 0,
+                          width: "100%",
+                          height: "100%",
+                          backgroundColor: COLORS.black,
+                          borderRadius: 10,
+                          opacity: 0.5,
+                          alignItems: "center",
+                          justifyContent: "center",
+                          zIndex: "1",
+                        }}>
+                        <Text
+                          style={{
+                            color: "white",
+                            fontSize: 18,
+                            fontWeight: "bold",
+                          }}>
+                          לא זמין
+                        </Text>
+                      </View>
+                    ) : null}
+
                     <View
                       style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        width: "100%",
-                        height: "100%",
-                        backgroundColor: COLORS.black,
-                        borderRadius: 10,
-                        opacity: 0.5,
-                        alignItems: "center",
-                        justifyContent: "center",
-                        zIndex: "1",
-                        
-                      }}
-                    >
+                        paddingHorizontal: 15,
+                        paddingVertical: 9,
+                        flex: 1,
+                      }}>
                       <Text
                         style={{
-                          color: "white",
-                          fontSize: 18,
-                          fontWeight: "bold",
-                        }}
-                      >
-                        לא זמין
+                          ...FONTS.Mulish_600SemiBold,
+                          fontSize: 14,
+                          textTransform: "capitalize",
+                          marginBottom: 6,
+                          lineHeight: 14 * 1.2,
+                        }}>
+                        {item.name}
+                      </Text>
+                      <Text style={{ color: COLORS.gray }}>{item.size}</Text>
+                      <Line />
+                      <Text
+                        style={{
+                          ...FONTS.Mulish_600SemiBold,
+                          fontSize: 14,
+                          color: COLORS.carrot,
+                        }}>
+                        ₪ {item.price}
                       </Text>
                     </View>
-                  ) : null}
-                  <View
-                    style={{
-                      paddingHorizontal: 15,
-                      paddingVertical: 9,
-                      flex: 1,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        ...FONTS.Mulish_600SemiBold,
-                        fontSize: 14,
-                        textTransform: "capitalize",
-                        marginBottom: 6,
-                        lineHeight: 14 * 1.2,
-                      }}
-                    >
-                      {item.name}
-                    </Text>
-                    <Text style={{ color: COLORS.gray }}>{item.size}</Text>
-                    <Line />
-                    <Text
-                      style={{
-                        ...FONTS.Mulish_600SemiBold,
-                        fontSize: 14,
-                        color: COLORS.carrot,
-                      }}
-                    >
-                      ₪ {item.price}
-                    </Text>
-                  </View>
-
-                  {/* <TouchableOpacity
+                    {/* <TouchableOpacity
                     style={{ position: "absolute", right: 12, bottom: 12 ,zIndex:2}}
                     onPress={() => RemoveFromShopList(item.id)}
                   >
                     <BagSvg color="#626262" inCart={true} />
                   </TouchableOpacity> */}
-                </TouchableOpacity>
+                    <TouchableOpacity
+                      style={{ margin: 25 }}
+                      onPress={sendWhatsAppMessage}>
+                      <WhatsAppSvg />
+                    </TouchableOpacity>
+                  </TouchableOpacity>
                 </Swipeable>
               );
             })
@@ -270,8 +280,7 @@ export default function Order() {
                 color: COLORS.black,
                 marginBottom: 4,
                 lineHeight: 16 * 1.2,
-              }}
-            >
+              }}>
               סל הקניות שלך ריק{" "}
             </Text>
           )}
@@ -284,10 +293,7 @@ export default function Order() {
                 justifyContent: "space-between",
                 alignItems: "center",
                 marginBottom: 8,
-                
-                
-              }}
-            >
+              }}>
               <Text
                 style={{
                   ...FONTS.Mulish_600SemiBold,
@@ -295,8 +301,7 @@ export default function Order() {
                   color: COLORS.black,
                   textTransform: "capitalize",
                   lineHeight: 16 * 1.2,
-                }}
-              >
+                }}>
                 ₪ {sumTotal}
               </Text>
               <Text
@@ -306,15 +311,14 @@ export default function Order() {
                   color: COLORS.black,
                   textTransform: "capitalize",
                   lineHeight: 16 * 1.2,
-                }}
-              >
+                }}>
                 סה"כ
               </Text>
             </View>
 
             <Button
               title="רכשי"
-              containerStyle={{ marginTop: 25 ,}}
+              containerStyle={{ marginTop: 25 }}
               onPress={() => navigation.navigate("Checkout")}
             />
           </ContainerComponent>
@@ -327,7 +331,7 @@ export default function Order() {
 
   return (
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
-      <Header title="סל קניות"  />
+      <Header title="סל קניות" />
       {renderContent()}
     </SafeAreaView>
   );

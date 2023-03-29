@@ -19,6 +19,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import axios from "axios";
 import ButtonFollow from "../components/ButtonFollow";
 import Quote from "../svg/Quote";
+import WarningModal from "../components/WarningModal";
 
 export default function Home() {
   const navigation = useNavigation();
@@ -32,6 +33,9 @@ export default function Home() {
   const [CombainedArray, setCombainedArray] = useState([]);
   const [greeting, setGreeting] = useState("");
   const [Sentence, setSentence] = useState([]);
+
+  const [showModal, setShowModal] = useState(false);
+  const [massage, setMassage] = useState("");
 
   useEffect(() => {
     if (isFocused) {
@@ -77,8 +81,7 @@ export default function Home() {
           shadowOpacity: 0.25,
           shadowRadius: 3.84,
           elevation: 5, // Add this line for Android compatibility
-        }}
-      >
+        }}>
         <View style={{ justifyContent: "flex-start", flexDirection: "row" }}>
           <ProfileCategory
             icon={<SignOutCategory />}
@@ -94,8 +97,7 @@ export default function Home() {
             justifyContent: "flex-end",
             flexDirection: "row",
             alignItems: "center",
-          }}
-        >
+          }}>
           <Text
             style={{
               ...FONTS.Mulish_700Bold,
@@ -105,8 +107,7 @@ export default function Home() {
               lineHeight: 20 * 1.2,
               marginRight: 3,
               //marginTop:10
-            }}
-          >
+            }}>
             {loggedUser.full_name}!
           </Text>
           <Text
@@ -118,8 +119,7 @@ export default function Home() {
               lineHeight: 20 * 1.2,
 
               //marginTop:10
-            }}
-          >
+            }}>
             {greeting},
           </Text>
           {loggedUser.user_image && (
@@ -166,8 +166,7 @@ export default function Home() {
             shadowRadius: 20,
             overflow: "hidden",
             marginTop: 30,
-          }}
-        >
+          }}>
           <Text
             style={{
               fontSize: 15,
@@ -175,8 +174,7 @@ export default function Home() {
               textAlign: "center",
               margin: 20,
               color: "#333",
-            }}
-          >
+            }}>
             "{Sentence}"
           </Text>
         </View>
@@ -261,6 +259,10 @@ export default function Home() {
       });
   };
 
+  //handle the sign out
+  function handleUserChoice() {
+    navigation.navigate("SignIn");
+  }
   function renderBestSellers() {
     return (
       <View
@@ -277,8 +279,7 @@ export default function Home() {
           shadowOpacity: 0.25,
           shadowRadius: 3.84,
           elevation: 5, // Add this line for Android compatibility
-        }}
-      >
+        }}>
         <View
           style={{
             marginTop: 10,
@@ -287,8 +288,7 @@ export default function Home() {
             justifyContent: "space-between",
             paddingHorizontal: 20,
             marginBottom: 10,
-          }}
-        >
+          }}>
           <Text
             style={{
               ...FONTS.Mulish_700Bold,
@@ -296,8 +296,7 @@ export default function Home() {
               textTransform: "capitalize",
               color: COLORS.black,
               lineHeight: 20 * 1.2,
-            }}
-          >
+            }}>
             ארונות מומלצים במיוחד בשבילך
           </Text>
         </View>
@@ -320,8 +319,7 @@ export default function Home() {
                     closetId: user.closet_id,
                     owner: user,
                   })
-                }
-              >
+                }>
                 <Image
                   source={{ uri: user.user_image }}
                   style={{
@@ -334,8 +332,7 @@ export default function Home() {
                   style={{
                     paddingHorizontal: 15,
                     paddingVertical: 12,
-                  }}
-                >
+                  }}>
                   <Text
                     style={{
                       ...FONTS.Mulish_600SemiBold,
@@ -344,16 +341,14 @@ export default function Home() {
                       color: COLORS.black,
                       marginBottom: 5,
                       textAlign: "center",
-                    }}
-                  >
+                    }}>
                     הארון של {user.full_name}
                   </Text>
                   <View
                     style={{
                       justifyContent: "center",
                       alignItems: "center",
-                    }}
-                  >
+                    }}>
                     {!UsersFollowingList.includes(user.closet_id) && (
                       <ButtonFollow
                         title="עקבי"
@@ -598,14 +593,20 @@ export default function Home() {
         top: 50,
       }}
       contentContainerStyle={{ paddingBottom: 30 }}
-      showsVerticalScrollIndicator={false}
-    >
+      showsVerticalScrollIndicator={false}>
       {/* {renderSlide()}
       {renderDots()} */}
       {RenderGreeting()}
       {RenderSentences()}
       {renderBestSellers()}
-
+      {showModal && (
+        <WarningModal
+          showModal={showModal}
+          setShowModal={setShowModal}
+          massage={massage}
+          handleSure={handleUserChoice}
+        />
+      )}
       {/* {renderFeaturedProducts()} */}
     </ScrollView>
   );

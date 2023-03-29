@@ -281,7 +281,6 @@ export default function Profile() {
           handleSure={handleUserChoice}
         />
       )}
-      {/* {<SignOutModal />} */}
     </SafeAreaView>
   );
 }

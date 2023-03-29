@@ -123,15 +123,23 @@ export default function Home() {
             {greeting},
           </Text>
           {loggedUser.user_image && (
-            <Image
-              source={{ uri: loggedUser.user_image }}
-              style={{
-                width: 75,
-                height: 75,
-                borderRadius: 50,
-                marginLeft: 10,
-              }}
-            />
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate("Closet", {
+                  closetId: loggedUser.closet_id,
+                  owner: loggedUser,
+                })
+              }>
+              <Image
+                source={{ uri: loggedUser.user_image }}
+                style={{
+                  width: 75,
+                  height: 75,
+                  borderRadius: 50,
+                  marginLeft: 10,
+                }}
+              />
+            </TouchableOpacity>
           )}
         </View>
       </View>

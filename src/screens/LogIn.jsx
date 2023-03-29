@@ -15,8 +15,10 @@ import { AREA, COLORS, FONTS } from "../constants";
 import AppLoading from "expo-app-loading";
 import ButtonLogIn from "../components/ButtonLogIn";
 import Facebook from "../svg/Facebook";
-import Google from "../svg/Google";
+import Google from "../svg/GoogleSvg";
 import { userContext } from "../navigation/userContext";
+// import * as webBrowser from "expo-web-browser";
+// import * as Google from "expo-auth-session/providers/google";
 
 export default function SignIn() {
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api`;

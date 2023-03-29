@@ -205,8 +205,9 @@ export default function ItemsByCtegory(props) {
             borderRadius: 5,
             flexDirection: "row",
             alignItems: "center",
+            
           }}>
-          <View style={{ paddingLeft: 15, paddingRight: 10 }}>
+          <View style={{ paddingLeft: 15, paddingRight: 10, }}>
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate("SearchRes", {
@@ -226,6 +227,7 @@ export default function ItemsByCtegory(props) {
             style={{
               paddingHorizontal: 15,
               paddingVertical: 5,
+              
             }}
             onPress={() => navigation.navigate("Filter")}>
             <FilterSvg />

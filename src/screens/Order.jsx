@@ -159,6 +159,13 @@ export default function Order() {
                     marginBottom: 15,
                     borderRadius: 10,
                     flexDirection: "row",
+                    shadowOffset: {
+                      width: 0,
+                      height: 2,
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 2,
+                    elevation: 5,
                   }}
                   onPress={() => {
                     navigation.navigate("ProductDetails", {
@@ -198,6 +205,7 @@ export default function Order() {
                         alignItems: "center",
                         justifyContent: "center",
                         zIndex: "1",
+                        
                       }}
                     >
                       <Text
@@ -276,6 +284,8 @@ export default function Order() {
                 justifyContent: "space-between",
                 alignItems: "center",
                 marginBottom: 8,
+                
+                
               }}
             >
               <Text
@@ -304,7 +314,7 @@ export default function Order() {
 
             <Button
               title="רכשי"
-              containerStyle={{ marginTop: 25 }}
+              containerStyle={{ marginTop: 25 ,}}
               onPress={() => navigation.navigate("Checkout")}
             />
           </ContainerComponent>

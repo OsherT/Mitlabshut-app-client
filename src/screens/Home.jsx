@@ -18,6 +18,7 @@ import { userContext } from "../navigation/userContext";
 import { SafeAreaView } from "react-native-safe-area-context";
 import axios from "axios";
 import ButtonFollow from "../components/ButtonFollow";
+import Quote from "../svg/Quote";
 
 export default function Home() {
   const navigation = useNavigation();
@@ -30,7 +31,7 @@ export default function Home() {
   const [UsersFollowingList, setUsersFollowingList] = useState([]);
   const [CombainedArray, setCombainedArray] = useState([]);
   const [greeting, setGreeting] = useState("");
-  const [Sentences, setSentences] = useState([]);
+  const [Sentence, setSentence] = useState([]);
 
   useEffect(() => {
     if (isFocused) {
@@ -64,8 +65,18 @@ export default function Home() {
         style={{
           flexDirection: "row",
           alignItems: "center",
-          justifyContent: "space-between", // Updated
+          justifyContent: "space-between",
+          marginTop: 30,
           backgroundColor: COLORS.white,
+          borderRadius: 25,
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+          elevation: 5, // Add this line for Android compatibility
         }}
       >
         <View style={{ justifyContent: "flex-start", flexDirection: "row" }}>
@@ -88,15 +99,28 @@ export default function Home() {
           <Text
             style={{
               ...FONTS.Mulish_700Bold,
-              fontSize: 17,
+              fontSize: 15,
               textTransform: "capitalize",
               color: COLORS.black,
               lineHeight: 20 * 1.2,
-              marginLeft: 10,
+              marginRight: 3,
               //marginTop:10
             }}
           >
-            {greeting}, {loggedUser.full_name}!
+            {loggedUser.full_name}!
+          </Text>
+          <Text
+            style={{
+              ...FONTS.Mulish_700Bold,
+              fontSize: 20,
+              textTransform: "capitalize",
+              color: COLORS.gray,
+              lineHeight: 20 * 1.2,
+
+              //marginTop:10
+            }}
+          >
+            {greeting},
           </Text>
           {loggedUser.user_image && (
             <Image
@@ -119,7 +143,8 @@ export default function Home() {
         "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetSentences"
       )
       .then((res) => {
-        setSentences(res.data);
+        const randomIndex = Math.floor(Math.random() * res.data.length);
+        setSentence(res.data[randomIndex].content);
       })
       .catch((err) => {
         console.log(err);
@@ -127,29 +152,46 @@ export default function Home() {
   }
 
   function RenderSentences() {
-    if (Sentences!==null) {
-        const randomIndex = Math.floor(Math.random() * Sentences.length);
-        
-        const randomSentence = Sentences[randomIndex].content;
-        console.log(randomSentence);
-        return (
-          <Text
+    if (Sentence !== null) {
+      return (
+        <View
+          style={{
+            borderRadius: 8,
+            borderWidth: 1,
+            marginLeft: 30,
+            marginRight: 30,
+            marginTop: 20,
+            borderColor: COLORS.gray,
+          }}
+        >
+          <View
             style={{
-              fontSize: 20,
-              fontWeight: "bold",
-              fontStyle: "italic",
-              textAlign: "center",
-              color: "#333",
-              padding: 10,
-              borderRadius: 10,
-              backgroundColor: "#eee",
+              paddingRight: 20,
+              paddingLeft: 36,
+              paddingVertical: 24,
+              overflow: "hidden",
             }}
           >
-            {randomSentence}
-          </Text>
-        );  
+            <Text
+              style={{
+                fontSize: 30,
+                fontWeight: "bold",
+                fontStyle: "italic",
+                textAlign: "center",
+                color: COLORS.gray,
+                padding: 10,
+                borderRadius: 10,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              {Sentence}
+            </Text>
+          </View>
+        </View>
+      );
     }
-    
   }
 
   function GetRecommendedClosets() {
@@ -235,8 +277,16 @@ export default function Home() {
         style={{
           marginTop: 20,
           alignItems: "flex-end",
-          backgroundColor: COLORS.goldenTransparent_03,
+          //backgroundColor: COLORS.goldenTransparent_03,
           paddingBottom: 20,
+          borderRadius: 25,
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+          elevation: 5, // Add this line for Android compatibility
         }}
       >
         <View
@@ -258,7 +308,7 @@ export default function Home() {
               lineHeight: 20 * 1.2,
             }}
           >
-            ארונות מומלצים במיוחד בשבילך 👚
+            ארונות מומלצים במיוחד בשבילך
           </Text>
         </View>
         <FlatList

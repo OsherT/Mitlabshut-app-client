@@ -158,7 +158,8 @@ export default function WishList() {
                       backgroundColor: COLORS.carrot,
                       justifyContent: "center",
                       alignItems: "flex-end",
-                      padding:20
+                      padding:20,
+                      
                     }}
                     onPress={() => RemoveFromFav(item.id)}
                   >
@@ -177,6 +178,13 @@ export default function WishList() {
                     marginBottom: 15,
                     borderRadius: 10,
                     flexDirection: "row",
+                    shadowOffset: {
+                      width: 0,
+                      height: 2,
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 2,
+                    elevation: 5, // Add this line for Android compatibility
                   }}
                   onPress={() => {
                     if (item.item_status !== "sold" && item.item_status !== "delete") {

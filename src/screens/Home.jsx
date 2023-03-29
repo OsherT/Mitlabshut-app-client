@@ -99,7 +99,7 @@ export default function Home() {
           <Text
             style={{
               ...FONTS.Mulish_700Bold,
-              fontSize: 15,
+              fontSize: 18,
               textTransform: "capitalize",
               color: COLORS.black,
               lineHeight: 20 * 1.2,
@@ -112,7 +112,7 @@ export default function Home() {
           <Text
             style={{
               ...FONTS.Mulish_700Bold,
-              fontSize: 20,
+              fontSize: 23,
               textTransform: "capitalize",
               color: COLORS.gray,
               lineHeight: 20 * 1.2,
@@ -126,8 +126,8 @@ export default function Home() {
             <Image
               source={{ uri: loggedUser.user_image }}
               style={{
-                width: 50,
-                height: 50,
+                width: 75,
+                height: 75,
                 borderRadius: 50,
                 marginLeft: 10,
               }}
@@ -158,14 +158,14 @@ export default function Home() {
           style={{
             borderWidth: 0,
             borderRadius: 10,
-            padding: 10,
-            margin: 10,
-            backgroundColor: '#fff',
-            shadowColor: '#000',
+            padding: 30,
+            backgroundColor: "#fff",
+            shadowColor: "#000",
             shadowOffset: { width: 2, height: 2 },
-            shadowOpacity: 0.5,
+            shadowOpacity: 0.8,
             shadowRadius: 20,
-            overflow: 'hidden',
+            overflow: "hidden",
+            marginTop: 30,
           }}
         >
           <Text
@@ -175,7 +175,6 @@ export default function Home() {
               textAlign: "center",
               margin: 20,
               color: "#333",
-             
             }}
           >
             "{Sentence}"
@@ -266,10 +265,10 @@ export default function Home() {
     return (
       <View
         style={{
-          marginTop: 20,
+          marginTop: 30,
           alignItems: "flex-end",
           //backgroundColor: COLORS.goldenTransparent_03,
-          paddingBottom: 20,
+
           borderRadius: 25,
           shadowOffset: {
             width: 0,
@@ -604,8 +603,9 @@ export default function Home() {
       {/* {renderSlide()}
       {renderDots()} */}
       {RenderGreeting()}
-      {renderBestSellers()}
       {RenderSentences()}
+      {renderBestSellers()}
+
       {/* {renderFeaturedProducts()} */}
     </ScrollView>
   );

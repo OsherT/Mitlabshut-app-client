@@ -12,8 +12,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { showMessage } from "react-native-flash-message";
 import { promo, SIZES, COLORS, products, FONTS, AREA } from "../constants";
-import { RatingComponent, Line, Header } from "../components";
-import { BagSvg, HeartSvg } from "../svg";
+import { RatingComponent, Line, Header, ProfileCategory } from "../components";
+import { BagSvg, HeartSvg, SignOutCategory } from "../svg";
 import { userContext } from "../navigation/userContext";
 import { SafeAreaView } from "react-native-safe-area-context";
 import axios from "axios";
@@ -30,14 +30,17 @@ export default function Home() {
   const [UsersFollowingList, setUsersFollowingList] = useState([]);
   const [CombainedArray, setCombainedArray] = useState([]);
   const [greeting, setGreeting] = useState("");
+  const [Sentences, setSentences] = useState([]);
 
   useEffect(() => {
     if (isFocused) {
       GreetingComponent();
       getFollowingList();
       GetRecommendedClosets();
+      GetSentences();
     }
   }, [isFocused]);
+
   function GreetingComponent() {
     const now = new Date();
     const currentHour = now.getHours();
@@ -61,31 +64,94 @@ export default function Home() {
         style={{
           flexDirection: "row",
           alignItems: "center",
-          justifyContent: "flex-end",
+          justifyContent: "space-between", // Updated
           backgroundColor: COLORS.white,
         }}
       >
-        <Text
+        <View style={{ justifyContent: "flex-start", flexDirection: "row" }}>
+          <ProfileCategory
+            icon={<SignOutCategory />}
+            arrow={false}
+            onPress={() => {
+              setShowModal(true);
+              setMassage(" האם את בטוחה שאת רוצה \n להתנתק ?");
+            }}
+          />
+        </View>
+        <View
           style={{
-            ...FONTS.Mulish_700Bold,
-            fontSize: 17,
-            textTransform: "capitalize",
-            color: COLORS.black,
-            lineHeight: 20 * 1.2,
-           
+            justifyContent: "flex-end",
+            flexDirection: "row",
+            alignItems: "center",
           }}
         >
-        {greeting}, {loggedUser.full_name}!
-        </Text>
-        {loggedUser.user_image && (
-          <Image
-            source={{ uri: loggedUser.user_image }}
-            style={{ width: 50, height: 50, borderRadius: 50, marginLeft: 10 }}
-          />
-        )}
+          <Text
+            style={{
+              ...FONTS.Mulish_700Bold,
+              fontSize: 17,
+              textTransform: "capitalize",
+              color: COLORS.black,
+              lineHeight: 20 * 1.2,
+              marginLeft: 10,
+              //marginTop:10
+            }}
+          >
+            {greeting}, {loggedUser.full_name}!
+          </Text>
+          {loggedUser.user_image && (
+            <Image
+              source={{ uri: loggedUser.user_image }}
+              style={{
+                width: 50,
+                height: 50,
+                borderRadius: 50,
+                marginLeft: 10,
+              }}
+            />
+          )}
+        </View>
       </View>
     );
   }
+  function GetSentences() {
+    axios
+      .get(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetSentences"
+      )
+      .then((res) => {
+        setSentences(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  function RenderSentences() {
+    if (Sentences!==null) {
+        const randomIndex = Math.floor(Math.random() * Sentences.length);
+        
+        const randomSentence = Sentences[randomIndex].content;
+        console.log(randomSentence);
+        return (
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: "bold",
+              fontStyle: "italic",
+              textAlign: "center",
+              color: "#333",
+              padding: 10,
+              borderRadius: 10,
+              backgroundColor: "#eee",
+            }}
+          >
+            {randomSentence}
+          </Text>
+        );  
+    }
+    
+  }
+
   function GetRecommendedClosets() {
     axios
       .get(
@@ -165,31 +231,34 @@ export default function Home() {
 
   function renderBestSellers() {
     return (
-      <View style={{ marginBottom: 40 ,}}>
+      <View
+        style={{
+          marginTop: 20,
+          alignItems: "flex-end",
+          backgroundColor: COLORS.goldenTransparent_03,
+          paddingBottom: 20,
+        }}
+      >
         <View
           style={{
-            marginTop:50,
+            marginTop: 10,
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
             paddingHorizontal: 20,
-            marginBottom: 16,
-            //textAlign: 'right', 
+            marginBottom: 10,
           }}
         >
           <Text
             style={{
               ...FONTS.Mulish_700Bold,
-              fontSize: 15,
+              fontSize: 16,
               textTransform: "capitalize",
               color: COLORS.black,
               lineHeight: 20 * 1.2,
-              alignSelf:'flex-end',
-              //left:167
-              
             }}
           >
-            ארונות מומלצים במיוחד בשבילך
+            ארונות מומלצים במיוחד בשבילך 👚
           </Text>
         </View>
         <FlatList
@@ -495,6 +564,7 @@ export default function Home() {
       {renderDots()} */}
       {RenderGreeting()}
       {renderBestSellers()}
+      {RenderSentences()}
       {/* {renderFeaturedProducts()} */}
     </ScrollView>
   );

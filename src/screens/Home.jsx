@@ -126,31 +126,31 @@ export default function Home() {
       });
   }
 
-  function RenderSentences() {
-    if (Sentences!==null) {
-        const randomIndex = Math.floor(Math.random() * Sentences.length);
+  // function RenderSentences() {
+  //   if (Sentences!==null) {
+  //       const randomIndex = Math.floor(Math.random() * Sentences.length);
         
-        const randomSentence = Sentences[randomIndex].content;
-        console.log(randomSentence);
-        return (
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: "bold",
-              fontStyle: "italic",
-              textAlign: "center",
-              color: "#333",
-              padding: 10,
-              borderRadius: 10,
-              backgroundColor: "#eee",
-            }}
-          >
-            {randomSentence}
-          </Text>
-        );  
-    }
+  //       const randomSentence = Sentences[randomIndex].content;
+  //       console.log(randomSentence);
+  //       return (
+  //         <Text
+  //           style={{
+  //             fontSize: 20,
+  //             fontWeight: "bold",
+  //             fontStyle: "italic",
+  //             textAlign: "center",
+  //             color: "#333",
+  //             padding: 10,
+  //             borderRadius: 10,
+  //             backgroundColor: "#eee",
+  //           }}
+  //         >
+  //           {randomSentence}
+  //         </Text>
+  //       );  
+  //   }
     
-  }
+  // }
 
   function GetRecommendedClosets() {
     axios
@@ -564,7 +564,7 @@ export default function Home() {
       {renderDots()} */}
       {RenderGreeting()}
       {renderBestSellers()}
-      {RenderSentences()}
+      {/* {RenderSentences()} */}
       {/* {renderFeaturedProducts()} */}
     </ScrollView>
   );

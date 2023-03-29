@@ -156,39 +156,30 @@ export default function Home() {
       return (
         <View
           style={{
-            borderRadius: 8,
-            borderWidth: 1,
-            marginLeft: 30,
-            marginRight: 30,
-            marginTop: 20,
-            borderColor: COLORS.gray,
+            borderWidth: 0,
+            borderRadius: 10,
+            padding: 10,
+            margin: 10,
+            backgroundColor: '#fff',
+            shadowColor: '#000',
+            shadowOffset: { width: 2, height: 2 },
+            shadowOpacity: 0.5,
+            shadowRadius: 20,
+            overflow: 'hidden',
           }}
         >
-          <View
+          <Text
             style={{
-              paddingRight: 20,
-              paddingLeft: 36,
-              paddingVertical: 24,
-              overflow: "hidden",
+              fontSize: 15,
+              fontWeight: "italic",
+              textAlign: "center",
+              margin: 20,
+              color: "#333",
+             
             }}
           >
-            <Text
-              style={{
-                fontSize: 30,
-                fontWeight: "bold",
-                fontStyle: "italic",
-                textAlign: "center",
-                color: COLORS.gray,
-                padding: 10,
-                borderRadius: 10,
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              {Sentence}
-            </Text>
-          </View>
+            "{Sentence}"
+          </Text>
         </View>
       );
     }
@@ -614,7 +605,7 @@ export default function Home() {
       {renderDots()} */}
       {RenderGreeting()}
       {renderBestSellers()}
-      {/* {RenderSentences()} */}
+      {RenderSentences()}
       {/* {renderFeaturedProducts()} */}
     </ScrollView>
   );

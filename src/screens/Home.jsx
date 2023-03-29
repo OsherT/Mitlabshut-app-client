@@ -29,14 +29,63 @@ export default function Home() {
   const ApiUrl_user = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User`;
   const [UsersFollowingList, setUsersFollowingList] = useState([]);
   const [CombainedArray, setCombainedArray] = useState([]);
+  const [greeting, setGreeting] = useState("");
 
   useEffect(() => {
     if (isFocused) {
+      GreetingComponent();
       getFollowingList();
       GetRecommendedClosets();
     }
   }, [isFocused]);
+  function GreetingComponent() {
+    const now = new Date();
+    const currentHour = now.getHours();
+    let newGreeting = "";
 
+    if (currentHour >= 6 && currentHour < 12) {
+      newGreeting = "בוקר טוב";
+    } else if (currentHour >= 12 && currentHour < 17) {
+      newGreeting = "צהריים טובים";
+    } else if (currentHour >= 17 && currentHour < 21) {
+      newGreeting = "ערב טוב";
+    } else {
+      newGreeting = "לילה טוב";
+    }
+
+    setGreeting(newGreeting);
+  }
+  function RenderGreeting() {
+    return (
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "flex-end",
+          backgroundColor: COLORS.white,
+        }}
+      >
+        <Text
+          style={{
+            ...FONTS.Mulish_700Bold,
+            fontSize: 17,
+            textTransform: "capitalize",
+            color: COLORS.black,
+            lineHeight: 20 * 1.2,
+           
+          }}
+        >
+        {greeting}, {loggedUser.full_name}!
+        </Text>
+        {loggedUser.user_image && (
+          <Image
+            source={{ uri: loggedUser.user_image }}
+            style={{ width: 50, height: 50, borderRadius: 50, marginLeft: 10 }}
+          />
+        )}
+      </View>
+    );
+  }
   function GetRecommendedClosets() {
     axios
       .get(
@@ -115,25 +164,29 @@ export default function Home() {
   };
 
   function renderBestSellers() {
-    console.log(RecoUsers);
     return (
-      <View style={{ marginBottom: 40 }}>
+      <View style={{ marginBottom: 40 ,}}>
         <View
           style={{
+            marginTop:50,
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
             paddingHorizontal: 20,
             marginBottom: 16,
+            //textAlign: 'right', 
           }}
         >
           <Text
             style={{
               ...FONTS.Mulish_700Bold,
-              fontSize: 20,
+              fontSize: 15,
               textTransform: "capitalize",
               color: COLORS.black,
               lineHeight: 20 * 1.2,
+              alignSelf:'flex-end',
+              //left:167
+              
             }}
           >
             ארונות מומלצים במיוחד בשבילך
@@ -144,7 +197,6 @@ export default function Home() {
           horizontal={true}
           keyExtractor={(user) => user.id}
           renderItem={({ item: user, index }) => {
-            console.log(user.closet_id);
             return (
               <TouchableOpacity
                 style={{
@@ -154,12 +206,11 @@ export default function Home() {
                   marginRight: 15,
                   borderRadius: 10,
                 }}
-                onPress={() => 
-                   
+                onPress={() =>
                   navigation.navigate("Closet", {
                     closetId: user.closet_id,
                     owner: user,
-                  }) 
+                  })
                 }
               >
                 <Image
@@ -442,6 +493,7 @@ export default function Home() {
     >
       {/* {renderSlide()}
       {renderDots()} */}
+      {RenderGreeting()}
       {renderBestSellers()}
       {/* {renderFeaturedProducts()} */}
     </ScrollView>

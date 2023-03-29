@@ -10,12 +10,12 @@ import {
 import React, { useContext, useRef, useState } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useNavigation } from "@react-navigation/native";
-import { Header, Button, ContainerComponent } from "../components";
+import { Button, ContainerComponent } from "../components";
 import { AREA, COLORS, FONTS } from "../constants";
 import AppLoading from "expo-app-loading";
-// import ButtonLogIn from "../components/ButtonLogIn";
-// import Facebook from "../svg/Facebook";
-// import Google from "../svg/Google";
+import ButtonLogIn from "../components/ButtonLogIn";
+import Facebook from "../svg/Facebook";
+import Google from "../svg/Google";
 import { userContext } from "../navigation/userContext";
 
 export default function SignIn() {
@@ -26,14 +26,13 @@ export default function SignIn() {
   // const [userPassword, setUserPassword] = useState("");
 
   //לצורך נוחות כדי לא להקליד את הנתונים כל פעם////////////////////////
-  const [userEmail, setUserEmail] = useState("o@g.c"); 
+  const [userEmail, setUserEmail] = useState("o@g.c");
   const [userPassword, setUserPassword] = useState("123");
   //לצורך נוחות כדי לא להקליד את הנתונים כל פעם////////////////////////
 
   //ref to clean the user inputs
   const emailInputRef = useRef(null);
   const passwordInputRef = useRef(null);
-
 
   //check if the user insert correct values, and loning him in
   const logIn = () => {
@@ -60,9 +59,6 @@ export default function SignIn() {
               setloggedUser(user);
 
               navigation.navigate("MainLayout");
-              // navigation.navigate("ItemsByCtegory");
-              // navigation.navigate("Closet");
-              // navigation.navigate("UploadItem");
             }
 
             //if deatails are incorrect
@@ -81,12 +77,12 @@ export default function SignIn() {
     }
   };
 
-  // const logInWithFaceBook = () => {
-  //   Alert.alert("FaceBook yay");
-  // };
-  // const logInWithGoogle = () => {
-  //   Alert.alert("Google yay");
-  // };
+  const logInWithFaceBook = () => {
+    Alert.alert("FaceBook yay");
+  };
+  const logInWithGoogle = () => {
+    Alert.alert("Google yay");
+  };
 
   function renderContent() {
     return (
@@ -135,7 +131,7 @@ export default function SignIn() {
           <Button title="התחברי" onPress={logIn} />
         </ContainerComponent>
 
-        {/* <View style={styles.logInViaContainer}>
+        <View style={styles.logInViaContainer}>
           <ButtonLogIn
             icon={<Google />}
             style={styles.logInViaBtn}
@@ -149,7 +145,7 @@ export default function SignIn() {
             title="Facebook  "
             onPress={logInWithFaceBook}
           />
-        </View> */}
+        </View>
 
         <View style={styles.textLowContainer}>
           <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>

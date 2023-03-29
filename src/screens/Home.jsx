@@ -614,7 +614,7 @@ export default function Home() {
       {renderDots()} */}
       {RenderGreeting()}
       {renderBestSellers()}
-      {RenderSentences()}
+      {/* {RenderSentences()} */}
       {/* {renderFeaturedProducts()} */}
     </ScrollView>
   );

@@ -5,13 +5,12 @@ import {
   TouchableOpacity,
   StyleSheet,
   Share,
-  Alert,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
-import { AREA, COLORS, FONTS, SIZES } from "../constants";
+import { AREA, COLORS, FONTS } from "../constants";
 import { Button, Header } from "../components";
-import { Edit, HeartTwoSvg, HomeTab, Star } from "../svg";
+import { Edit, HeartTwoSvg} from "../svg";
 import ButtonFollow from "../components/ButtonFollow";
 import { ScrollView } from "react-native-gesture-handler";
 import Swiper from "react-native-swiper";

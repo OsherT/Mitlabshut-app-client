@@ -19,7 +19,7 @@ import WarningModal from "../components/WarningModal";
 
 export default function Profile() {
   const navigation = useNavigation();
-  const { loggedUser, setloggedUser } = useContext(userContext);
+  const { loggedUser, setSelectedTab } = useContext(userContext);
   const isFocused = useIsFocused();
   const [usersFollow, setUsersFollow] = useState([]);
 
@@ -68,7 +68,10 @@ export default function Profile() {
         }}
         showsHorizontalScrollIndicator={false}>
         <ContainerComponent containerStyle={{ marginBottom: 20 }}>
-          <TouchableOpacity onPress={() => navigation.navigate("Closet")}>
+          <TouchableOpacity
+            onPress={() => {
+              setSelectedTab("Closet");
+            }}>
             <ImageBackground
               source={{
                 uri: loggedUser.user_image,
@@ -186,7 +189,6 @@ export default function Profile() {
                 fontSize: 20,
                 color: COLORS.black,
                 lineHeight: 20 * 1.2,
-                
               }}>
               ארונות במעקב...
             </Text>
@@ -270,13 +272,14 @@ export default function Profile() {
     <SafeAreaView
       style={{
         flex: 1,
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,    shadowOffset: {
-            width: 0,
-            height: 2,
-          },
-          shadowOpacity: 0.25,
-          shadowRadius: 3.84,
-          elevation: 5, // Add this line for Android compatibility
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5, // Add this line for Android compatibility
       }}>
       <Header title="עמוד אישי" goBack={false} />
       {renderContent()}

@@ -25,7 +25,7 @@ import PushNotification from "./PushNotification";
 export default function Home() {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-  const { loggedUser, setloggedUser } = useContext(userContext);
+  const { loggedUser, setSelectedTab } = useContext(userContext);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [RecoUsers, setRecoUsers] = useState([]);
   const [OtherClosets, setOtherClosets] = useState([]);
@@ -158,12 +158,9 @@ export default function Home() {
           </Text>
           {loggedUser.user_image && (
             <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("Closet", {
-                  closetId: loggedUser.closet_id,
-                  owner: loggedUser,
-                })
-              }>
+              onPress={() => {
+                setSelectedTab("Closet");
+              }}>
               <Image
                 source={{ uri: loggedUser.user_image }}
                 style={{
@@ -357,12 +354,21 @@ export default function Home() {
                   marginRight: 15,
                   borderRadius: 10,
                 }}
-                onPress={() =>
+                // onPress={() =>
+                //   navigation.navigate("Closet", {
+                //     closetId: user.closet_id,
+                //     owner: user,
+                //   })
+                // }
+                onPress={() => {
+                  setSelectedTab("Closet");
+
                   navigation.navigate("Closet", {
                     closetId: user.closet_id,
                     owner: user,
-                  })
-                }>
+                  });
+                }}
+                >
                 <Image
                   source={{ uri: user.user_image }}
                   style={{

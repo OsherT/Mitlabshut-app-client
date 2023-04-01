@@ -18,11 +18,14 @@ import {
 } from "../svg";
 import { COLORS, FONTS, cartItems, products } from "../constants";
 import { userContext } from "../navigation/userContext";
+import Order from "./Order";
 
-export default function MainLayout() {
-  const navigation = useNavigation();
-  const [selectedTab, setSelectedTab] = useState("Home");
-  const { loggedUser } = useContext(userContext);
+export default function MainLayout({ route }) {
+  // const [selectedTab, setSelectedTab] = useState(
+  //   route?.params?.selectedPage || "Home"
+  // );
+  // לשים ביוזקונטקסט וכל פעם לאתחל בסט בדף הרצוי
+  const { selectedTab, setSelectedTab } = useContext(userContext);
 
   const tabs = [
     {
@@ -57,8 +60,7 @@ export default function MainLayout() {
             borderRadius: 30,
             justifyContent: "center",
             alignItems: "center",
-          }}
-        >
+          }}>
           <View
             style={{
               width: 54,
@@ -67,8 +69,7 @@ export default function MainLayout() {
               borderRadius: 30,
               justifyContent: "center",
               alignItems: "center",
-            }}
-          >
+            }}>
             <Bag
               color={selectedTab == "Closet" ? COLORS.golden : COLORS.lightGray}
             />
@@ -103,14 +104,14 @@ export default function MainLayout() {
       {selectedTab == "Closet" && <Closet />}
       {selectedTab == "WishList" && <WishList />}
       {selectedTab == "Profile" && <Profile />}
+      {selectedTab == "Order" && <Order />}
 
       <View
         style={{
           alignSelf: "center",
           position: "absolute",
           bottom: 68,
-        }}
-      >
+        }}>
         <TabElement />
       </View>
       <View
@@ -121,14 +122,12 @@ export default function MainLayout() {
           paddingHorizontal: 28,
           backgroundColor: COLORS.white,
           paddingBottom: 10,
-        }}
-      >
+        }}>
         {tabs.map((item, index) => {
           return (
             <TouchableOpacity
               key={index}
-              onPress={() => setSelectedTab(item.screen)}
-            >
+              onPress={() => setSelectedTab(item.screen)}>
               <View>{item.icon}</View>
             </TouchableOpacity>
           );

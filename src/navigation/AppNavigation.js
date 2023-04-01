@@ -54,13 +54,12 @@ import Users from "../screens/Users";
 const Stack = createStackNavigator();
 
 export default function Navigation() {
+  const [selectedTab, setSelectedTab] = useState("Home");
   const [itemCategories, setitemCategories] = useState([]);
   const [loggedUser, setloggedUser] = useState("");
   const [closetDesc, setclosetDesc] = useState("");
   const [closetName, setclosetName] = useState("");
-  const [ClosetOwner, setClosetOwner] = useState("");
 
-  const [ClosetID, setClosetID] = useState("");
   const shopScore = 8;
   const favScore = 6;
   const viewScore = 4;
@@ -161,10 +160,8 @@ export default function Navigation() {
           shopScore,
           favScore,
           viewScore,
-          ClosetOwner,
-          ClosetID,
-          setClosetOwner,
-          setClosetID,
+          selectedTab,
+          setSelectedTab,
         }}>
         <Stack.Navigator
           screenOptions={{
@@ -178,7 +175,6 @@ export default function Navigation() {
           initialRouteName="SignIn">
           <Stack.Screen name="SignIn" component={SignIn} />
           <Stack.Screen name="Users" component={Users} />
-
           <Stack.Screen name="WishList" component={WishList} />
           <Stack.Screen name="UploadItem" component={UploadItem} />
           <Stack.Screen name="OrderHistory" component={OrderHistory} />

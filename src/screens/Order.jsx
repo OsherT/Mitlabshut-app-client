@@ -11,12 +11,10 @@ import { useIsFocused, useNavigation } from "@react-navigation/native";
 import {
   Header,
   ContainerComponent,
-  RatingComponent,
   Button,
   Line,
 } from "../components";
-import { AREA, COLORS, FONTS, SIZES, products } from "../constants";
-import { Plus, Minus, Check, BagSvg,Empty } from "../svg";
+import { AREA, COLORS, FONTS} from "../constants";
 import axios from "axios";
 import { userContext } from "../navigation/userContext";
 import { Swipeable } from "react-native-gesture-handler";
@@ -27,14 +25,17 @@ export default function Order() {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const { loggedUser } = useContext(userContext);
+  
   const [ItemsinCart, setItemsinCart] = useState([]);
   const [UsersItemPhotos, setUsersItemPhotos] = useState([]);
   const [ItemsData, setItemsData] = useState([]);
   const [sumTotal, setsumTotal] = useState("");
   const [swipeableRef, setSwipeableRef] = useState(null);
+
   const closeSwipeable = () => {
     swipeableRef && swipeableRef.close();
   };
+  
   useEffect(() => {
     if (isFocused) {
       getShopItems();

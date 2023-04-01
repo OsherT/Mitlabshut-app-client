@@ -101,12 +101,13 @@
 // }
 
 import { View, Text, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { FONTS, COLORS } from "../constants";
 import { ArrowTwo, HeartTwoSvg } from "../svg";
 import { useNavigation } from "@react-navigation/native";
 import BagHeader from "../svg/BagHeader";
 import WarningModal from "./WarningModal";
+import { userContext } from "../navigation/userContext";
 
 export default function Header({
   title,
@@ -118,6 +119,8 @@ export default function Header({
 }) {
   const navigation = useNavigation();
   const [showModal2, setShowModal] = useState(showModal);
+
+  const { setSelectedTab } = useContext(userContext);
 
   const handleSure = () => {
     navigation.goBack();
@@ -157,7 +160,7 @@ export default function Header({
             top: 14,
           }}
           onPress={() => {
-            navigation.navigate("WishList");
+            setSelectedTab("WishList");
           }}>
           <HeartTwoSvg strokeColor="black" />
         </TouchableOpacity>
@@ -172,7 +175,8 @@ export default function Header({
             paddingHorizontal: 20,
           }}
           onPress={() => {
-            navigation.navigate("Order");
+            console.log("Order pressed");
+            setSelectedTab("Order");
           }}>
           <BagHeader color="black"></BagHeader>
         </TouchableOpacity>

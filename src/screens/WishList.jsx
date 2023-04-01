@@ -16,7 +16,8 @@ import axios from "axios";
 import { userContext } from "../navigation/userContext";
 import TrashCanIcon from "../svg/TrashCanIcon";
 import { Swipeable } from "react-native-gesture-handler";
-
+import { TabElement } from "../svg";
+import MainLayout from "./MainLayout";
 export default function WishList() {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
@@ -28,7 +29,7 @@ export default function WishList() {
   const closeSwipeable = () => {
     swipeableRef && swipeableRef.close();
   };
-  
+
   useEffect(() => {
     if (isFocused) {
       getItemsData();
@@ -141,8 +142,7 @@ export default function WishList() {
           paddingBottom: 40,
           backgroundColor: "#E9E9E9",
         }}
-        showsHorizontalScrollIndicator={false}
-      >
+        showsHorizontalScrollIndicator={false}>
         {Items && Array.isArray(Items) && Items.length > 0 ? (
           Items.map((item, index) => {
             return (
@@ -158,17 +158,14 @@ export default function WishList() {
                       backgroundColor: COLORS.carrot,
                       justifyContent: "center",
                       alignItems: "flex-end",
-                      padding:20,
-                      
+                      padding: 20,
                     }}
-                    onPress={() => RemoveFromFav(item.id)}
-                  >
+                    onPress={() => RemoveFromFav(item.id)}>
                     <Text style={{ color: "#FFF", fontWeight: "bold" }}>
                       הסירי
                     </Text>
                   </TouchableOpacity>
-                )}
-              >
+                )}>
                 <TouchableOpacity
                   key={index}
                   style={{
@@ -187,14 +184,18 @@ export default function WishList() {
                     elevation: 5, // Add this line for Android compatibility
                   }}
                   onPress={() => {
-                    if (item.item_status !== "sold" && item.item_status !== "delete") {
+                    if (
+                      item.item_status !== "sold" &&
+                      item.item_status !== "delete"
+                    ) {
                       navigation.navigate("ProductDetails", {
                         item: item,
                       });
                     }
                   }}
-                  disabled={item.item_status === "sold" || item.item_status === "delete"}
-                >
+                  disabled={
+                    item.item_status === "sold" || item.item_status === "delete"
+                  }>
                   {UsersItemPhotos.filter((photo) => photo.item_ID === item.id)
                     .slice(0, 1)
                     .map((photo) => {
@@ -206,8 +207,7 @@ export default function WishList() {
                             height: 100,
                           }}
                           imageStyle={{ borderRadius: 10 }}
-                          key={photo.id}
-                        ></ImageBackground>
+                          key={photo.id}></ImageBackground>
                       );
                     })}
                   {item.item_status === "sold" ||
@@ -225,15 +225,13 @@ export default function WishList() {
                         alignItems: "center",
                         justifyContent: "center",
                         zIndex: "1",
-                      }}
-                    >
+                      }}>
                       <Text
                         style={{
                           color: "white",
                           fontSize: 18,
                           fontWeight: "bold",
-                        }}
-                      >
+                        }}>
                         לא זמין
                       </Text>
                     </View>
@@ -243,8 +241,7 @@ export default function WishList() {
                       paddingHorizontal: 15,
                       paddingVertical: 9,
                       flex: 1,
-                    }}
-                  >
+                    }}>
                     <Text
                       style={{
                         ...FONTS.Mulish_600SemiBold,
@@ -252,8 +249,7 @@ export default function WishList() {
                         textTransform: "capitalize",
                         marginBottom: 6,
                         lineHeight: 14 * 1.2,
-                      }}
-                    >
+                      }}>
                       {item.name}
                     </Text>
                     <Text style={{ color: COLORS.gray }}>{item.size}</Text>
@@ -263,8 +259,7 @@ export default function WishList() {
                         ...FONTS.Mulish_600SemiBold,
                         fontSize: 14,
                         color: COLORS.carrot,
-                      }}
-                    >
+                      }}>
                       ₪ {item.price}
                     </Text>
                   </View>
@@ -274,8 +269,7 @@ export default function WishList() {
                       right: 15,
                       top: 9,
                     }}
-                    onPress={() => RemoveFromFav(item.id)}
-                  >
+                    onPress={() => RemoveFromFav(item.id)}>
                     {/* <Text
                       style={{
                         color: "red",
@@ -288,18 +282,26 @@ export default function WishList() {
                   {shopList.includes(item.id) && (
                     // render the filled heart SVG if the item ID is in the UsersFavList
                     <TouchableOpacity
-                      style={{ position: "absolute", right: 12, bottom: 12,zIndex:2 }}
-                      onPress={() => RemoveFromShopList(item.id)}
-                    >
+                      style={{
+                        position: "absolute",
+                        right: 12,
+                        bottom: 12,
+                        zIndex: 2,
+                      }}
+                      onPress={() => RemoveFromShopList(item.id)}>
                       <BagSvg color="#626262" inCart={true} />
                     </TouchableOpacity>
                   )}
                   {!shopList.includes(item.id) && (
                     // render the unfilled heart SVG if the item ID is not in the UsersFavList
                     <TouchableOpacity
-                      style={{ position: "absolute", right: 12, bottom: 12,zIndex:2 }}
-                      onPress={() => AddToShopList(item.id)}
-                    >
+                      style={{
+                        position: "absolute",
+                        right: 12,
+                        bottom: 12,
+                        zIndex: 2,
+                      }}
+                      onPress={() => AddToShopList(item.id)}>
                       <BagSvg color="#D7BA7B" inCart={false} />
                     </TouchableOpacity>
                   )}
@@ -317,8 +319,7 @@ export default function WishList() {
               color: COLORS.black,
               marginBottom: 4,
               lineHeight: 16 * 1.2,
-            }}
-          >
+            }}>
             לא קיימים פריטים מועדפים
           </Text>
         )}
@@ -338,4 +339,3 @@ export default function WishList() {
     </SafeAreaView>
   );
 }
-

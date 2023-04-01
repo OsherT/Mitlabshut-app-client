@@ -74,7 +74,7 @@ export default function Search() {
             </TouchableOpacity>
           </View>
           <TextInput
-            style={{ flex: 1, textAlign: "right" }}
+            style={{ flex: 1, textAlign: "right", paddingRight: 15 }}
             placeholder="חפשי פריט..."
             onChangeText={(text) => setsearch(text)}
             keyboardType="web-search"
@@ -103,10 +103,11 @@ export default function Search() {
                     borderRadius: 10,
                     flexDirection: "row",
                   }}
-                  onPress={() =>
-                    navigation.navigate("ItemsByCtegory", {
-                      type: type.item_type_name,
-                    })
+                  onPress={
+                    () =>
+                      navigation.navigate("ItemsByCtegory", {
+                        type: type.item_type_name,
+                      })
                     // {
                     //   setSelectedTab("ItemsByCtegory");
                     //   setType_(type.item_type_name);

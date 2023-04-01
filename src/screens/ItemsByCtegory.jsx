@@ -37,7 +37,8 @@ export default function ItemsByCtegory(props) {
   const [UsersFavList, setUsersFavList] = useState([]);
   const [UsersShopList, setUsersShopList] = useState([]);
   const type = props.route.params.type;
-
+  const sorted=props.route.params.sorted;
+const noResinSort=props.route.params.flag;
   useEffect(() => {
     if (isFocused) {
       GetItemsByCategory();
@@ -94,25 +95,7 @@ export default function ItemsByCtegory(props) {
     }
     return encodedStr;
   }
-  ///handle fav list
-  function getFavItems() {
-    axios
-      .get(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetFavByUserID/" +
-          loggedUser.id
-      )
-      .then((res) => {
-        console.log(res.data);
-        if (res.data == "No items yet") {
-          setUsersFavList("");
-        } else {
-          const tempUsersFavList = res.data.map(({ item_id }) => item_id);
-          setUsersFavList(tempUsersFavList);
-        }
-      })
-      .catch((err) => {
-        console.log("cant get fav", err);
-      });
+  
   ///handle fav list
   function getFavItems() {
     axios
@@ -529,4 +512,5 @@ export default function ItemsByCtegory(props) {
       
     </SafeAreaView>
   );
-}
+
+    }

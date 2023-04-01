@@ -35,7 +35,7 @@ export default function AccountCreated() {
                             textTransform: "capitalize",
                         }}
                     >
-                        Account Created!
+                        החשבון נוצר בהצלחה!
                     </Text>
                     <Text
                         style={{
@@ -48,10 +48,10 @@ export default function AccountCreated() {
                             marginBottom: 30,
                         }}
                     >
-                        Your account had beed created successfully.
+                       ברוכה הבאה לקהילת מתלבשות
                     </Text>
                     <Button
-                        title="shop now"
+                        title="לאפליקציה"
                         onPress={() => navigation.navigate("MainLayout")}
                     />
                 </ContainerComponent>

@@ -16,7 +16,7 @@ import {
   Line,
 } from "../components";
 import { AREA, COLORS, FONTS, SIZES, products } from "../constants";
-import { Plus, Minus, Check, BagSvg } from "../svg";
+import { Plus, Minus, Check, BagSvg,Empty } from "../svg";
 import axios from "axios";
 import { userContext } from "../navigation/userContext";
 import { Swipeable } from "react-native-gesture-handler";
@@ -270,19 +270,59 @@ export default function Order() {
                 </Swipeable>
               );
             })
-          ) : (
-            <Text
-              style={{
-                textAlign: "center",
-                ...FONTS.Mulish_700Bold,
-                fontSize: 16,
-                textTransform: "capitalize",
-                color: COLORS.black,
-                marginBottom: 4,
-                lineHeight: 16 * 1.2,
-              }}>
-              סל הקניות שלך ריק{" "}
-            </Text>
+          ) : (<ScrollView
+            contentContainerStyle={{
+                flexGrow: 1,
+                paddingHorizontal: 20,
+                justifyContent: "center",
+                alignItems: "center",
+                paddingVertical: 25,
+            }}
+            showsHorizontalScrollIndicator={false}
+        >
+            <ContainerComponent>
+                <View style={{ alignSelf: "center", marginBottom: 35 }}>
+                    <Empty />
+                </View>
+                <Text
+                    style={{
+                        textAlign: "center",
+                        ...FONTS.H2,
+                        textTransform: "capitalize",
+                        color: COLORS.black,
+                        lineHeight: 22 * 1.2,
+                        marginBottom: 18,
+                    }}
+                >
+                    הסל שלך ריק!
+                </Text>
+                <Text
+                    style={{
+                        textAlign: "center",
+                        ...FONTS.Mulish_400Regular,
+                        fontSize: 16,
+                        color: COLORS.gray,
+                        paddingHorizontal: 50,
+                        marginBottom: 30,
+                    }}
+                >
+                   נראה שאין לך פריטים בסל הקניות 
+                </Text>
+                <Button title="שוטטי בבזאר" />
+            </ContainerComponent>
+        </ScrollView>
+            // <Text
+            //   style={{
+            //     textAlign: "center",
+            //     ...FONTS.Mulish_700Bold,
+            //     fontSize: 16,
+            //     textTransform: "capitalize",
+            //     color: COLORS.black,
+            //     marginBottom: 4,
+            //     lineHeight: 16 * 1.2,
+            //   }}>
+            //   סל הקניות שלך ריק{" "}
+            // </Text>
           )}
         </ScrollView>
         {ItemsinCart.length > 0 ? (
@@ -328,6 +368,51 @@ export default function Order() {
       </View>
     );
   }
+//   function renderCartIsEmpty() {
+//     return (
+//         <ScrollView
+//             contentContainerStyle={{
+//                 flexGrow: 1,
+//                 paddingHorizontal: 20,
+//                 justifyContent: "center",
+//                 alignItems: "center",
+//                 paddingVertical: 25,
+//             }}
+//             showsHorizontalScrollIndicator={false}
+//         >
+//             <ContainerComponent>
+//                 <View style={{ alignSelf: "center", marginBottom: 35 }}>
+//                     <Empty />
+//                 </View>
+//                 <Text
+//                     style={{
+//                         textAlign: "center",
+//                         ...FONTS.H2,
+//                         textTransform: "capitalize",
+//                         color: COLORS.black,
+//                         lineHeight: 22 * 1.2,
+//                         marginBottom: 18,
+//                     }}
+//                 >
+//                     Your cart is empty!
+//                 </Text>
+//                 <Text
+//                     style={{
+//                         textAlign: "center",
+//                         ...FONTS.Mulish_400Regular,
+//                         fontSize: 16,
+//                         color: COLORS.gray,
+//                         paddingHorizontal: 50,
+//                         marginBottom: 30,
+//                     }}
+//                 >
+//                     Looks like you haven't made your order yet.
+//                 </Text>
+//                 <Button title="shop now" />
+//             </ContainerComponent>
+//         </ScrollView>
+//     );
+// }
 
   return (
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>

@@ -6,7 +6,7 @@ import { Header, ContainerComponent, Button } from "../components";
 import { Empty } from "../svg";
 
 export default function CartIsEmpty() {
-    function renderContent() {
+    function renderCartIsEmpty() {
         return (
             <ScrollView
                 contentContainerStyle={{

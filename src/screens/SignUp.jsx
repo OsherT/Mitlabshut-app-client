@@ -83,6 +83,7 @@ export default function SignUp() {
               closet_ID: res.data, //הכנסת האיידי של הארון ליוזר החדש
               user_image: difPic, //בהתחלה נכניס תמונה דיפולטית
               age: parseInt(userAge),
+              token:"try"
             };
             axios
               .post(
@@ -140,9 +141,7 @@ export default function SignUp() {
       uploadImagesDB(user, imageLink);
 
       if (!uploading) {
-        navigation.navigate("MainLayout", {
-          message: "ההרשמה בוצעה בהצלחה !",
-        });
+        navigation.navigate("AccountCreated");
       }
     } catch (error) {
       console.log("error in upload to FB", error);

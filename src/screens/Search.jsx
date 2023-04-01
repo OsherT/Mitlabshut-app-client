@@ -64,9 +64,7 @@ export default function Search() {
           <View style={{ paddingLeft: 15, paddingRight: 10 }}>
             <TouchableOpacity
               onPress={() =>
-                // navigation.navigate("SearchRes", {
-                //   searchText: search,
-                // })
+              
                 {
                   setSelectedTab("SearchRes");
                   setSearchText_(search);
@@ -106,9 +104,7 @@ export default function Search() {
                     flexDirection: "row",
                   }}
                   onPress={() =>
-                    // navigation.navigate("ItemsByCtegory", {
-                    //   type: type.item_type_name,
-                    // })
+             
                     {
                       setSelectedTab("ItemsByCtegory");
                       setType_(type.item_type_name);

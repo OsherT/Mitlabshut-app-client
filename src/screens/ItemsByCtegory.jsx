@@ -19,8 +19,16 @@ import { userContext } from "../navigation/userContext";
 export default function ItemsByCtegory(props) {
   const navigation = useNavigation();
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
-  const { loggedUser, GetItemForAlgo, shopScore, favScore, type_} =
-    useContext(userContext);
+  const {
+    loggedUser,
+    GetItemForAlgo,
+    shopScore,
+    favScore,
+    type_,
+    setSelectedTab,
+    setSearchText_,
+  } = useContext(userContext);
+
   const isFocused = useIsFocused();
   const [search, setsearch] = useState("");
   const [itemsByType, setItemsByType] = useState([]);
@@ -203,17 +211,16 @@ export default function ItemsByCtegory(props) {
           }}>
           <View style={{ paddingLeft: 15, paddingRight: 10 }}>
             <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("SearchRes", {
-                  searchText: search,
-                })
-              }>
+              onPress={() => {
+                setSelectedTab("SearchRes");
+                setSearchText_(search);
+              }}>
               <SearchSvg />
             </TouchableOpacity>
           </View>
           <TextInput
             style={{ flex: 1, textAlign: "right" }}
-            placeholder="חפשי פריט..."
+            placeholder="חפשי פריט (קטגוריה/ מותג/ שם פריט)..."
             onChangeText={(text) => setsearch(text)}
             keyboardType="web-search"
           />
@@ -364,7 +371,7 @@ export default function ItemsByCtegory(props) {
         flex: 1,
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
       }}>
-      <Header title={type} goBack={true} onPress={() => navigation.goBack()} />
+      <Header title={type} />
 
       {renderSearch()}
       {renderItems()}

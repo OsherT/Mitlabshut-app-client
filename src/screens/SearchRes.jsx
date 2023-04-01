@@ -26,7 +26,10 @@ export default function SearchRes(props) {
     favScore,
     searchText_,
     setSearchText_,
+    setSelectedTab,
+    setType_,
   } = useContext(userContext);
+
   const isFocused = useIsFocused();
   const [nextSearch, setnextSearch] = useState("");
 
@@ -40,9 +43,7 @@ export default function SearchRes(props) {
 
   // const searchText = props.route.params.searchText;
   const searchText = searchText_;
-  console.log("searchText_", searchText_);
 
-  
   useEffect(() => {
     if (brandsList && categoriesList) {
       GetSearcResults();
@@ -316,21 +317,16 @@ export default function SearchRes(props) {
           }}>
           <View style={{ paddingLeft: 15, paddingRight: 10 }}>
             <TouchableOpacity
-              // onPress={() =>
-              //   navigation.navigate("SearchRes", {
-              //     searchText: nextSearch,
-              //   })
-              onPress={() =>
-                navigation.navigate("SearchRes", {
-                  searchText: nextSearch,
-                })
-              }>
+              onPress={() => {
+                setSelectedTab("SearchRes");
+                setSearchText_(nextSearch);
+              }}>
               <SearchSvg />
             </TouchableOpacity>
           </View>
           <TextInput
             style={{ flex: 1, textAlign: "right" }}
-            placeholder="חפשי פריט..."
+            placeholder="חפשי פריט (קטגוריה/ מותג/ שם פריט)..."
             onChangeText={(text) => setnextSearch(text)}
             keyboardType="web-search"
           />

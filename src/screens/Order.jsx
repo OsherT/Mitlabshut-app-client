@@ -20,11 +20,12 @@ import { userContext } from "../navigation/userContext";
 import { Swipeable } from "react-native-gesture-handler";
 import WhatsAppSvg from "../svg/WhatsAppSvg";
 import { Linking } from "react-native";
+import { Empty } from "../svg";
 
 export default function Order() {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-  const { loggedUser } = useContext(userContext);
+  const { loggedUser,setSelectedTab } = useContext(userContext);
   
   const [ItemsinCart, setItemsinCart] = useState([]);
   const [UsersItemPhotos, setUsersItemPhotos] = useState([]);
@@ -307,9 +308,13 @@ export default function Order() {
                         marginBottom: 30,
                     }}
                 >
-                   נראה שאין לך פריטים בסל הקניות 
+                   נראה שאין לך עדיין פריטים בסל הקניות 
                 </Text>
-                <Button title="שוטטי בבזאר" />
+                <Button title="שוטטי בבזאר" 
+                 onPress={() => {
+                  setSelectedTab("Search");
+                 
+                }}/>
             </ContainerComponent>
         </ScrollView>
             // <Text

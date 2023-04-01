@@ -9,9 +9,9 @@ import {
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
-import { Header, Line } from "../components";
+import { Button, ContainerComponent, Header, Line } from "../components";
 import { AREA, COLORS, FONTS } from "../constants";
-import { BagSvg } from "../svg";
+import { BagSvg, Empty } from "../svg";
 import axios from "axios";
 import { userContext } from "../navigation/userContext";
 import TrashCanIcon from "../svg/TrashCanIcon";
@@ -310,18 +310,50 @@ export default function WishList() {
             );
           })
         ) : (
-          <Text
-            style={{
-              textAlign: "center",
-              ...FONTS.Mulish_700Bold,
-              fontSize: 16,
-              textTransform: "capitalize",
-              color: COLORS.black,
-              marginBottom: 4,
-              lineHeight: 16 * 1.2,
-            }}>
-            לא קיימים פריטים מועדפים
-          </Text>
+          <ScrollView
+            contentContainerStyle={{
+                flexGrow: 1,
+                paddingHorizontal: 20,
+                justifyContent: "center",
+                alignItems: "center",
+                paddingVertical: 25,
+            }}
+            showsHorizontalScrollIndicator={false}
+        >
+            <ContainerComponent>
+                <View style={{ alignSelf: "center", marginBottom: 35 }}>
+                    <Empty />
+                </View>
+                <Text
+                    style={{
+                        textAlign: "center",
+                        ...FONTS.H2,
+                        textTransform: "capitalize",
+                        color: COLORS.black,
+                        lineHeight: 22 * 1.2,
+                        marginBottom: 18,
+                    }}
+                >
+                   רשימת המועדפים שלך ריקה!
+                </Text>
+                <Text
+                    style={{
+                        textAlign: "center",
+                        ...FONTS.Mulish_400Regular,
+                        fontSize: 16,
+                        color: COLORS.gray,
+                        paddingHorizontal: 50,
+                        marginBottom: 30,
+                    }}
+                >
+נראה שאין לך עדיין פריטים שאהבת                 </Text>
+                <Button title="שוטטי בבזאר" 
+                 onPress={() => {
+                  setSelectedTab("Search");
+                 
+                }}/>
+            </ContainerComponent>
+        </ScrollView>
         )}
       </ScrollView>
     );

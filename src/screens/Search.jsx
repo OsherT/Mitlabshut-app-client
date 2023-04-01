@@ -22,8 +22,10 @@ export default function Search() {
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api`;
   const { setSelectedTab, setSearchText_, setType_ } = useContext(userContext);
   const [typeList, setTypeList] = useState([]);
-  const [typeBySearch, setTypeBySearch] = useState("");
+
   const [search, setsearch] = useState("");
+  // const scrollRef = useAnimatedRef();
+  // const [selectedIndex, setSelectedIndex] = useState(0);
 
   //renders the types when the page finishes to load
   useEffect(() => {
@@ -63,13 +65,10 @@ export default function Search() {
           }}>
           <View style={{ paddingLeft: 15, paddingRight: 10 }}>
             <TouchableOpacity
-              onPress={() =>
-              
-                {
-                  setSelectedTab("SearchRes");
-                  setSearchText_(search);
-                }
-              }>
+              onPress={() => {
+                setSelectedTab("SearchRes");
+                setSearchText_(search);
+              }}>
               <SearchSvg />
             </TouchableOpacity>
           </View>
@@ -106,8 +105,8 @@ export default function Search() {
                   onPress={() =>
                     navigation.navigate("ItemsByCtegory", {
                       type: type.item_type_name,
-                      sorted:null,
-                      flag:false
+                      sorted: null,
+                      flag: false,
                     })
                   }>
                   <ImageBackground

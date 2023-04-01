@@ -16,24 +16,25 @@ import { FilterSvg, SearchSvg, BagSvg, HeartSvg } from "../svg";
 import axios from "axios";
 import { userContext } from "../navigation/userContext";
 
+//מציג את תוצאות החיפוש לפי קטגוריה או מותג
 export default function SearchRes(props) {
   const navigation = useNavigation();
   const { loggedUser, GetItemForAlgo, shopScore, favScore } =
     useContext(userContext);
   const isFocused = useIsFocused();
-  const [search, setsearch] = useState("");
   const [nextSearch, setnextSearch] = useState("");
 
   const [brandsList, setBrandsList] = useState([]);
   const [categoriesList, setCategoriesList] = useState([]);
+  const [itemsByNameList, setItemsByNameList] = useState([]);
   const [itemsBySearch, setitemsBySearch] = useState([]);
   const [itemsImageByType, setItemsImageByType] = useState([]);
   const [UsersFavList, setUsersFavList] = useState([]);
   const [UsersShopList, setUsersShopList] = useState([]);
+
   // const [usersFollow, setUsersFollow] = useState([]);
 
-  // const searchText = props.route.params.searchText;
-  const searchText = "חיפוש פריט";
+  const searchText = props.route.params.searchText;
 
   useEffect(() => {
     if (brandsList && categoriesList) {
@@ -45,9 +46,9 @@ export default function SearchRes(props) {
     if (isFocused) {
       GetBrandsList();
       GetCategoriesList();
+      GetItemsNamesList();
       getShopItems();
       getFavItems();
-      // GetUsersFollow();
     }
   }, [isFocused, searchText]);
 
@@ -73,33 +74,26 @@ export default function SearchRes(props) {
       });
   };
 
-  // const GetUsersFollow = () => {
-  //   fetch(
-  //     "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetUserFollowingByUser/LoggedUser/" +
-  //       loggedUser.id,
-  //     {
-  //       method: "GET",
-  //       headers: new Headers({
-  //         "Content-Type": "application/json; charset=UTF-8",
-  //         Accept: "application/json; charset=UTF-8",
-  //       }),
-  //     }
-  //   )
-  //     .then((res) => {
-  //       return res.json();
-  //     })
-  //     .then(
-  //       (data) => {
-  //         setUsersFollow(data);
-  //       },
-  //       (error) => {
-  //         console.log("GetUsersFollow error", error);
-  //       }
-  //     );
-  // };
+  const GetItemsNamesList = () => {
+    axios
+      .get(
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemByUserID/UserId/${loggedUser.id}`
+      )
+      .then((res) => {
+        if (res.data.length > 0) {
+          setItemsByNameList(res.data.map((item) => item.name));
+        } else {
+          console.log("no items names");
+        }
+      })
+      .catch((err) => {
+        console.log("err in GetAllItemsNames", err);
+      });
+  };
 
+  //get the items by the search text
   function GetSearcResults() {
-    if (brandsList && categoriesList) {
+    if (brandsList && categoriesList && itemsByNameList) {
       if (brandsList.includes(searchText)) {
         axios
           .get(
@@ -110,23 +104,52 @@ export default function SearchRes(props) {
             GetItemPhotos(res.data);
           })
           .catch((err) => {
-            console.log(err);
+            console.log("err in GetSearcResults 1", res);
           });
       }
-    }
-    if (categoriesList.includes(searchText)) {
-      const categoriesURL = hebrewToUrlEncoded(searchText);
-      axios
-        .get(
-          `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemByCategory/Category_name/${categoriesURL}/UserId/${loggedUser.id}`
-        )
-        .then((res) => {
-          setitemsBySearch(res.data);
-          GetItemPhotos(res.data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      if (categoriesList.includes(searchText)) {
+        const categoriesURL = hebrewToUrlEncoded(searchText);
+        axios
+          .get(
+            `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemByCategory/Category_name/${categoriesURL}/UserId/${loggedUser.id}`
+          )
+          .then((res) => {
+            setitemsBySearch(res.data);
+            GetItemPhotos(res.data);
+          })
+          .catch((err) => {
+            console.log("err in GetSearcResults 2", res);
+          });
+      } else if (categoriesList.includes(searchText)) {
+        const categoriesURL = hebrewToUrlEncoded(searchText);
+        axios
+          .get(
+            `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemByCategory/Category_name/${categoriesURL}/UserId/${loggedUser.id}`
+          )
+          .then((res) => {
+            setitemsBySearch(res.data);
+            GetItemPhotos(res.data);
+          })
+          .catch((err) => {
+            console.log("err in GetSearcResults 2", res);
+          });
+      } else if (itemsByNameList.includes(searchText)) {
+        axios
+          .get(
+            `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemByItemName/ItemName/${searchText}/UserId/${loggedUser.id}`
+          )
+          .then((res) => {
+            if (res.data.length > 0) {
+              setitemsBySearch(res.data);
+              GetItemPhotos(res.data);
+            } else {
+              console.log("no name");
+            }
+          })
+          .catch((err) => {
+            console.log("err in GetItemByName", err);
+          });
+      }
     }
   }
 
@@ -233,6 +256,7 @@ export default function SearchRes(props) {
         console.log("cant get shop list", err);
       });
   }
+
   function AddToShopList(item_id) {
     axios
       .post(
@@ -248,6 +272,7 @@ export default function SearchRes(props) {
         console.log(err);
       });
   }
+
   function RemoveFromShopList(itemId) {
     axios
       .delete(
@@ -444,9 +469,8 @@ export default function SearchRes(props) {
       style={{
         flex: 1,
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-        
       }}>
-      <Header title={searchText}  />
+      <Header title={searchText} />
 
       {renderSearch()}
       {renderItems()}

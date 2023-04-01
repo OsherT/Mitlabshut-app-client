@@ -75,7 +75,7 @@ export default function Search() {
           </View>
           <TextInput
             style={{ flex: 1, textAlign: "right", paddingRight: 15 }}
-            placeholder="חפשי פריט..."
+            placeholder="חפשי פריט (קטגוריה/ מותג/ שם פריט)..."
             onChangeText={(text) => setsearch(text)}
             keyboardType="web-search"
             defaultValue=""

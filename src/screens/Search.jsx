@@ -20,7 +20,7 @@ import { userContext } from "../navigation/userContext";
 export default function Search() {
   const navigation = useNavigation();
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api`;
-  const { setSelectedTab, setSearchText_ } = useContext(userContext);
+  const { setSelectedTab, setSearchText_, setType_ } = useContext(userContext);
   const [typeList, setTypeList] = useState([]);
   const [typeBySearch, setTypeBySearch] = useState("");
   const [search, setsearch] = useState("");
@@ -105,15 +105,14 @@ export default function Search() {
                     borderRadius: 10,
                     flexDirection: "row",
                   }}
-                  onPress={
-                    () =>
-                      navigation.navigate("ItemsByCtegory", {
-                        type: type.item_type_name,
-                      })
-                    // {
-                    //   setSelectedTab("ItemsByCtegory");
-                    //   setType_(type.item_type_name);
-                    // }
+                  onPress={() =>
+                    // navigation.navigate("ItemsByCtegory", {
+                    //   type: type.item_type_name,
+                    // })
+                    {
+                      setSelectedTab("ItemsByCtegory");
+                      setType_(type.item_type_name);
+                    }
                   }>
                   <ImageBackground
                     source={{

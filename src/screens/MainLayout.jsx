@@ -106,6 +106,7 @@ export default function MainLayout() {
       {selectedTab == "Order" && <Order />}
       {selectedTab == "SearchUsersFollow" && <SearchUsersFollow />}
       {selectedTab == "SearchRes" && <SearchRes />}
+      {selectedTab == "ItemsByCtegory" && <ItemsByCtegory />}
 
       <View
         style={{

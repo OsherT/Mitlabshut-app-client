@@ -20,6 +20,7 @@ import { userContext } from "../navigation/userContext";
 import Order from "./Order";
 import SearchUsersFollow from "./SearchUsersFollow";
 import ItemsByCtegory from "./ItemsByCtegory";
+import SearchRes from "./SearchRes";
 
 export default function MainLayout() {
   const { loggedUser, selectedTab, setSelectedTab, setOwner_, setClosetId_ } =
@@ -104,7 +105,7 @@ export default function MainLayout() {
       {selectedTab == "Profile" && <Profile />}
       {selectedTab == "Order" && <Order />}
       {selectedTab == "SearchUsersFollow" && <SearchUsersFollow />}
-      {selectedTab == "ItemsByCtegory" && <ItemsByCtegory />}
+      {selectedTab == "SearchRes" && <SearchRes />}
 
       <View
         style={{

@@ -19,8 +19,14 @@ import { userContext } from "../navigation/userContext";
 //מציג את תוצאות החיפוש לפי קטגוריה או מותג
 export default function SearchRes(props) {
   const navigation = useNavigation();
-  const { loggedUser, GetItemForAlgo, shopScore, favScore } =
-    useContext(userContext);
+  const {
+    loggedUser,
+    GetItemForAlgo,
+    shopScore,
+    favScore,
+    searchText_,
+    setSearchText_,
+  } = useContext(userContext);
   const isFocused = useIsFocused();
   const [nextSearch, setnextSearch] = useState("");
 
@@ -32,10 +38,11 @@ export default function SearchRes(props) {
   const [UsersFavList, setUsersFavList] = useState([]);
   const [UsersShopList, setUsersShopList] = useState([]);
 
-  // const [usersFollow, setUsersFollow] = useState([]);
+  // const searchText = props.route.params.searchText;
+  const searchText = searchText_;
+  console.log("searchText_", searchText_);
 
-  const searchText = props.route.params.searchText;
-
+  
   useEffect(() => {
     if (brandsList && categoriesList) {
       GetSearcResults();
@@ -309,6 +316,10 @@ export default function SearchRes(props) {
           }}>
           <View style={{ paddingLeft: 15, paddingRight: 10 }}>
             <TouchableOpacity
+              // onPress={() =>
+              //   navigation.navigate("SearchRes", {
+              //     searchText: nextSearch,
+              //   })
               onPress={() =>
                 navigation.navigate("SearchRes", {
                   searchText: nextSearch,

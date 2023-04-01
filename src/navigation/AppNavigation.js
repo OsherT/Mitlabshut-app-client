@@ -61,8 +61,9 @@ export default function Navigation() {
   const [closetName, setclosetName] = useState("");
   const [closetId_, setClosetId_] = useState("");
   const [type_, setType_] = useState("");
-
   const [owner_, setOwner_] = useState("");
+    const [searchText_, setSearchText_] = useState("");
+
 
   const shopScore = 8;
   const favScore = 6;
@@ -172,6 +173,8 @@ export default function Navigation() {
           setOwner_,
           type_,
           setType_,
+          searchText_,
+          setSearchText_,
         }}>
         <Stack.Navigator
           screenOptions={{

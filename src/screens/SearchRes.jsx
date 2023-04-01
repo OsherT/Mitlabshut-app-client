@@ -32,7 +32,8 @@ export default function SearchRes(props) {
   const [UsersShopList, setUsersShopList] = useState([]);
   // const [usersFollow, setUsersFollow] = useState([]);
 
-  const searchText = props.route.params.searchText;
+  // const searchText = props.route.params.searchText;
+  const searchText = "חיפוש פריט";
 
   useEffect(() => {
     if (brandsList && categoriesList) {

@@ -49,7 +49,7 @@ import WishList from "../screens/WishList";
 import PasswordHasBeenResetScreen from "../screens/RessetPasswordNotice";
 import SearchRes from "../screens/SearchRes";
 import axios from "axios";
-import Users from "../screens/SearchUsersFollow";
+import SearchUsersFollow from "../screens/SearchUsersFollow";
 
 const Stack = createStackNavigator();
 
@@ -60,6 +60,7 @@ export default function Navigation() {
   const [closetDesc, setclosetDesc] = useState("");
   const [closetName, setclosetName] = useState("");
   const [closetId_, setClosetId_] = useState("");
+  const [type_, setType_] = useState("");
 
   const [owner_, setOwner_] = useState("");
 
@@ -169,6 +170,8 @@ export default function Navigation() {
           setClosetId_,
           owner_,
           setOwner_,
+          type_,
+          setType_,
         }}>
         <Stack.Navigator
           screenOptions={{
@@ -181,7 +184,10 @@ export default function Navigation() {
           }}
           initialRouteName="SignIn">
           <Stack.Screen name="SignIn" component={SignIn} />
-          <Stack.Screen name="Users" component={Users} />
+          <Stack.Screen
+            name="SearchUsersFollow"
+            component={SearchUsersFollow}
+          />
           <Stack.Screen name="WishList" component={WishList} />
           <Stack.Screen name="UploadItem" component={UploadItem} />
           <Stack.Screen name="OrderHistory" component={OrderHistory} />

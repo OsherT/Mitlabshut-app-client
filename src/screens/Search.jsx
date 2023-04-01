@@ -9,16 +9,18 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import {  Header } from "../components";
+import { Header } from "../components";
 import { COLORS, FONTS } from "../constants";
-import { FilterSvg, SearchSvg} from "../svg";
+import { FilterSvg, SearchSvg } from "../svg";
 import axios from "axios";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { useContext } from "react";
+import { userContext } from "../navigation/userContext";
 
 export default function Search() {
   const navigation = useNavigation();
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api`;
-
+  const { setSelectedTab, setType_ } = useContext(userContext);
   const [typeList, setTypeList] = useState([]);
   const [typeBySearch, setTypeBySearch] = useState("");
   const [search, setsearch] = useState("");
@@ -28,15 +30,13 @@ export default function Search() {
     getTypeList();
     return () => {};
   }, []);
-  
+
   //gets the types list
   const getTypeList = () => {
     axios
       .get(ApiUrl + `/Item/GetItem_type`)
       .then((res) => {
         setTypeList(res.data);
-
-        console.log("typeList", typeList);
       })
       .catch((err) => {
         console.log("err in typeList ", err);
@@ -63,22 +63,23 @@ export default function Search() {
           }}>
           <View style={{ paddingLeft: 15, paddingRight: 10 }}>
             <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("SearchRes", {
-                  searchText: search,
-                })
+              onPress={
+                () =>
+                  navigation.navigate("SearchRes", {
+                    searchText: search,
+                  })
+                // setSelectedTab("SearchRes")
               }>
               <SearchSvg />
             </TouchableOpacity>
           </View>
           <TextInput
-            style={{ flex: 1, textAlign: "right"}}
+            style={{ flex: 1, textAlign: "right" }}
             placeholder="חפשי פריט..."
             onChangeText={(text) => setsearch(text)}
             keyboardType="web-search"
             defaultValue=""
           />
-      
         </View>
       </View>
     );
@@ -106,6 +107,10 @@ export default function Search() {
                     navigation.navigate("ItemsByCtegory", {
                       type: type.item_type_name,
                     })
+                    // {
+                    //   setSelectedTab("ItemsByCtegory");
+                    //   setType_(type.item_type_name);
+                    // }
                   }>
                   <ImageBackground
                     source={{

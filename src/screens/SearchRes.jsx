@@ -112,7 +112,7 @@ export default function SearchRes(props) {
             console.log(err);
           });
       }
-    }
+    
     if (categoriesList.includes(searchText)) {
       const categoriesURL = hebrewToUrlEncoded(searchText);
       axios
@@ -126,7 +126,7 @@ export default function SearchRes(props) {
         .catch((err) => {
           console.log(err);
         });
-    }
+    }}
   }
 
   function GetItemPhotos(items) {

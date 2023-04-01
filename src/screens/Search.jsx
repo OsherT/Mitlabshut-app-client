@@ -72,20 +72,20 @@ export default function Search() {
             </TouchableOpacity>
           </View>
           <TextInput
-            style={{ flex: 1, textAlign: "right" }}
+            style={{ flex: 1, textAlign: "right" ,paddingRight:20}}
             placeholder="חפשי פריט..."
             onChangeText={(text) => setsearch(text)}
             keyboardType="web-search"
             defaultValue=""
           />
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={{
               paddingHorizontal: 15,
               paddingVertical: 5,
             }}
             onPress={() => navigation.navigate("Filter")}>
             <FilterSvg />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
     );
@@ -112,6 +112,8 @@ export default function Search() {
                   onPress={() =>
                     navigation.navigate("ItemsByCtegory", {
                       type: type.item_type_name,
+                      sorted:null,
+                      flag:false
                     })
                   }>
                   <ImageBackground

@@ -1,3 +1,4 @@
+
 const onboarding = [
     {
         id: "1",
@@ -96,6 +97,10 @@ const promocodes = [
 
 const productSizes = [
     {
+        id: "16",
+        size: "XXS",
+    },
+    {
         id: "1",
         size: "XS",
     },
@@ -119,9 +124,46 @@ const productSizes = [
         id: "6",
         size: "XXL",
     },
+    {
+        id: "7",
+        size: "30",
+    },
+    {
+        id: "8",
+        size: "32",
+    },
+    {
+        id: "9",
+        size: "34",
+    },
+    {
+        id: "10",
+        size: "36",
+    },
+    {
+        id: "11",
+        size: "38",
+    },
+    {
+        id: "12",
+        size: "40",
+    },
+    {
+        id: "13",
+        size: "42",
+    },
+    {
+        id: "14",
+        size: "44",
+    },
+    {
+        id: "15",
+        size: "46",
+    },
 ];
 
-const productColors = [
+
+var productColors = [
     {
         id: "1",
         color: "#FE2121",

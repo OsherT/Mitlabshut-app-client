@@ -211,13 +211,7 @@ export default function Profile() {
                     marginRight: 15,
                     borderRadius: 10,
                   }}
-                  // onPress={() =>
-                  //   navigation.navigate("Closet", {
-                  //     closetId: user.closet_id,
-                  //     owner: user,
-                  //     // productSlides: item.slides,
-                  //   })
-                  // }
+                
                   onPress={() => {
                     setSelectedTab("Closet");
                     setClosetId_(user.closet_id);

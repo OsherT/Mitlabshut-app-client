@@ -20,6 +20,7 @@ import { userContext } from "../navigation/userContext";
 import { Swipeable } from "react-native-gesture-handler";
 import WhatsAppSvg from "../svg/WhatsAppSvg";
 import { Linking } from "react-native";
+import { Empty } from "../svg";
 
 export default function Order() {
   const navigation = useNavigation();
@@ -35,7 +36,7 @@ export default function Order() {
   const closeSwipeable = () => {
     swipeableRef && swipeableRef.close();
   };
-  
+
   useEffect(() => {
     if (isFocused) {
       getShopItems();

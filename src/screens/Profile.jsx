@@ -19,7 +19,8 @@ import WarningModal from "../components/WarningModal";
 
 export default function Profile() {
   const navigation = useNavigation();
-  const { loggedUser, setSelectedTab } = useContext(userContext);
+  const { loggedUser, setloggedUser, setSelectedTab, setClosetId_, setOwner_ } =
+    useContext(userContext);
   const isFocused = useIsFocused();
   const [usersFollow, setUsersFollow] = useState([]);
 
@@ -210,13 +211,18 @@ export default function Profile() {
                     marginRight: 15,
                     borderRadius: 10,
                   }}
-                  onPress={() =>
-                    navigation.navigate("Closet", {
-                      closetId: user.closet_id,
-                      owner: user,
-                      // productSlides: item.slides,
-                    })
-                  }>
+                  // onPress={() =>
+                  //   navigation.navigate("Closet", {
+                  //     closetId: user.closet_id,
+                  //     owner: user,
+                  //     // productSlides: item.slides,
+                  //   })
+                  // }
+                  onPress={() => {
+                    setSelectedTab("Closet");
+                    setClosetId_(user.closet_id);
+                    setOwner_(user);
+                  }}>
                   <Image
                     source={{ uri: user.user_image }}
                     style={{

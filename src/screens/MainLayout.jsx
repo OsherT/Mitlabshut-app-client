@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import React, { useContext, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
@@ -7,7 +7,6 @@ import Search from "./Search";
 import WishList from "./WishList";
 import Profile from "./Profile";
 import Closet from "./Closet";
-
 import {
   HomeTab,
   SearchTab,
@@ -16,16 +15,13 @@ import {
   TabElement,
   Bag,
 } from "../svg";
-import { COLORS, FONTS, cartItems, products } from "../constants";
+import { COLORS } from "../constants";
 import { userContext } from "../navigation/userContext";
 import Order from "./Order";
 
-export default function MainLayout({ route }) {
-  // const [selectedTab, setSelectedTab] = useState(
-  //   route?.params?.selectedPage || "Home"
-  // );
-  // לשים ביוזקונטקסט וכל פעם לאתחל בסט בדף הרצוי
-  const { selectedTab, setSelectedTab } = useContext(userContext);
+export default function MainLayout() {
+  const { loggedUser, selectedTab, setSelectedTab, setOwner_, setClosetId_ } =
+    useContext(userContext);
 
   const tabs = [
     {
@@ -127,7 +123,16 @@ export default function MainLayout({ route }) {
           return (
             <TouchableOpacity
               key={index}
-              onPress={() => setSelectedTab(item.screen)}>
+              onPress={() => {
+                if (item.screen == "Closet") {
+                  setSelectedTab(item.screen);
+                  setClosetId_(loggedUser.closet_id);
+                  setOwner_(loggedUser);
+                  console.log("jj");
+                } else {
+                  setSelectedTab(item.screen);
+                }
+              }}>
               <View>{item.icon}</View>
             </TouchableOpacity>
           );

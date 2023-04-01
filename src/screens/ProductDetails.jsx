@@ -10,7 +10,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { AREA, COLORS, FONTS } from "../constants";
 import { Button, Header } from "../components";
-import { Edit, HeartTwoSvg} from "../svg";
+import { Edit, HeartTwoSvg } from "../svg";
 import ButtonFollow from "../components/ButtonFollow";
 import { ScrollView } from "react-native-gesture-handler";
 import Swiper from "react-native-swiper";
@@ -23,8 +23,16 @@ import WarningModal from "../components/WarningModal";
 
 export default function ProductDetails(props) {
   const navigation = useNavigation();
-  const { loggedUser, GetItemForAlgo, shopScore, favScore, viewScore } =
-    useContext(userContext);
+  const {
+    loggedUser,
+    GetItemForAlgo,
+    shopScore,
+    favScore,
+    viewScore,
+    setSelectedTab,
+    setClosetId_,
+    setOwner_,
+  } = useContext(userContext);
   const item = props.route.params.item;
   const isFocused = useIsFocused();
   const [closetName, setclosetName] = useState("");
@@ -64,7 +72,7 @@ export default function ProductDetails(props) {
       setShippingMethod(item.shipping_method);
 
       if (address1 && address2) {
-        getAddressLocations();  
+        getAddressLocations();
       }
     }
   }, [isFocused, address1, address2, itemStatus]);
@@ -630,12 +638,18 @@ export default function ProductDetails(props) {
                     flexDirection: "row-reverse",
                     alignItems: "center",
                   }}
+                  // onPress={() => {
+                  //   navigation.navigate("Closet", {
+                  //     closetId: item.closet_ID,
+                  //     owner: user,
+                  //   });
+                  // }}
                   onPress={() => {
-                    navigation.navigate("Closet", {
-                      closetId: item.closet_ID,
-                      owner: user,
-                    });
-                  }}>
+                    setSelectedTab("Closet");
+                    setClosetId_(item.closet_ID);
+                    setOwner_(user);
+                  }}
+                  >
                   <ImageBackground
                     source={{
                       uri: user.user_image,

@@ -18,6 +18,9 @@ import {
 import { COLORS } from "../constants";
 import { userContext } from "../navigation/userContext";
 import Order from "./Order";
+import SearchUsersFollow from "./SearchUsersFollow";
+import ItemsByCtegory from "./ItemsByCtegory";
+import SearchRes from "./SearchRes";
 
 export default function MainLayout() {
   const { loggedUser, selectedTab, setSelectedTab, setOwner_, setClosetId_ } =
@@ -101,6 +104,9 @@ export default function MainLayout() {
       {selectedTab == "WishList" && <WishList />}
       {selectedTab == "Profile" && <Profile />}
       {selectedTab == "Order" && <Order />}
+      {selectedTab == "SearchUsersFollow" && <SearchUsersFollow />}
+      {selectedTab == "SearchRes" && <SearchRes />}
+      {selectedTab == "ItemsByCtegory" && <ItemsByCtegory />}
 
       <View
         style={{
@@ -128,7 +134,6 @@ export default function MainLayout() {
                   setSelectedTab(item.screen);
                   setClosetId_(loggedUser.closet_id);
                   setOwner_(loggedUser);
-                  console.log("jj");
                 } else {
                   setSelectedTab(item.screen);
                 }

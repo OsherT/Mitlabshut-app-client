@@ -37,8 +37,6 @@ export default function ItemsByCtegory(props) {
   const [UsersFavList, setUsersFavList] = useState([]);
   const [UsersShopList, setUsersShopList] = useState([]);
   const type = props.route.params.type;
-  const sorted = props.route.params.sorted;
-  const noResinSort = props.route.params.flag;
 
   useEffect(() => {
     if (isFocused) {
@@ -55,6 +53,8 @@ export default function ItemsByCtegory(props) {
         `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemByType/Type/${typeURL}/UserId/${loggedUser.id}`
       )
       .then((res) => {
+        setItemsByType(res.data);
+        GetItemPhotos(res.data);
         setItemsByType(res.data);
         GetItemPhotos(res.data);
       })
@@ -113,6 +113,25 @@ export default function ItemsByCtegory(props) {
       .catch((err) => {
         console.log("cant get fav", err);
       });
+  ///handle fav list
+  function getFavItems() {
+    axios
+      .get(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetFavByUserID/" +
+          loggedUser.id
+      )
+      .then((res) => {
+        console.log(res.data);
+        if (res.data == "No items yet") {
+          setUsersFavList("");
+        } else {
+          const tempUsersFavList = res.data.map(({ item_id }) => item_id);
+          setUsersFavList(tempUsersFavList);
+        }
+      })
+      .catch((err) => {
+        console.log("cant get fav", err);
+      });
   }
   function AddtoFav(item_id) {
     axios
@@ -122,6 +141,7 @@ export default function ItemsByCtegory(props) {
       .then((res) => {
         getFavItems();
         setUsersFavList((prevList) => [...prevList, { item_id }]);
+        GetItemForAlgo(item_id, favScore, loggedUser.id);
         GetItemForAlgo(item_id, favScore, loggedUser.id);
       })
       .catch((err) => {
@@ -161,6 +181,22 @@ export default function ItemsByCtegory(props) {
       .catch((err) => {
         console.log("cant get shop list", err);
       });
+    axios
+      .get(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetShopByUserID/UserID/" +
+          loggedUser.id
+      )
+      .then((res) => {
+        if (res.data == "No items yet") {
+          setUsersShopList("");
+        } else {
+          const tempUsersShopList = res.data.map(({ item_id }) => item_id);
+          setUsersShopList(tempUsersShopList);
+        }
+      })
+      .catch((err) => {
+        console.log("cant get shop list", err);
+      });
   }
   function AddToShopList(item_id) {
     axios
@@ -170,6 +206,7 @@ export default function ItemsByCtegory(props) {
       .then((res) => {
         getShopItems();
         setUsersShopList((prevList) => [...prevList, { item_id }]);
+        GetItemForAlgo(item_id, shopScore, loggedUser.id);
         GetItemForAlgo(item_id, shopScore, loggedUser.id);
       })
       .catch((err) => {
@@ -191,6 +228,7 @@ export default function ItemsByCtegory(props) {
         // console.log(newFav);
       });
   }
+
 
   //need to do shearch by categories
   function renderSearch() {
@@ -226,7 +264,7 @@ export default function ItemsByCtegory(props) {
           </View>
           <TextInput
             style={{ flex: 1, textAlign: "right" }}
-            placeholder="חפשי פריט..."
+            placeholder="חפשי פריט (קטגוריה/ מותג/ שם פריט)..."
             onChangeText={(text) => setsearch(text)}
             keyboardType="web-search"
           />
@@ -480,9 +518,9 @@ export default function ItemsByCtegory(props) {
       style={{
         flex: 1,
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-      }}
-    >
+      }}>
       <Header title={type} goBack={true} onPress={() => navigation.goBack()} />
+
       {renderSearch()}
       {noResinSort && noFiltersResults()}
      

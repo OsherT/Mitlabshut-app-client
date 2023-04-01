@@ -182,7 +182,8 @@ export default function Profile() {
           }}>
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate("Users");
+              // navigation.navigate("Users");
+              setSelectedTab("SearchUsersFollow");
             }}>
             <Text
               style={{
@@ -211,13 +212,6 @@ export default function Profile() {
                     marginRight: 15,
                     borderRadius: 10,
                   }}
-                  // onPress={() =>
-                  //   navigation.navigate("Closet", {
-                  //     closetId: user.closet_id,
-                  //     owner: user,
-                  //     // productSlides: item.slides,
-                  //   })
-                  // }
                   onPress={() => {
                     setSelectedTab("Closet");
                     setClosetId_(user.closet_id);

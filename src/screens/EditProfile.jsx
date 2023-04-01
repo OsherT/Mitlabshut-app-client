@@ -120,8 +120,8 @@ export default function EditProfile(props) {
       address: address,
       isAdmin: false,
       user_image: imageLink,
-      // age: parseInt(userAge),
       age: userAge,
+      token: loggedUser.token,
     };
 
     const newClosetData = {

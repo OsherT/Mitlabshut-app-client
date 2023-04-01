@@ -335,7 +335,7 @@ export default function SearchRes(props) {
               paddingHorizontal: 15,
               paddingVertical: 5,
             }}
-            onPress={() => navigation.navigate("Filter")}>
+            onPress={() => navigation.navigate("Filter", { type: "null" })}>
             <FilterSvg />
           </TouchableOpacity>
         </View>

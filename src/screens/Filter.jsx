@@ -78,7 +78,7 @@ export default function Filter(props) {
     axios
       .get(url)
       .then((res) => {
-        if (res.data!==0) {
+        if (res.data!==0&&type) {
             navigation.navigate("ItemsByCtegory", {
                 type: type,
                 sorted: res.data,

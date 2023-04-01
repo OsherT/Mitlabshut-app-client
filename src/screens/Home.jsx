@@ -25,7 +25,8 @@ import PushNotification from "./PushNotification";
 export default function Home() {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-  const { loggedUser, setSelectedTab } = useContext(userContext);
+  const { loggedUser, setSelectedTab, setClosetId_, setOwner_ } =
+    useContext(userContext);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [RecoUsers, setRecoUsers] = useState([]);
   const [OtherClosets, setOtherClosets] = useState([]);
@@ -354,19 +355,10 @@ export default function Home() {
                   marginRight: 15,
                   borderRadius: 10,
                 }}
-                // onPress={() =>
-                //   navigation.navigate("Closet", {
-                //     closetId: user.closet_id,
-                //     owner: user,
-                //   })
-                // }
                 onPress={() => {
                   setSelectedTab("Closet");
-
-                  navigation.navigate("Closet", {
-                    closetId: user.closet_id,
-                    owner: user,
-                  });
+                  setClosetId_(user.closet_id);
+                  setOwner_(user);
                 }}
                 >
                 <Image

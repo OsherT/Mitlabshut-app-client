@@ -175,7 +175,6 @@ export default function Header({
             paddingHorizontal: 20,
           }}
           onPress={() => {
-            console.log("Order pressed");
             setSelectedTab("Order");
           }}>
           <BagHeader color="black"></BagHeader>

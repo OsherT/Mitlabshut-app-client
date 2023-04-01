@@ -32,14 +32,18 @@ export default function Closet(props) {
     GetItemForAlgo,
     shopScore,
     favScore,
-    ClosetOwner,
-    ClosetID,
-    setClosetOwner,
-    setClosetID,
+    setClosetId_,
+    closetId_,
+    setOwner_,
+    owner_,
   } = useContext(userContext);
   const { route } = props;
-  const closetId = route?.params?.closetId || loggedUser.closet_id;
-  const owner = route?.params?.owner || loggedUser;
+  const closetId = closetId_ || route?.params?.closetId || loggedUser.closet_id;
+  const owner = owner_ || route?.params?.owner || loggedUser;
+
+  // const closetId = closetId_ || loggedUser.closet_id;
+  // const owner = route?.params?.owner || loggedUser;
+
   const [UsersItems, setUsersItems] = useState([]);
   const [UsersItemPhotos, setUsersItemPhotos] = useState([]);
   const [UsersFavList, setUsersFavList] = useState([]);
@@ -70,7 +74,7 @@ export default function Closet(props) {
       getFavItems();
       getFollowingList();
     }
-  }, [isFocused, ClosetFollowers]);
+  }, [isFocused, ClosetFollowers, closetId_, owner_]);
 
   function handleOptionsMenuPress() {
     const buttonWidth = 20;
@@ -135,7 +139,7 @@ export default function Closet(props) {
           closetId
       )
       .then((res) => {
-        if (res.data === "No items yet") {
+        if (res.data === 0) {
           setUsersItems([]);
           GetItemPhotos([]);
         } else {

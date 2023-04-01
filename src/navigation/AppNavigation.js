@@ -59,6 +59,9 @@ export default function Navigation() {
   const [loggedUser, setloggedUser] = useState("");
   const [closetDesc, setclosetDesc] = useState("");
   const [closetName, setclosetName] = useState("");
+  const [closetId_, setClosetId_] = useState("");
+
+  const [owner_, setOwner_] = useState("");
 
   const shopScore = 8;
   const favScore = 6;
@@ -121,10 +124,10 @@ export default function Navigation() {
           )}/score/${score}/user_id/${loggedUser_id}`
         )
         .then((res) => {
-          console.log("yay");
+          console.log("succ in algo", res);
         })
         .catch((err) => {
-          console.log("nay", err);
+          console.log("err in algo", err);
         });
     });
 
@@ -162,6 +165,10 @@ export default function Navigation() {
           viewScore,
           selectedTab,
           setSelectedTab,
+          closetId_,
+          setClosetId_,
+          owner_,
+          setOwner_,
         }}>
         <Stack.Navigator
           screenOptions={{

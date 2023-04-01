@@ -10,7 +10,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { AREA, COLORS, FONTS } from "../constants";
 import { Button, Header } from "../components";
-import { Edit, HeartTwoSvg} from "../svg";
+import { Edit, HeartTwoSvg } from "../svg";
 import ButtonFollow from "../components/ButtonFollow";
 import { ScrollView } from "react-native-gesture-handler";
 import Swiper from "react-native-swiper";
@@ -23,8 +23,16 @@ import WarningModal from "../components/WarningModal";
 
 export default function ProductDetails(props) {
   const navigation = useNavigation();
-  const { loggedUser, GetItemForAlgo, shopScore, favScore, viewScore } =
-    useContext(userContext);
+  const {
+    loggedUser,
+    GetItemForAlgo,
+    shopScore,
+    favScore,
+    viewScore,
+    setSelectedTab,
+    setClosetId_,
+    setOwner_,
+  } = useContext(userContext);
   const item = props.route.params.item;
   const isFocused = useIsFocused();
   const [closetName, setclosetName] = useState("");
@@ -64,7 +72,7 @@ export default function ProductDetails(props) {
       setShippingMethod(item.shipping_method);
 
       if (address1 && address2) {
-        getAddressLocations();  
+        getAddressLocations();
       }
     }
   }, [isFocused, address1, address2, itemStatus]);
@@ -507,7 +515,6 @@ export default function ProductDetails(props) {
                 <View style={styles.Row}>
                   <Text style={styles.itemHeader}>{item.name}</Text>
                   <Text> </Text>
-                  {/* {myitemFlag && item.item_status != "sold" && ( */}
                   {myitemFlag && itemStatus != "sold" && (
                     <TouchableOpacity
                       onPress={() => {
@@ -520,21 +527,15 @@ export default function ProductDetails(props) {
                       <Edit />
                     </TouchableOpacity>
                   )}
-                  {/* {item.item_status == "sold" && ( */}
-                  {itemStatus == "sold" && (
-                    <Text style={{ height: 50 }}> {""}</Text>
-                  )}
                 </View>
-                {numOfFav > 0 && (
-                  <Text
-                    style={{
-                      textAlign: "right",
-                      fontSize: 13,
-                      marginBottom: 5,
-                    }}>
-                    ♡ {numOfFav} אהבו פריט זה
-                  </Text>
-                )}
+                <Text
+                  style={{
+                    textAlign: "right",
+                    fontSize: 13,
+                    marginBottom: 5,
+                  }}>
+                  ♡ {numOfFav} אהבו פריט זה
+                </Text>
               </View>
             </View>
 
@@ -542,7 +543,6 @@ export default function ProductDetails(props) {
               {itemImages.map((image, index) => (
                 <View key={index}>
                   <ImageBackground style={styles.image} source={{ uri: image }}>
-                    {/* {item.item_status === "sold" && itemStatus === "sold" && ( */}
                     {itemStatus === "sold" && (
                       <View style={styles.soldStyle}>
                         <Text
@@ -561,9 +561,6 @@ export default function ProductDetails(props) {
               ))}
             </Swiper>
 
-            {/* {!myitemFlag &&
-              UsersFavList.includes(item.id) &&
-              item.item_status != "sold" && ( */}
             {!myitemFlag &&
               UsersFavList.includes(item.id) &&
               itemStatus != "sold" && (
@@ -574,9 +571,7 @@ export default function ProductDetails(props) {
                   <HeartTwoSvg filled={true} strokeColor="red" />
                 </TouchableOpacity>
               )}
-            {/* {!myitemFlag &&
-              !UsersFavList.includes(item.id) &&
-              item.item_status != "sold" && ( */}
+
             {!myitemFlag &&
               !UsersFavList.includes(item.id) &&
               itemStatus != "sold" && (
@@ -587,7 +582,6 @@ export default function ProductDetails(props) {
                   <HeartTwoSvg filled={false} strokeColor="red" />
                 </TouchableOpacity>
               )}
-            {/* {item.item_status != "sold" && ( */}
             {itemStatus != "sold" && (
               <TouchableOpacity
                 style={styles.shareIcon}
@@ -631,10 +625,11 @@ export default function ProductDetails(props) {
                     alignItems: "center",
                   }}
                   onPress={() => {
-                    navigation.navigate("Closet", {
-                      closetId: item.closet_ID,
-                      owner: user,
-                    });
+                    setSelectedTab("Closet");
+                    setClosetId_(item.closet_ID);
+                    setOwner_(user);
+                    //the go back takes us to the wanted closet
+                    navigation.goBack();
                   }}>
                   <ImageBackground
                     source={{
@@ -671,11 +666,13 @@ export default function ProductDetails(props) {
                   flexDirection: "row-reverse",
                   alignItems: "center",
                 }}
+             
                 onPress={() => {
-                  navigation.navigate("Closet", {
-                    closet: item.closet_ID,
-                    owner: user,
-                  });
+                  setSelectedTab("Closet");
+                  setClosetId_(item.closet_ID);
+                  setOwner_(user);
+                  //the go back takes us to the wanted closet
+                  navigation.goBack();
                 }}>
                 <ImageBackground
                   source={{
@@ -762,8 +759,7 @@ export default function ProductDetails(props) {
                     }}
                   />
                 )}
-                {/* {!UsersShopList.includes(item.id) &&
-                  item.item_status != "sold" && ( */}
+
                 {!UsersShopList.includes(item.id) && itemStatus != "sold" && (
                   <Button
                     title="+ הוסיפי לסל קניות"
@@ -776,9 +772,6 @@ export default function ProductDetails(props) {
               </View>
             )}
 
-            {/* {myitemFlag &&
-              item.item_status != "sold" &&
-              itemStatus != "sold" && ( */}
             {myitemFlag && itemStatus != "sold" && (
               <View>
                 <ButtonLogIn
@@ -793,9 +786,6 @@ export default function ProductDetails(props) {
               </View>
             )}
 
-            {/* {myitemFlag &&
-              item.item_status == "sold" &&
-              itemStatus === "sold" && ( */}
             {myitemFlag && itemStatus === "sold" && (
               <View>
                 <ButtonLogIn
@@ -831,7 +821,7 @@ export default function ProductDetails(props) {
 
   return (
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
-      <Header />
+      <Header goBack={true} flag={true} />
       {renderContent()}
       {showModal && (
         <WarningModal

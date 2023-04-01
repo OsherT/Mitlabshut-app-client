@@ -36,7 +36,7 @@ export default function Order() {
   const closeSwipeable = () => {
     swipeableRef && swipeableRef.close();
   };
-  
+
   useEffect(() => {
     if (isFocused) {
       getShopItems();
@@ -422,7 +422,7 @@ export default function Order() {
 
   return (
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
-      <Header title="סל קניות" />
+      <Header title="סל קניות" goBack={false} flag={false} />
       {renderContent()}
     </SafeAreaView>
   );

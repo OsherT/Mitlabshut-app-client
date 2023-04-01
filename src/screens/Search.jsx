@@ -57,7 +57,7 @@ export default function Search() {
             width: "100%",
             height: 44,
             backgroundColor: COLORS.white,
-            borderRadius: 5,
+            borderRadius: 15,
             flexDirection: "row",
             alignItems: "center",
           }}>
@@ -72,20 +72,13 @@ export default function Search() {
             </TouchableOpacity>
           </View>
           <TextInput
-            style={{ flex: 1, textAlign: "right" }}
+            style={{ flex: 1, textAlign: "right"}}
             placeholder="חפשי פריט..."
             onChangeText={(text) => setsearch(text)}
             keyboardType="web-search"
             defaultValue=""
           />
-          <TouchableOpacity
-            style={{
-              paddingHorizontal: 15,
-              paddingVertical: 5,
-            }}
-            onPress={() => navigation.navigate("Filter")}>
-            <FilterSvg />
-          </TouchableOpacity>
+      
         </View>
       </View>
     );

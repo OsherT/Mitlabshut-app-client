@@ -6,32 +6,30 @@ import {
   StatusBar,
   TouchableOpacity,
   ImageBackground,
+  Alert,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { Header } from "../components";
 import { COLORS, FONTS } from "../constants";
-import { FilterSvg, SearchSvg } from "../svg";
-import axios from "axios";
+import { SearchSvg } from "../svg";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { userContext } from "../navigation/userContext";
+import axios from "axios";
 
-export default function Search() {
+export default function SearchUsersFollow() {
   const navigation = useNavigation();
-  const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api`;
 
-  const [typeList, setTypeList] = useState([]);
-  const [typeBySearch, setTypeBySearch] = useState("");
-  const [search, setsearch] = useState("");
+  const [searchName, setSearchName] = useState("");
   const { loggedUser, setloggedUser } = useContext(userContext);
   const isFocused = useIsFocused();
   const [usersFollow, setUsersFollow] = useState([]);
 
   useEffect(() => {
-    if (isFocused) {
+    if (isFocused || searchName == "") {
       GetUsersFollow();
     }
-  }, [isFocused]);
+  }, [isFocused, searchName]);
 
   const GetUsersFollow = () => {
     fetch(
@@ -58,6 +56,25 @@ export default function Search() {
       );
   };
 
+  //returns the search res
+  const searchUserByName = () => {
+    console.log("searchName", searchName);
+    axios
+      .get(
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetUserByFullName/FullName/${searchName}/UserID/${loggedUser.id}`
+      )
+      .then((res) => {
+        const tempArray = res.data.filter((d) => {
+          return usersFollow.some((u) => u.id === d.id);
+        });
+        // setUsersFollowSearch(tempArray);
+        setUsersFollow(tempArray);
+      })
+      .catch((err) => {
+        console.log("searchUserByName error", err);
+      });
+  };
+
   //renders the search section (upper)
   function renderSearch() {
     return (
@@ -72,35 +89,29 @@ export default function Search() {
             width: "100%",
             height: 44,
             backgroundColor: COLORS.white,
-            borderRadius: 5,
+            borderRadius: 15,
             flexDirection: "row",
             alignItems: "center",
           }}>
           <View style={{ paddingLeft: 15, paddingRight: 10 }}>
             <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("SearchRes", {
-                  searchText: search,
-                })
-              }>
+              onPress={() => {
+                if (searchName != "") {
+                  searchUserByName();
+                }
+              }}>
               <SearchSvg />
             </TouchableOpacity>
           </View>
           <TextInput
-            style={{ flex: 1, textAlign: "right" }}
+            style={{ flex: 1, textAlign: "right", paddingRight: 15 }}
             placeholder="חפשי משתמש..."
-            onChangeText={(text) => setsearch(text)}
+            onChangeText={(text) => {
+              setSearchName(text);
+            }}
             keyboardType="web-search"
             defaultValue=""
           />
-          <TouchableOpacity
-            style={{
-              paddingHorizontal: 15,
-              paddingVertical: 5,
-            }}
-            onPress={() => navigation.navigate("Filter")}>
-            <FilterSvg />
-          </TouchableOpacity>
         </View>
       </View>
     );
@@ -169,7 +180,7 @@ export default function Search() {
         flex: 1,
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
       }}>
-      <Header title=" משתמשים" goBack={true} />
+      <Header title=" משתמשות במעקב" goBack={true} />
       {renderSearch()}
       {renderUsers()}
     </SafeAreaView>

@@ -49,7 +49,7 @@ import WishList from "../screens/WishList";
 import PasswordHasBeenResetScreen from "../screens/RessetPasswordNotice";
 import SearchRes from "../screens/SearchRes";
 import axios from "axios";
-import Users from "../screens/Users";
+import Users from "../screens/SearchUsersFollow";
 
 const Stack = createStackNavigator();
 

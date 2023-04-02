@@ -401,17 +401,11 @@ export default function ItemsByCtegory(props) {
     return (
       <View>
         <TouchableOpacity
-          onPress={() =>
-            // navigation.navigate("ItemsByCtegory", {
-            //   type: type,
-            //   sorted: null,
-            // })
-            {
-              setSelectedTab("Search");
-              setType_(type);
-              setSorted_(null);
-            }
-          }
+          onPress={() => {
+            setSelectedTab("Search");
+            setType_(type);
+            setSorted_(null);
+          }}
           style={{
             flexDirection: "row",
             alignItems: "center",

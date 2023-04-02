@@ -131,7 +131,7 @@ export default function SearchRes(props) {
           .catch((err) => {
             console.log("err in GetSearcResults 2", err);
           });
-      } else if (itemsByNameList.includes(searchText)) {
+      } else if (itemsByNameList.every((item) => item.includes(searchText))) {
         axios
           .get(
             `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemByItemName/ItemName/${searchText}/UserId/${loggedUser.id}`

@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
-import { Button, Header, ContainerComponent } from "../components";
+import {  Header, ContainerComponent } from "../components";
 import { COLORS, FONTS } from "../constants";
 import { FilterSvg, SearchSvg, BagSvg, HeartSvg, Empty } from "../svg";
 import axios from "axios";  
@@ -488,13 +488,13 @@ export default function ItemsByCtegory(props) {
       }}>
       <Header title={type} />
 
-      {renderSearch()}
+      {!noRes && renderSearch()}
       {noResinSort && noFiltersResults()}
 
       {sorted && renderClear()}
       {!noResinSort && !noRes && renderItems()}
       {noRes && (
-        <ContainerComponent>
+        <ContainerComponent >
           <View style={{ alignSelf: "center", marginBottom: 35 }}>
             <Empty />
           </View>

@@ -9,9 +9,9 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
-import { ContainerComponent, Header } from "../components";
+import {  Header } from "../components";
 import { COLORS, FONTS } from "../constants";
-import { Empty, FilterSvg, SearchSvg } from "../svg";
+import {SearchSvg } from "../svg";
 import axios from "axios";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useContext } from "react";
@@ -24,11 +24,8 @@ export default function Search() {
     setSelectedTab,
     setSearchText_,
     setType_,
-    flag_,
     setFlag_,
-    sorted_,
     setSorted_,
-    type_,
   } = useContext(userContext);
   const isFocused = useIsFocused();
   const [typeList, setTypeList] = useState([]);

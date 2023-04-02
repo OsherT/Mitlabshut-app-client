@@ -29,10 +29,10 @@ export default function SearchRes(props) {
     setSelectedTab,
     setType_,
   } = useContext(userContext);
+  const searchText = searchText_;
 
   const isFocused = useIsFocused();
   const [nextSearch, setnextSearch] = useState("");
-
   const [brandsList, setBrandsList] = useState([]);
   const [categoriesList, setCategoriesList] = useState([]);
   const [itemsByNameList, setItemsByNameList] = useState([]);
@@ -40,28 +40,23 @@ export default function SearchRes(props) {
   const [itemsImageByType, setItemsImageByType] = useState([]);
   const [UsersFavList, setUsersFavList] = useState([]);
   const [UsersShopList, setUsersShopList] = useState([]);
-  const [noRes, setNoRes] = useState(false);
+  const [noRes, setNoRes] = useState(true);
 
   // const searchText = props.route.params.searchText;
-  const searchText = searchText_;
 
   useEffect(() => {
-    if (brandsList && categoriesList) {
+    if (brandsList && categoriesList && itemsByNameList) {
       GetSearcResults();
     }
   }, [brandsList, categoriesList]);
 
   useEffect(() => {
-    if (isFocused || searchText == "") {
+    if (isFocused) {
       GetBrandsList();
       GetCategoriesList();
       GetItemsNamesList();
       getShopItems();
       getFavItems();
-      setNoRes(false);
-    }
-    if (searchText == "") {
-      setSelectedTab("Search");
     }
   }, [isFocused, searchText]);
 
@@ -94,6 +89,7 @@ export default function SearchRes(props) {
       )
       .then((res) => {
         if (res.data.length > 0) {
+          console.log(res.data);
           setItemsByNameList(res.data.map((item) => item.name));
         } else {
           console.log("no items names");
@@ -115,6 +111,7 @@ export default function SearchRes(props) {
           .then((res) => {
             setitemsBySearch(res.data);
             GetItemPhotos(res.data);
+            setNoRes(false);
           })
           .catch((err) => {
             console.log("err in GetSearcResults 1", err);
@@ -128,6 +125,7 @@ export default function SearchRes(props) {
           .then((res) => {
             setitemsBySearch(res.data);
             GetItemPhotos(res.data);
+            setNoRes(false);
           })
           .catch((err) => {
             console.log("err in GetSearcResults 2", err);
@@ -141,6 +139,7 @@ export default function SearchRes(props) {
             if (res.data.length > 0) {
               setitemsBySearch(res.data);
               GetItemPhotos(res.data);
+              setNoRes(false);
             } else {
               console.log("no name");
             }
@@ -149,10 +148,6 @@ export default function SearchRes(props) {
             console.log("err in GetItemByName", err);
           });
       }
-    }
-    //to check if we got items to show
-    if (itemsBySearch.length == 0) {
-      setNoRes(true);
     }
   }
 
@@ -293,7 +288,6 @@ export default function SearchRes(props) {
 
   //need to do shearch by categories
   function renderSearch() {
-    // if (!itemsBySearch) {
     return (
       <View
         style={{
@@ -310,7 +304,6 @@ export default function SearchRes(props) {
             flexDirection: "row",
             alignItems: "center",
           }}>
-            
           <View style={{ paddingLeft: 15, paddingRight: 10 }}>
             <TouchableOpacity
               onPress={() => {
@@ -323,7 +316,10 @@ export default function SearchRes(props) {
           <TextInput
             style={{ flex: 1, textAlign: "right" }}
             placeholder="חפשי פריט (קטגוריה/ מותג/ שם פריט)..."
-            onChangeText={(text) => setnextSearch(text)}
+            onChangeText={(text) => {
+              setnextSearch(text);
+              setNoRes(true);
+            }}
             keyboardType="web-search"
             defaultValue={searchText}
           />
@@ -338,7 +334,6 @@ export default function SearchRes(props) {
         </View>
       </View>
     );
-    // }
   }
 
   function renderItems() {
@@ -361,14 +356,11 @@ export default function SearchRes(props) {
               borderRadius: 10,
               backgroundColor: COLORS.white,
             }}
-            //Osherrrrrrrrrrrr///////////////////////////////////////////////
             onPress={() => {
               navigation.navigate("ProductDetails", {
                 item: item,
               });
-            }}
-            //Osherrrrrrrrrrrr///////////////////////////////////////////////
-          >
+            }}>
             {itemsImageByType
               .filter((photo) => photo.item_ID === item.id)
               .slice(0, 1)
@@ -474,7 +466,7 @@ export default function SearchRes(props) {
         flex: 1,
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
       }}>
-      <Header title={searchText } />
+      <Header title={searchText} />
       {renderSearch()}
       {!noRes ? (
         renderItems()

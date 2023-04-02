@@ -8,10 +8,10 @@ import {
   ImageBackground,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
-import { Header } from "../components";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
+import { ContainerComponent, Header } from "../components";
 import { COLORS, FONTS } from "../constants";
-import { FilterSvg, SearchSvg } from "../svg";
+import { Empty, FilterSvg, SearchSvg } from "../svg";
 import axios from "axios";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useContext } from "react";
@@ -20,16 +20,26 @@ import { userContext } from "../navigation/userContext";
 export default function Search() {
   const navigation = useNavigation();
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api`;
-  const { setSelectedTab, setSearchText_, setType_ } = useContext(userContext);
+  const {
+    setSelectedTab,
+    setSearchText_,
+    setType_,
+    flag_,
+    setFlag_,
+    sorted_,
+    setSorted_,
+    type_,
+  } = useContext(userContext);
+  const isFocused = useIsFocused();
   const [typeList, setTypeList] = useState([]);
 
   const [search, setsearch] = useState("");
-  // const scrollRef = useAnimatedRef();
-  // const [selectedIndex, setSelectedIndex] = useState(0);
 
   //renders the types when the page finishes to load
   useEffect(() => {
-    getTypeList();
+    if (isFocused) {
+      getTypeList();
+    }
     return () => {};
   }, []);
 
@@ -103,11 +113,18 @@ export default function Search() {
                     flexDirection: "row",
                   }}
                   onPress={() =>
-                    navigation.navigate("ItemsByCtegory", {
-                      type: type.item_type_name,
-                      sorted: null,
-                      flag: false,
-                    })
+                    // navigation.navigate("ItemsByCtegory", {
+                    //   type: type.item_type_name,
+                    //   sorted: null,
+                    //   flag: false,
+                    // })
+                    {
+                      setSelectedTab("ItemsByCtegory");
+                      setSearchText_(search);
+                      setType_(type.item_type_name);
+                      setSorted_(null);
+                      setFlag_(false);
+                    }
                   }>
                   <ImageBackground
                     source={{

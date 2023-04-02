@@ -203,8 +203,9 @@ export default function SearchUsersFollow() {
       }}>
       <Header title=" משתמשות במעקב" goBack={false} flag={false} />
       {renderSearch()}
-      {!noRes&& (renderUsers())}
-      {noRes && (
+      {!noRes ? (
+        renderUsers()
+      ) : (
         <ContainerComponent>
           <View style={{ alignSelf: "center", marginBottom: 35 }}>
             <Empty />

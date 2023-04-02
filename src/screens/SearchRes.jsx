@@ -10,9 +10,9 @@ import {
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
-import { Header } from "../components";
+import { ContainerComponent, Header } from "../components";
 import { COLORS, FONTS } from "../constants";
-import { FilterSvg, SearchSvg, BagSvg, HeartSvg } from "../svg";
+import { FilterSvg, SearchSvg, BagSvg, HeartSvg, Empty } from "../svg";
 import axios from "axios";
 import { userContext } from "../navigation/userContext";
 
@@ -40,6 +40,7 @@ export default function SearchRes(props) {
   const [itemsImageByType, setItemsImageByType] = useState([]);
   const [UsersFavList, setUsersFavList] = useState([]);
   const [UsersShopList, setUsersShopList] = useState([]);
+  const [noRes, setNoRes] = useState(false);
 
   // const searchText = props.route.params.searchText;
   const searchText = searchText_;
@@ -51,12 +52,16 @@ export default function SearchRes(props) {
   }, [brandsList, categoriesList]);
 
   useEffect(() => {
-    if (isFocused) {
+    if (isFocused || searchText == "") {
       GetBrandsList();
       GetCategoriesList();
       GetItemsNamesList();
       getShopItems();
       getFavItems();
+      setNoRes(false);
+    }
+    if (searchText == "") {
+      setSelectedTab("Search");
     }
   }, [isFocused, searchText]);
 
@@ -112,21 +117,7 @@ export default function SearchRes(props) {
             GetItemPhotos(res.data);
           })
           .catch((err) => {
-            console.log("err in GetSearcResults 1", res);
-          });
-      }
-      if (categoriesList.includes(searchText)) {
-        const categoriesURL = hebrewToUrlEncoded(searchText);
-        axios
-          .get(
-            `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemByCategory/Category_name/${categoriesURL}/UserId/${loggedUser.id}`
-          )
-          .then((res) => {
-            setitemsBySearch(res.data);
-            GetItemPhotos(res.data);
-          })
-          .catch((err) => {
-            console.log("err in GetSearcResults 2", res);
+            console.log("err in GetSearcResults 1", err);
           });
       } else if (categoriesList.includes(searchText)) {
         const categoriesURL = hebrewToUrlEncoded(searchText);
@@ -139,7 +130,7 @@ export default function SearchRes(props) {
             GetItemPhotos(res.data);
           })
           .catch((err) => {
-            console.log("err in GetSearcResults 2", res);
+            console.log("err in GetSearcResults 2", err);
           });
       } else if (itemsByNameList.includes(searchText)) {
         axios
@@ -158,6 +149,10 @@ export default function SearchRes(props) {
             console.log("err in GetItemByName", err);
           });
       }
+    }
+    //to check if we got items to show
+    if (itemsBySearch.length == 0) {
+      setNoRes(true);
     }
   }
 
@@ -311,10 +306,11 @@ export default function SearchRes(props) {
             width: "100%",
             height: 44,
             backgroundColor: COLORS.white,
-            borderRadius: 5,
+            borderRadius: 15,
             flexDirection: "row",
             alignItems: "center",
           }}>
+            
           <View style={{ paddingLeft: 15, paddingRight: 10 }}>
             <TouchableOpacity
               onPress={() => {
@@ -329,6 +325,7 @@ export default function SearchRes(props) {
             placeholder="חפשי פריט (קטגוריה/ מותג/ שם פריט)..."
             onChangeText={(text) => setnextSearch(text)}
             keyboardType="web-search"
+            defaultValue={searchText}
           />
           <TouchableOpacity
             style={{
@@ -477,10 +474,74 @@ export default function SearchRes(props) {
         flex: 1,
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
       }}>
-      <Header title={searchText} />
-
+      <Header title={searchText } />
       {renderSearch()}
-      {renderItems()}
+      {!noRes ? (
+        renderItems()
+      ) : (
+        <ContainerComponent>
+          <View style={{ alignSelf: "center", marginBottom: 35 }}>
+            <Empty />
+          </View>
+          <Text
+            style={{
+              textAlign: "center",
+              ...FONTS.H2,
+              textTransform: "capitalize",
+              color: COLORS.black,
+              lineHeight: 22 * 1.2,
+              marginBottom: 18,
+            }}>
+            לא קיים מידע
+          </Text>
+          <Text
+            style={{
+              textAlign: "center",
+              ...FONTS.Mulish_400Regular,
+              fontSize: 16,
+              color: COLORS.gray,
+              paddingHorizontal: 50,
+              marginBottom: 30,
+            }}>
+            לא נמצאו תוצאות התואמות את החיפוש שלך{" "}
+          </Text>
+          <View>
+            <TouchableOpacity
+              onPress={() => setSelectedTab("Search")}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                paddingVertical: 8,
+                paddingHorizontal: 4,
+                marginBottom: 15,
+                backgroundColor: "#F2F2F2",
+                borderRadius: 20,
+                borderWidth: 1,
+                borderColor: "#E5E5E5",
+                shadowColor: "#000",
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                shadowOpacity: 0.23,
+                shadowRadius: 2.62,
+                elevation: 4,
+              }}>
+              <FilterSvg filled={true} />
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: "bold",
+                  color: "#333",
+                  marginLeft: 8,
+                }}>
+                חזרה לחיפוש
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </ContainerComponent>
+      )}
     </SafeAreaView>
   );
 }

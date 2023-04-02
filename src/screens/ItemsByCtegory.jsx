@@ -13,32 +13,37 @@ import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { Button, Header, ContainerComponent } from "../components";
 import { COLORS, FONTS } from "../constants";
-import {
-  FilterSvg,
-  SearchSvg,
-  BagSvg,
-  HeartSvg,
-  Minus,
-  ViewAll,
-  Empty,
-} from "../svg";
-import axios from "axios";
+import { FilterSvg, SearchSvg, BagSvg, HeartSvg, Empty } from "../svg";
+import axios from "axios";  
 import { userContext } from "../navigation/userContext";
 
 export default function ItemsByCtegory(props) {
   const navigation = useNavigation();
-  const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
-  const { loggedUser, GetItemForAlgo, shopScore, favScore } =
-    useContext(userContext);
+  const {
+    loggedUser,
+    GetItemForAlgo,
+    shopScore,
+    favScore,
+    flag_,
+    sorted_,
+    type_,
+    setSelectedTab,
+  } = useContext(userContext);
   const isFocused = useIsFocused();
   const [search, setsearch] = useState("");
   const [itemsByType, setItemsByType] = useState([]);
   const [itemsImageByType, setItemsImageByType] = useState([]);
   const [UsersFavList, setUsersFavList] = useState([]);
   const [UsersShopList, setUsersShopList] = useState([]);
-  const type = props.route.params.type;
-  const sorted=props.route.params.sorted;
-const noResinSort=props.route.params.flag;
+  const [noRes, setNoRes] = useState(false);
+
+  // const type = props.route.params.type;
+  // const sorted = props.route.params.sorted;
+  // const noResinSort = props.route.params.flag;
+  const type = type_;
+  const sorted = sorted_;
+  const noResinSort = flag_;
+
   useEffect(() => {
     if (isFocused) {
       GetItemsByCategory();
@@ -54,15 +59,18 @@ const noResinSort=props.route.params.flag;
         `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemByType/Type/${typeURL}/UserId/${loggedUser.id}`
       )
       .then((res) => {
-        setItemsByType(res.data);
-        GetItemPhotos(res.data);
-        setItemsByType(res.data);
-        GetItemPhotos(res.data);
+        if (res.data === 0) {
+          setNoRes(true);
+        } else {
+          setItemsByType(res.data);
+          GetItemPhotos(res.data);
+        }
       })
       .catch((err) => {
-        console.log(err);
+        console.log("err in GetItemsByCategory", err);
       });
   }
+
   function GetItemPhotos(items) {
     // pass the items array as a parameter
     const promises = items.map((item) => {
@@ -79,9 +87,10 @@ const noResinSort=props.route.params.flag;
         setItemsImageByType(photos);
       })
       .catch((error) => {
-        console.log(error);
+        console.log("err in GetItemPhotos", error);
       });
   }
+
   function hebrewToUrlEncoded(hebrewStr) {
     const utf8EncodedStr = unescape(encodeURIComponent(hebrewStr));
     let encodedStr = "";
@@ -95,7 +104,7 @@ const noResinSort=props.route.params.flag;
     }
     return encodedStr;
   }
-  
+
   ///handle fav list
   function getFavItems() {
     axios
@@ -104,7 +113,6 @@ const noResinSort=props.route.params.flag;
           loggedUser.id
       )
       .then((res) => {
-        console.log(res.data);
         if (res.data == "No items yet") {
           setUsersFavList("");
         } else {
@@ -113,9 +121,10 @@ const noResinSort=props.route.params.flag;
         }
       })
       .catch((err) => {
-        console.log("cant get fav", err);
+        console.log("err in getFavItems", err);
       });
   }
+
   function AddtoFav(item_id) {
     axios
       .post(
@@ -128,10 +137,10 @@ const noResinSort=props.route.params.flag;
         GetItemForAlgo(item_id, favScore, loggedUser.id);
       })
       .catch((err) => {
-        // alert("cant add to fav");
-        console.log("cant add to fav", err);
+        console.log("err in AddtoFav", err);
       });
   }
+
   function RemoveFromFav(itemId) {
     axios
       .delete(
@@ -142,10 +151,10 @@ const noResinSort=props.route.params.flag;
         setUsersFavList((prevList) => prevList.filter((id) => id !== itemId));
       })
       .catch((err) => {
-        // alert("");
-        console.log("cant remove from getFavItems", err);
+        console.log("err in RemoveFromFav", err);
       });
   }
+
   //handle shop list
   function getShopItems() {
     axios
@@ -162,7 +171,7 @@ const noResinSort=props.route.params.flag;
         }
       })
       .catch((err) => {
-        console.log("cant get shop list", err);
+        console.log("err in getShopItems", err);
       });
     axios
       .get(
@@ -178,9 +187,10 @@ const noResinSort=props.route.params.flag;
         }
       })
       .catch((err) => {
-        console.log("cant get shop list", err);
+        console.log("err in getShopItems", err);
       });
   }
+
   function AddToShopList(item_id) {
     axios
       .post(
@@ -193,10 +203,10 @@ const noResinSort=props.route.params.flag;
         GetItemForAlgo(item_id, shopScore, loggedUser.id);
       })
       .catch((err) => {
-        alert("cant add to shop list");
-        console.log(err);
+        console.log("err in AddToShopList", err);
       });
   }
+
   function RemoveFromShopList(itemId) {
     axios
       .delete(
@@ -206,42 +216,34 @@ const noResinSort=props.route.params.flag;
         setUsersShopList((prevList) => prevList.filter((id) => id !== itemId));
       })
       .catch((err) => {
-        alert("cant add to fav");
-        console.log(err);
-        // console.log(newFav);
+        console.log("err in RemoveFromShopList", err);
       });
   }
 
-
-  //need to do shearch by categories
   function renderSearch() {
-    // if (!itemsByType) {
     return (
       <View
         style={{
           paddingHorizontal: 20,
           marginTop: 10,
           marginBottom: 20,
-        }}
-      >
+        }}>
         <View
           style={{
             width: "100%",
             height: 44,
             backgroundColor: COLORS.white,
-            borderRadius: 5,
+            borderRadius: 15,
             flexDirection: "row",
             alignItems: "center",
-          }}
-        >
+          }}>
           <View style={{ paddingLeft: 15, paddingRight: 10 }}>
             <TouchableOpacity
               onPress={() =>
                 navigation.navigate("SearchRes", {
                   searchText: search,
                 })
-              }
-            >
+              }>
               <SearchSvg />
             </TouchableOpacity>
           </View>
@@ -256,14 +258,12 @@ const noResinSort=props.route.params.flag;
               paddingHorizontal: 15,
               paddingVertical: 5,
             }}
-            onPress={() => navigation.navigate("Filter", { type: type })}
-          >
+            onPress={() => navigation.navigate("Filter", { type: type })}>
             <FilterSvg />
           </TouchableOpacity>
         </View>
       </View>
     );
-    // }
   }
 
   function renderItems() {
@@ -288,14 +288,11 @@ const noResinSort=props.route.params.flag;
                 borderRadius: 10,
                 backgroundColor: COLORS.white,
               }}
-              //Osherrrrrrrrrrrr///////////////////////////////////////////////
               onPress={() => {
                 navigation.navigate("ProductDetails", {
                   item: item,
                 });
-              }}
-              //Osherrrrrrrrrrrr///////////////////////////////////////////////
-            >
+              }}>
               {itemsImageByType
                 .filter((photo) => photo.item_ID === item.id)
                 .slice(0, 1)
@@ -308,14 +305,12 @@ const noResinSort=props.route.params.flag;
                         height: 128,
                       }}
                       imageStyle={{ borderRadius: 10 }}
-                      key={photo.id}
-                    >
+                      key={photo.id}>
                       {UsersFavList.includes(item.id) && (
                         // render the filled heart SVG if the item ID is in the UsersFavList
                         <TouchableOpacity
                           style={{ left: 12, top: 12 }}
-                          onPress={() => RemoveFromFav(item.id)}
-                        >
+                          onPress={() => RemoveFromFav(item.id)}>
                           <HeartSvg filled={true} />
                         </TouchableOpacity>
                       )}
@@ -323,8 +318,7 @@ const noResinSort=props.route.params.flag;
                         // render the unfilled heart SVG if the item ID is not in the UsersFavList
                         <TouchableOpacity
                           style={{ left: 12, top: 12 }}
-                          onPress={() => AddtoFav(item.id)}
-                        >
+                          onPress={() => AddtoFav(item.id)}>
                           <HeartSvg filled={false} />
                         </TouchableOpacity>
                       )}
@@ -336,8 +330,7 @@ const noResinSort=props.route.params.flag;
                   paddingHorizontal: 12,
                   paddingBottom: 15,
                   paddingTop: 12,
-                }}
-              >
+                }}>
                 <Text
                   style={{
                     ...FONTS.Mulish_600SemiBold,
@@ -347,8 +340,7 @@ const noResinSort=props.route.params.flag;
                     color: COLORS.black,
                     marginBottom: 6,
                     textAlign: "right",
-                  }}
-                >
+                  }}>
                   {item.name}
                 </Text>
                 <Text
@@ -357,8 +349,7 @@ const noResinSort=props.route.params.flag;
                     ...FONTS.Mulish_400Regular,
                     fontSize: 14,
                     textAlign: "right",
-                  }}
-                >
+                  }}>
                   מידה: {item.size}
                 </Text>
                 <View
@@ -375,8 +366,7 @@ const noResinSort=props.route.params.flag;
                     fontSize: 14,
                     color: COLORS.black,
                     textAlign: "left",
-                  }}
-                >
+                  }}>
                   ₪ {item.price}
                 </Text>
               </View>
@@ -384,8 +374,7 @@ const noResinSort=props.route.params.flag;
                 // render the filled heart SVG if the item ID is in the UsersFavList
                 <TouchableOpacity
                   style={{ position: "absolute", right: 12, bottom: 12 }}
-                  onPress={() => RemoveFromShopList(item.id)}
-                >
+                  onPress={() => RemoveFromShopList(item.id)}>
                   <BagSvg color="#626262" inCart={true} />
                 </TouchableOpacity>
               )}
@@ -393,8 +382,7 @@ const noResinSort=props.route.params.flag;
                 // render the unfilled heart SVG if the item ID is not in the UsersFavList
                 <TouchableOpacity
                   style={{ position: "absolute", right: 12, bottom: 12 }}
-                  onPress={() => AddToShopList(item.id)}
-                >
+                  onPress={() => AddToShopList(item.id)}>
                   <BagSvg color="#D7BA7B" inCart={false} />
                 </TouchableOpacity>
               )}
@@ -404,9 +392,10 @@ const noResinSort=props.route.params.flag;
       </View>
     );
   }
+
   function renderClear() {
     return (
-      <View >
+      <View>
         <TouchableOpacity
           onPress={() =>
             navigation.navigate("ItemsByCtegory", {
@@ -420,7 +409,7 @@ const noResinSort=props.route.params.flag;
             justifyContent: "center",
             paddingVertical: 8,
             paddingHorizontal: 4,
-            marginBottom:15,
+            marginBottom: 15,
             backgroundColor: "#F2F2F2",
             borderRadius: 20,
             borderWidth: 1,
@@ -433,8 +422,7 @@ const noResinSort=props.route.params.flag;
             shadowOpacity: 0.23,
             shadowRadius: 2.62,
             elevation: 4,
-          }}
-        >
+          }}>
           <FilterSvg filled={true} />
           <Text
             style={{
@@ -442,15 +430,14 @@ const noResinSort=props.route.params.flag;
               fontWeight: "bold",
               color: "#333",
               marginLeft: 8,
-            }}
-          >
+            }}>
             נקי את הסינון
           </Text>
         </TouchableOpacity>
       </View>
     );
   }
-  
+
   function noFiltersResults() {
     return (
       <ScrollView
@@ -460,8 +447,7 @@ const noResinSort=props.route.params.flag;
           alignItems: "center",
           paddingVertical: 25,
         }}
-        showsHorizontalScrollIndicator={false}
-      >
+        showsHorizontalScrollIndicator={false}>
         <ContainerComponent>
           <View style={{ alignSelf: "center", marginBottom: 35 }}>
             <Empty />
@@ -474,8 +460,7 @@ const noResinSort=props.route.params.flag;
               color: COLORS.black,
               lineHeight: 22 * 1.2,
               marginBottom: 18,
-            }}
-          >
+            }}>
             לא נמצאו תוצאות
           </Text>
           <Text
@@ -486,8 +471,7 @@ const noResinSort=props.route.params.flag;
               color: COLORS.gray,
               paddingHorizontal: 50,
               marginBottom: 30,
-            }}
-          >
+            }}>
             לא נמצאו פריטים התואמים את החיפוש שלך{" "}
           </Text>
           {renderClear()}
@@ -502,15 +486,77 @@ const noResinSort=props.route.params.flag;
         flex: 1,
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
       }}>
-      <Header title={type} goBack={true} onPress={() => navigation.goBack()} />
+      <Header title={type} />
 
       {renderSearch()}
       {noResinSort && noFiltersResults()}
-     
+
       {sorted && renderClear()}
-      {!noResinSort &&renderItems()}
-      
+      {!noResinSort && !noRes && renderItems()}
+      {noRes && (
+        <ContainerComponent>
+          <View style={{ alignSelf: "center", marginBottom: 35 }}>
+            <Empty />
+          </View>
+          <Text
+            style={{
+              textAlign: "center",
+              ...FONTS.H2,
+              textTransform: "capitalize",
+              color: COLORS.black,
+              lineHeight: 22 * 1.2,
+              marginBottom: 18,
+            }}>
+            לא קיים מידע
+          </Text>
+          <Text
+            style={{
+              textAlign: "center",
+              ...FONTS.Mulish_400Regular,
+              fontSize: 16,
+              color: COLORS.gray,
+              paddingHorizontal: 50,
+              marginBottom: 30,
+            }}>
+            לא נמצאו תוצאות התואמות את החיפוש שלך{" "}
+          </Text>
+          <View>
+            <TouchableOpacity
+              onPress={() => setSelectedTab("Search")}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                paddingVertical: 8,
+                paddingHorizontal: 4,
+                marginBottom: 15,
+                backgroundColor: "#F2F2F2",
+                borderRadius: 20,
+                borderWidth: 1,
+                borderColor: "#E5E5E5",
+                shadowColor: "#000",
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                shadowOpacity: 0.23,
+                shadowRadius: 2.62,
+                elevation: 4,
+              }}>
+              <FilterSvg filled={true} />
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: "bold",
+                  color: "#333",
+                  marginLeft: 8,
+                }}>
+                חזרה לחיפוש
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </ContainerComponent>
+      )}
     </SafeAreaView>
   );
-
-    }
+}

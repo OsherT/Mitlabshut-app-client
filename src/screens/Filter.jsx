@@ -21,9 +21,8 @@ import {
 import axios from "axios";
 import { userContext } from "../navigation/userContext";
 
-export default function Filter(props) {
+export default function Filter() {
   const navigation = useNavigation();
-  const type = props.route.params.type;
   const [size, setSize] = useState("null");
   const [selectColor, setSelectColor] = useState("null");
   const [productCat, setProductCat] = useState("null");
@@ -31,17 +30,29 @@ export default function Filter(props) {
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
   const [sizesList, setSizesList] = useState([]);
   const [categoriesList, setCategoriesList] = useState([]);
-  const { loggedUser } = useContext(userContext);
+  const {
+    loggedUser,
+    type_,
+    setType_,
+    flag_,
+    setFlag_,
+    sorted_,
+    setSorted_,
+    setSelectedTab,
+  } = useContext(userContext);
   const [brandsList, setBrandsList] = useState([]);
   const [productBrand, setProductBrand] = useState("null");
   const [maxVal, setmaxVal] = useState(-1);
   const [minVal, setminVal] = useState(-1);
+  const type = type_;
+
   useEffect(() => {
     GetColorsList();
     GetSizesList();
     GetCategoriesList();
     GetBrandsList();
   }, []);
+
   function hebrewToUrlEncoded(hebrewStr) {
     const utf8EncodedStr = unescape(encodeURIComponent(hebrewStr));
     let encodedStr = "";
@@ -55,8 +66,8 @@ export default function Filter(props) {
     }
     return encodedStr;
   }
+
   function SortItems() {
-    console.log(productCat, type, size, productBrand, selectColor);
     let url = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemByUserIdAndFilters/UserId/${
       loggedUser.id
     }?ItemType=${hebrewToUrlEncoded(type)}&`;
@@ -66,7 +77,9 @@ export default function Filter(props) {
         ? `&ItemBrand=${productBrand}&`
         : "ItemBrand=null&";
     url +=
-      selectColor !== "null" ? `&ItemColor=${hebrewToUrlEncoded(selectColor)}&` : "ItemColor=null&";
+      selectColor !== "null"
+        ? `&ItemColor=${hebrewToUrlEncoded(selectColor)}&`
+        : "ItemColor=null&";
     url += size !== "null" ? `&ItemSize=${size}&` : "ItemSize=null&";
     url +=
       productCat !== "null"
@@ -74,28 +87,26 @@ export default function Filter(props) {
         : "ItemCategory=null&";
     url += `MinPrice=${minVal}&MaxPrice=${maxVal}`;
 
-    console.log(url);
     axios
       .get(url)
       .then((res) => {
-        if (res.data!==0&&type) {
-            navigation.navigate("ItemsByCtegory", {
-                type: type,
-                sorted: res.data,
-                flag:false
-              }); 
+        if (res.data !== 0 && type) {
+          setSelectedTab("ItemsByCtegory");
+          setType_(type);
+          setSorted_(res.data);
+          setFlag_(false);
+        } else {
+          setSelectedTab("ItemsByCtegory");
+          setType_(type);
+          setSorted_(null);
+          setFlag_(true);
         }
-        else{navigation.navigate("ItemsByCtegory", {
-            type: type,
-            sorted: null,
-            flag:true
-          }); }
-       
       })
       .catch((err) => {
-        console.log(err);
+        console.log("err in SortItems ", err);
       });
   }
+
   const GetColorsList = () => {
     fetch(ApiUrl + "/GetColor", {
       method: "GET",
@@ -109,7 +120,6 @@ export default function Filter(props) {
       })
       .then(
         (data) => {
-          console.log(data);
           setColorsList(
             data.map((item) => ({ value: item.color_name, color: item.color }))
           );
@@ -119,6 +129,7 @@ export default function Filter(props) {
         }
       );
   };
+
   const GetSizesList = () => {
     fetch(ApiUrl + "/GetItem_size", {
       method: "GET",
@@ -139,6 +150,7 @@ export default function Filter(props) {
         }
       );
   };
+
   const GetCategoriesList = () => {
     fetch(ApiUrl + "/GetCategory", {
       method: "GET",
@@ -164,6 +176,7 @@ export default function Filter(props) {
         }
       );
   };
+  
   const GetBrandsList = () => {
     fetch(ApiUrl + "/GetBrand", {
       method: "GET",
@@ -193,8 +206,7 @@ export default function Filter(props) {
           paddingHorizontal: 20,
           paddingVertical: 25,
         }}
-        showsHorizontalScrollIndicator={false}
-      >
+        showsHorizontalScrollIndicator={false}>
         <ContainerComponent>
           <Text
             style={{
@@ -203,8 +215,7 @@ export default function Filter(props) {
               marginBottom: 14,
               color: COLORS.black,
               alignSelf: "flex-end",
-            }}
-          >
+            }}>
             מידה
           </Text>
           <View
@@ -212,12 +223,10 @@ export default function Filter(props) {
               flexDirection: "row",
               alignItems: "center",
               marginBottom: 25,
-            }}
-          >
+            }}>
             <ScrollView
               horizontal={true}
-              showsHorizontalScrollIndicator={false}
-            >
+              showsHorizontalScrollIndicator={false}>
               {sizesList.map((item, index) => {
                 const isSelected = size === item.value;
                 return (
@@ -240,15 +249,13 @@ export default function Filter(props) {
                     }}
                     onPress={() => {
                       setSize(isSelected ? null : item.value);
-                    }}
-                  >
+                    }}>
                     <Text
                       style={{
                         ...FONTS.Mulish_600SemiBold,
                         fontSize: 12,
                         color: isSelected ? COLORS.white : COLORS.black,
-                      }}
-                    >
+                      }}>
                       {item.value}
                     </Text>
                   </TouchableOpacity>
@@ -264,8 +271,7 @@ export default function Filter(props) {
               marginBottom: 14,
               color: COLORS.black,
               alignSelf: "flex-end",
-            }}
-          >
+            }}>
             צבע
           </Text>
           <View
@@ -273,12 +279,10 @@ export default function Filter(props) {
               flexDirection: "row",
               alignItems: "center",
               marginBottom: 25,
-            }}
-          >
+            }}>
             <ScrollView
               horizontal={true}
-              showsHorizontalScrollIndicator={false}
-            >
+              showsHorizontalScrollIndicator={false}>
               {colorsList.map((item, index) => {
                 return (
                   <TouchableOpacity
@@ -294,8 +298,9 @@ export default function Filter(props) {
                       borderWidth: selectColor === item.value ? 3 : 0.3,
                       borderColor: COLORS.golden,
                     }}
-                    onPress={() => setSelectColor(item.value)}
-                  ></TouchableOpacity>
+                    onPress={() =>
+                      setSelectColor(item.value)
+                    }></TouchableOpacity>
                 );
               })}
             </ScrollView>
@@ -307,8 +312,7 @@ export default function Filter(props) {
               marginBottom: 14,
               color: COLORS.black,
               alignSelf: "flex-end",
-            }}
-          >
+            }}>
             מחיר
           </Text>
           <View
@@ -316,8 +320,7 @@ export default function Filter(props) {
               flexDirection: "row",
               alignItems: "center",
               marginBottom: 25,
-            }}
-          >
+            }}>
             <View
               style={{
                 width: 90,
@@ -327,8 +330,7 @@ export default function Filter(props) {
                 borderWidth: 1,
                 marginRight: 10,
                 marginLeft: 10,
-              }}
-            >
+              }}>
               <TextInput
                 placeholder="₪ 1500"
                 textAlign={"center"}
@@ -344,8 +346,7 @@ export default function Filter(props) {
                 fontSize: 14,
                 color: COLORS.black,
                 marginRight: 10,
-              }}
-            >
+              }}>
               מקסימום
             </Text>
             <View
@@ -356,8 +357,7 @@ export default function Filter(props) {
                 borderColor: COLORS.goldenTransparent_05,
                 borderWidth: 1,
                 marginLeft: 10,
-              }}
-            >
+              }}>
               <TextInput
                 placeholder="₪ 0"
                 textAlign={"center"}
@@ -372,8 +372,7 @@ export default function Filter(props) {
                 ...FONTS.Mulish_400Regular,
                 fontSize: 14,
                 color: COLORS.black,
-              }}
-            >
+              }}>
               מינימום
             </Text>
           </View>
@@ -385,8 +384,7 @@ export default function Filter(props) {
                 marginBottom: 14,
                 color: COLORS.black,
                 alignSelf: "flex-end",
-              }}
-            >
+              }}>
               קטגוריות
             </Text>
             <View
@@ -395,8 +393,7 @@ export default function Filter(props) {
                 flexDirection: "row",
                 flexWrap: "wrap",
                 flexDirection: "row-reverse",
-              }}
-            >
+              }}>
               {categoriesList.map((item, index) => (
                 <TouchableOpacity
                   style={{
@@ -420,8 +417,7 @@ export default function Filter(props) {
                     } else {
                       setProductCat(item.value);
                     }
-                  }}
-                >
+                  }}>
                   <Text
                     style={{
                       paddingHorizontal: 20,
@@ -430,8 +426,7 @@ export default function Filter(props) {
                       fontSize: 12,
                       ...FONTS.Mulish_600SemiBold,
                       color: productCat == index ? COLORS.white : COLORS.black,
-                    }}
-                  >
+                    }}>
                     {item.value}
                   </Text>
                 </TouchableOpacity>
@@ -446,8 +441,7 @@ export default function Filter(props) {
                 marginBottom: 14,
                 color: COLORS.black,
                 alignSelf: "flex-end",
-              }}
-            >
+              }}>
               מותגים ורשתות
             </Text>
             <View
@@ -456,8 +450,7 @@ export default function Filter(props) {
                 flexDirection: "row",
                 flexWrap: "wrap",
                 flexDirection: "row-reverse",
-              }}
-            >
+              }}>
               {brandsList.map((item, index) => (
                 <TouchableOpacity
                   style={{
@@ -482,8 +475,7 @@ export default function Filter(props) {
                     } else {
                       setProductBrand(item.value);
                     }
-                  }}
-                >
+                  }}>
                   <Text
                     style={{
                       paddingHorizontal: 20,
@@ -493,8 +485,7 @@ export default function Filter(props) {
                       ...FONTS.Mulish_600SemiBold,
                       color:
                         productBrand == index ? COLORS.white : COLORS.black,
-                    }}
-                  >
+                    }}>
                     {item.value}
                   </Text>
                 </TouchableOpacity>
@@ -509,7 +500,7 @@ export default function Filter(props) {
 
   return (
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
-      <Header title="Filter" onPress={() => navigation.goBack()} />
+      <Header title="סינון"  />
       {renderContent()}
     </SafeAreaView>
   );

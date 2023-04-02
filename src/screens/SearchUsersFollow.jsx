@@ -16,12 +16,13 @@ import { Empty, FilterSvg, SearchSvg } from "../svg";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { userContext } from "../navigation/userContext";
 import axios from "axios";
+import { ScrollView } from "react-native-gesture-handler";
 
 export default function SearchUsersFollow() {
   const navigation = useNavigation();
 
   const [searchName, setSearchName] = useState("");
-  const { loggedUser, setloggedUser } = useContext(userContext);
+  const { loggedUser, setSelectedTab } = useContext(userContext);
   const isFocused = useIsFocused();
   const [usersFollow, setUsersFollow] = useState([]);
   const [noRes, setNoRes] = useState(false);
@@ -116,7 +117,8 @@ export default function SearchUsersFollow() {
               onChangeText={(text) => {
                 setSearchName(text);
               }}
-              keyboardType="web-search"
+              keyboardType="default"
+              returnKeyType="search"
               defaultValue=""
             />
           </View>
@@ -195,17 +197,17 @@ export default function SearchUsersFollow() {
     );
   }
 
-  return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-      }}>
-      <Header title=" משתמשות במעקב" goBack={false} flag={false} />
-      {renderSearch()}
-      {!noRes ? (
-        renderUsers()
-      ) : (
+  //shows no res when there is no data to show
+  function noSearchResults() {
+    return (
+      <ScrollView
+        contentContainerStyle={{
+          flexGrow: 1,
+          paddingHorizontal: 20,
+          alignItems: "center",
+          paddingVertical: 25,
+        }}
+        showsHorizontalScrollIndicator={false}>
         <ContainerComponent>
           <View style={{ alignSelf: "center", marginBottom: 35 }}>
             <Empty />
@@ -232,8 +234,55 @@ export default function SearchUsersFollow() {
             }}>
             לא נמצאו משתמשים התואמים את החיפוש שלך{" "}
           </Text>
+          <View>
+            <TouchableOpacity
+              onPress={() => setSelectedTab("Profile")}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+                paddingVertical: 8,
+                paddingHorizontal: 4,
+                marginBottom: 15,
+                backgroundColor: "#F2F2F2",
+                borderRadius: 20,
+                borderWidth: 1,
+                borderColor: "#E5E5E5",
+                shadowColor: "#000",
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                shadowOpacity: 0.23,
+                shadowRadius: 2.62,
+                elevation: 4,
+              }}>
+              <FilterSvg filled={true} />
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: "bold",
+                  color: "#333",
+                  marginLeft: 8,
+                }}>
+                חזרה לדף האישי
+              </Text>
+            </TouchableOpacity>
+          </View>
         </ContainerComponent>
-      )}
+      </ScrollView>
+    );
+  }
+
+  return (
+    <SafeAreaView
+      style={{
+        flex: 1,
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+      }}>
+      <Header title=" משתמשות במעקב" goBack={false} flag={false} />
+      {renderSearch()}
+      {!noRes ? renderUsers() : noSearchResults()}
     </SafeAreaView>
   );
 }

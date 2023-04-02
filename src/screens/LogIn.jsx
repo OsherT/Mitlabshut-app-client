@@ -22,8 +22,9 @@ import { userContext } from "../navigation/userContext";
 
 export default function SignIn() {
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api`;
-  const { loggedUser, setloggedUser } = useContext(userContext);
+  const { loggedUser, setloggedUser, setSelectedTab } = useContext(userContext);
   const navigation = useNavigation();
+
   // const [userEmail, setUserEmail] = useState("");
   // const [userPassword, setUserPassword] = useState("");
 
@@ -60,6 +61,7 @@ export default function SignIn() {
             if (user.id > 0) {
               setloggedUser(user);
               navigation.navigate("MainLayout");
+              // setSelectedTab("Home");
             }
 
             //if deatails are incorrect

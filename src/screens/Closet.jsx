@@ -41,9 +41,6 @@ export default function Closet(props) {
   const closetId = closetId_ || route?.params?.closetId || loggedUser.closet_id;
   const owner = owner_ || route?.params?.owner || loggedUser;
 
-  // const closetId = closetId_ || loggedUser.closet_id;
-  // const owner = route?.params?.owner || loggedUser;
-
   const [UsersItems, setUsersItems] = useState([]);
   const [UsersItemPhotos, setUsersItemPhotos] = useState([]);
   const [UsersFavList, setUsersFavList] = useState([]);

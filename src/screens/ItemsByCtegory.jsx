@@ -11,10 +11,10 @@ import {
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
-import {  Header, ContainerComponent } from "../components";
+import { Header, ContainerComponent } from "../components";
 import { COLORS, FONTS } from "../constants";
 import { FilterSvg, SearchSvg, BagSvg, HeartSvg, Empty } from "../svg";
-import axios from "axios";  
+import axios from "axios";
 import { userContext } from "../navigation/userContext";
 
 export default function ItemsByCtegory(props) {
@@ -26,7 +26,9 @@ export default function ItemsByCtegory(props) {
     favScore,
     flag_,
     sorted_,
+    setSorted_,
     type_,
+    setType_,
     setSelectedTab,
   } = useContext(userContext);
   const isFocused = useIsFocused();
@@ -37,9 +39,6 @@ export default function ItemsByCtegory(props) {
   const [UsersShopList, setUsersShopList] = useState([]);
   const [noRes, setNoRes] = useState(false);
 
-  // const type = props.route.params.type;
-  // const sorted = props.route.params.sorted;
-  // const noResinSort = props.route.params.flag;
   const type = type_;
   const sorted = sorted_;
   const noResinSort = flag_;
@@ -251,14 +250,19 @@ export default function ItemsByCtegory(props) {
             style={{ flex: 1, textAlign: "right" }}
             placeholder="חפשי פריט (קטגוריה/ מותג/ שם פריט)..."
             onChangeText={(text) => setsearch(text)}
-            keyboardType="web-search"
+            keyboardType="default"
+            returnKeyType="search"
           />
           <TouchableOpacity
             style={{
               paddingHorizontal: 15,
               paddingVertical: 5,
             }}
-            onPress={() => navigation.navigate("Filter", { type: type })}>
+            onPress={() => {
+              // navigation.navigate("Filter", { type: type });
+              setSelectedTab("Filter");
+              setType_(type);
+            }}>
             <FilterSvg />
           </TouchableOpacity>
         </View>
@@ -398,10 +402,15 @@ export default function ItemsByCtegory(props) {
       <View>
         <TouchableOpacity
           onPress={() =>
-            navigation.navigate("ItemsByCtegory", {
-              type: type,
-              sorted: null,
-            })
+            // navigation.navigate("ItemsByCtegory", {
+            //   type: type,
+            //   sorted: null,
+            // })
+            {
+              setSelectedTab("Search");
+              setType_(type);
+              setSorted_(null);
+            }
           }
           style={{
             flexDirection: "row",
@@ -437,7 +446,7 @@ export default function ItemsByCtegory(props) {
       </View>
     );
   }
-
+  //shows no res from filter when there is no data to show
   function noFiltersResults() {
     return (
       <ScrollView
@@ -480,21 +489,18 @@ export default function ItemsByCtegory(props) {
     );
   }
 
-  return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-      }}>
-      <Header title={type} />
-
-      {!noRes && renderSearch()}
-      {noResinSort && noFiltersResults()}
-
-      {sorted && renderClear()}
-      {!noResinSort && !noRes && renderItems()}
-      {noRes && (
-        <ContainerComponent >
+  //shows no res when there is no data to show
+  function noSearchResults() {
+    return (
+      <ScrollView
+        contentContainerStyle={{
+          flexGrow: 1,
+          paddingHorizontal: 20,
+          alignItems: "center",
+          paddingVertical: 25,
+        }}
+        showsHorizontalScrollIndicator={false}>
+        <ContainerComponent>
           <View style={{ alignSelf: "center", marginBottom: 35 }}>
             <Empty />
           </View>
@@ -556,7 +562,23 @@ export default function ItemsByCtegory(props) {
             </TouchableOpacity>
           </View>
         </ContainerComponent>
-      )}
+      </ScrollView>
+    );
+  }
+
+  return (
+    <SafeAreaView
+      style={{
+        flex: 1,
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+      }}>
+      <Header title={type} />
+
+      {!noRes && !noResinSort && renderSearch()}
+      {!noResinSort && !noRes && renderItems()}
+      {noRes && noSearchResults()}
+      {noResinSort && noFiltersResults()}
+      {sorted && renderClear()}
     </SafeAreaView>
   );
 }

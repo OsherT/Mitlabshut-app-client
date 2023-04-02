@@ -9,9 +9,9 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
-import {  Header } from "../components";
+import { Header } from "../components";
 import { COLORS, FONTS } from "../constants";
-import {SearchSvg } from "../svg";
+import { SearchSvg } from "../svg";
 import axios from "axios";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useContext } from "react";
@@ -20,13 +20,8 @@ import { userContext } from "../navigation/userContext";
 export default function Search() {
   const navigation = useNavigation();
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api`;
-  const {
-    setSelectedTab,
-    setSearchText_,
-    setType_,
-    setFlag_,
-    setSorted_,
-  } = useContext(userContext);
+  const { setSelectedTab, setSearchText_, setType_, setFlag_, setSorted_ } =
+    useContext(userContext);
   const isFocused = useIsFocused();
   const [typeList, setTypeList] = useState([]);
 
@@ -83,7 +78,8 @@ export default function Search() {
             style={{ flex: 1, textAlign: "right", paddingRight: 15 }}
             placeholder="חפשי פריט (קטגוריה/ מותג/ שם פריט)..."
             onChangeText={(text) => setsearch(text)}
-            keyboardType="web-search"
+            keyboardType="default"
+            returnKeyType="search"
             defaultValue=""
           />
         </View>

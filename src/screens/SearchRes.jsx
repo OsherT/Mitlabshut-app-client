@@ -15,6 +15,7 @@ import { COLORS, FONTS } from "../constants";
 import { FilterSvg, SearchSvg, BagSvg, HeartSvg, Empty } from "../svg";
 import axios from "axios";
 import { userContext } from "../navigation/userContext";
+import { ScrollView } from "react-native-gesture-handler";
 
 //מציג את תוצאות החיפוש לפי קטגוריה או מותג
 export default function SearchRes(props) {
@@ -48,7 +49,7 @@ export default function SearchRes(props) {
     if (brandsList && categoriesList && itemsByNameList) {
       GetSearcResults();
     }
-  }, [brandsList, categoriesList]);
+  }, [brandsList, categoriesList, itemsByNameList]);
 
   useEffect(() => {
     if (isFocused) {
@@ -320,7 +321,8 @@ export default function SearchRes(props) {
               setnextSearch(text);
               setNoRes(true);
             }}
-            keyboardType="web-search"
+            keyboardType="default"
+            returnKeyType="search"
             defaultValue={searchText}
           />
           <TouchableOpacity
@@ -459,18 +461,17 @@ export default function SearchRes(props) {
       />
     );
   }
-
-  return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-      }}>
-      <Header title={searchText} />
-      {renderSearch()}
-      {!noRes ? (
-        renderItems()
-      ) : (
+  //shows no res when there is no data to show
+  function noSearchResults() {
+    return (
+      <ScrollView
+        contentContainerStyle={{
+          flexGrow: 1,
+          paddingHorizontal: 20,
+          alignItems: "center",
+          paddingVertical: 25,
+        }}
+        showsHorizontalScrollIndicator={false}>
         <ContainerComponent>
           <View style={{ alignSelf: "center", marginBottom: 35 }}>
             <Empty />
@@ -533,7 +534,18 @@ export default function SearchRes(props) {
             </TouchableOpacity>
           </View>
         </ContainerComponent>
-      )}
+      </ScrollView>
+    );
+  }
+  return (
+    <SafeAreaView
+      style={{
+        flex: 1,
+        paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+      }}>
+      <Header title={searchText} />
+      {!noRes && renderSearch()}
+      {!noRes ? renderItems() : noSearchResults()}
     </SafeAreaView>
   );
 }

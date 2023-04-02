@@ -10,9 +10,9 @@ import {
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
-import { Header } from "../components";
+import { ContainerComponent, Header } from "../components";
 import { COLORS, FONTS } from "../constants";
-import { SearchSvg } from "../svg";
+import { Empty, FilterSvg, SearchSvg } from "../svg";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { userContext } from "../navigation/userContext";
 import axios from "axios";
@@ -24,13 +24,16 @@ export default function SearchUsersFollow() {
   const { loggedUser, setloggedUser } = useContext(userContext);
   const isFocused = useIsFocused();
   const [usersFollow, setUsersFollow] = useState([]);
+  const [noRes, setNoRes] = useState(false);
 
   useEffect(() => {
     if (isFocused || searchName == "") {
       GetUsersFollow();
+      setNoRes(false);
     }
   }, [isFocused, searchName]);
 
+  //get all the users that the logged users i follow
   const GetUsersFollow = () => {
     fetch(
       "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetUserFollowingByUser/LoggedUser/" +
@@ -57,19 +60,24 @@ export default function SearchUsersFollow() {
   };
 
   //returns the search res
-  const searchUserByName = () => {
+  const SearchUserByName = () => {
     axios
       .get(
         `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetUserByFullName/FullName/${searchName}/UserID/${loggedUser.id}`
       )
       .then((res) => {
-        const tempArray = res.data.filter((d) => {
-          return usersFollow.some((u) => u.id === d.id);
-        });
-        setUsersFollow(tempArray);
+        if (res.data != 0) {
+          const tempArray = res.data.filter((d) => {
+            return usersFollow.some((u) => u.id === d.id);
+          });
+          setUsersFollow(tempArray);
+        } else {
+          console.log("NO RES");
+          setNoRes(true);
+        }
       })
       .catch((err) => {
-        console.log("searchUserByName error", err);
+        console.log("SearchUserByName error", err);
       });
   };
 
@@ -96,7 +104,7 @@ export default function SearchUsersFollow() {
               <TouchableOpacity
                 onPress={() => {
                   if (searchName != "") {
-                    searchUserByName();
+                    SearchUserByName();
                   }
                 }}>
                 <SearchSvg />
@@ -195,7 +203,36 @@ export default function SearchUsersFollow() {
       }}>
       <Header title=" משתמשות במעקב" goBack={false} flag={false} />
       {renderSearch()}
-      {renderUsers()}
+      {!noRes&& (renderUsers())}
+      {noRes && (
+        <ContainerComponent>
+          <View style={{ alignSelf: "center", marginBottom: 35 }}>
+            <Empty />
+          </View>
+          <Text
+            style={{
+              textAlign: "center",
+              ...FONTS.H2,
+              textTransform: "capitalize",
+              color: COLORS.black,
+              lineHeight: 22 * 1.2,
+              marginBottom: 18,
+            }}>
+            לא קיים מידע
+          </Text>
+          <Text
+            style={{
+              textAlign: "center",
+              ...FONTS.Mulish_400Regular,
+              fontSize: 16,
+              color: COLORS.gray,
+              paddingHorizontal: 50,
+              marginBottom: 30,
+            }}>
+            לא נמצאו משתמשים התואמים את החיפוש שלך{" "}
+          </Text>
+        </ContainerComponent>
+      )}
     </SafeAreaView>
   );
 }

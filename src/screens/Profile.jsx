@@ -11,7 +11,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { Header, ContainerComponent, ProfileCategory } from "../components";
 import { COLORS, FONTS } from "../constants";
-import { Edit, SignOutCategory } from "../svg";
+import { Edit, SearchSvg, SignOutCategory } from "../svg";
 import { userContext } from "../navigation/userContext";
 import { FlatList } from "react-native";
 import { Image } from "react-native";
@@ -192,7 +192,7 @@ export default function Profile() {
                 color: COLORS.black,
                 lineHeight: 20 * 1.2,
               }}>
-              ארונות במעקב...
+              ארונות במעקב...  <SearchSvg />
             </Text>
           </TouchableOpacity>
         </View>

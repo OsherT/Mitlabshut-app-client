@@ -30,6 +30,7 @@ export default function ItemsByCtegory(props) {
     type_,
     setType_,
     setSelectedTab,
+    setSearchText_,
   } = useContext(userContext);
   const isFocused = useIsFocused();
   const [search, setsearch] = useState("");
@@ -238,11 +239,10 @@ export default function ItemsByCtegory(props) {
           }}>
           <View style={{ paddingLeft: 15, paddingRight: 10 }}>
             <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("SearchRes", {
-                  searchText: search,
-                })
-              }>
+              onPress={() => {
+                setSelectedTab("SearchRes");
+                setSearchText_(search);
+              }}>
               <SearchSvg />
             </TouchableOpacity>
           </View>
@@ -250,6 +250,10 @@ export default function ItemsByCtegory(props) {
             style={{ flex: 1, textAlign: "right" }}
             placeholder="חפשי פריט (קטגוריה/ מותג/ שם פריט)..."
             onChangeText={(text) => setsearch(text)}
+            onSubmitEditing={({ nativeEvent }) => {
+              setSelectedTab("SearchRes");
+              setSearchText_(nativeEvent.text);
+            }}
             keyboardType="default"
             returnKeyType="search"
           />
@@ -259,7 +263,6 @@ export default function ItemsByCtegory(props) {
               paddingVertical: 5,
             }}
             onPress={() => {
-              // navigation.navigate("Filter", { type: type });
               setSelectedTab("Filter");
               setType_(type);
             }}>
@@ -570,7 +573,7 @@ export default function ItemsByCtegory(props) {
 
       {!noRes && !noResinSort && renderSearch()}
       {!noResinSort && !noRes && renderItems()}
-      {noRes && noSearchResults()}
+      {noRes &&  noSearchResults()}
       {noResinSort && noFiltersResults()}
       {sorted && renderClear()}
     </SafeAreaView>

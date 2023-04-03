@@ -321,6 +321,10 @@ export default function SearchRes(props) {
               setnextSearch(text);
               setNoRes(true);
             }}
+            onSubmitEditing={({ nativeEvent }) => {
+              setSelectedTab("SearchRes");
+              setSearchText_(nativeEvent.text);
+            }}
             keyboardType="default"
             returnKeyType="search"
             defaultValue={searchText}
@@ -330,7 +334,11 @@ export default function SearchRes(props) {
               paddingHorizontal: 15,
               paddingVertical: 5,
             }}
-            onPress={() => navigation.navigate("Filter", { type: "null" })}>
+            onPress={() => {
+              // navigation.navigate("Filter", { type: "null" })
+              setSelectedTab("Filter");
+              setType_(null);
+            }}>
             <FilterSvg />
           </TouchableOpacity>
         </View>

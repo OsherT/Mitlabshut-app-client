@@ -117,6 +117,10 @@ export default function SearchUsersFollow() {
               onChangeText={(text) => {
                 setSearchName(text);
               }}
+              onSubmitEditing={({ nativeEvent }) => {
+                SearchUserByName();
+                setSearchName(nativeEvent.text);
+              }}
               keyboardType="default"
               returnKeyType="search"
               defaultValue=""

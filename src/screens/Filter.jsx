@@ -10,16 +10,10 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
 import { Header, ContainerComponent, Button } from "../components";
-import {
-  AREA,
-  COLORS,
-  FONTS,
-  productSizes,
-  productColors,
-  tags,
-} from "../constants";
+import { AREA, COLORS, FONTS } from "../constants";
 import axios from "axios";
 import { userContext } from "../navigation/userContext";
+import { Alert } from "react-native";
 
 export default function Filter() {
   const navigation = useNavigation();
@@ -68,43 +62,55 @@ export default function Filter() {
   }
 
   function SortItems() {
-    let url = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemByUserIdAndFilters/UserId/${
-      loggedUser.id
-    }?ItemType=${hebrewToUrlEncoded(type)}&`;
+    if (
+      productBrand == "null" &&
+      selectColor == "null" &&
+      productCat == "null" &&
+      minVal == -1 &&
+      maxVal == -1 &&
+      size == "null"
+    ) {
+      setSelectedTab("ItemsByCtegory");
+      setType_(type);
+    } else {
+      let url = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemByUserIdAndFilters/UserId/${
+        loggedUser.id
+      }?ItemType=${hebrewToUrlEncoded(type)}&`;
 
-    url +=
-      productBrand !== "null"
-        ? `&ItemBrand=${productBrand}&`
-        : "ItemBrand=null&";
-    url +=
-      selectColor !== "null"
-        ? `&ItemColor=${hebrewToUrlEncoded(selectColor)}&`
-        : "ItemColor=null&";
-    url += size !== "null" ? `&ItemSize=${size}&` : "ItemSize=null&";
-    url +=
-      productCat !== "null"
-        ? `&ItemCategory=${hebrewToUrlEncoded(productCat)}&`
-        : "ItemCategory=null&";
-    url += `MinPrice=${minVal}&MaxPrice=${maxVal}`;
+      url +=
+        productBrand !== "null"
+          ? `&ItemBrand=${productBrand}&`
+          : "ItemBrand=null&";
+      url +=
+        selectColor !== "null"
+          ? `&ItemColor=${hebrewToUrlEncoded(selectColor)}&`
+          : "ItemColor=null&";
+      url += size !== "null" ? `&ItemSize=${size}&` : "ItemSize=null&";
+      url +=
+        productCat !== "null"
+          ? `&ItemCategory=${hebrewToUrlEncoded(productCat)}&`
+          : "ItemCategory=null&";
+      url += `MinPrice=${minVal}&MaxPrice=${maxVal}`;
 
-    axios
-      .get(url)
-      .then((res) => {
-        if (res.data !== 0 && type) {
-          setSelectedTab("ItemsByCtegory");
-          setType_(type);
-          setSorted_(res.data);
-          setFlag_(false);
-        } else {
-          setSelectedTab("ItemsByCtegory");
-          setType_(type);
-          setSorted_(null);
-          setFlag_(true);
-        }
-      })
-      .catch((err) => {
-        console.log("err in SortItems ", err);
-      });
+      axios
+        .get(url)
+        .then((res) => {
+          if (res.data !== 0 && type) {
+            setSelectedTab("ItemsByCtegory");
+            setType_(type);
+            setSorted_(res.data);
+            setFlag_(false);
+          } else {
+            setSelectedTab("ItemsByCtegory");
+            setType_(type);
+            setSorted_(null);
+            setFlag_(true);
+          }
+        })
+        .catch((err) => {
+          console.log("err in SortItems ", err);
+        });
+    }
   }
 
   const GetColorsList = () => {
@@ -176,7 +182,7 @@ export default function Filter() {
         }
       );
   };
-  
+
   const GetBrandsList = () => {
     fetch(ApiUrl + "/GetBrand", {
       method: "GET",
@@ -500,7 +506,7 @@ export default function Filter() {
 
   return (
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
-      <Header title="סינון"  />
+      <Header title="סינון" />
       {renderContent()}
     </SafeAreaView>
   );

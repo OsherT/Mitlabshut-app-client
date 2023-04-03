@@ -77,10 +77,14 @@ export default function Search() {
           <TextInput
             style={{ flex: 1, textAlign: "right", paddingRight: 15 }}
             placeholder="חפשי פריט (קטגוריה/ מותג/ שם פריט)..."
-            onChangeText={(text) => setsearch(text)}
+            defaultValue=""
             keyboardType="default"
             returnKeyType="search"
-            defaultValue=""
+            onChangeText={(text) => setsearch(text)}
+            onSubmitEditing={({ nativeEvent }) => {
+              setSelectedTab("SearchRes");
+              setSearchText_(nativeEvent.text);
+            }}
           />
         </View>
       </View>

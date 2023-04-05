@@ -1,5 +1,6 @@
 {
   "expo": {
+    "scheme": "mitlabshut",
     "name": "Mitlabshut",
     "slug": "Mitlabshut",
     "version": "1.0.0",
@@ -19,7 +20,8 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "Mitlabshut"
+      "bundleIdentifier": "Mitlabshut",
+      "associatedDomains": ["applinks:expo.dev"]
     },
     "android": {
       "adaptiveIcon": {

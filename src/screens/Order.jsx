@@ -5,8 +5,9 @@ import {
   ScrollView,
   ImageBackground,
   TouchableOpacity,
-  Image
+  Image, 
 } from "react-native";
+import * as Linking from 'expo-linking';
 import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { Header, ContainerComponent, Button, Line } from "../components";
@@ -14,7 +15,6 @@ import { AREA, COLORS, FONTS } from "../constants";
 import axios from "axios";
 import { userContext } from "../navigation/userContext";
 import { Swipeable } from "react-native-gesture-handler";
-import { Linking } from "react-native";
 import { Empty } from "../svg";
 
 export default function Order() {
@@ -90,6 +90,9 @@ export default function Order() {
         console.log(error);
       });
   }
+
+
+
   function RemoveFromShopList(itemId) {
     axios
       .delete(
@@ -111,17 +114,32 @@ export default function Order() {
     }
     setsumTotal(totalPrice);
   }
-  function sendWhatsAppMessage(item) {
-    console.log(item);
-    // const message = "היוש,";
-    // const phone = "+9720542550772";
+  // const createDeepLink = async (item) => {
+  //   const path = `ProductDetails?item=${JSON.stringify(item)}`;
+  //   const { protocol, hostname } = Linking.parseInitialURLAsync();
+  //   const deepLink = Linking.createURL(path, { protocol, hostname });
+  //   return deepLink;
+  // };
 
-    // const url = `whatsapp://send?phone=${phone}&text=${encodeURIComponent(
-    //   message
-    // )}`;
+  const sendWhatsAppMessage = async (item) => {
+    try {
+      const res = await axios.get(
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetUserByClosetId/Closet_ID/${item.closet_ID}`
+      );
+      const user = res.data[0];
+      //const deepLink = await createDeepLink(item);
+      var message = `היי ${user.full_name}, ראיתי את הפריט שלך שנקרא ${item.name} באפליקציית מתלבשות `;
+      const phone = `+972${user.phone_number}`;
+      message += `ואשמח לרכוש אותו ממך :) `
+      //message += `זה הלינק לפריט :\n${deepLink}`
+      //var message=`${deepLink}`;
+      const url = `whatsapp://send?phone=${phone}&text=${encodeURIComponent(message)}`;
+      Linking.openURL(url);
+    } catch (err) {
+      console.log("error in get users data to buy" + err);
+    }
+  };
 
-    // Linking.openURL(url);
-  }
   function renderContent() {
     return (
       <View>
@@ -271,7 +289,7 @@ export default function Order() {
                   </TouchableOpacity> */}
                     <TouchableOpacity
                       style={{ margin: 25 }}
-                      onPress={sendWhatsAppMessage(item)}
+                      onPress={()=>sendWhatsAppMessage(item)}
                     >
                       <Image source={{ uri: whatsappIcon }} style={{ width: 45, height: 45 ,borderRadius: 10}} />
                       

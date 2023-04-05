@@ -30,37 +30,12 @@ export default function SearchAllUsers() {
 
   useEffect(() => {
     if (isFocused || searchName == "") {
-      //   GetUsersFollow();
       GetAllUsers();
       setNoRes(false);
     }
   }, [isFocused, searchName]);
 
-  //get all the users that the logged users i follow
-  //   const GetUsersFollow = () => {
-  //     fetch(
-  //       "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetUserFollowingByUser/LoggedUser/" +
-  //         loggedUser.id,
-  //       {
-  //         method: "GET",
-  //         headers: new Headers({
-  //           "Content-Type": "application/json; charset=UTF-8",
-  //           Accept: "application/json; charset=UTF-8",
-  //         }),
-  //       }
-  //     )
-  //       .then((res) => {
-  //         return res.json();
-  //       })
-  //       .then(
-  //         (data) => {
-  //           setUsersFollow(data);
-  //         },
-  //         (error) => {
-  //           console.log("GetUsersFollow error", error);
-  //         }
-  //       );
-  //   };
+
 
   const GetAllUsers = () => {
     fetch(
@@ -135,7 +110,8 @@ export default function SearchAllUsers() {
                   if (searchName != "") {
                     SearchUserByName();
                   }
-                }}>
+                }}
+                >
                 <SearchSvg />
               </TouchableOpacity>
             </View>

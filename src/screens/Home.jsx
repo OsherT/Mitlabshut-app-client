@@ -204,7 +204,7 @@ export default function Home() {
             shadowOpacity: 0.8,
             shadowRadius: 20,
             overflow: "hidden",
-            marginTop: 30,
+            marginTop: 15,
           }}>
           <Text
             style={{
@@ -234,6 +234,7 @@ export default function Home() {
         console.log(err);
       });
   }
+
   function GetUsersData1(closets) {
     const promises = closets.map((closet) =>
       axios.get(
@@ -250,6 +251,7 @@ export default function Home() {
         console.log(err);
       });
   }
+
   function getFollowingList() {
     axios
       .get(ApiUrl_user + `/GetClosetByUserID/User_ID/${loggedUser.id}`)
@@ -268,6 +270,7 @@ export default function Home() {
         console.log("cant get following list", err);
       });
   }
+
   const followCloset = (closetID) => {
     axios
       .post(
@@ -282,6 +285,7 @@ export default function Home() {
         console.log("cant follow", err);
       });
   };
+
   const unfollowCloset = (closetID) => {
     axios
       .delete(
@@ -315,7 +319,6 @@ export default function Home() {
       })
       .then(
         (data) => {
-          console.log("data", data);
           setAllUsers(data);
         },
         (error) => {
@@ -323,7 +326,7 @@ export default function Home() {
         }
       );
   };
-  
+
   //handle the sign out
   function handleUserChoice() {
     navigation.navigate("SignIn");
@@ -335,8 +338,6 @@ export default function Home() {
         style={{
           marginTop: 20,
           alignItems: "flex-end",
-          //backgroundColor: COLORS.goldenTransparent_03,
-
           borderRadius: 25,
           shadowOffset: {
             width: 0,
@@ -388,7 +389,7 @@ export default function Home() {
                   source={{ uri: user.user_image }}
                   style={{
                     width: "100%",
-                    height: 180,
+                    height: 150,
                     borderRadius: 10,
                   }}
                 />
@@ -497,7 +498,7 @@ export default function Home() {
                 <TouchableOpacity
                   style={{
                     height: "100%",
-                    width: 100,
+                    width: 105,
                     marginRight: 15,
                     borderRadius: 10,
                   }}
@@ -534,7 +535,6 @@ export default function Home() {
                         fontSize: 15,
                         textTransform: "capitalize",
                         color: COLORS.black,
-                        marginBottom: 5,
                         textAlign: "center",
                       }}>
                       {user.full_name}
@@ -776,9 +776,9 @@ export default function Home() {
       {/* {renderSlide()}
       {renderDots()} */}
       {RenderGreeting()}
+      {renderAllUsers()}
       {RenderSentences()}
       {renderRecommendedClosets()}
-      {renderAllUsers()}
       {showModal && (
         <WarningModal
           showModal={showModal}

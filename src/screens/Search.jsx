@@ -67,8 +67,10 @@ export default function Search() {
           <View style={{ paddingLeft: 15, paddingRight: 10 }}>
             <TouchableOpacity
               onPress={() => {
-                setSelectedTab("SearchRes");
-                setSearchText_(search);
+                if (search !== "") {
+                  setSelectedTab("SearchRes");
+                  setSearchText_(search);
+                }
               }}>
               <SearchSvg />
             </TouchableOpacity>
@@ -81,8 +83,10 @@ export default function Search() {
             returnKeyType="search"
             onChangeText={(text) => setsearch(text)}
             onSubmitEditing={({ nativeEvent }) => {
-              setSelectedTab("SearchRes");
-              setSearchText_(nativeEvent.text);
+              if (search !== "") {
+                setSelectedTab("SearchRes");
+                setSearchText_(nativeEvent.text);
+              }
             }}
           />
         </View>
@@ -150,7 +154,7 @@ export default function Search() {
         </View>
       </KeyboardAwareScrollView>
     );
-  } 
+  }
 
   return (
     <SafeAreaView

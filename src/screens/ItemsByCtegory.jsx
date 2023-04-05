@@ -17,7 +17,7 @@ import { FilterSvg, SearchSvg, BagSvg, HeartSvg, Empty } from "../svg";
 import axios from "axios";
 import { userContext } from "../navigation/userContext";
 
-export default function ItemsByCtegory(props) {
+export default function ItemsByCtegory() {
   const navigation = useNavigation();
   const {
     loggedUser,
@@ -240,8 +240,10 @@ export default function ItemsByCtegory(props) {
           <View style={{ paddingLeft: 15, paddingRight: 10 }}>
             <TouchableOpacity
               onPress={() => {
-                setSelectedTab("SearchRes");
-                setSearchText_(search);
+                if (search !== "") {
+                  setSelectedTab("SearchRes");
+                  setSearchText_(search);
+                }
               }}>
               <SearchSvg />
             </TouchableOpacity>
@@ -251,8 +253,10 @@ export default function ItemsByCtegory(props) {
             placeholder="חפשי פריט (קטגוריה/ מותג/ שם פריט)..."
             onChangeText={(text) => setsearch(text)}
             onSubmitEditing={({ nativeEvent }) => {
-              setSelectedTab("SearchRes");
-              setSearchText_(nativeEvent.text);
+              if (search !== "") {
+                setSelectedTab("SearchRes");
+                setSearchText_(nativeEvent.text);
+              }
             }}
             keyboardType="default"
             returnKeyType="search"
@@ -573,7 +577,7 @@ export default function ItemsByCtegory(props) {
 
       {!noRes && !noResinSort && renderSearch()}
       {!noResinSort && !noRes && renderItems()}
-      {noRes &&  noSearchResults()}
+      {noRes && noSearchResults()}
       {noResinSort && noFiltersResults()}
       {sorted && renderClear()}
     </SafeAreaView>

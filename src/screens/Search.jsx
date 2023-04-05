@@ -6,15 +6,15 @@ import {
   StatusBar,
   TouchableOpacity,
   ImageBackground,
+  StyleSheet,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { Header } from "../components";
 import { COLORS, FONTS } from "../constants";
 import { SearchSvg } from "../svg";
 import axios from "axios";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { useContext } from "react";
 import { userContext } from "../navigation/userContext";
 
 export default function Search() {
@@ -24,7 +24,6 @@ export default function Search() {
     useContext(userContext);
   const isFocused = useIsFocused();
   const [typeList, setTypeList] = useState([]);
-
   const [search, setsearch] = useState("");
 
   //renders the types when the page finishes to load
@@ -109,20 +108,13 @@ export default function Search() {
                     borderRadius: 10,
                     flexDirection: "row",
                   }}
-                  onPress={() =>
-                    // navigation.navigate("ItemsByCtegory", {
-                    //   type: type.item_type_name,
-                    //   sorted: null,
-                    //   flag: false,
-                    // })
-                    {
-                      setSelectedTab("ItemsByCtegory");
-                      setSearchText_(search);
-                      setType_(type.item_type_name);
-                      setSorted_(null);
-                      setFlag_(false);
-                    }
-                  }>
+                  onPress={() => {
+                    setSelectedTab("ItemsByCtegory");
+                    setSearchText_(search);
+                    setType_(type.item_type_name);
+                    setSorted_(null);
+                    setFlag_(false);
+                  }}>
                   <ImageBackground
                     source={{
                       uri: type.item_type_image,
@@ -158,7 +150,7 @@ export default function Search() {
         </View>
       </KeyboardAwareScrollView>
     );
-  }
+  } 
 
   return (
     <SafeAreaView

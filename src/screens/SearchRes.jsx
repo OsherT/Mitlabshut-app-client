@@ -43,7 +43,6 @@ export default function SearchRes(props) {
   const [UsersShopList, setUsersShopList] = useState([]);
   const [noRes, setNoRes] = useState(true);
 
-  // const searchText = props.route.params.searchText;
 
   useEffect(() => {
     if (brandsList && categoriesList && itemsByNameList) {
@@ -545,6 +544,7 @@ export default function SearchRes(props) {
       </ScrollView>
     );
   }
+  
   return (
     <SafeAreaView
       style={{

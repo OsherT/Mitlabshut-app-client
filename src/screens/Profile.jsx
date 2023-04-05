@@ -182,7 +182,6 @@ export default function Profile() {
           }}>
           <TouchableOpacity
             onPress={() => {
-              // navigation.navigate("Users");
               setSelectedTab("SearchUsersFollow");
             }}>
             <Text

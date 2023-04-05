@@ -13,7 +13,7 @@ import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { showMessage } from "react-native-flash-message";
 import { promo, SIZES, COLORS, products, FONTS, AREA } from "../constants";
 import { RatingComponent, Line, Header, ProfileCategory } from "../components";
-import { BagSvg, HeartSvg, SignOutCategory } from "../svg";
+import { BagSvg, HeartSvg, SearchSvg, SignOutCategory } from "../svg";
 import { userContext } from "../navigation/userContext";
 import { SafeAreaView } from "react-native-safe-area-context";
 import axios from "axios";
@@ -29,13 +29,11 @@ export default function Home() {
     useContext(userContext);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [RecoUsers, setRecoUsers] = useState([]);
-  const [OtherClosets, setOtherClosets] = useState([]);
   const ApiUrl_user = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User`;
   const [UsersFollowingList, setUsersFollowingList] = useState([]);
-  const [CombainedArray, setCombainedArray] = useState([]);
   const [greeting, setGreeting] = useState("");
   const [Sentence, setSentence] = useState([]);
-
+  const [allUsers, setAllUsers] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [massage, setMassage] = useState("");
 
@@ -76,6 +74,7 @@ export default function Home() {
     if (isFocused) {
       GreetingComponent();
       getFollowingList();
+      GetAllUsers();
       GetRecommendedClosets();
       GetSentences();
     }
@@ -298,17 +297,41 @@ export default function Home() {
         console.log("cant unfollow", err);
       });
   };
-
+  const GetAllUsers = () => {
+    fetch(
+      "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetAllUsersNotThisOne/UserID/" +
+        loggedUser.id,
+      {
+        method: "GET",
+        headers: new Headers({
+          "Content-Type": "application/json; charset=UTF-8",
+          Accept: "application/json; charset=UTF-8",
+        }),
+      }
+    )
+      .then((res) => {
+        return res.json();
+      })
+      .then(
+        (data) => {
+          console.log("data", data);
+          setAllUsers(data);
+        },
+        (error) => {
+          console.log("GetAllUsers error", error);
+        }
+      );
+  };
   //handle the sign out
   function handleUserChoice() {
     navigation.navigate("SignIn");
   }
 
-  function renderBestSellers() {
+  function renderRecommendedClosets() {
     return (
       <View
         style={{
-          marginTop: 30,
+          marginTop: 20,
           alignItems: "flex-end",
           //backgroundColor: COLORS.goldenTransparent_03,
 
@@ -323,7 +346,6 @@ export default function Home() {
         }}>
         <View
           style={{
-            marginTop: 10,
             flexDirection: "row",
             alignItems: "center",
             justifyContent: "space-between",
@@ -359,8 +381,7 @@ export default function Home() {
                   setSelectedTab("Closet");
                   setClosetId_(user.closet_id);
                   setOwner_(user);
-                }}
-                >
+                }}>
                 <Image
                   source={{ uri: user.user_image }}
                   style={{
@@ -420,6 +441,113 @@ export default function Home() {
           contentContainerStyle={{ paddingLeft: 20 }}
           showsHorizontalScrollIndicator={false}
         />
+      </View>
+    );
+  }
+
+  function renderAllUsers() {
+    return (
+      <View
+        style={{
+          marginTop: 30,
+          alignItems: "flex-end",
+          borderRadius: 25,
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+          elevation: 5, // Add this line for Android compatibility
+        }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            paddingHorizontal: 20,
+            marginBottom: 10,
+          }}>
+          <TouchableOpacity
+            onPress={() => {
+              setSelectedTab("SearchUsersFollow");
+            }}>
+            <Text
+              style={{
+                ...FONTS.Mulish_700Bold,
+                fontSize: 16,
+                textTransform: "capitalize",
+                color: COLORS.black,
+                lineHeight: 20 * 1.2,
+              }}>
+              חברות קהילה חדשות... <SearchSvg />
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {allUsers.length > 0 ? (
+          <FlatList
+            data={allUsers}
+            horizontal={true}
+            keyExtractor={(user) => user.id}
+            renderItem={({ item: user, index }) => {
+              return (
+                <TouchableOpacity
+                  style={{
+                    height: "100%",
+                    width: 100,
+                    // backgroundColor: COLORS.white,
+                    marginRight: 15,
+                    borderRadius: 10,
+                  }}
+                  onPress={() => {
+                    setSelectedTab("Closet");
+                    setClosetId_(user.closet_id);
+                    setOwner_(user);
+                  }}>
+                  <Image
+                    source={{ uri: user.user_image }}
+                    style={{
+                      width: "100%",
+                      height: 100,
+                      borderRadius: 90,
+                    }}
+                  />
+                  <View
+                    style={{
+                      paddingHorizontal: 15,
+                      paddingVertical: 12,
+                    }}>
+                    <Text
+                      style={{
+                        ...FONTS.Mulish_600SemiBold,
+                        fontSize: 15,
+                        textTransform: "capitalize",
+                        color: COLORS.black,
+                        marginBottom: 5,
+                        textAlign: "center",
+                      }}>
+                      {user.full_name}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            }}
+            contentContainerStyle={{ paddingLeft: 20 }}
+            showsHorizontalScrollIndicator={false}
+          />
+        ) : (
+          <Text
+            style={{
+              ...FONTS.Mulish_700Bold,
+              fontSize: 14,
+              color: COLORS.black,
+              lineHeight: 20 * 1.2,
+              textAlign: "center",
+            }}>
+            אין משתמשים כרגע{" "}
+          </Text>
+        )}
       </View>
     );
   }
@@ -639,7 +767,8 @@ export default function Home() {
       {renderDots()} */}
       {RenderGreeting()}
       {RenderSentences()}
-      {renderBestSellers()}
+      {renderRecommendedClosets()}
+      {renderAllUsers()}
       {showModal && (
         <WarningModal
           showModal={showModal}

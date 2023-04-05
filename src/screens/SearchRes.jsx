@@ -315,7 +315,7 @@ export default function SearchRes(props) {
             </TouchableOpacity>
           </View>
           <TextInput
-            style={{ flex: 1, textAlign: "right" }}
+            style={{ flex: 1, textAlign: "right",paddingRight:15 }}
             placeholder="חפשי פריט (קטגוריה/ מותג/ שם פריט)..."
             onChangeText={(text) => {
               setnextSearch(text);
@@ -329,7 +329,7 @@ export default function SearchRes(props) {
             returnKeyType="search"
             defaultValue={searchText}
           />
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={{
               paddingHorizontal: 15,
               paddingVertical: 5,
@@ -340,7 +340,7 @@ export default function SearchRes(props) {
               setType_(null);
             }}>
             <FilterSvg />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
     );

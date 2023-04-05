@@ -5,38 +5,33 @@ import {
   ScrollView,
   ImageBackground,
   TouchableOpacity,
+  Image
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
-import {
-  Header,
-  ContainerComponent,
-  Button,
-  Line,
-} from "../components";
-import { AREA, COLORS, FONTS} from "../constants";
+import { Header, ContainerComponent, Button, Line } from "../components";
+import { AREA, COLORS, FONTS } from "../constants";
 import axios from "axios";
 import { userContext } from "../navigation/userContext";
 import { Swipeable } from "react-native-gesture-handler";
-import WhatsAppSvg from "../svg/WhatsAppSvg";
 import { Linking } from "react-native";
 import { Empty } from "../svg";
 
 export default function Order() {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-  const { loggedUser,setSelectedTab } = useContext(userContext);
-  
+  const { loggedUser, setSelectedTab } = useContext(userContext);
+
   const [ItemsinCart, setItemsinCart] = useState([]);
   const [UsersItemPhotos, setUsersItemPhotos] = useState([]);
   const [ItemsData, setItemsData] = useState([]);
   const [sumTotal, setsumTotal] = useState("");
   const [swipeableRef, setSwipeableRef] = useState(null);
+  const whatsappIcon = `https://cdn-icons-png.flaticon.com/512/124/124034.png`;
 
   const closeSwipeable = () => {
     swipeableRef && swipeableRef.close();
   };
-
   useEffect(() => {
     if (isFocused) {
       getShopItems();
@@ -116,18 +111,19 @@ export default function Order() {
     }
     setsumTotal(totalPrice);
   }
-  function sendWhatsAppMessage() {
-    const message = "Hello, this is a test message!";
-    const phone = "+9720542550772";
+  function sendWhatsAppMessage(item) {
+    console.log(item);
+    // const message = "היוש,";
+    // const phone = "+9720542550772";
 
-    const url = `whatsapp://send?phone=${phone}&text=${encodeURIComponent(
-      message
-    )}`;
+    // const url = `whatsapp://send?phone=${phone}&text=${encodeURIComponent(
+    //   message
+    // )}`;
 
-    Linking.openURL(url);
+    // Linking.openURL(url);
   }
   function renderContent() {
-    return ( 
+    return (
       <View>
         <ScrollView
           contentContainerStyle={{
@@ -135,7 +131,8 @@ export default function Order() {
             paddingHorizontal: 20,
             paddingVertical: 25,
           }}
-          showsHorizontalScrollIndicator={false}>
+          showsHorizontalScrollIndicator={false}
+        >
           {ItemsinCart &&
           Array.isArray(ItemsinCart) &&
           ItemsinCart.length > 0 ? (
@@ -155,12 +152,14 @@ export default function Order() {
                         alignItems: "flex-end",
                         padding: 20,
                       }}
-                      onPress={() => RemoveFromShopList(item.id)}>
+                      onPress={() => RemoveFromShopList(item.id)}
+                    >
                       <Text style={{ color: "#FFF", fontWeight: "bold" }}>
                         הסירי
                       </Text>
                     </TouchableOpacity>
-                  )}>
+                  )}
+                >
                   <TouchableOpacity
                     key={index}
                     style={{
@@ -186,7 +185,8 @@ export default function Order() {
                     disabled={
                       item.item_status === "sold" ||
                       item.item_status === "delete"
-                    }>
+                    }
+                  >
                     {UsersItemPhotos.filter(
                       (photo) => photo.item_ID === item.id
                     )
@@ -200,7 +200,8 @@ export default function Order() {
                               height: 100,
                             }}
                             imageStyle={{ borderRadius: 10 }}
-                            key={photo.id}></ImageBackground>
+                            key={photo.id}
+                          ></ImageBackground>
                         );
                       })}
                     {item.item_status === "sold" ||
@@ -218,13 +219,15 @@ export default function Order() {
                           alignItems: "center",
                           justifyContent: "center",
                           zIndex: "1",
-                        }}>
+                        }}
+                      >
                         <Text
                           style={{
                             color: "white",
                             fontSize: 18,
                             fontWeight: "bold",
-                          }}>
+                          }}
+                        >
                           לא זמין
                         </Text>
                       </View>
@@ -235,7 +238,8 @@ export default function Order() {
                         paddingHorizontal: 15,
                         paddingVertical: 9,
                         flex: 1,
-                      }}>
+                      }}
+                    >
                       <Text
                         style={{
                           ...FONTS.Mulish_600SemiBold,
@@ -243,7 +247,8 @@ export default function Order() {
                           textTransform: "capitalize",
                           marginBottom: 6,
                           lineHeight: 14 * 1.2,
-                        }}>
+                        }}
+                      >
                         {item.name}
                       </Text>
                       <Text style={{ color: COLORS.gray }}>{item.size}</Text>
@@ -253,7 +258,8 @@ export default function Order() {
                           ...FONTS.Mulish_600SemiBold,
                           fontSize: 14,
                           color: COLORS.carrot,
-                        }}>
+                        }}
+                      >
                         ₪ {item.price}
                       </Text>
                     </View>
@@ -265,58 +271,62 @@ export default function Order() {
                   </TouchableOpacity> */}
                     <TouchableOpacity
                       style={{ margin: 25 }}
-                      onPress={sendWhatsAppMessage}>
-                      <WhatsAppSvg />
+                      onPress={sendWhatsAppMessage(item)}
+                    >
+                      <Image source={{ uri: whatsappIcon }} style={{ width: 45, height: 45 ,borderRadius: 10}} />
+                      
                     </TouchableOpacity>
                   </TouchableOpacity>
                 </Swipeable>
               );
             })
-          ) : (<ScrollView
-            contentContainerStyle={{
+          ) : (
+            <ScrollView
+              contentContainerStyle={{
                 flexGrow: 1,
                 paddingHorizontal: 20,
                 justifyContent: "center",
                 alignItems: "center",
                 paddingVertical: 25,
-            }}
-            showsHorizontalScrollIndicator={false}
-        >
-            <ContainerComponent>
+              }}
+              showsHorizontalScrollIndicator={false}
+            >
+              <ContainerComponent>
                 <View style={{ alignSelf: "center", marginBottom: 35 }}>
-                    <Empty />
+                  <Empty />
                 </View>
                 <Text
-                    style={{
-                        textAlign: "center",
-                        ...FONTS.H2,
-                        textTransform: "capitalize",
-                        color: COLORS.black,
-                        lineHeight: 22 * 1.2,
-                        marginBottom: 18,
-                    }}
+                  style={{
+                    textAlign: "center",
+                    ...FONTS.H2,
+                    textTransform: "capitalize",
+                    color: COLORS.black,
+                    lineHeight: 22 * 1.2,
+                    marginBottom: 18,
+                  }}
                 >
-                    הסל שלך ריק!
+                  הסל שלך ריק!
                 </Text>
                 <Text
-                    style={{
-                        textAlign: "center",
-                        ...FONTS.Mulish_400Regular,
-                        fontSize: 16,
-                        color: COLORS.gray,
-                        paddingHorizontal: 50,
-                        marginBottom: 30,
-                    }}
+                  style={{
+                    textAlign: "center",
+                    ...FONTS.Mulish_400Regular,
+                    fontSize: 16,
+                    color: COLORS.gray,
+                    paddingHorizontal: 50,
+                    marginBottom: 30,
+                  }}
                 >
-                   נראה שאין לך עדיין פריטים בסל הקניות 
+                  נראה שאין לך עדיין פריטים בסל הקניות
                 </Text>
-                <Button title="שוטטי בבזאר" 
-                 onPress={() => {
-                  setSelectedTab("Search");
-                 
-                }}/>
-            </ContainerComponent>
-        </ScrollView>
+                <Button
+                  title="שוטטי בבזאר"
+                  onPress={() => {
+                    setSelectedTab("Search");
+                  }}
+                />
+              </ContainerComponent>
+            </ScrollView>
             // <Text
             //   style={{
             //     textAlign: "center",
@@ -339,7 +349,8 @@ export default function Order() {
                 justifyContent: "space-between",
                 alignItems: "center",
                 marginBottom: 8,
-              }}>
+              }}
+            >
               <Text
                 style={{
                   ...FONTS.Mulish_600SemiBold,
@@ -347,7 +358,8 @@ export default function Order() {
                   color: COLORS.black,
                   textTransform: "capitalize",
                   lineHeight: 16 * 1.2,
-                }}>
+                }}
+              >
                 ₪ {sumTotal}
               </Text>
               <Text
@@ -357,7 +369,8 @@ export default function Order() {
                   color: COLORS.black,
                   textTransform: "capitalize",
                   lineHeight: 16 * 1.2,
-                }}>
+                }}
+              >
                 סה"כ
               </Text>
             </View>
@@ -374,51 +387,51 @@ export default function Order() {
       </View>
     );
   }
-//   function renderCartIsEmpty() {
-//     return (
-//         <ScrollView
-//             contentContainerStyle={{
-//                 flexGrow: 1,
-//                 paddingHorizontal: 20,
-//                 justifyContent: "center",
-//                 alignItems: "center",
-//                 paddingVertical: 25,
-//             }}
-//             showsHorizontalScrollIndicator={false}
-//         >
-//             <ContainerComponent>
-//                 <View style={{ alignSelf: "center", marginBottom: 35 }}>
-//                     <Empty />
-//                 </View>
-//                 <Text
-//                     style={{
-//                         textAlign: "center",
-//                         ...FONTS.H2,
-//                         textTransform: "capitalize",
-//                         color: COLORS.black,
-//                         lineHeight: 22 * 1.2,
-//                         marginBottom: 18,
-//                     }}
-//                 >
-//                     Your cart is empty!
-//                 </Text>
-//                 <Text
-//                     style={{
-//                         textAlign: "center",
-//                         ...FONTS.Mulish_400Regular,
-//                         fontSize: 16,
-//                         color: COLORS.gray,
-//                         paddingHorizontal: 50,
-//                         marginBottom: 30,
-//                     }}
-//                 >
-//                     Looks like you haven't made your order yet.
-//                 </Text>
-//                 <Button title="shop now" />
-//             </ContainerComponent>
-//         </ScrollView>
-//     );
-// }
+  //   function renderCartIsEmpty() {
+  //     return (
+  //         <ScrollView
+  //             contentContainerStyle={{
+  //                 flexGrow: 1,
+  //                 paddingHorizontal: 20,
+  //                 justifyContent: "center",
+  //                 alignItems: "center",
+  //                 paddingVertical: 25,
+  //             }}
+  //             showsHorizontalScrollIndicator={false}
+  //         >
+  //             <ContainerComponent>
+  //                 <View style={{ alignSelf: "center", marginBottom: 35 }}>
+  //                     <Empty />
+  //                 </View>
+  //                 <Text
+  //                     style={{
+  //                         textAlign: "center",
+  //                         ...FONTS.H2,
+  //                         textTransform: "capitalize",
+  //                         color: COLORS.black,
+  //                         lineHeight: 22 * 1.2,
+  //                         marginBottom: 18,
+  //                     }}
+  //                 >
+  //                     Your cart is empty!
+  //                 </Text>
+  //                 <Text
+  //                     style={{
+  //                         textAlign: "center",
+  //                         ...FONTS.Mulish_400Regular,
+  //                         fontSize: 16,
+  //                         color: COLORS.gray,
+  //                         paddingHorizontal: 50,
+  //                         marginBottom: 30,
+  //                     }}
+  //                 >
+  //                     Looks like you haven't made your order yet.
+  //                 </Text>
+  //                 <Button title="shop now" />
+  //             </ContainerComponent>
+  //         </ScrollView>
+  //     );
+  // }
 
   return (
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>

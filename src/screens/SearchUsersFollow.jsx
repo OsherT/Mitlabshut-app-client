@@ -22,7 +22,8 @@ export default function SearchUsersFollow() {
   const navigation = useNavigation();
 
   const [searchName, setSearchName] = useState("");
-  const { loggedUser, setSelectedTab } = useContext(userContext);
+  const { loggedUser, setSelectedTab, setClosetId_, setOwner_ } =
+    useContext(userContext);
   const isFocused = useIsFocused();
   const [usersFollow, setUsersFollow] = useState([]);
   const [noRes, setNoRes] = useState(false);
@@ -149,12 +150,17 @@ export default function SearchUsersFollow() {
                     borderRadius: 10,
                     flexDirection: "row",
                   }}
-                  onPress={() =>
-                    navigation.navigate("Closet", {
-                      closetId: user.closet_id,
-                      owner: user,
-                    })
-                  }>
+                  // onPress={() =>
+                  //   navigation.navigate("Closet", {
+                  //     closetId: user.closet_id,
+                  //     owner: user,
+                  //   })
+                  // }
+                  onPress={() => {
+                    setSelectedTab("Closet");
+                    setClosetId_(user.closet_id);
+                    setOwner_(user);
+                  }}>
                   <ImageBackground
                     source={{ uri: user.user_image }}
                     style={{

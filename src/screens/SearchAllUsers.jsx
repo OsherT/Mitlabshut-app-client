@@ -21,22 +21,50 @@ import { ScrollView } from "react-native-gesture-handler";
 export default function SearchAllUsers() {
   const navigation = useNavigation();
   const [searchName, setSearchName] = useState("");
-  const { loggedUser, setSelectedTab } = useContext(userContext);
+  const { loggedUser, setSelectedTab, setClosetId_, setOwner_ } =
+    useContext(userContext);
   const isFocused = useIsFocused();
-  const [usersFollow, setUsersFollow] = useState([]);
+  //   const [usersFollow, setUsersFollow] = useState([]);
   const [noRes, setNoRes] = useState(false);
+  const [allUsers, setAllUsers] = useState([]);
 
   useEffect(() => {
     if (isFocused || searchName == "") {
-      GetUsersFollow();
+      //   GetUsersFollow();
+      GetAllUsers();
       setNoRes(false);
     }
   }, [isFocused, searchName]);
 
   //get all the users that the logged users i follow
-  const GetUsersFollow = () => {
+  //   const GetUsersFollow = () => {
+  //     fetch(
+  //       "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetUserFollowingByUser/LoggedUser/" +
+  //         loggedUser.id,
+  //       {
+  //         method: "GET",
+  //         headers: new Headers({
+  //           "Content-Type": "application/json; charset=UTF-8",
+  //           Accept: "application/json; charset=UTF-8",
+  //         }),
+  //       }
+  //     )
+  //       .then((res) => {
+  //         return res.json();
+  //       })
+  //       .then(
+  //         (data) => {
+  //           setUsersFollow(data);
+  //         },
+  //         (error) => {
+  //           console.log("GetUsersFollow error", error);
+  //         }
+  //       );
+  //   };
+
+  const GetAllUsers = () => {
     fetch(
-      "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetUserFollowingByUser/LoggedUser/" +
+      "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetAllUsersNotThisOne/UserID/" +
         loggedUser.id,
       {
         method: "GET",
@@ -51,10 +79,11 @@ export default function SearchAllUsers() {
       })
       .then(
         (data) => {
-          setUsersFollow(data);
+          console.log("data", data);
+          setAllUsers(data);
         },
         (error) => {
-          console.log("GetUsersFollow error", error);
+          console.log("GetAllUsers error", error);
         }
       );
   };
@@ -68,9 +97,9 @@ export default function SearchAllUsers() {
       .then((res) => {
         if (res.data != 0) {
           const tempArray = res.data.filter((d) => {
-            return usersFollow.some((u) => u.id === d.id);
+            return allUsers.some((u) => u.id === d.id);
           });
-          setUsersFollow(tempArray);
+          setAllUsers(tempArray);
         } else {
           console.log("NO RES");
           setNoRes(true);
@@ -90,7 +119,7 @@ export default function SearchAllUsers() {
           marginTop: 10,
           marginBottom: 20,
         }}>
-        {usersFollow.length > 0 && (
+        {allUsers.length > 0 && (
           <View
             style={{
               width: "100%",
@@ -134,9 +163,9 @@ export default function SearchAllUsers() {
   function renderUsers() {
     return (
       <KeyboardAwareScrollView>
-        {usersFollow.length > 0 ? (
+        {allUsers.length > 0 ? (
           <View style={{ paddingHorizontal: 20 }}>
-            {usersFollow.map((user, index) => {
+            {allUsers.map((user, index) => {
               return (
                 <TouchableOpacity
                   key={index}
@@ -148,12 +177,11 @@ export default function SearchAllUsers() {
                     borderRadius: 10,
                     flexDirection: "row",
                   }}
-                  onPress={() =>
-                    navigation.navigate("Closet", {
-                      closetId: user.closet_id,
-                      owner: user,
-                    })
-                  }>
+                  onPress={() => {
+                    setSelectedTab("Closet");
+                    setClosetId_(user.closet_id);
+                    setOwner_(user);
+                  }}>
                   <ImageBackground
                     source={{ uri: user.user_image }}
                     style={{
@@ -193,7 +221,7 @@ export default function SearchAllUsers() {
               lineHeight: 50 * 1.2,
               textAlign: "center",
             }}>
-            אין ארונות במעקב עדיין
+            אין משתמשות פעילות{" "}
           </Text>
         )}
       </KeyboardAwareScrollView>
@@ -239,7 +267,7 @@ export default function SearchAllUsers() {
           </Text>
           <View>
             <TouchableOpacity
-              onPress={() => setSelectedTab("Profile")}
+              onPress={() => setSelectedTab("Home")}
               style={{
                 flexDirection: "row",
                 alignItems: "center",
@@ -268,7 +296,7 @@ export default function SearchAllUsers() {
                   color: "#333",
                   marginLeft: 8,
                 }}>
-                חזרה לדף האישי
+                חזרה לדף הבית
               </Text>
             </TouchableOpacity>
           </View>
@@ -283,7 +311,7 @@ export default function SearchAllUsers() {
         flex: 1,
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
       }}>
-      <Header title=" משתמשות במעקב" goBack={false} flag={false} />
+      <Header title=" משתמשות " goBack={false} flag={false} />
       {renderSearch()}
       {!noRes ? renderUsers() : noSearchResults()}
     </SafeAreaView>

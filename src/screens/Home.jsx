@@ -297,6 +297,7 @@ export default function Home() {
         console.log("cant unfollow", err);
       });
   };
+
   const GetAllUsers = () => {
     fetch(
       "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetAllUsersNotThisOne/UserID/" +
@@ -322,6 +323,7 @@ export default function Home() {
         }
       );
   };
+  
   //handle the sign out
   function handleUserChoice() {
     navigation.navigate("SignIn");
@@ -449,7 +451,7 @@ export default function Home() {
     return (
       <View
         style={{
-          marginTop: 30,
+          marginTop: 25,
           alignItems: "flex-end",
           borderRadius: 25,
           shadowOffset: {
@@ -470,7 +472,7 @@ export default function Home() {
           }}>
           <TouchableOpacity
             onPress={() => {
-              setSelectedTab("SearchUsersFollow");
+              setSelectedTab("SearchAllUsers");
             }}>
             <Text
               style={{
@@ -496,7 +498,6 @@ export default function Home() {
                   style={{
                     height: "100%",
                     width: 100,
-                    // backgroundColor: COLORS.white,
                     marginRight: 15,
                     borderRadius: 10,
                   }}
@@ -505,14 +506,23 @@ export default function Home() {
                     setClosetId_(user.closet_id);
                     setOwner_(user);
                   }}>
-                  <Image
-                    source={{ uri: user.user_image }}
+                  <View
                     style={{
-                      width: "100%",
-                      height: 100,
+                      height: 106,
                       borderRadius: 90,
-                    }}
-                  />
+                      backgroundColor: COLORS.white,
+                      paddingTop: 3,
+                      paddingHorizontal: 3,
+                    }}>
+                    <Image
+                      source={{ uri: user.user_image }}
+                      style={{
+                        width: "100%",
+                        height: 100,
+                        borderRadius: 90,
+                      }}
+                    />
+                  </View>
                   <View
                     style={{
                       paddingHorizontal: 15,

@@ -22,6 +22,7 @@ import SearchUsersFollow from "./SearchUsersFollow";
 import ItemsByCtegory from "./ItemsByCtegory";
 import SearchRes from "./SearchRes";
 import Filter from "./Filter";
+import SearchAllUsers from "./SearchAllUsers";
 
 export default function MainLayout() {
   const { loggedUser, selectedTab, setSelectedTab, setOwner_, setClosetId_ } =
@@ -109,6 +110,7 @@ export default function MainLayout() {
       {selectedTab == "SearchRes" && <SearchRes />}
       {selectedTab == "ItemsByCtegory" && <ItemsByCtegory />}
       {selectedTab == "Filter" && <Filter />}
+      {selectedTab == "SearchAllUsers" && <SearchAllUsers />}
 
       <View
         style={{

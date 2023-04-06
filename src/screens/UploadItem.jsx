@@ -369,34 +369,6 @@ export default function UploadItem() {
     return string;
   };
 
-  //upload categories to Items_in_category table
-  // const postCtegories = (item_ID) => {
-  //   for (let i = 0; i < selectedCategory.length; i++) {
-  //     fetch(
-  //       ApiUrl +
-  //         `/PostItemsInCategory/Item_ID/${item_ID}/Category_name/${selectedCategory[i]}`,
-  //       {
-  //         method: "POST",
-  //         headers: new Headers({
-  //           "Content-type": "application/json; charset=UTF-8",
-  //           Accept: "application/json; charset=UTF-8",
-  //         }),
-  //       }
-  //     )
-  //       .then((res) => {
-  //         return res.json();
-  //       })
-  //       .then(
-  //         (result) => {
-  //           console.log("succ in post categories", result);
-  //         },
-  //         (error) => {
-  //           console.log("ERR in post categories", error);
-  //         }
-  //       );
-  //   }
-  // };
-
   //uploads categories to Items_in_category table
   const uploadCtegories = (item_ID) => {
     for (let i = 0; i < itemCategory.length; i++) {
@@ -670,7 +642,7 @@ export default function UploadItem() {
   }
   return (
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
-      <Header flag={true} onEdit={true} />
+      <Header flag={true} onEdit={true} goBack={() => navigation.goBack()} />
       {renderContent()}
     </SafeAreaView>
   );

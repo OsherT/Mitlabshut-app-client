@@ -60,7 +60,8 @@ export default function SignIn() {
           (user) => {
             if (user.id > 0) {
               setloggedUser(user);
-              navigation.navigate("Home");
+              navigation.navigate("MainLayout");
+              // setSelectedTab("Home");
             }
 
             //if deatails are incorrect

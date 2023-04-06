@@ -233,6 +233,7 @@ export default function Profile() {
   }
 
   function handleUserChoice() {
+    setSelectedTab("Home");
     navigation.navigate("SignIn");
   }
 
@@ -249,7 +250,7 @@ export default function Profile() {
         shadowRadius: 3.84,
         elevation: 5, // Add this line for Android compatibility
       }}>
-      <Header title="עמוד אישי"  />
+      <Header title="עמוד אישי" />
       {renderContent()}
       {showModal && (
         <WarningModal

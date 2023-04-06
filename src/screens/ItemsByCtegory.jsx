@@ -16,6 +16,7 @@ import { COLORS, FONTS } from "../constants";
 import { FilterSvg, SearchSvg, BagSvg, HeartSvg, Empty } from "../svg";
 import axios from "axios";
 import { userContext } from "../navigation/userContext";
+import LoadingComponent from "./LoadingComponent";
 
 export default function ItemsByCtegory() {
   const navigation = useNavigation();
@@ -39,6 +40,7 @@ export default function ItemsByCtegory() {
   const [UsersFavList, setUsersFavList] = useState([]);
   const [UsersShopList, setUsersShopList] = useState([]);
   const [noRes, setNoRes] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const type = type_;
   const sorted = sorted_;
@@ -61,6 +63,7 @@ export default function ItemsByCtegory() {
       .then((res) => {
         if (res.data === 0) {
           setNoRes(true);
+          setIsLoading(false);
         } else {
           setItemsByType(res.data);
           GetItemPhotos(res.data);
@@ -85,6 +88,7 @@ export default function ItemsByCtegory() {
       .then((responses) => {
         const photos = responses.flatMap((response) => response.data);
         setItemsImageByType(photos);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log("err in GetItemPhotos", error);
@@ -493,6 +497,7 @@ export default function ItemsByCtegory() {
 
   //shows no res when there is no data to show
   function noSearchResults() {
+
     return (
       <ScrollView
         contentContainerStyle={{
@@ -598,10 +603,8 @@ export default function ItemsByCtegory() {
       }}>
       <Header title={type} goBack={true} selectedTab={"Search"} />
 
-      {!noRes && !noResinSort && renderSearch()}
-      {!noRes  && renderNumOfRes()}
-
-      {!noResinSort && !noRes && renderItems()}
+      {!noRes && !noResinSort &&  renderSearch()}
+      {isLoading? <LoadingComponent/>: (!noResinSort && !noRes &&  renderItems())}
       {noRes && noSearchResults()}
       {noResinSort && noFiltersResults()}
       {sorted && renderClear()}

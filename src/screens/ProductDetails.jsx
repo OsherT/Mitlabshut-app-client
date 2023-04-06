@@ -20,6 +20,7 @@ import axios from "axios";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ButtonLogIn from "../components/ButtonLogIn";
 import WarningModal from "../components/WarningModal";
+import LoadingComponent from "./LoadingComponent";
 
 export default function ProductDetails(props) {
   const navigation = useNavigation();
@@ -56,6 +57,7 @@ export default function ProductDetails(props) {
   const [distance, setDistance] = useState(null);
   const [address1, setaddress1] = useState(loggedUser.address);
   const [address2, setaddress2] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   //URL
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
@@ -160,6 +162,7 @@ export default function ProductDetails(props) {
       .then(
         (data) => {
           setItemImages(data.map((item) => item.src));
+          setIsLoading(false);
         },
         (error) => {
           console.log("Item_Image_Video error", error);
@@ -822,7 +825,7 @@ export default function ProductDetails(props) {
   return (
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
       <Header goBack={true} flag={true} />
-      {renderContent()}
+      {isLoading? <LoadingComponent></LoadingComponent> :renderContent()}
       {showModal && (
         <WarningModal
           showModal={showModal}

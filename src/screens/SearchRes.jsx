@@ -126,7 +126,6 @@ export default function SearchRes(props) {
           })
           .catch((err) => {
             console.log("err in GetSearcResults 1", err);
-            
           });
       } else if (categoriesList.includes(searchText)) {
         const categoriesURL = hebrewToUrlEncoded(searchText);
@@ -157,7 +156,6 @@ export default function SearchRes(props) {
             } else {
               console.log("no name res");
               setIsLoading(false);
-
             }
           })
           .catch((err) => {
@@ -360,6 +358,7 @@ export default function SearchRes(props) {
         contentContainerStyle={{
           paddingHorizontal: 20,
           paddingBottom: 50,
+          marginTop: 30,
         }}
         numColumns={2}
         columnWrapperStyle={{ justifyContent: "space-between" }}
@@ -375,8 +374,7 @@ export default function SearchRes(props) {
               navigation.navigate("ProductDetails", {
                 item: item,
               });
-            }}
-          >
+            }}>
             {itemsImageByType
               .filter((photo) => photo.item_ID === item.id)
               .slice(0, 1)
@@ -389,14 +387,12 @@ export default function SearchRes(props) {
                       height: 128,
                     }}
                     imageStyle={{ borderRadius: 10 }}
-                    key={photo.id}
-                  >
+                    key={photo.id}>
                     {UsersFavList.includes(item.id) && (
                       // render the filled heart SVG if the item ID is in the UsersFavList
                       <TouchableOpacity
                         style={{ left: 12, top: 12 }}
-                        onPress={() => RemoveFromFav(item.id)}
-                      >
+                        onPress={() => RemoveFromFav(item.id)}>
                         <HeartSvg filled={true} />
                       </TouchableOpacity>
                     )}
@@ -404,8 +400,7 @@ export default function SearchRes(props) {
                       // render the unfilled heart SVG if the item ID is not in the UsersFavList
                       <TouchableOpacity
                         style={{ left: 12, top: 12 }}
-                        onPress={() => AddtoFav(item.id)}
-                      >
+                        onPress={() => AddtoFav(item.id)}>
                         <HeartSvg filled={false} />
                       </TouchableOpacity>
                     )}
@@ -417,8 +412,7 @@ export default function SearchRes(props) {
                 paddingHorizontal: 12,
                 paddingBottom: 15,
                 paddingTop: 12,
-              }}
-            >
+              }}>
               <Text
                 style={{
                   ...FONTS.Mulish_600SemiBold,
@@ -428,8 +422,7 @@ export default function SearchRes(props) {
                   color: COLORS.black,
                   marginBottom: 6,
                   textAlign: "right",
-                }}
-              >
+                }}>
                 {item.name}
               </Text>
               <Text
@@ -438,8 +431,7 @@ export default function SearchRes(props) {
                   ...FONTS.Mulish_400Regular,
                   fontSize: 14,
                   textAlign: "right",
-                }}
-              >
+                }}>
                 מידה: {item.size}
               </Text>
               <View
@@ -456,8 +448,7 @@ export default function SearchRes(props) {
                   fontSize: 14,
                   color: COLORS.black,
                   textAlign: "left",
-                }}
-              >
+                }}>
                 ₪ {item.price}
               </Text>
             </View>
@@ -465,8 +456,7 @@ export default function SearchRes(props) {
               // render the filled heart SVG if the item ID is in the UsersFavList
               <TouchableOpacity
                 style={{ position: "absolute", right: 12, bottom: 12 }}
-                onPress={() => RemoveFromShopList(item.id)}
-              >
+                onPress={() => RemoveFromShopList(item.id)}>
                 <BagSvg color="#626262" inCart={true} />
               </TouchableOpacity>
             )}
@@ -474,8 +464,7 @@ export default function SearchRes(props) {
               // render the unfilled heart SVG if the item ID is not in the UsersFavList
               <TouchableOpacity
                 style={{ position: "absolute", right: 12, bottom: 12 }}
-                onPress={() => AddToShopList(item.id)}
-              >
+                onPress={() => AddToShopList(item.id)}>
                 <BagSvg color="#D7BA7B" inCart={false} />
               </TouchableOpacity>
             )}
@@ -494,8 +483,7 @@ export default function SearchRes(props) {
           alignItems: "center",
           paddingVertical: 25,
         }}
-        showsHorizontalScrollIndicator={false}
-      >
+        showsHorizontalScrollIndicator={false}>
         <ContainerComponent>
           <View style={{ alignSelf: "center", marginBottom: 35 }}>
             <Empty />
@@ -508,8 +496,7 @@ export default function SearchRes(props) {
               color: COLORS.black,
               lineHeight: 22 * 1.2,
               marginBottom: 18,
-            }}
-          >
+            }}>
             לא קיים מידע
           </Text>
           <Text
@@ -520,8 +507,7 @@ export default function SearchRes(props) {
               color: COLORS.gray,
               paddingHorizontal: 50,
               marginBottom: 30,
-            }}
-          >
+            }}>
             לא נמצאו תוצאות התואמות את החיפוש שלך{" "}
           </Text>
           <View>
@@ -546,8 +532,7 @@ export default function SearchRes(props) {
                 shadowOpacity: 0.23,
                 shadowRadius: 2.62,
                 elevation: 4,
-              }}
-            >
+              }}>
               <FilterSvg filled={true} />
               <Text
                 style={{
@@ -555,8 +540,7 @@ export default function SearchRes(props) {
                   fontWeight: "bold",
                   color: "#333",
                   marginLeft: 8,
-                }}
-              >
+                }}>
                 חזרה לחיפוש
               </Text>
             </TouchableOpacity>
@@ -566,7 +550,7 @@ export default function SearchRes(props) {
     );
   }
 
-  function renderReSearchButton() {
+  function renderNumOfRes() {
     return (
       <View
         style={{
@@ -574,50 +558,14 @@ export default function SearchRes(props) {
           paddingHorizontal: 20,
           paddingVertical: 35,
           borderRadius: 10,
-        }}
-      >
-        <TouchableOpacity
-          onPress={() => setSelectedTab("Search")}
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            paddingVertical: 8,
-            paddingHorizontal: 4,
-            backgroundColor: "#F2F2F2",
-            borderRadius: 20,
-            borderWidth: 1,
-            borderColor: "#E5E5E5",
-            shadowColor: "#000",
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.23,
-            shadowRadius: 2.62,
-            elevation: 4,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: "bold",
-              color: "#333",
-              marginLeft: 8,
-            }}
-          >
-            חזרה לחיפוש
-          </Text>
-        </TouchableOpacity>
+        }}>
         <Text
           style={{
             textAlign: "right",
             ...FONTS.Mulish_400Regular,
             fontSize: 16,
             color: COLORS.gray,
-            marginTop: 30,
-          }}
-        >
+          }}>
           נמצאו {itemsBySearch.length} תוצאות
         </Text>
       </View>
@@ -629,11 +577,16 @@ export default function SearchRes(props) {
       style={{
         flex: 1,
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-      }}
-    >
-      <Header title="תוצאות חיפוש" />
-      {!noRes &&!isLoading&& renderReSearchButton()}
-      {isLoading? <LoadingComponent/> : (!noRes ? renderItems() : noSearchResults())}
+      }}>
+      <Header title="תוצאות חיפוש" goBack={true} selectedTab={"Search"} />
+      {!noRes && !isLoading && renderNumOfRes()}
+      {isLoading ? (
+        <LoadingComponent />
+      ) : !noRes ? (
+        renderItems()
+      ) : (
+        noSearchResults()
+      )}
     </SafeAreaView>
   );
 }

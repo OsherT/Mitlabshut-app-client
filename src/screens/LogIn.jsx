@@ -14,8 +14,8 @@ import { Button, ContainerComponent } from "../components";
 import { AREA, COLORS, FONTS } from "../constants";
 import AppLoading from "expo-app-loading";
 import ButtonLogIn from "../components/ButtonLogIn";
-import Facebook from "../svg/Facebook";
-import Google from "../svg/GoogleSvg";
+// import Facebook from "../svg/Facebook";
+// import Google from "../svg/GoogleSvg";
 import { userContext } from "../navigation/userContext";
 // import * as webBrowser from "expo-web-browser";
 // import * as Google from "expo-auth-session/providers/google";
@@ -80,12 +80,12 @@ export default function SignIn() {
     }
   };
 
-  const logInWithFaceBook = () => {
-    Alert.alert("FaceBook yay");
-  };
-  const logInWithGoogle = () => {
-    Alert.alert("Google yay");
-  };
+  // const logInWithFaceBook = () => {
+  //   Alert.alert("FaceBook yay");
+  // };
+  // const logInWithGoogle = () => {
+  //   Alert.alert("Google yay");
+  // };
 
   function renderContent() {
     return (
@@ -134,7 +134,7 @@ export default function SignIn() {
           <Button title="התחברי" onPress={logIn} />
         </ContainerComponent>
 
-        <View style={styles.logInViaContainer}>
+        {/* <View style={styles.logInViaContainer}>
           <ButtonLogIn
             icon={<Google />}
             style={styles.logInViaBtn}
@@ -147,8 +147,8 @@ export default function SignIn() {
             style={styles.logInViaBtn}
             title="Facebook  "
             onPress={logInWithFaceBook}
-          />
-        </View>
+          /> 
+        </View> */}
 
         <View style={styles.textLowContainer}>
           <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>

@@ -451,6 +451,7 @@ export default function ItemsByCtegory() {
       </View>
     );
   }
+
   //shows no res from filter when there is no data to show
   function noFiltersResults() {
     return (
@@ -572,13 +573,35 @@ export default function ItemsByCtegory() {
     );
   }
 
+  function renderNumOfRes() {
+    return (
+      <View
+        style={{
+          width: "100%",
+          paddingHorizontal: 20,
+          paddingVertical: 35,
+          borderRadius: 10,
+        }}>
+        <Text
+          style={{
+            textAlign: "right",
+            ...FONTS.Mulish_400Regular,
+            fontSize: 16,
+            color: COLORS.gray,
+          }}>
+          נמצאו {itemsByType.length} תוצאות
+        </Text>
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView
       style={{
         flex: 1,
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
       }}>
-      <Header title={type} />
+      <Header title={type} goBack={true} selectedTab={"Search"} />
 
       {!noRes && !noResinSort &&  renderSearch()}
       {isLoading? <LoadingComponent/>: (!noResinSort && !noRes &&  renderItems())}

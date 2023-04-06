@@ -116,6 +116,7 @@ export default function Header({
   onEdit,
   showModal,
   goBack,
+  selectedTab,
 }) {
   const navigation = useNavigation();
   const [showModal2, setShowModal] = useState(showModal);
@@ -145,7 +146,8 @@ export default function Header({
             if (onEdit) {
               setShowModal(true); // set showModal2 to true
             } else {
-              navigation.goBack();
+              // navigation.goBack();
+              setSelectedTab(selectedTab);
             }
           }}>
           <ArrowTwo />

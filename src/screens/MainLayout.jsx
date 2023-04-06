@@ -24,6 +24,8 @@ import ItemsByCtegory from "./ItemsByCtegory";
 import SearchRes from "./SearchRes";
 import Filter from "./Filter";
 import SearchAllUsers from "./SearchAllUsers";
+import EditProfile from "./EditProfile";
+
 
 export default function MainLayout() {
   const { loggedUser, selectedTab, setSelectedTab, setOwner_, setClosetId_ } =
@@ -112,6 +114,7 @@ export default function MainLayout() {
       {selectedTab == "ItemsByCtegory" && <ItemsByCtegory />}
       {selectedTab == "Filter" && <Filter />}
       {selectedTab == "SearchAllUsers" && <SearchAllUsers />}
+      {selectedTab == "EditProfile" && <EditProfile />}
 
       <View
         style={{

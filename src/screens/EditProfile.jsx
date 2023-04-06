@@ -374,6 +374,7 @@ export default function EditProfile(props) {
         setShowModal={setShowModal}
         handleSure={() => navigation.goBack()}
         massage={" השינויים לא ישמרו \n האם את בטוחה ?"}
+        goBack={() => navigation.goBack()}
       />
       {renderContent()}
       {showModal && (

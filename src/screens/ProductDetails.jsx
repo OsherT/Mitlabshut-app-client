@@ -669,7 +669,6 @@ export default function ProductDetails(props) {
                   flexDirection: "row-reverse",
                   alignItems: "center",
                 }}
-             
                 onPress={() => {
                   setSelectedTab("Closet");
                   setClosetId_(item.closet_ID);
@@ -824,8 +823,15 @@ export default function ProductDetails(props) {
 
   return (
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
-      <Header goBack={true} flag={true} />
-      {isLoading? <LoadingComponent></LoadingComponent> :renderContent()}
+      <Header
+        goBack={true}
+        selectedTab={() => {
+          setSelectedTab("Closet");
+          navigation.goBack();
+        }}
+        flag={true}
+      />
+      {isLoading ? <LoadingComponent></LoadingComponent> : renderContent()}
       {showModal && (
         <WarningModal
           showModal={showModal}

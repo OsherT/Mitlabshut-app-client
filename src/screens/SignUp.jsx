@@ -92,9 +92,7 @@ export default function SignUp() {
               )
               .then((res) => {
                 setloggedUser(newUser); //לאחר ההרשמה היוזר מתחבר ומנווט ישר לארון שלו
-                console.log("newUser", newUser);
 
-                console.log("succ in user", res.data);
                 uploadImageFB(res.data);
               })
               .catch((err) => {

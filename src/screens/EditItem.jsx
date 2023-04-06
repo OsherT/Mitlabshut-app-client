@@ -765,6 +765,7 @@ export default function EditItem(props) {
         setShowModal={setShowModal}
         handleSure={() => navigation.goBack()}
         massage={" השינויים לא ישמרו \n האם את בטוחה ?"}
+        goBack={true}
       />
 
       {renderContent()}

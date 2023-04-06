@@ -397,11 +397,7 @@ export default function Order() {
               </Text>
             </View>
 
-            <Button
-              title="רכשי"
-              containerStyle={{ marginTop: 25 }}
-              onPress={() => navigation.navigate("Checkout")}
-            />
+           
           </ContainerComponent>
         ) : (
           <Text></Text>

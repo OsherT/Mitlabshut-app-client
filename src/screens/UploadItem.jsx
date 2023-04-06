@@ -37,8 +37,8 @@ export default function UploadItem() {
   // const [itemPrice, setItemPrice] = useState("");
   // const [itemDescription, setItemDescription] = useState("");
   /////////////////////////לנוחות, למחוק אח"כ/////////////////////////
-  const [itemName, setItemName] = useState("FB");
-  const [itemPrice, setItemPrice] = useState(100);
+  const [itemName, setItemName] = useState("");
+  const [itemPrice, setItemPrice] = useState("");
   const [itemDescription, setItemDescription] = useState("מושלם");
   /////////////////////////לנוחות, למחוק אח"כ/////////////////////////
 

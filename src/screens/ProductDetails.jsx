@@ -479,7 +479,8 @@ export default function ProductDetails(props) {
     return (
       <View>
         <View style={styles.contentContainer}>
-          <ScrollView>
+          <ScrollView
+          showsVerticalScrollIndicator={false}>
             <View style={styles.Row}>
               <View>
                 {shippingMethod == 1 && (

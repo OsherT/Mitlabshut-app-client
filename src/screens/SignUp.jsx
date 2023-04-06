@@ -83,7 +83,7 @@ export default function SignUp() {
               closet_ID: res.data, //הכנסת האיידי של הארון ליוזר החדש
               user_image: difPic, //בהתחלה נכניס תמונה דיפולטית
               age: parseInt(userAge),
-              token:"try"
+              token: "try",
             };
             axios
               .post(
@@ -179,7 +179,7 @@ export default function SignUp() {
 
   function renderContent() {
     return (
-      <View>
+      <View style={{marginBottom:50}}>
         <ContainerComponent>
           <Text
             style={{
@@ -189,10 +189,14 @@ export default function SignUp() {
               marginBottom: 20,
               lineHeight: 32 * 1.2,
               textTransform: "capitalize",
-            }}>
+            }}
+          >
             הצטרפי לקהילה שלנו
           </Text>
-          <ScrollView keyboardShouldPersistTaps="handled">
+          <ScrollView
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
             <InputField
               placeholder="שם מלא"
               containerStyle={{ marginBottom: 10 }}
@@ -274,7 +278,8 @@ export default function SignUp() {
                   style={styles.deleteButton}
                   onPress={() => {
                     setImage(""); // Update the state
-                  }}>
+                  }}
+                >
                   <Text style={styles.deleteButtonText}>X</Text>
                 </TouchableOpacity>
               </View>
@@ -286,7 +291,8 @@ export default function SignUp() {
                       style={{
                         color: "gray",
                         textAlign: "center",
-                      }}>
+                      }}
+                    >
                       הוסיפי תמונת פרופיל
                     </Text>
                     <AddSvg></AddSvg>
@@ -297,42 +303,48 @@ export default function SignUp() {
 
             <UploadModal
               uploading={uploading}
-              message="ההרשמה עלולה לקחת זמן, אנא המתן"></UploadModal>
+              message="ההרשמה עלולה לקחת זמן, אנא המתן"
+            ></UploadModal>
             <View>
               <Button title="הרשמה" onPress={() => SignUp()} />
             </View>
+
+            <View
+              style={{
+                // position: "absolute",
+                justifyContent: "center",
+                alignItems: "flex-end",
+                marginBottom: 13,
+                flexDirection: "row",
+                top: 20,
+              }}
+            >
+              <TouchableOpacity onPress={() => navigation.navigate("SignIn")}>
+                <Text
+                  style={{
+                    ...FONTS.Mulish_400Regular,
+                    fontSize: 16,
+                    color: COLORS.black,
+                  }}
+                >
+                  {" "}
+                  התחברי
+                </Text>
+              </TouchableOpacity>
+              <Text
+                style={{
+                  ...FONTS.Mulish_400Regular,
+                  fontSize: 16,
+                  color: COLORS.gray,
+                }}
+              >
+                כבר חלק מהקהילה?{" "}
+              </Text>
+            </View>
+            <Text>{" "}</Text>
+            <Text>{" "}</Text><Text>{" "}</Text><Text>{" "}</Text>
           </ScrollView>
         </ContainerComponent>
-
-        <View
-          style={{
-            // position: "absolute",
-            justifyContent: "center",
-            alignItems: "flex-end",
-            marginBottom: 13,
-            flexDirection: "row",
-            top: 20,
-          }}>
-          <TouchableOpacity onPress={() => navigation.navigate("SignIn")}>
-            <Text
-              style={{
-                ...FONTS.Mulish_400Regular,
-                fontSize: 16,
-                color: COLORS.black,
-              }}>
-              {" "}
-              התחברי
-            </Text>
-          </TouchableOpacity>
-          <Text
-            style={{
-              ...FONTS.Mulish_400Regular,
-              fontSize: 16,
-              color: COLORS.gray,
-            }}>
-            כבר חלק מהקהילה?{" "}
-          </Text>
-        </View>
       </View>
     );
   }

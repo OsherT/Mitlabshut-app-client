@@ -61,6 +61,7 @@ export default function Profile() {
   function renderContent() {
     return (
       <ScrollView
+      showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           flexGrow: 1,
           paddingHorizontal: 20,

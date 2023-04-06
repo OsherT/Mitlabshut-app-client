@@ -97,7 +97,8 @@ export default function Search() {
   //renders the main content
   function renderTyps() {
     return (
-      <KeyboardAwareScrollView>
+      <KeyboardAwareScrollView
+      showsVerticalScrollIndicator={false}>
         <View style={{ paddingHorizontal: 20 }}>
           {typeList.map((type, index) => {
             return (

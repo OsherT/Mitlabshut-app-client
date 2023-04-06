@@ -14,6 +14,7 @@ import {
   ProfileTab,
   TabElement,
   Bag,
+  ClothesHanger
 } from "../svg";
 import { COLORS } from "../constants";
 import { userContext } from "../navigation/userContext";

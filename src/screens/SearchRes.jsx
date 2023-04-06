@@ -28,12 +28,10 @@ export default function SearchRes(props) {
     searchText_,
     setSearchText_,
     setSelectedTab,
-    setType_,
   } = useContext(userContext);
   const searchText = searchText_;
 
   const isFocused = useIsFocused();
-  // const [nextSearch, setnextSearch] = useState("");
   const [brandsList, setBrandsList] = useState([]);
   const [categoriesList, setCategoriesList] = useState([]);
   const [itemsByNameList, setItemsByNameList] = useState([]);
@@ -49,17 +47,14 @@ export default function SearchRes(props) {
     }
   }, [brandsList, categoriesList, itemsByNameList]);
 
-  useEffect(() => {
-    console.log("searchtxt", searchText);
-    console.log("nores", noRes);
-  }, [searchText]);
+  // useEffect(() => {
+  //   console.log("searchtxt", searchText);
+  //   console.log("nores", noRes);
 
-  useEffect(() => {
-    if (searchText == "") {
-      setSelectedTab("Search");
-      // setNoRes(false);
-    }
-  }, [searchText]);
+  //   if (searchText == "") {
+  //     setSelectedTab("Search");
+  //   }
+  // }, [searchText]);
 
   useEffect(() => {
     if (isFocused) {
@@ -68,6 +63,7 @@ export default function SearchRes(props) {
       GetItemsNamesList();
       getShopItems();
       getFavItems();
+      GetSearcResults();
     }
   }, [isFocused]);
 
@@ -113,6 +109,7 @@ export default function SearchRes(props) {
 
   //get the items by the search text
   function GetSearcResults() {
+    setitemsBySearch([]);
     if (brandsList && categoriesList && itemsByNameList) {
       if (brandsList.includes(searchText)) {
         axios
@@ -152,7 +149,7 @@ export default function SearchRes(props) {
               GetItemPhotos(res.data);
               setNoRes(false);
             } else {
-              console.log("no name");
+              console.log("no name res");
             }
           })
           .catch((err) => {
@@ -298,66 +295,53 @@ export default function SearchRes(props) {
   }
 
   //need to do shearch by categories
-  function renderSearch() {
-    return (
-      <View
-        style={{
-          paddingHorizontal: 20,
-          marginTop: 10,
-          marginBottom: 20,
-        }}>
-        <View
-          style={{
-            width: "100%",
-            height: 44,
-            backgroundColor: COLORS.white,
-            borderRadius: 15,
-            flexDirection: "row",
-            alignItems: "center",
-          }}>
-          <View style={{ paddingLeft: 15, paddingRight: 10 }}>
-            <TouchableOpacity
-              onPress={() => {
-                if (searchText != "") {
-                  GetSearcResults();
-                }
-              }}>
-              <SearchSvg />
-            </TouchableOpacity>
-          </View>
-          <TextInput
-            style={{ flex: 1, textAlign: "right", paddingRight: 15 }}
-            placeholder="חפשי פריט (קטגוריה/ מותג/ שם פריט)..."
-            onChangeText={(text) => {
-              setSearchText_(text);
-              GetSearcResults();
-            }}
-            onSubmitEditing={({ nativeEvent }) => {
-              if (searchText != "") {
-                GetSearcResults();
-                setSearchText_(nativeEvent.text);
-              }
-            }}
-            keyboardType="default"
-            returnKeyType="search"
-            defaultValue={searchText}
-          />
-          {/* <TouchableOpacity
-            style={{
-              paddingHorizontal: 15,
-              paddingVertical: 5,
-            }}
-            onPress={() => {
-              // navigation.navigate("Filter", { type: "null" })
-              setSelectedTab("Filter");
-              setType_(null);
-            }}>
-            <FilterSvg />
-          </TouchableOpacity> */}
-        </View>
-      </View>
-    );
-  }
+  // function renderSearch() {
+  //   return (
+  //     <View
+  //       style={{
+  //         paddingHorizontal: 20,
+  //         marginTop: 10,
+  //         marginBottom: 20,
+  //       }}>
+  //       <View
+  //         style={{
+  //           width: "100%",
+  //           height: 44,
+  //           backgroundColor: COLORS.white,
+  //           borderRadius: 15,
+  //           flexDirection: "row",
+  //           alignItems: "center",
+  //         }}>
+  //         <View style={{ paddingLeft: 15, paddingRight: 10 }}>
+  //           <TouchableOpacity
+  //             onPress={() => {
+  //               if (searchText != "") {
+  //                 GetSearcResults();
+  //               }
+  //             }}>
+  //             <SearchSvg />
+  //           </TouchableOpacity>
+  //         </View>
+  //         <TextInput
+  //           style={{ flex: 1, textAlign: "right", paddingRight: 15 }}
+  //           placeholder="חפשי פריט (קטגוריה/ מותג/ שם פריט)..."
+  //           onChangeText={(text) => {
+  //             setSearchText_(text);
+  //           }}
+  //           onSubmitEditing={({ nativeEvent }) => {
+  //             if (searchText != "") {
+  //               setSearchText_(nativeEvent.text);
+  //               GetSearcResults();
+  //             }
+  //           }}
+  //           keyboardType="default"
+  //           returnKeyType="search"
+  //           defaultValue={searchText}
+  //         />
+  //       </View>
+  //     </View>
+  //   );
+  // }
 
   function renderItems() {
     return (
@@ -559,14 +543,69 @@ export default function SearchRes(props) {
     );
   }
 
+  function renderReSearchButton() {
+    return (
+      <View
+        style={{
+          width: "100%",
+          paddingHorizontal: 20,
+          paddingVertical: 35,
+          borderRadius: 10,
+        }}>
+        <TouchableOpacity
+          onPress={() => setSelectedTab("Search")}
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+            paddingVertical: 8,
+            paddingHorizontal: 4,
+            backgroundColor: "#F2F2F2",
+            borderRadius: 20,
+            borderWidth: 1,
+            borderColor: "#E5E5E5",
+            shadowColor: "#000",
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.23,
+            shadowRadius: 2.62,
+            elevation: 4,
+          }}>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: "bold",
+              color: "#333",
+              marginLeft: 8,
+            }}>
+            חזרה לחיפוש
+          </Text>
+        </TouchableOpacity>
+        <Text
+          style={{
+            textAlign: "right",
+            ...FONTS.Mulish_400Regular,
+            fontSize: 16,
+            color: COLORS.gray,
+            marginTop: 30,
+          }}>
+          נמצאו {itemsBySearch.length} תוצאות
+        </Text>
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView
       style={{
         flex: 1,
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
       }}>
-      <Header title={searchText} />
-      {!noRes && renderSearch()}
+      <Header title="תוצאות חיפוש" />
+      {!noRes && renderReSearchButton()}
+
       {!noRes ? renderItems() : noSearchResults()}
     </SafeAreaView>
   );

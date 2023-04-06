@@ -6,10 +6,9 @@ import {
   StatusBar,
   TouchableOpacity,
   ImageBackground,
-  Alert,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
-import { useIsFocused, useNavigation } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
 import { ContainerComponent, Header } from "../components";
 import { COLORS, FONTS } from "../constants";
 import { Empty, FilterSvg, SearchSvg } from "../svg";
@@ -19,7 +18,6 @@ import axios from "axios";
 import { ScrollView } from "react-native-gesture-handler";
 
 export default function SearchUsersFollow() {
-  const navigation = useNavigation();
 
   const [searchName, setSearchName] = useState("");
   const { loggedUser, setSelectedTab, setClosetId_, setOwner_ } =
@@ -150,12 +148,7 @@ export default function SearchUsersFollow() {
                     borderRadius: 10,
                     flexDirection: "row",
                   }}
-                  // onPress={() =>
-                  //   navigation.navigate("Closet", {
-                  //     closetId: user.closet_id,
-                  //     owner: user,
-                  //   })
-                  // }
+             
                   onPress={() => {
                     setSelectedTab("Closet");
                     setClosetId_(user.closet_id);

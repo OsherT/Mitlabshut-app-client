@@ -33,7 +33,7 @@ export default function SearchRes(props) {
   const searchText = searchText_;
 
   const isFocused = useIsFocused();
-  const [nextSearch, setnextSearch] = useState("");
+  // const [nextSearch, setnextSearch] = useState("");
   const [brandsList, setBrandsList] = useState([]);
   const [categoriesList, setCategoriesList] = useState([]);
   const [itemsByNameList, setItemsByNameList] = useState([]);
@@ -43,12 +43,23 @@ export default function SearchRes(props) {
   const [UsersShopList, setUsersShopList] = useState([]);
   const [noRes, setNoRes] = useState(true);
 
-
   useEffect(() => {
     if (brandsList && categoriesList && itemsByNameList) {
       GetSearcResults();
     }
   }, [brandsList, categoriesList, itemsByNameList]);
+
+  useEffect(() => {
+    console.log("searchtxt", searchText);
+    console.log("nores", noRes);
+  }, [searchText]);
+
+  useEffect(() => {
+    if (searchText == "") {
+      setSelectedTab("Search");
+      // setNoRes(false);
+    }
+  }, [searchText]);
 
   useEffect(() => {
     if (isFocused) {
@@ -58,7 +69,7 @@ export default function SearchRes(props) {
       getShopItems();
       getFavItems();
     }
-  }, [isFocused, searchText]);
+  }, [isFocused]);
 
   const GetBrandsList = () => {
     axios
@@ -307,22 +318,25 @@ export default function SearchRes(props) {
           <View style={{ paddingLeft: 15, paddingRight: 10 }}>
             <TouchableOpacity
               onPress={() => {
-                setSelectedTab("SearchRes");
-                setSearchText_(nextSearch);
+                if (searchText != "") {
+                  GetSearcResults();
+                }
               }}>
               <SearchSvg />
             </TouchableOpacity>
           </View>
           <TextInput
-            style={{ flex: 1, textAlign: "right",paddingRight:15 }}
+            style={{ flex: 1, textAlign: "right", paddingRight: 15 }}
             placeholder="חפשי פריט (קטגוריה/ מותג/ שם פריט)..."
             onChangeText={(text) => {
-              setnextSearch(text);
-              setNoRes(true);
+              setSearchText_(text);
+              GetSearcResults();
             }}
             onSubmitEditing={({ nativeEvent }) => {
-              setSelectedTab("SearchRes");
-              setSearchText_(nativeEvent.text);
+              if (searchText != "") {
+                GetSearcResults();
+                setSearchText_(nativeEvent.text);
+              }
             }}
             keyboardType="default"
             returnKeyType="search"
@@ -544,7 +558,7 @@ export default function SearchRes(props) {
       </ScrollView>
     );
   }
-  
+
   return (
     <SafeAreaView
       style={{

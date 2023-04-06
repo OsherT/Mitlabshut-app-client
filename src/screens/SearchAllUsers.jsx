@@ -35,8 +35,6 @@ export default function SearchAllUsers() {
     }
   }, [isFocused, searchName]);
 
-
-
   const GetAllUsers = () => {
     fetch(
       "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetAllUsersNotThisOne/UserID/" +
@@ -110,8 +108,7 @@ export default function SearchAllUsers() {
                   if (searchName != "") {
                     SearchUserByName();
                   }
-                }}
-                >
+                }}>
                 <SearchSvg />
               </TouchableOpacity>
             </View>
@@ -122,8 +119,10 @@ export default function SearchAllUsers() {
                 setSearchName(text);
               }}
               onSubmitEditing={({ nativeEvent }) => {
-                SearchUserByName();
-                setSearchName(nativeEvent.text);
+                if (searchName != "") {
+                  SearchUserByName();
+                  setSearchName(nativeEvent.text);
+                }
               }}
               keyboardType="default"
               returnKeyType="search"
@@ -264,7 +263,6 @@ export default function SearchAllUsers() {
                 shadowRadius: 2.62,
                 elevation: 4,
               }}>
-              <FilterSvg filled={true} />
               <Text
                 style={{
                   fontSize: 16,

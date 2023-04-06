@@ -16,6 +16,7 @@ import axios from "axios";
 import { userContext } from "../navigation/userContext";
 import { Swipeable } from "react-native-gesture-handler";
 import { Empty } from "../svg";
+import LoadingComponent from "./LoadingComponent";
 
 export default function Order() {
   const navigation = useNavigation();
@@ -28,6 +29,7 @@ export default function Order() {
   const [sumTotal, setsumTotal] = useState("");
   const [swipeableRef, setSwipeableRef] = useState(null);
   const whatsappIcon = `https://cdn-icons-png.flaticon.com/512/124/124034.png`;
+  const [isLoading, setIsLoading] = useState(true);
 
   const closeSwipeable = () => {
     swipeableRef && swipeableRef.close();
@@ -84,6 +86,8 @@ export default function Order() {
       .then((responses) => {
         const photos = responses.flatMap((response) => response.data);
         setUsersItemPhotos(photos);
+        setIsLoading(false)
+
       })
       .catch((error) => {
         alert("cant take photos");
@@ -454,7 +458,8 @@ export default function Order() {
   return (
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
       <Header title="סל קניות" goBack={false} flag={false} />
-      {renderContent()}
+      {isLoading?
+      <LoadingComponent></LoadingComponent>:renderContent()}
     </SafeAreaView>
   );
 }

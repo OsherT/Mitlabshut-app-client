@@ -18,6 +18,7 @@ import TrashCanIcon from "../svg/TrashCanIcon";
 import { Swipeable } from "react-native-gesture-handler";
 import { TabElement } from "../svg";
 import MainLayout from "./MainLayout";
+import LoadingComponent from "./LoadingComponent";
 export default function WishList() {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
@@ -29,6 +30,8 @@ export default function WishList() {
   const closeSwipeable = () => {
     swipeableRef && swipeableRef.close();
   };
+  const [isLoading, setIsLoading] = useState(true);
+
 
   useEffect(() => {
     if (isFocused) {
@@ -83,6 +86,7 @@ export default function WishList() {
         const photos = responses.flatMap((response) => response.data);
         console.log(photos);
         setUsersItemPhotos(photos);
+        setIsLoading(false)
       })
       .catch((error) => {
         alert("cant take photos");
@@ -358,7 +362,7 @@ export default function WishList() {
       </ScrollView>
     );
   }
-
+  
   return (
     <SafeAreaView
       style={{
@@ -367,7 +371,8 @@ export default function WishList() {
         showsVerticalScrollIndicator: false,
       }}>
       <Header title="רשימת מועדפים" goBack={false} />
-      {renderContent()}
+      {isLoading?
+      <LoadingComponent></LoadingComponent>:renderContent()}
     </SafeAreaView>
   );
 }

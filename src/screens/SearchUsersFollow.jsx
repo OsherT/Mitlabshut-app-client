@@ -18,7 +18,6 @@ import axios from "axios";
 import { ScrollView } from "react-native-gesture-handler";
 
 export default function SearchUsersFollow() {
-
   const [searchName, setSearchName] = useState("");
   const { loggedUser, setSelectedTab, setClosetId_, setOwner_ } =
     useContext(userContext);
@@ -117,8 +116,10 @@ export default function SearchUsersFollow() {
                 setSearchName(text);
               }}
               onSubmitEditing={({ nativeEvent }) => {
-                SearchUserByName();
-                setSearchName(nativeEvent.text);
+                if (searchName != "") {
+                  SearchUserByName();
+                  setSearchName(nativeEvent.text);
+                }
               }}
               keyboardType="default"
               returnKeyType="search"
@@ -148,7 +149,6 @@ export default function SearchUsersFollow() {
                     borderRadius: 10,
                     flexDirection: "row",
                   }}
-             
                   onPress={() => {
                     setSelectedTab("Closet");
                     setClosetId_(user.closet_id);

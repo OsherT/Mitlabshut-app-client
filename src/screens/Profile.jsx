@@ -135,37 +135,6 @@ export default function Profile() {
               setMassage(" האם את בטוחה שאת רוצה \n להתנתק ?");
             }}
           />
-
-          {/* <ProfileCategory
-            icon={<OrderCategory />}
-            title="Order History"
-            containerStyle={{ marginBottom: 10 }}
-            onPress={() => navigation.navigate("OrderHistory")}
-          />
-          <ProfileCategory
-            icon={<PaymentCategory />}
-            title="Payment Method"
-            containerStyle={{ marginBottom: 10 }}
-            onPress={() => navigation.navigate("PaymentMethod")}
-          />
-          <ProfileCategory
-            icon={<AdressCategory />}
-            title="My Adress"
-            containerStyle={{ marginBottom: 10 }}
-            onPress={() => navigation.navigate("MyAddress")}
-          />
-          <ProfileCategory
-            icon={<PromocodesCategory />}
-            title="My Promocodes"
-            containerStyle={{ marginBottom: 10 }}
-            onPress={() => navigation.navigate("MyPromocodes")}
-          />
-          <ProfileCategory
-            icon={<FAQCategory />}
-            title="FAQ"
-            containerStyle={{ marginBottom: 10 }}
-            onPress={() => navigation.navigate("FAQ")}
-          /> */}
         </ContainerComponent>
       </ScrollView>
     );
@@ -191,7 +160,7 @@ export default function Profile() {
                 color: COLORS.black,
                 lineHeight: 20 * 1.2,
               }}>
-              ארונות במעקב...  <SearchSvg />
+              ארונות במעקב... <SearchSvg />
             </Text>
           </TouchableOpacity>
         </View>
@@ -280,7 +249,7 @@ export default function Profile() {
         shadowRadius: 3.84,
         elevation: 5, // Add this line for Android compatibility
       }}>
-      <Header title="עמוד אישי" goBack={false} />
+      <Header title="עמוד אישי"  />
       {renderContent()}
       {showModal && (
         <WarningModal

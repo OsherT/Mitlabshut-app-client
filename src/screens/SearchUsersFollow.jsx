@@ -283,7 +283,12 @@ export default function SearchUsersFollow() {
         flex: 1,
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
       }}>
-      <Header title=" משתמשות במעקב" goBack={false} flag={false} />
+      <Header
+        title=" משתמשות במעקב"
+        goBack={true}
+        selectedTab={"Profile"}
+        flag={false}
+      />
       {renderSearch()}
       {!noRes ? renderUsers() : noSearchResults()}
     </SafeAreaView>

@@ -285,7 +285,7 @@ export default function SearchAllUsers() {
         flex: 1,
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
       }}>
-      <Header title=" משתמשות " goBack={false} flag={false} />
+      <Header title=" משתמשות " goBack={true} selectedTab={"Home"} flag={false} />
       {renderSearch()}
       {!noRes ? renderUsers() : noSearchResults()}
     </SafeAreaView>

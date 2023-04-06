@@ -447,6 +447,7 @@ export default function ItemsByCtegory() {
       </View>
     );
   }
+
   //shows no res from filter when there is no data to show
   function noFiltersResults() {
     return (
@@ -573,7 +574,7 @@ export default function ItemsByCtegory() {
         flex: 1,
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
       }}>
-      <Header title={type} />
+      <Header title={type} goBack={true} selectedTab={"Search"} />
 
       {!noRes && !noResinSort && renderSearch()}
       {!noResinSort && !noRes && renderItems()}

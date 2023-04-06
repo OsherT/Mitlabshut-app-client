@@ -39,6 +39,7 @@ export default function Closet(props) {
     closetId_,
     setOwner_,
     owner_,
+    setSelectedTab,
   } = useContext(userContext);
   const { route } = props;
   const closetId = closetId_ || route?.params?.closetId || loggedUser.closet_id;

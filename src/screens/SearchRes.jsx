@@ -352,6 +352,7 @@ export default function SearchRes(props) {
         contentContainerStyle={{
           paddingHorizontal: 20,
           paddingBottom: 50,
+          marginTop: 30,
         }}
         numColumns={2}
         columnWrapperStyle={{ justifyContent: "space-between" }}
@@ -543,68 +544,13 @@ export default function SearchRes(props) {
     );
   }
 
-  function renderReSearchButton() {
-    return (
-      <View
-        style={{
-          width: "100%",
-          paddingHorizontal: 20,
-          paddingVertical: 35,
-          borderRadius: 10,
-        }}>
-        <TouchableOpacity
-          onPress={() => setSelectedTab("Search")}
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            paddingVertical: 8,
-            paddingHorizontal: 4,
-            backgroundColor: "#F2F2F2",
-            borderRadius: 20,
-            borderWidth: 1,
-            borderColor: "#E5E5E5",
-            shadowColor: "#000",
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.23,
-            shadowRadius: 2.62,
-            elevation: 4,
-          }}>
-          <Text
-            style={{
-              fontSize: 16,
-              fontWeight: "bold",
-              color: "#333",
-              marginLeft: 8,
-            }}>
-            חזרה לחיפוש
-          </Text>
-        </TouchableOpacity>
-        <Text
-          style={{
-            textAlign: "right",
-            ...FONTS.Mulish_400Regular,
-            fontSize: 16,
-            color: COLORS.gray,
-            marginTop: 30,
-          }}>
-          נמצאו {itemsBySearch.length} תוצאות
-        </Text>
-      </View>
-    );
-  }
-
   return (
     <SafeAreaView
       style={{
         flex: 1,
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
       }}>
-      <Header title="תוצאות חיפוש" />
-      {!noRes && renderReSearchButton()}
+      <Header title="תוצאות חיפוש" goBack={true} selectedTab={"Search"} />
 
       {!noRes ? renderItems() : noSearchResults()}
     </SafeAreaView>

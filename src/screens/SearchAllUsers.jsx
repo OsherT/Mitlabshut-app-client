@@ -52,7 +52,6 @@ export default function SearchAllUsers() {
       })
       .then(
         (data) => {
-          console.log("data", data);
           setAllUsers(data);
         },
         (error) => {

@@ -568,6 +568,28 @@ export default function ItemsByCtegory() {
     );
   }
 
+  function renderNumOfRes() {
+    return (
+      <View
+        style={{
+          width: "100%",
+          paddingHorizontal: 20,
+          paddingVertical: 35,
+          borderRadius: 10,
+        }}>
+        <Text
+          style={{
+            textAlign: "right",
+            ...FONTS.Mulish_400Regular,
+            fontSize: 16,
+            color: COLORS.gray,
+          }}>
+          נמצאו {itemsByType.length} תוצאות
+        </Text>
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView
       style={{
@@ -577,6 +599,8 @@ export default function ItemsByCtegory() {
       <Header title={type} goBack={true} selectedTab={"Search"} />
 
       {!noRes && !noResinSort && renderSearch()}
+      {!noRes  && renderNumOfRes()}
+
       {!noResinSort && !noRes && renderItems()}
       {noRes && noSearchResults()}
       {noResinSort && noFiltersResults()}

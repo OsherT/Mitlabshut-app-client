@@ -27,6 +27,7 @@ import UploadModal from "../components/Uploading";
 import WarningModal from "../components/WarningModal";
 import AlertModal from "../components/AlertModal";
 import * as ImageManipulator from "expo-image-manipulator";
+import ImageResizer from "react-native-image-resizer";
 
 export default function UploadItem() {
   const navigation = useNavigation();
@@ -258,25 +259,66 @@ export default function UploadItem() {
   ///uploads the image to the fireBase////
   ////////////////////////////////////////
 
-  // const pickImage = async () => {
-  //   let result = await ImagePicker.launchImageLibraryAsync({
-  //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
-  //     aspect: [4, 3],
-  //     quality: 1,
-  //     allowsMultipleSelection: true, // Allow multiple image selection
-  //     selectionLimit: 3,
-  //     orderedSelection: true,
-  //   });
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      aspect: [4, 3],
+      quality: 1,
+      allowsMultipleSelection: true, // Allow multiple image selection
+      selectionLimit: 3,
+      orderedSelection: true,
+    });
 
-  //   if (!result.canceled) {
-  //     const selectedImages = result.assets.map((image, index) => ({
-  //       uri: image.uri,
-  //       key: index,
-  //     }));
-  //     setImages(selectedImages);
-  //   }
-  //   selectedImages = [];
-  // };
+    if (!result.canceled) {
+      const selectedImages = result.assets.map((image, index) => ({
+        uri: image.uri,
+        key: index,
+      }));
+      setImages(selectedImages);
+    }
+  };
+
+  const uploadImageFB = async (item_ID) => {
+    setUploading(true);
+    const imageLinks = [];
+
+    for (let i = 0; i < images.length; i++) {
+      const response = await fetch(images[i].uri);
+      const blob = await response.blob();
+      const manipulatedImage = await ImageManipulator.manipulateAsync(
+        images[i].uri,
+        [{ resize: { width: 300 } }],
+        { compress: 0.05, format: ImageManipulator.SaveFormat.JPEG }
+      );
+      const filename =
+        `${loggedUser.id}/` +
+        item_ID +
+        "/" +
+        manipulatedImage.uri.substring(
+          manipulatedImage.uri.lastIndexOf("/") + 1
+        );
+
+      try {
+        var ref = firebase.storage().ref().child(filename).put(blob);
+        await ref;
+        var imageRef = firebase.storage().ref().child(filename);
+        const imageLink = await imageRef.getDownloadURL();
+        imageLinks.push(imageLink);
+        console.log(`Image ${filename} uploaded successfully`);
+      } catch (error) {
+        console.log("error in upload to FB", error);
+      }
+    }
+    uploadImagesDB(item_ID, imageLinks);
+
+    setUploading(false);
+
+    if (!uploading) {
+      navigation.navigate("OrderSuccessful", {
+        message: "הפריט עלה בהצלחה !",
+      });
+    }
+  };
 
   // const uploadImageFB = async (item_ID) => {
   //   setUploading(true);
@@ -314,57 +356,47 @@ export default function UploadItem() {
   //   }
   // };
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      aspect: [4, 3],
-      quality: 1,
-      allowsMultipleSelection: true, // Allow multiple image selection
-      selectionLimit: 3,
-      orderedSelection: true,
-    });
+  // const uploadImageFB = async (item_ID) => {
+  //   setUploading(true);
+  //   const imageLinks = [];
 
-    if (!result.canceled) {
-      const selectedImages = result.assets.map((image, index) => ({
-        uri: image.uri,
-        key: index,
-      }));
-      setImages(selectedImages);
-    }
-  };
+  //   for (let i = 0; i < images.length; i++) {
+  //     const response = await fetch(images[i].uri);
+  //     const blob = await response.blob();
+  //     const resizedImage = await ImageResizer.createResizedImage(
+  //       images[i].uri,
+  //       600, // Width
+  //       800, // Height
+  //       "JPEG", // Format
+  //       50 // Quality (0-100)
+  //     );
+  //     const filename =
+  //       `${loggedUser.id}/` +
+  //       item_ID +
+  //       "/" +
+  //       resizedImage.uri.substring(resizedImage.uri.lastIndexOf("/") + 1);
 
-  const uploadImageFB = async (item_ID) => {
-    setUploading(true);
-    const imageLinks = [];
+  //     try {
+  //       var ref = firebase.storage().ref().child(filename).put(blob);
+  //       await ref;
+  //       var imageRef = firebase.storage().ref().child(filename);
+  //       const imageLink = await imageRef.getDownloadURL();
+  //       imageLinks.push(imageLink);
+  //       console.log(`Image ${filename} uploaded successfully`);
+  //     } catch (error) {
+  //       console.log("error in upload to FB", error);
+  //     }
+  //   }
+  //   uploadImagesDB(item_ID, imageLinks);
 
-    for (let i = 0; i < images.length; i++) {
-      const response = await fetch(images[i].uri);
-      const blob = await response.blob();
-      const manipulatedImage = await ImageManipulator.manipulateAsync(
-        images[i].uri,
-        [{ resize: { width: 600 } }],
-        { compress: 0.5, format: ImageManipulator.SaveFormat.JPEG }
-      );
-      const filename =
-        `${loggedUser.id}/` +
-        item_ID +
-        "/" +
-        manipulatedImage.uri.substring(
-          manipulatedImage.uri.lastIndexOf("/") + 1
-        );
+  //   setUploading(false);
 
-      try {
-        var ref = firebase.storage().ref().child(filename).put(blob);
-        await ref;
-        var imageRef = firebase.storage().ref().child(filename);
-        const imageLink = await imageRef.getDownloadURL();
-        imageLinks.push(imageLink);
-        console.log(`Image ${filename} uploaded successfully`);
-      } catch (error) {
-        console.log("error in upload to FB", error);
-      }
-    }
-  };
+  //   if (!uploading) {
+  //     navigation.navigate("OrderSuccessful", {
+  //       message: "הפריט עלה בהצלחה !",
+  //     });
+  //   }
+  // };
 
   const uploadImagesDB = (item_id, imageLinks) => {
     for (let i = 0; i < imageLinks.length; i++) {

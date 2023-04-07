@@ -5,7 +5,6 @@ import {
   SafeAreaView,
   StyleSheet,
   Image,
-  Alert,
   ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState, useContext } from "react";
@@ -25,12 +24,16 @@ import { AddSvg } from "../svg";
 import MultiSelect from "react-native-multiple-select";
 import ButtonLogIn from "../components/ButtonLogIn";
 import UploadModal from "../components/Uploading";
+import WarningModal from "../components/WarningModal";
+import AlertModal from "../components/AlertModal";
 
 export default function UploadItem() {
   const navigation = useNavigation();
   const { loggedUser } = useContext(userContext);
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
   const ApiUrl_image = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/ItemImages`;
+  const [showAlertModal, setShowAlertModal] = useState(false);
+  const [message, setMessage] = useState("");
 
   //the section of the item information hooks
   // const [itemName, setItemName] = useState("");
@@ -51,6 +54,7 @@ export default function UploadItem() {
   const [itemBrand, setItemBrand] = useState("");
   const [images, setImages] = useState([]);
   const [uploading, setUploading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   //the section of the lists hooks
   const [brandsList, setBrandsList] = useState([]);
@@ -229,8 +233,8 @@ export default function UploadItem() {
       itemDescription == "" ||
       images.length == 0
     ) {
-      Alert.alert("אנא מלאי את כל הפרטים");
-      console.log("images.length", images.length);
+      setMessage("יש למלא את כל הפרטים");
+      setShowAlertModal(true);
     } else {
       const item = {
         Closet_ID: loggedUser.closet_id,
@@ -589,7 +593,6 @@ export default function UploadItem() {
                       const newImages = [...images]; // Make a copy of the array
                       newImages.splice(index, 1); // Remove the image at the given index
                       setImages(newImages); // Update the state
-                    
                     }}>
                     <Text style={styles.deleteButtonText}>X</Text>
                   </TouchableOpacity>
@@ -619,20 +622,7 @@ export default function UploadItem() {
             <ButtonLogIn
               title="ביטול  "
               onPress={() => {
-                Alert.alert(
-                  "השינויים לא ישמרו",
-                  "האם את בטוחה שברצונך לחזור?",
-                  [
-                    {
-                      text: "אישור",
-                      onPress: () => navigation.goBack(),
-                    },
-                    {
-                      text: "ביטול",
-                      style: "cancel",
-                    },
-                  ]
-                );
+                setShowModal(true);
               }}
             />
           </View>
@@ -642,8 +632,25 @@ export default function UploadItem() {
   }
   return (
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
-      <Header flag={true} onEdit={true} goBack={() => navigation.goBack()} />
+      <Header flag={true} onEdit={true} goBack={true} />
       {renderContent()}
+
+      {showModal && (
+        <WarningModal
+          showModal={showModal}
+          setShowModal={setShowModal}
+          handleSure={() => navigation.goBack()}
+          massage={" השינויים לא ישמרו \n האם את בטוחה ?"}
+          goBack={true}
+        />
+      )}
+      {showAlertModal && (
+        <AlertModal
+          message={message}
+          showModal={showAlertModal}
+          setShowModal={setShowAlertModal}
+        />
+      )}
     </SafeAreaView>
   );
 }

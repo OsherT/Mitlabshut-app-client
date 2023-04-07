@@ -23,7 +23,6 @@ import { SelectList } from "react-native-dropdown-select-list";
 import AlertModal from "../components/AlertModal";
 
 export default function SignUp() {
-  const ApiUrl_image = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/ItemImages`;
 
   const difPic =
     "https://images.squarespace-cdn.com/content/v1/5beb55599d5abb5a47cc4907/1610465905997-2G8SGHXIYCGTF9BQB0OD/female+girl+woman+icon.jpg?format=500w";

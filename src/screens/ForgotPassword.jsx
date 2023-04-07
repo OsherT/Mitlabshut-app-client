@@ -151,7 +151,6 @@ export default function ForgotPassword() {
       />
       {firstStep && renderStepOne()}
       {flag && renderStepTwo()}
-      {console.log(message)}
       {showAlertModal && (
         <AlertModal
           message={message}

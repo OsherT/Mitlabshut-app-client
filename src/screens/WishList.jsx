@@ -54,6 +54,7 @@ export default function WishList() {
         setItems("");
       });
   }
+  
   function getShopItems() {
     axios
       .get(
@@ -72,6 +73,7 @@ export default function WishList() {
         console.log("cant get shop list", err);
       });
   }
+
   function GetItemPhotos(items) {
     // pass the items array as a parameter
     const promises = items.map((item) => {
@@ -89,8 +91,7 @@ export default function WishList() {
         setIsLoading(false)
       })
       .catch((error) => {
-        alert("cant take photos");
-        console.log(error);
+        console.log("err in GetItemPhotos", error);
       });
   }
 
@@ -106,6 +107,7 @@ export default function WishList() {
         console.log("cant remove from getFavItems", err);
       });
   }
+
   function AddToShopList(item_id) {
     axios
       .post(
@@ -117,10 +119,10 @@ export default function WishList() {
         GetItemForAlgo(item_id, shopScore, loggedUser.id);
       })
       .catch((err) => {
-        alert("cant add to shop list");
-        console.log(err);
+        console.log("err in AddToShopList", err);
       });
   }
+
   function RemoveFromShopList(itemId) {
     axios
       .delete(
@@ -131,11 +133,10 @@ export default function WishList() {
         setshopList((prevList) => prevList.filter((id) => id !== itemId));
       })
       .catch((err) => {
-        alert("cant add to fav");
-        console.log(err);
-        // console.log(newFav);
+        console.log("err in RemoveFromShopList", err);
       });
   }
+
   function renderContent() {
     return (
       <ScrollView

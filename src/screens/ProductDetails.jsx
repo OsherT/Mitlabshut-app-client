@@ -6,7 +6,7 @@ import {
   StyleSheet,
   Share,
 } from "react-native";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState,useRef } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { AREA, COLORS, FONTS } from "../constants";
 import { Button, Header } from "../components";
@@ -21,6 +21,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import ButtonLogIn from "../components/ButtonLogIn";
 import WarningModal from "../components/WarningModal";
 import LoadingComponent from "./LoadingComponent";
+import * as Notifications from "expo-notifications";
 
 export default function ProductDetails(props) {
   const navigation = useNavigation();
@@ -33,6 +34,8 @@ export default function ProductDetails(props) {
     setSelectedTab,
     setClosetId_,
     setOwner_,
+    sendPushNotification,
+
   } = useContext(userContext);
   const item = props.route.params.item;
   const isFocused = useIsFocused();
@@ -63,6 +66,18 @@ export default function ProductDetails(props) {
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
   const ApiUrl_user = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User`;
 
+  //notiffications
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
+
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    }),
+  });
   useEffect(() => {
     if (isFocused) {
       GetClosetdata();
@@ -76,6 +91,24 @@ export default function ProductDetails(props) {
       if (address1 && address2) {
         getAddressLocations();
       }
+      notificationListener.current =
+        Notifications.addNotificationReceivedListener((notification) => {
+          setNotification(notification);
+          // פה נעשה את הפעולה שנרצה לאחר שהמשתמש לחץ על ההתרא, לדוגמא ניווט לארון של היוזר שעקב אחריו
+        });
+
+      responseListener.current =
+        Notifications.addNotificationResponseReceivedListener((response) => {
+          console.log(response);
+          // פה נעשה את הפעולה שנרצה לאחר שהמשתמש לחץ על ההתרא, לדוגמא ניווט לארון של היוזר שעקב אחריו
+        });
+
+      return () => {
+        Notifications.removeNotificationSubscription(
+          notificationListener.current
+        );
+        Notifications.removeNotificationSubscription(responseListener.current);
+      };
     }
   }, [isFocused, address1, address2, itemStatus]);
 
@@ -602,8 +635,15 @@ export default function ProductDetails(props) {
                       backgroundColor={COLORS.golden}
                       textColor={COLORS.white}
                       containerStyle={{ marginBottom: 13 }}
-                      onPress={() => {
-                        followCloset();
+                      onPress={async () => {
+                        await Promise.all([
+                          followCloset(),
+                          sendPushNotification(
+                            user.token,
+                            "follow",
+                            loggedUser.full_name
+                          ),
+                        ]);
                       }}
                     />
                   )}

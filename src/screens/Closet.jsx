@@ -24,7 +24,6 @@ import ProfileNumbers from "../components/ProfileNumbers";
 import ButtonFollow from "../components/ButtonFollow";
 import WarningModal from "../components/WarningModal";
 import LoadingComponent from "./LoadingComponent";
-import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 
 export default function Closet(props) {
@@ -37,13 +36,10 @@ export default function Closet(props) {
     GetItemForAlgo,
     shopScore,
     favScore,
-    setClosetId_,
     closetId_,
-    setOwner_,
     owner_,
     setSelectedTab,
     sendPushNotification,
-    registerForPushNotificationsAsync,
   } = useContext(userContext);
   const { route } = props;
   const closetId = closetId_ || route?.params?.closetId || loggedUser.closet_id;
@@ -73,7 +69,7 @@ export default function Closet(props) {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingUserData, setIsLoadingUserData] = useState(true);
 
-  const [expoPushToken, setExpoPushToken] = useState("");
+  //push notification
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
   const responseListener = useRef();
@@ -87,46 +83,14 @@ export default function Closet(props) {
   });
 
   useEffect(() => {
-    registerForPushNotificationsAsync().then((token) =>
-      setExpoPushToken(token)
-    );
-    console.log("token", expoPushToken);
-    console.log("user token", owner.token);
-
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(notification);
-        // פה נעשה את הפעולה שנרצה לאחר שהמשתמש לחץ על ההתרא, לדוגמא ניווט לארון של היוזר שעקב אחריו
-      });
-
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
-        // פה נעשה את הפעולה שנרצה לאחר שהמשתמש לחץ על ההתרא, לדוגמא ניווט לארון של היוזר שעקב אחריו
-      });
-
-    return () => {
-      Notifications.removeNotificationSubscription(
-        notificationListener.current
-      );
-      Notifications.removeNotificationSubscription(responseListener.current);
-    };
-  }, []);
-
-  useEffect(() => {
     if (isFocused) {
       setMyClosetFlag(loggedUser.closet_id === closetId);
       GetClosetDescription();
-
       GetClosetItems();
       getShopItems();
       getFavItems();
       getFollowingList();
-      registerForPushNotificationsAsync().then((token) =>
-        setExpoPushToken(token)
-      );
-      console.log("token", expoPushToken);
-      console.log("user token", owner.token);
+
 
       notificationListener.current =
         Notifications.addNotificationReceivedListener((notification) => {
@@ -339,7 +303,11 @@ export default function Closet(props) {
                   onPress={async () => {
                     await Promise.all([
                       followCloset(),
-                      sendPushNotification(owner.token),
+                      sendPushNotification(
+                        owner.token,
+                        "follow",
+                        loggedUser.full_name
+                      ),
                     ]);
                   }}
                 />

@@ -69,21 +69,27 @@ export default function Navigation() {
   const [searchText_, setSearchText_] = useState("");
   const [flag_, setFlag_] = useState(false);
   const [sorted_, setSorted_] = useState("");
+  const [bodyMessage, setBodyMessage] = useState("");
 
   const shopScore = 8;
   const favScore = 6;
   const viewScore = 4;
 
   //push notification
-  async function sendPushNotification(expoPushToken) {
+  async function sendPushNotification(expoPushToken, action, from) {
+    if (action === "follow") {
+      setBodyMessage(`${from} התחילה לעקוב אחרייך `);
+    }
+    if (action === "like") {
+      setBodyMessage(`${from} עשתה לייק לפריט שלך `);
+    }
     const message = {
       to: expoPushToken,
       sound: "default",
       title: "מתלבשות",
-      body: "יש עדכון באפליקציה, היכנסי כדי להתעדכן",
-      data: { someData: "goes here" },
+      body: bodyMessage,
+      // data: { someData: "goes here" },
     };
-
     await fetch("https://exp.host/--/api/v2/push/send", {
       method: "POST",
       headers: {
@@ -269,7 +275,7 @@ export default function Navigation() {
           <Stack.Screen name="MyAddress" component={MyAddress} />
           <Stack.Screen name="NewAddress" component={NewAddress} />
           <Stack.Screen name="SelectSize" component={SelectSize} />
-          <Stack.Screen name="MyPromocodes" component={MyPromocodes} /> 
+          <Stack.Screen name="MyPromocodes" component={MyPromocodes} />
           <Stack.Screen name="SelectColor" component={SelectColor} />
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="TrackYourOrder" component={TrackYourOrder} />

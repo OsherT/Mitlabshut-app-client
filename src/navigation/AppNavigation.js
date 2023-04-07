@@ -99,6 +99,7 @@ export default function Navigation() {
       },
       body: JSON.stringify(message),
     });
+    setBodyMessage("");
   }
 
   async function registerForPushNotificationsAsync() {

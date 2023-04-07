@@ -91,7 +91,6 @@ export default function Closet(props) {
       getFavItems();
       getFollowingList();
 
-
       notificationListener.current =
         Notifications.addNotificationReceivedListener((notification) => {
           setNotification(notification);
@@ -729,7 +728,17 @@ export default function Closet(props) {
                         // render the unfilled heart SVG if the item ID is not in the UsersFavList
                         <TouchableOpacity
                           style={{ left: 12, top: 12 }}
-                          onPress={() => AddtoFav(item.id)}>
+                          // onPress={() => AddtoFav(item.id)}
+                          onPress={async () => {
+                            await Promise.all([
+                              AddtoFav(item.id),
+                              sendPushNotification(
+                                owner.token,
+                                "like",
+                                loggedUser.full_name
+                              ),
+                            ]);
+                          }}>
                           <HeartSvg filled={false} />
                         </TouchableOpacity>
                       )}

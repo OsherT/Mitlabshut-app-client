@@ -27,7 +27,6 @@ import UploadModal from "../components/Uploading";
 import WarningModal from "../components/WarningModal";
 import AlertModal from "../components/AlertModal";
 import * as ImageManipulator from "expo-image-manipulator";
-import ImageResizer from "react-native-image-resizer";
 
 export default function UploadItem() {
   const navigation = useNavigation();
@@ -762,17 +761,6 @@ const styles = StyleSheet.create({
     textAlign: "right",
   },
   dropdownContainer: {
-    // width: "100%",
-    // backgroundColor: "#FBF8F2",
-    // borderColor: COLORS.goldenTransparent_03,
-    // marginBottom: 30,
-    // borderWidth: 1,
-    // borderRadius: 25,
-    // paddingHorizontal: 25,
-    // textAlign: "right",
-    // flexDirection: "column-reverse",
-    // alignItems: "center",
-    // justifyContent: "space-between",
     width: "100%",
     backgroundColor: "#FBF8F2",
     borderColor: COLORS.goldenTransparent_03,

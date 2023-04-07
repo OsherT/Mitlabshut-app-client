@@ -234,8 +234,8 @@ export default function SearchRes(props) {
         console.log("err in AddtoFav ", err);
       });
   }
+  
   function HandelLike(closetId,itemId) {
-    
     axios
     .get(
       `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetUserByClosetId/Closet_ID/${closetId}`

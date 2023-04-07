@@ -226,6 +226,21 @@ export default function ItemsByCtegory() {
       });
   }
 
+  function HandelLike(closetId, itemId) {
+    axios
+      .get(
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetUserByClosetId/Closet_ID/${closetId}`
+      )
+      .then((res) => {
+        AddtoFav(itemId);
+        console.log(res.data);
+        sendPushNotification(res.data[0].token, "like", loggedUser.full_name);
+      })
+      .catch((err) => {
+        console.log("err in AddtoFav ", err);
+      });
+  }
+
   function renderSearch() {
     return (
       <View
@@ -334,16 +349,7 @@ export default function ItemsByCtegory() {
                         // render the unfilled heart SVG if the item ID is not in the UsersFavList
                         <TouchableOpacity
                           style={{ left: 12, top: 12 }}
-                          onPress={async () => {
-                            await Promise.all([
-                              AddtoFav(item.id),
-                              sendPushNotification(
-                                user.token,
-                                "like",
-                                loggedUser.full_name
-                              ),
-                            ]);
-                          }}>
+                          onPress={() => HandelLike(item.closet_ID, item.id)}>
                           <HeartSvg filled={false} />
                         </TouchableOpacity>
                       )}

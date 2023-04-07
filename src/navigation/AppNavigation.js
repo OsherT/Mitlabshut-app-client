@@ -69,7 +69,7 @@ export default function Navigation() {
   const [searchText_, setSearchText_] = useState("");
   const [flag_, setFlag_] = useState(false);
   const [sorted_, setSorted_] = useState("");
-  const [bodyMessage, setBodyMessage] = useState("");
+  //const [bodyMessage, setBodyMessage] = useState("");
 
   const shopScore = 8;
   const favScore = 6;
@@ -77,12 +77,12 @@ export default function Navigation() {
 
   //push notification
   async function sendPushNotification(expoPushToken, action, from) {
-    setBodyMessage("");
-    if (action === "follow") {
-      setBodyMessage(`${from} התחילה לעקוב אחרייך `);
+var  bodyMessage;
+   if (action === "follow") {
+    bodyMessage=`${from} התחילה לעקוב אחרייך `;
     }
     if (action === "like") {
-      setBodyMessage(`${from} עשתה לייק לפריט שלך `);
+      bodyMessage=`${from} עשתה לייק לפריט שלך `;
     }
     const message = {
       to: expoPushToken,

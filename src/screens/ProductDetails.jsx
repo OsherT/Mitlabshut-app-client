@@ -612,7 +612,18 @@ export default function ProductDetails(props) {
                 // render the unfilled heart SVG if the item ID is not in the UsersFavList
                 <TouchableOpacity
                   style={styles.favIcon}
-                  onPress={() => AddtoFav(item.id)}>
+                  // onPress={() => AddtoFav(item.id)}
+                  onPress={async () => {
+                    await Promise.all([
+                      AddtoFav(item.id),
+                      sendPushNotification(
+                        user.token,
+                        "like",
+                        loggedUser.full_name
+                      ),
+                    ]);
+                  }}
+                  >
                   <HeartTwoSvg filled={false} strokeColor="red" />
                 </TouchableOpacity>
               )}

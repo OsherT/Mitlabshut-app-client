@@ -77,6 +77,7 @@ export default function Navigation() {
 
   //push notification
   async function sendPushNotification(expoPushToken, action, from) {
+    setBodyMessage("");
     if (action === "follow") {
       setBodyMessage(`${from} התחילה לעקוב אחרייך `);
     }
@@ -98,8 +99,8 @@ export default function Navigation() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(message),
+
     });
-    setBodyMessage("");
   }
 
   async function registerForPushNotificationsAsync() {

@@ -32,7 +32,6 @@ export default function WishList() {
   };
   const [isLoading, setIsLoading] = useState(true);
 
-
   useEffect(() => {
     if (isFocused) {
       getItemsData();
@@ -47,14 +46,19 @@ export default function WishList() {
           loggedUser.id
       )
       .then((res) => {
-        setItems(res.data);
-        GetItemPhotos(res.data);
+        if (res.data === 0) {
+          console.log("user dont have items on wishlist");
+          setIsLoading(false);
+        } else {
+          setItems(res.data);
+          GetItemPhotos(res.data);
+        }
       })
       .catch((err) => {
         setItems("");
       });
   }
-  
+
   function getShopItems() {
     axios
       .get(
@@ -88,7 +92,7 @@ export default function WishList() {
         const photos = responses.flatMap((response) => response.data);
         console.log(photos);
         setUsersItemPhotos(photos);
-        setIsLoading(false)
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log("err in GetItemPhotos", error);
@@ -146,7 +150,8 @@ export default function WishList() {
           paddingTop: 25,
           paddingBottom: 40,
         }}
-        showsHorizontalScrollIndicator={false}>
+        showsHorizontalScrollIndicator={false}
+      >
         {Items && Array.isArray(Items) && Items.length > 0 ? (
           Items.map((item, index) => {
             return (
@@ -164,12 +169,14 @@ export default function WishList() {
                       alignItems: "flex-end",
                       padding: 20,
                     }}
-                    onPress={() => RemoveFromFav(item.id)}>
+                    onPress={() => RemoveFromFav(item.id)}
+                  >
                     <Text style={{ color: "#FFF", fontWeight: "bold" }}>
                       הסירי
                     </Text>
                   </TouchableOpacity>
-                )}>
+                )}
+              >
                 <TouchableOpacity
                   key={index}
                   style={{
@@ -199,7 +206,8 @@ export default function WishList() {
                   }}
                   disabled={
                     item.item_status === "sold" || item.item_status === "delete"
-                  }>
+                  }
+                >
                   {UsersItemPhotos.filter((photo) => photo.item_ID === item.id)
                     .slice(0, 1)
                     .map((photo) => {
@@ -211,7 +219,8 @@ export default function WishList() {
                             height: 100,
                           }}
                           imageStyle={{ borderRadius: 10 }}
-                          key={photo.id}></ImageBackground>
+                          key={photo.id}
+                        ></ImageBackground>
                       );
                     })}
                   {item.item_status === "sold" ||
@@ -229,13 +238,15 @@ export default function WishList() {
                         alignItems: "center",
                         justifyContent: "center",
                         zIndex: "1",
-                      }}>
+                      }}
+                    >
                       <Text
                         style={{
                           color: "white",
                           fontSize: 18,
                           fontWeight: "bold",
-                        }}>
+                        }}
+                      >
                         לא זמין
                       </Text>
                     </View>
@@ -245,7 +256,8 @@ export default function WishList() {
                       paddingHorizontal: 15,
                       paddingVertical: 9,
                       flex: 1,
-                    }}>
+                    }}
+                  >
                     <Text
                       style={{
                         ...FONTS.Mulish_600SemiBold,
@@ -253,7 +265,8 @@ export default function WishList() {
                         textTransform: "capitalize",
                         marginBottom: 6,
                         lineHeight: 14 * 1.2,
-                      }}>
+                      }}
+                    >
                       {item.name}
                     </Text>
                     <Text style={{ color: COLORS.gray }}>{item.size}</Text>
@@ -263,7 +276,8 @@ export default function WishList() {
                         ...FONTS.Mulish_600SemiBold,
                         fontSize: 14,
                         color: COLORS.carrot,
-                      }}>
+                      }}
+                    >
                       ₪ {item.price}
                     </Text>
                   </View>
@@ -273,7 +287,8 @@ export default function WishList() {
                       right: 15,
                       top: 9,
                     }}
-                    onPress={() => RemoveFromFav(item.id)}>
+                    onPress={() => RemoveFromFav(item.id)}
+                  >
                     {/* <Text
                       style={{
                         color: "red",
@@ -292,7 +307,8 @@ export default function WishList() {
                         bottom: 12,
                         zIndex: 2,
                       }}
-                      onPress={() => RemoveFromShopList(item.id)}>
+                      onPress={() => RemoveFromShopList(item.id)}
+                    >
                       <BagSvg color="#626262" inCart={true} />
                     </TouchableOpacity>
                   )}
@@ -305,7 +321,8 @@ export default function WishList() {
                         bottom: 12,
                         zIndex: 2,
                       }}
-                      onPress={() => AddToShopList(item.id)}>
+                      onPress={() => AddToShopList(item.id)}
+                    >
                       <BagSvg color="#D7BA7B" inCart={false} />
                     </TouchableOpacity>
                   )}
@@ -316,63 +333,65 @@ export default function WishList() {
         ) : (
           <ScrollView
             contentContainerStyle={{
-                flexGrow: 1,
-                paddingHorizontal: 20,
-                justifyContent: "center",
-                alignItems: "center",
-                paddingVertical: 25,
+              flexGrow: 1,
+              paddingHorizontal: 20,
+              justifyContent: "center",
+              alignItems: "center",
+              paddingVertical: 25,
             }}
             showsHorizontalScrollIndicator={false}
-        >
+          >
             <ContainerComponent>
-                <View style={{ alignSelf: "center", marginBottom: 35 }}>
-                    <Empty />
-                </View>
-                <Text
-                    style={{
-                        textAlign: "center",
-                        ...FONTS.H2,
-                        textTransform: "capitalize",
-                        color: COLORS.black,
-                        lineHeight: 22 * 1.2,
-                        marginBottom: 18,
-                    }}
-                >
-                   רשימת המועדפים שלך ריקה!
-                </Text>
-                <Text
-                    style={{
-                        textAlign: "center",
-                        ...FONTS.Mulish_400Regular,
-                        fontSize: 16,
-                        color: COLORS.gray,
-                        paddingHorizontal: 50,
-                        marginBottom: 30,
-                    }}
-                >
-נראה שאין לך עדיין פריטים שאהבת                 </Text>
-                <Button title="שוטטי בבזאר" 
-                 onPress={() => {
+              <View style={{ alignSelf: "center", marginBottom: 35 }}>
+                <Empty />
+              </View>
+              <Text
+                style={{
+                  textAlign: "center",
+                  ...FONTS.H2,
+                  textTransform: "capitalize",
+                  color: COLORS.black,
+                  lineHeight: 22 * 1.2,
+                  marginBottom: 18,
+                }}
+              >
+                רשימת המועדפים שלך ריקה!
+              </Text>
+              <Text
+                style={{
+                  textAlign: "center",
+                  ...FONTS.Mulish_400Regular,
+                  fontSize: 16,
+                  color: COLORS.gray,
+                  paddingHorizontal: 50,
+                  marginBottom: 30,
+                }}
+              >
+                נראה שאין לך עדיין פריטים שאהבת{" "}
+              </Text>
+              <Button
+                title="שוטטי בבזאר"
+                onPress={() => {
                   setSelectedTab("Search");
-                 
-                }}/>
+                }}
+              />
             </ContainerComponent>
-        </ScrollView>
+          </ScrollView>
         )}
       </ScrollView>
     );
   }
-  
+
   return (
     <SafeAreaView
       style={{
         ...AREA.AndroidSafeArea,
         backgroundColor: "none",
         showsVerticalScrollIndicator: false,
-      }}>
+      }}
+    >
       <Header title="רשימת מועדפים" />
-      {isLoading?
-      <LoadingComponent></LoadingComponent>:renderContent()}
+      {isLoading ? <LoadingComponent></LoadingComponent> : renderContent()}
     </SafeAreaView>
   );
 }

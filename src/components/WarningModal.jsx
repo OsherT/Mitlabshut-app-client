@@ -9,6 +9,7 @@ export default function WarningModal({
   setShowModal,
   massage,
   handleSure,
+  hideCancel,
 }) {
   const navigation = useNavigation();
 
@@ -43,32 +44,34 @@ export default function WarningModal({
             alignItems: "center",
             justifyContent: "center",
           }}>
-          <TouchableOpacity
-            style={{
-              width: 130,
-              height: 40,
-              backgroundColor: COLORS.golden,
-              borderRadius: 20,
-              justifyContent: "center",
-              alignItems: "center",
-              marginHorizontal: 7.5,
-            }}
-            onPress={() => setShowModal(false)}>
-            <Text
+          {!hideCancel && (
+            <TouchableOpacity
               style={{
-                color: COLORS.red,
-                ...FONTS.Mulish_600SemiBold,
-                fontSize: 14,
-                textTransform: "uppercase",
-              }}>
-              ביטול
-            </Text>
-          </TouchableOpacity>
+                width: 130,
+                height: 40,
+                backgroundColor: COLORS.golden,
+                borderRadius: 20,
+                justifyContent: "center",
+                alignItems: "center",
+                marginHorizontal: 7.5,
+              }}
+              onPress={() => setShowModal(false)}>
+              <Text
+                style={{
+                  color: COLORS.red,
+                  ...FONTS.Mulish_600SemiBold,
+                  fontSize: 14,
+                  textTransform: "uppercase",
+                }}>
+                ביטול
+              </Text>
+            </TouchableOpacity>
+          )}
           <TouchableOpacity
             style={{
               width: 130,
               height: 40,
-              backgroundColor: COLORS.white,
+              backgroundColor: !hideCancel ? COLORS.white : COLORS.golden,
               borderRadius: 20,
               justifyContent: "center",
               alignItems: "center",
@@ -77,8 +80,8 @@ export default function WarningModal({
               borderWidth: 1,
             }}
             onPress={() => {
-               setShowModal(false);
-               handleSure();
+              setShowModal(false);
+              handleSure();
             }}>
             <Text
               style={{

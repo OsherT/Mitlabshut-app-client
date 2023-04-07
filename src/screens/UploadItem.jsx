@@ -26,10 +26,11 @@ import ButtonLogIn from "../components/ButtonLogIn";
 import UploadModal from "../components/Uploading";
 import WarningModal from "../components/WarningModal";
 import AlertModal from "../components/AlertModal";
+import * as ImageManipulator from "expo-image-manipulator";
 
 export default function UploadItem() {
   const navigation = useNavigation();
-  const { loggedUser } = useContext(userContext);
+  const { loggedUser, setSelectedTab } = useContext(userContext);
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
   const ApiUrl_image = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/ItemImages`;
   const [showAlertModal, setShowAlertModal] = useState(false);
@@ -133,27 +134,6 @@ export default function UploadItem() {
         }
       );
   };
-
-  // const GetCategoriesList = () => {
-  //   fetch(ApiUrl + "/GetCategory", {
-  //     method: "GET",
-  //     headers: new Headers({
-  //       "Content-Type": "application/json; charset=UTF-8",
-  //       Accept: "application/json; charset=UTF-8",
-  //     }),
-  //   })
-  //     .then((res) => {
-  //       return res.json();
-  //     })
-  //     .then(
-  //       (data) => {
-  //         setCategoriesList(data.map((item) => item.category_name));
-  //       },
-  //       (error) => {
-  //         console.log("category error", error);
-  //       }
-  //     );
-  // };
 
   const GetColorsList = () => {
     fetch(ApiUrl + "/GetColor", {
@@ -264,7 +244,6 @@ export default function UploadItem() {
         })
         .then(
           (item_ID) => {
-            console.log("item_ID", item_ID);
             uploadCtegories(item_ID);
             uploadImageFB(item_ID);
           },
@@ -278,6 +257,62 @@ export default function UploadItem() {
   ////////////////////////////////////////
   ///uploads the image to the fireBase////
   ////////////////////////////////////////
+
+  // const pickImage = async () => {
+  //   let result = await ImagePicker.launchImageLibraryAsync({
+  //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
+  //     aspect: [4, 3],
+  //     quality: 1,
+  //     allowsMultipleSelection: true, // Allow multiple image selection
+  //     selectionLimit: 3,
+  //     orderedSelection: true,
+  //   });
+
+  //   if (!result.canceled) {
+  //     const selectedImages = result.assets.map((image, index) => ({
+  //       uri: image.uri,
+  //       key: index,
+  //     }));
+  //     setImages(selectedImages);
+  //   }
+  //   selectedImages = [];
+  // };
+
+  // const uploadImageFB = async (item_ID) => {
+  //   setUploading(true);
+  //   const imageLinks = [];
+
+  //   for (let i = 0; i < images.length; i++) {
+  //     const response = await fetch(images[i].uri);
+  //     const blob = await response.blob();
+  //     const filename =
+  //       `${loggedUser.id}/` +
+  //       item_ID +
+  //       "/" +
+  //       images[i].uri.substring(images[i].uri.lastIndexOf("/") + 1);
+
+  //     try {
+  //       var ref = firebase.storage().ref().child(filename).put(blob);
+  //       await ref;
+  //       var imageRef = firebase.storage().ref().child(filename);
+  //       const imageLink = await imageRef.getDownloadURL();
+  //       imageLinks.push(imageLink);
+  //       console.log(`Image ${filename} uploaded successfully`);
+  //     } catch (error) {
+  //       console.log("error in upload to FB", error);
+  //     }
+  //   }
+
+  //   uploadImagesDB(item_ID, imageLinks);
+
+  //   setUploading(false);
+
+  //   if (!uploading) {
+  //     navigation.navigate("OrderSuccessful", {
+  //       message: "הפריט עלה בהצלחה !",
+  //     });
+  //   }
+  // };
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -296,7 +331,6 @@ export default function UploadItem() {
       }));
       setImages(selectedImages);
     }
-    selectedImages = [];
   };
 
   const uploadImageFB = async (item_ID) => {
@@ -306,11 +340,18 @@ export default function UploadItem() {
     for (let i = 0; i < images.length; i++) {
       const response = await fetch(images[i].uri);
       const blob = await response.blob();
+      const manipulatedImage = await ImageManipulator.manipulateAsync(
+        images[i].uri,
+        [{ resize: { width: 600 } }],
+        { compress: 0.5, format: ImageManipulator.SaveFormat.JPEG }
+      );
       const filename =
         `${loggedUser.id}/` +
         item_ID +
         "/" +
-        images[i].uri.substring(images[i].uri.lastIndexOf("/") + 1);
+        manipulatedImage.uri.substring(
+          manipulatedImage.uri.lastIndexOf("/") + 1
+        );
 
       try {
         var ref = firebase.storage().ref().child(filename).put(blob);
@@ -322,16 +363,6 @@ export default function UploadItem() {
       } catch (error) {
         console.log("error in upload to FB", error);
       }
-    }
-
-    uploadImagesDB(item_ID, imageLinks);
-
-    setUploading(false);
-
-    if (!uploading) {
-      navigation.navigate("OrderSuccessful", {
-        message: "הפריט עלה בהצלחה !",
-      });
     }
   };
 

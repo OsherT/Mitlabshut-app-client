@@ -52,7 +52,9 @@ import PasswordHasBeenResetScreen from "../screens/RessetPasswordNotice";
 import SearchRes from "../screens/SearchRes";
 import axios from "axios";
 import SearchUsersFollow from "../screens/SearchUsersFollow";
-
+import PushNotification from "../screens/PushNotification";
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
 const Stack = createStackNavigator();
 
 export default function Navigation() {
@@ -94,6 +96,7 @@ export default function Navigation() {
   }
 
   async function registerForPushNotificationsAsync() {
+    console.log("in registerForPushNotificationsAsync ");
     let token;
     if (Device.isDevice) {
       const { status: existingStatus } =
@@ -183,7 +186,7 @@ export default function Navigation() {
           )}/score/${score}/user_id/${loggedUser_id}`
         )
         .then((res) => {
-          console.log("succ in algo", res);
+          console.log("succ in algo");
         })
         .catch((err) => {
           console.log("err in algo", err);
@@ -249,6 +252,9 @@ export default function Navigation() {
             headerShown: false,
           }}
           initialRouteName="SignIn">
+          {/* // initialRouteName="PushNotification"> */}
+          <Stack.Screen name="PushNotification" component={PushNotification} />
+
           <Stack.Screen name="SignIn" component={SignIn} />
           <Stack.Screen
             name="SearchUsersFollow"
@@ -263,7 +269,7 @@ export default function Navigation() {
           <Stack.Screen name="MyAddress" component={MyAddress} />
           <Stack.Screen name="NewAddress" component={NewAddress} />
           <Stack.Screen name="SelectSize" component={SelectSize} />
-          <Stack.Screen name="MyPromocodes" component={MyPromocodes} />
+          <Stack.Screen name="MyPromocodes" component={MyPromocodes} /> 
           <Stack.Screen name="SelectColor" component={SelectColor} />
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="TrackYourOrder" component={TrackYourOrder} />

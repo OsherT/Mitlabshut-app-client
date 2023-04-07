@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import React, { useContext, useState, useRef, useEffect } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 import { Header, InputField, Button, ContainerComponent } from "../components";
 import { AREA, COLORS, FONTS } from "../constants";
 import { AddSvg } from "../svg";
@@ -43,6 +43,7 @@ export default function SignUp() {
   const [image, setImage] = useState("");
   const [showAlertModal, setShowAlertModal] = useState(false);
   const [message, setMessage] = useState("");
+  const isFocused = useIsFocused();
 
   const ageList = Array.from({ length: 109 }, (_, i) => ({
     value: (i + 12).toString(),
@@ -55,29 +56,30 @@ export default function SignUp() {
   const responseListener = useRef();
 
   useEffect(() => {
-    registerForPushNotificationsAsync().then((token) =>
-      setExpoPushToken(token)
-    );
-
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(notification);
-        // פה נעשה את הפעולה שנרצה לאחר שהמשתמש לחץ על ההתראה, לדוגמא ניווט לארון של היוזר שעקב אחריו
-      });
-
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
-        // פה נעשה את הפעולה שנרצה לאחר שהמשתמש לחץ על ההתראה, לדוגמא ניווט לארון של היוזר שעקב אחריו
-      });
-
-    return () => {
-      Notifications.removeNotificationSubscription(
-        notificationListener.current
+    if (isFocused) {
+      registerForPushNotificationsAsync().then((token) =>
+        setExpoPushToken(token)
       );
-      Notifications.removeNotificationSubscription(responseListener.current);
-    };
-  }, []);
+      notificationListener.current =
+        Notifications.addNotificationReceivedListener((notification) => {
+          setNotification(notification);
+          // פה נעשה את הפעולה שנרצה לאחר שהמשתמש לחץ על ההתרא, לדוגמא ניווט לארון של היוזר שעקב אחריו
+        });
+
+      responseListener.current =
+        Notifications.addNotificationResponseReceivedListener((response) => {
+          console.log(response);
+          // פה נעשה את הפעולה שנרצה לאחר שהמשתמש לחץ על ההתרא, לדוגמא ניווט לארון של היוזר שעקב אחריו
+        });
+
+      return () => {
+        Notifications.removeNotificationSubscription(
+          notificationListener.current
+        );
+        Notifications.removeNotificationSubscription(responseListener.current);
+      };
+    }
+  }, [isFocused]);
 
   const SignUp = () => {
     if (
@@ -120,9 +122,10 @@ export default function SignUp() {
               closet_ID: res.data, //הכנסת האיידי של הארון ליוזר החדש
               user_image: difPic, //בהתחלה נכניס תמונה דיפולטית
               age: parseInt(userAge),
-              token: expoPushToken, 
+              token: expoPushToken,
             };
             console.log("newUser token", newUser.token);
+
             axios
               .post(
                 "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/PostUser",
@@ -199,6 +202,7 @@ export default function SignUp() {
       isAdmin: false,
       user_image: imageLink,
       age: parseInt(userAge),
+      token: user.token,
     };
     axios
       .put(

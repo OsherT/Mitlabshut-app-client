@@ -24,6 +24,8 @@ import ProfileNumbers from "../components/ProfileNumbers";
 import ButtonFollow from "../components/ButtonFollow";
 import WarningModal from "../components/WarningModal";
 import LoadingComponent from "./LoadingComponent";
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
 
 export default function Closet(props) {
   const {
@@ -40,6 +42,8 @@ export default function Closet(props) {
     setOwner_,
     owner_,
     setSelectedTab,
+    sendPushNotification,
+    registerForPushNotificationsAsync,
   } = useContext(userContext);
   const { route } = props;
   const closetId = closetId_ || route?.params?.closetId || loggedUser.closet_id;
@@ -69,6 +73,46 @@ export default function Closet(props) {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingUserData, setIsLoadingUserData] = useState(true);
 
+  const [expoPushToken, setExpoPushToken] = useState("");
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
+
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    }),
+  });
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then((token) =>
+      setExpoPushToken(token)
+    );
+    console.log("token", expoPushToken);
+    console.log("user token", owner.token);
+
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+        // פה נעשה את הפעולה שנרצה לאחר שהמשתמש לחץ על ההתרא, לדוגמא ניווט לארון של היוזר שעקב אחריו
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+        // פה נעשה את הפעולה שנרצה לאחר שהמשתמש לחץ על ההתרא, לדוגמא ניווט לארון של היוזר שעקב אחריו
+      });
+
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
+
   useEffect(() => {
     if (isFocused) {
       setMyClosetFlag(loggedUser.closet_id === closetId);
@@ -78,6 +122,30 @@ export default function Closet(props) {
       getShopItems();
       getFavItems();
       getFollowingList();
+      registerForPushNotificationsAsync().then((token) =>
+        setExpoPushToken(token)
+      );
+      console.log("token", expoPushToken);
+      console.log("user token", owner.token);
+
+      notificationListener.current =
+        Notifications.addNotificationReceivedListener((notification) => {
+          setNotification(notification);
+          // פה נעשה את הפעולה שנרצה לאחר שהמשתמש לחץ על ההתרא, לדוגמא ניווט לארון של היוזר שעקב אחריו
+        });
+
+      responseListener.current =
+        Notifications.addNotificationResponseReceivedListener((response) => {
+          console.log(response);
+          // פה נעשה את הפעולה שנרצה לאחר שהמשתמש לחץ על ההתרא, לדוגמא ניווט לארון של היוזר שעקב אחריו
+        });
+
+      return () => {
+        Notifications.removeNotificationSubscription(
+          notificationListener.current
+        );
+        Notifications.removeNotificationSubscription(responseListener.current);
+      };
     }
   }, [isFocused, ClosetFollowers, closetId_, owner_]);
 
@@ -268,8 +336,11 @@ export default function Closet(props) {
                   backgroundColor={COLORS.golden}
                   textColor={COLORS.white}
                   containerStyle={{ marginTop: 17, marginBottom: -14 }}
-                  onPress={() => {
-                    followCloset();
+                  onPress={async () => {
+                    await Promise.all([
+                      followCloset(),
+                      sendPushNotification(owner.token),
+                    ]);
                   }}
                 />
               )}

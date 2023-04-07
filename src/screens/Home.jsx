@@ -21,12 +21,18 @@ import ButtonFollow from "../components/ButtonFollow";
 import Quote from "../svg/Quote";
 import WarningModal from "../components/WarningModal";
 import PushNotification from "./PushNotification";
+import * as Notifications from "expo-notifications";
 
 export default function Home() {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-  const { loggedUser, setSelectedTab, setClosetId_, setOwner_ } =
-    useContext(userContext);
+  const {
+    loggedUser,
+    setSelectedTab,
+    setClosetId_,
+    setOwner_,
+    sendPushNotification,
+  } = useContext(userContext);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [RecoUsers, setRecoUsers] = useState([]);
   const ApiUrl_user = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User`;
@@ -37,38 +43,18 @@ export default function Home() {
   const [showModal, setShowModal] = useState(false);
   const [massage, setMassage] = useState("");
 
-  ////////push/////////
-  // const [expoPushToken, setExpoPushToken] = useState("");
-  // const [notification, setNotification] = useState(false);
-  // const notificationListener = useRef();
-  // const responseListener = useRef();
+  //push notification
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
 
-  // useEffect(() => {
-  //   registerForPushNotificationsAsync().then((token) =>
-  //     setExpoPushToken(token)
-  //   );
-
-  //   notificationListener.current =
-  //     Notifications.addNotificationReceivedListener((notification) => {
-  //       setNotification(notification);
-  //       // פה נעשה את הפעולה שנרצה לאחר שהמשתמש לחץ על ההתרא, לדוגמא ניווט לארון של היוזר שעקב אחריו
-  //     });
-
-  //   responseListener.current =
-  //     Notifications.addNotificationResponseReceivedListener((response) => {
-  //       console.log(response);
-
-  //       // פה נעשה את הפעולה שנרצה לאחר שהמשתמש לחץ על ההתרא, לדוגמא ניווט לארון של היוזר שעקב אחריו
-  //     });
-
-  //   return () => {
-  //     Notifications.removeNotificationSubscription(
-  //       notificationListener.current
-  //     );
-  //     Notifications.removeNotificationSubscription(responseListener.current);
-  //   };
-  // }, []);
-  ///////push//////////
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: false,
+      shouldSetBadge: false,
+    }),
+  });
 
   useEffect(() => {
     if (isFocused) {
@@ -77,6 +63,25 @@ export default function Home() {
       GetAllUsers();
       GetRecommendedClosets();
       GetSentences();
+
+      notificationListener.current =
+        Notifications.addNotificationReceivedListener((notification) => {
+          setNotification(notification);
+          // פה נעשה את הפעולה שנרצה לאחר שהמשתמש לחץ על ההתרא, לדוגמא ניווט לארון של היוזר שעקב אחריו
+        });
+
+      responseListener.current =
+        Notifications.addNotificationResponseReceivedListener((response) => {
+          console.log(response);
+          // פה נעשה את הפעולה שנרצה לאחר שהמשתמש לחץ על ההתרא, לדוגמא ניווט לארון של היוזר שעקב אחריו
+        });
+
+      return () => {
+        Notifications.removeNotificationSubscription(
+          notificationListener.current
+        );
+        Notifications.removeNotificationSubscription(responseListener.current);
+      };
     }
   }, [isFocused]);
 
@@ -420,10 +425,17 @@ export default function Home() {
                         backgroundColor={COLORS.golden}
                         textColor={COLORS.white}
                         containerStyle={{ marginBottom: 13 }}
-                        onPress={() => {
-                          followCloset(user.closet_id);
+                        onPress={async () => {
+                          await Promise.all([
+                            followCloset(user.closet_id),
+                            sendPushNotification(
+                              user.token,
+                              "follow",
+                              loggedUser.full_name
+                            ),
+                          ]);
                         }}
-                      />
+                      /> 
                     )}
                     {UsersFollowingList.includes(user.closet_id) && (
                       <ButtonFollow

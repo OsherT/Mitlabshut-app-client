@@ -84,13 +84,13 @@ export default function PushNotification() {
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
         setNotification(notification);
-        // פה נעשה את הפעולה שנרצה לאחר שהמשתמש לחץ על ההתרא, לדוגמא ניווט לארון של היוזר שעקב אחריו
+        // פה נעשה את הפעולה שנרצה לאחר שהמשתמש לחץ על ההתראה, לדוגמא ניווט לארון של היוזר שעקב אחריו
       });
 
     responseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
         console.log(response);
-        // פה נעשה את הפעולה שנרצה לאחר שהמשתמש לחץ על ההתרא, לדוגמא ניווט לארון של היוזר שעקב אחריו
+        // פה נעשה את הפעולה שנרצה לאחר שהמשתמש לחץ על ההתראה, לדוגמא ניווט לארון של היוזר שעקב אחריו
       });
 
     return () => {

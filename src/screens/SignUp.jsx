@@ -6,7 +6,7 @@ import {
   StyleSheet,
   ActivityIndicator,
 } from "react-native";
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useRef, useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Header, InputField, Button, ContainerComponent } from "../components";
 import { AREA, COLORS, FONTS } from "../constants";
@@ -21,9 +21,10 @@ import { ScrollView } from "react-native";
 import UploadModal from "../components/Uploading";
 import { SelectList } from "react-native-dropdown-select-list";
 import AlertModal from "../components/AlertModal";
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
 
 export default function SignUp() {
-
   const difPic =
     "https://images.squarespace-cdn.com/content/v1/5beb55599d5abb5a47cc4907/1610465905997-2G8SGHXIYCGTF9BQB0OD/female+girl+woman+icon.jpg?format=500w";
   const navigation = useNavigation();
@@ -35,7 +36,9 @@ export default function SignUp() {
   const [userAge, setUserAge] = useState("");
   const [ClosetDisc, setClosetDisc] = useState("ברוכות הבאות לארון החדש שלי");
   const [ClosetName, setClosetName] = useState(userName);
-  const { setSelectedTab, setloggedUser } = useContext(userContext);
+  const { setSelectedTab, setloggedUser, registerForPushNotificationsAsync } =
+    useContext(userContext);
+
   const [uploading, setUploading] = useState(false);
   const [image, setImage] = useState("");
   const [showAlertModal, setShowAlertModal] = useState(false);
@@ -45,6 +48,36 @@ export default function SignUp() {
     value: (i + 12).toString(),
     label: `${i + 12}`,
   }));
+
+  const [expoPushToken, setExpoPushToken] = useState("");
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then((token) =>
+      setExpoPushToken(token)
+    );
+
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+        // פה נעשה את הפעולה שנרצה לאחר שהמשתמש לחץ על ההתראה, לדוגמא ניווט לארון של היוזר שעקב אחריו
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+        // פה נעשה את הפעולה שנרצה לאחר שהמשתמש לחץ על ההתראה, לדוגמא ניווט לארון של היוזר שעקב אחריו
+      });
+
+    return () => {
+      Notifications.removeNotificationSubscription(
+        notificationListener.current
+      );
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
 
   const SignUp = () => {
     if (
@@ -87,8 +120,9 @@ export default function SignUp() {
               closet_ID: res.data, //הכנסת האיידי של הארון ליוזר החדש
               user_image: difPic, //בהתחלה נכניס תמונה דיפולטית
               age: parseInt(userAge),
-              token: "try",
+              token: expoPushToken, 
             };
+            console.log("newUser token", newUser.token);
             axios
               .post(
                 "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/PostUser",

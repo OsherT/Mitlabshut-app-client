@@ -145,7 +145,6 @@ export default function WishList() {
           paddingHorizontal: 20,
           paddingTop: 25,
           paddingBottom: 40,
-          backgroundColor: "#E9E9E9",
         }}
         showsHorizontalScrollIndicator={false}>
         {Items && Array.isArray(Items) && Items.length > 0 ? (

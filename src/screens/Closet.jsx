@@ -134,7 +134,7 @@ export default function Closet(props) {
         setIsLoadingUserData(false);
       })
       .catch((err) => {
-        console.log(err);
+        console.log("err in GetClosetFollowers_num", err);
       });
   }
 
@@ -154,7 +154,7 @@ export default function Closet(props) {
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.log("err in GetClosetItems ", err);
       });
   }
 
@@ -362,7 +362,7 @@ export default function Closet(props) {
         .catch((err) => {
           console.log("cant get shop list", err);
         });
-    } else console.log("");
+    } else console.log("not my closet,getShopItems function");
   }
 
   function AddToShopList(item_id) {
@@ -390,7 +390,6 @@ export default function Closet(props) {
       })
       .catch((err) => {
         console.log("cant add to fav", err);
-        // console.log(newFav);
       });
   }
 
@@ -564,10 +563,9 @@ export default function Closet(props) {
       )
       .then((res) => {
         GetClosetItems();
-        console.log(res);
       })
       .catch((err) => {
-        console.log(err);
+        console.log("err in handleSalePress");
       });
   }
 
@@ -578,10 +576,9 @@ export default function Closet(props) {
       )
       .then((res) => {
         GetClosetItems();
-        console.log(res);
       })
       .catch((err) => {
-        console.log(err);
+        console.log("err in handleNotSalePress");
       });
   }
 
@@ -592,10 +589,9 @@ export default function Closet(props) {
       )
       .then((res) => {
         GetClosetItems();
-        console.log(res);
       })
       .catch((err) => {
-        console.log(err);
+        console.log("err in handleDeletePress", err);
       });
   }
 

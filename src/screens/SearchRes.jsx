@@ -29,6 +29,7 @@ export default function SearchRes(props) {
     searchText_,
     setSearchText_,
     setSelectedTab,
+    sendPushNotification
   } = useContext(userContext);
   const searchText = searchText_;
 
@@ -233,6 +234,26 @@ export default function SearchRes(props) {
         console.log("err in AddtoFav ", err);
       });
   }
+  function HandelLike(closetId,itemId) {
+    
+    axios
+    .get(
+      `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetUserByClosetId/Closet_ID/${closetId}`
+    )
+    .then((res) => {
+      AddtoFav(itemId)
+      console.log(res.data);
+      sendPushNotification(
+        res.data[0].token,
+        "like",
+        loggedUser.full_name
+      )
+    })
+    .catch((err) => {
+      console.log("err in AddtoFav ", err);
+    });
+
+  }
 
   function RemoveFromFav(itemId) {
     axios
@@ -395,7 +416,8 @@ export default function SearchRes(props) {
                       // render the unfilled heart SVG if the item ID is not in the UsersFavList
                       <TouchableOpacity
                         style={{ left: 12, top: 12 }}
-                        onPress={() => AddtoFav(item.id)}>
+                        onPress={()=> HandelLike(item.closet_ID,item.id)}
+                        >
                         <HeartSvg filled={false} />
                       </TouchableOpacity>
                     )}

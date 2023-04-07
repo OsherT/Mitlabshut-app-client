@@ -4,24 +4,18 @@ import {
   FlatList,
   TouchableOpacity,
   Image,
-  ImageBackground,
   StyleSheet,
   ScrollView,
 } from "react-native";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
-import { showMessage } from "react-native-flash-message";
-import { promo, SIZES, COLORS, products, FONTS, AREA } from "../constants";
-import { RatingComponent, Line, Header, ProfileCategory } from "../components";
-import { BagSvg, HeartSvg, SearchSvg, SignOutCategory } from "../svg";
+import {  COLORS, FONTS } from "../constants";
+import {  ProfileCategory } from "../components";
+import {  SearchSvg, SignOutCategory } from "../svg";
 import { userContext } from "../navigation/userContext";
-import { SafeAreaView } from "react-native-safe-area-context";
 import axios from "axios";
 import ButtonFollow from "../components/ButtonFollow";
-import Quote from "../svg/Quote";
 import WarningModal from "../components/WarningModal";
-import PushNotification from "./PushNotification";
-import * as Notifications from "expo-notifications";
 
 export default function Home() {
   const navigation = useNavigation();
@@ -33,7 +27,6 @@ export default function Home() {
     setOwner_,
     sendPushNotification,
   } = useContext(userContext);
-  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [RecoUsers, setRecoUsers] = useState([]);
   const ApiUrl_user = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User`;
   const [UsersFollowingList, setUsersFollowingList] = useState([]);
@@ -44,17 +37,6 @@ export default function Home() {
   const [massage, setMassage] = useState("");
 
   //push notification
-  const [notification, setNotification] = useState(false);
-  const notificationListener = useRef();
-  const responseListener = useRef();
-
-  Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-      shouldShowAlert: true,
-      shouldPlaySound: false,
-      shouldSetBadge: false,
-    }),
-  });
 
   useEffect(() => {
     if (isFocused) {
@@ -63,25 +45,6 @@ export default function Home() {
       GetAllUsers();
       GetRecommendedClosets();
       GetSentences();
-
-      notificationListener.current =
-        Notifications.addNotificationReceivedListener((notification) => {
-          setNotification(notification);
-          // פה נעשה את הפעולה שנרצה לאחר שהמשתמש לחץ על ההתרא, לדוגמא ניווט לארון של היוזר שעקב אחריו
-        });
-
-      responseListener.current =
-        Notifications.addNotificationResponseReceivedListener((response) => {
-          console.log(response);
-          // פה נעשה את הפעולה שנרצה לאחר שהמשתמש לחץ על ההתרא, לדוגמא ניווט לארון של היוזר שעקב אחריו
-        });
-
-      return () => {
-        Notifications.removeNotificationSubscription(
-          notificationListener.current
-        );
-        Notifications.removeNotificationSubscription(responseListener.current);
-      };
     }
   }, [isFocused]);
 
@@ -102,6 +65,7 @@ export default function Home() {
 
     setGreeting(newGreeting);
   }
+  
   function RenderGreeting() {
     return (
       <View
@@ -145,7 +109,6 @@ export default function Home() {
               color: COLORS.black,
               lineHeight: 20 * 1.2,
               marginRight: 3,
-              //marginTop:10
             }}>
             {loggedUser.full_name}!
           </Text>
@@ -181,6 +144,7 @@ export default function Home() {
       </View>
     );
   }
+
   function GetSentences() {
     axios
       .get(

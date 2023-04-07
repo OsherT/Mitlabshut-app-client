@@ -10,9 +10,7 @@ import {
   Modal,
   FlatList,
   Dimensions,
-  Animated,
-  ActivityIndicator,
-  StyleSheet,
+ 
 } from "react-native";
 import axios from "axios";
 import { Edit } from "../svg";
@@ -24,7 +22,6 @@ import ProfileNumbers from "../components/ProfileNumbers";
 import ButtonFollow from "../components/ButtonFollow";
 import WarningModal from "../components/WarningModal";
 import LoadingComponent from "./LoadingComponent";
-import * as Notifications from "expo-notifications";
 
 export default function Closet(props) {
   const {
@@ -70,17 +67,6 @@ export default function Closet(props) {
   const [isLoadingUserData, setIsLoadingUserData] = useState(true);
 
   //push notification
-  const [notification, setNotification] = useState(false);
-  const notificationListener = useRef();
-  const responseListener = useRef();
-
-  Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-      shouldShowAlert: true,
-      shouldPlaySound: false,
-      shouldSetBadge: false,
-    }),
-  });
 
   useEffect(() => {
     if (isFocused) {
@@ -90,25 +76,6 @@ export default function Closet(props) {
       getShopItems();
       getFavItems();
       getFollowingList();
-
-      notificationListener.current =
-        Notifications.addNotificationReceivedListener((notification) => {
-          setNotification(notification);
-          // פה נעשה את הפעולה שנרצה לאחר שהמשתמש לחץ על ההתרא, לדוגמא ניווט לארון של היוזר שעקב אחריו
-        });
-
-      responseListener.current =
-        Notifications.addNotificationResponseReceivedListener((response) => {
-          console.log(response);
-          // פה נעשה את הפעולה שנרצה לאחר שהמשתמש לחץ על ההתרא, לדוגמא ניווט לארון של היוזר שעקב אחריו
-        });
-
-      return () => {
-        Notifications.removeNotificationSubscription(
-          notificationListener.current
-        );
-        Notifications.removeNotificationSubscription(responseListener.current);
-      };
     }
   }, [isFocused, ClosetFollowers, closetId_, owner_]);
 

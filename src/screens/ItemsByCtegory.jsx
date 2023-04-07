@@ -17,6 +17,7 @@ import { FilterSvg, SearchSvg, BagSvg, HeartSvg, Empty } from "../svg";
 import axios from "axios";
 import { userContext } from "../navigation/userContext";
 import LoadingComponent from "./LoadingComponent";
+import * as Notifications from "expo-notifications";
 
 export default function ItemsByCtegory() {
   const navigation = useNavigation();
@@ -32,6 +33,7 @@ export default function ItemsByCtegory() {
     setType_,
     setSelectedTab,
     setSearchText_,
+    sendPushNotification,
   } = useContext(userContext);
   const isFocused = useIsFocused();
   const [search, setsearch] = useState("");
@@ -230,7 +232,6 @@ export default function ItemsByCtegory() {
         style={{
           paddingHorizontal: 20,
           marginTop: 10,
-          marginBottom: 20,
         }}>
         <View
           style={{
@@ -333,7 +334,16 @@ export default function ItemsByCtegory() {
                         // render the unfilled heart SVG if the item ID is not in the UsersFavList
                         <TouchableOpacity
                           style={{ left: 12, top: 12 }}
-                          onPress={() => AddtoFav(item.id)}>
+                          onPress={async () => {
+                            await Promise.all([
+                              AddtoFav(item.id),
+                              sendPushNotification(
+                                user.token,
+                                "like",
+                                loggedUser.full_name
+                              ),
+                            ]);
+                          }}>
                           <HeartSvg filled={false} />
                         </TouchableOpacity>
                       )}
@@ -497,7 +507,6 @@ export default function ItemsByCtegory() {
 
   //shows no res when there is no data to show
   function noSearchResults() {
-
     return (
       <ScrollView
         contentContainerStyle={{
@@ -556,7 +565,6 @@ export default function ItemsByCtegory() {
                 shadowRadius: 2.62,
                 elevation: 4,
               }}>
-              <FilterSvg filled={true} />
               <Text
                 style={{
                   fontSize: 16,
@@ -602,9 +610,14 @@ export default function ItemsByCtegory() {
         paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
       }}>
       <Header title={type} goBack={true} selectedTab={"Search"} />
+      {!noRes && !noResinSort && renderSearch()}
+      {!noRes && !isLoading && renderNumOfRes()}
 
-      {!noRes && !noResinSort &&  renderSearch()}
-      {isLoading? <LoadingComponent/>: (!noResinSort && !noRes &&  renderItems())}
+      {isLoading ? (
+        <LoadingComponent />
+      ) : (
+        !noResinSort && !noRes && renderItems()
+      )}
       {noRes && noSearchResults()}
       {noResinSort && noFiltersResults()}
       {sorted && renderClear()}

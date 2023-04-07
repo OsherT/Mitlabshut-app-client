@@ -370,7 +370,7 @@ export default function WishList() {
         backgroundColor: "none",
         showsVerticalScrollIndicator: false,
       }}>
-      <Header title="רשימת מועדפים" goBack={false} />
+      <Header title="רשימת מועדפים" />
       {isLoading?
       <LoadingComponent></LoadingComponent>:renderContent()}
     </SafeAreaView>

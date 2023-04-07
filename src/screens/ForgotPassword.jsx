@@ -7,6 +7,7 @@ import { AREA, COLORS, FONTS } from "../constants";
 import axios from "axios";
 import { userContext } from "../navigation/userContext";
 import React, { useContext, useState } from "react";
+import AlertModal from "../components/AlertModal";
 
 export default function ForgotPassword() {
   const navigation = useNavigation();
@@ -18,10 +19,13 @@ export default function ForgotPassword() {
   const [password, setpassword] = useState("");
   const [rePassword, setrePassword] = useState("");
   const { setSelectedTab } = useContext(userContext);
+  const [showAlertModal, setShowAlertModal] = useState(false);
+  const [message, setMessage] = useState("");
 
   function newpass() {
     if (userEmail == "" || userPhone == "") {
-      alert("אנא מלאי את כל השדות הנדרשים");
+      setMessage("יש למלא את כל הפרטים");
+      setShowAlertModal(true);
     } else {
       //לשלוח לשרת את המייל והטלפון ולקבל חזרה את יוזר
       setUserEmail(userEmail.replace("%40", "@"));
@@ -35,13 +39,22 @@ export default function ForgotPassword() {
           setFirstStep(false);
         })
         .catch((err) => {
+          setMessage("הפרטים שהזנת אינם קיימים במערכת");
           console.log("err in newpass ", err);
+          setShowAlertModal(true);
         });
     }
   }
+
   function changePass() {
-    if (password != rePassword) {
-      alert("הסיסמאות אינן זהות");
+    if (password == "" || rePassword == "") {
+      setMessage("יש למלא את כל הפרטים");
+
+      setShowAlertModal(true);
+    } else if (password != rePassword) {
+      setMessage(" הסיסמאות שהזנת אינן זהות ");
+
+      setShowAlertModal(true);
     } else {
       const updateUser = {
         id: user.id,
@@ -55,7 +68,6 @@ export default function ForgotPassword() {
         user_image: user.user_image,
         token: user.token,
       };
-      //https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/PutUser
       axios
         .put(
           "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/PutUser",
@@ -65,10 +77,11 @@ export default function ForgotPassword() {
           navigation.navigate("PasswordHasBeenResetScreen");
         })
         .catch((err) => {
-          console.log(err);
+          console.log("err in chsngePass", err);
         });
     }
   }
+
   function renderStepOne() {
     return (
       <KeyboardAwareScrollView
@@ -138,6 +151,14 @@ export default function ForgotPassword() {
       />
       {firstStep && renderStepOne()}
       {flag && renderStepTwo()}
+      {console.log(message)}
+      {showAlertModal && (
+        <AlertModal
+          message={message}
+          showModal={showAlertModal}
+          setShowModal={setShowAlertModal}
+        />
+      )}
     </SafeAreaView>
   );
 }

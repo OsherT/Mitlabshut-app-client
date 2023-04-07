@@ -27,7 +27,7 @@ export default function PasswordHasBeenResetScreen() {
           <Text style={styles.textMessage}>
             אנא בצעי התחברות עם הסיסמא החדשה על מנת להיכנס לאפליקציה{" "}
           </Text>
-          <Button title="בוצע" onPress={() => navigation.navigate("SignIn")} />
+          <Button title="אישור" onPress={() => navigation.navigate("SignIn")} />
         </ContainerComponent>
       </ScrollView>
     );

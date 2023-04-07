@@ -6,7 +6,6 @@ import {
   StatusBar,
   TouchableOpacity,
   ImageBackground,
-  Alert,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";

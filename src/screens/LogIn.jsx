@@ -4,7 +4,6 @@ import {
   TouchableOpacity,
   SafeAreaView,
   StyleSheet,
-  Alert,
   TextInput,
 } from "react-native";
 import React, { useContext, useRef, useState } from "react";
@@ -17,6 +16,7 @@ import ButtonLogIn from "../components/ButtonLogIn";
 // import Facebook from "../svg/Facebook";
 // import Google from "../svg/GoogleSvg";
 import { userContext } from "../navigation/userContext";
+import AlertModal from "../components/AlertModal";
 // import * as webBrowser from "expo-web-browser";
 // import * as Google from "expo-auth-session/providers/google";
 
@@ -24,6 +24,8 @@ export default function SignIn() {
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api`;
   const { loggedUser, setloggedUser, setSelectedTab } = useContext(userContext);
   const navigation = useNavigation();
+  const [showAlertModal, setShowAlertModal] = useState(false);
+  const [message, setMessage] = useState("");
 
   // const [userEmail, setUserEmail] = useState("");
   // const [userPassword, setUserPassword] = useState("");
@@ -40,7 +42,8 @@ export default function SignIn() {
   //check if the user insert correct values, and loning him in
   const logIn = () => {
     if (userEmail === "" || userPassword === "") {
-      Alert.alert("יש למלא את כל הפרטים");
+      setMessage("יש למלא את כל הפרטים");
+      setShowAlertModal(true);
     } else {
       setUserEmail(userEmail.replace("%40", "@"));
       fetch(
@@ -61,12 +64,12 @@ export default function SignIn() {
             if (user.id > 0) {
               setloggedUser(user);
               navigation.navigate("MainLayout");
-              // setSelectedTab("Home");
             }
 
             //if deatails are incorrect
             else {
-              Alert.alert("כתובת האימייל או הסיסמא שגויים");
+              setMessage("כתובת האימייל או הסיסמא שגויים");
+              setShowAlertModal(true);
               setUserEmail("");
               setUserPassword("");
               emailInputRef.current.clear();
@@ -156,6 +159,13 @@ export default function SignIn() {
           </TouchableOpacity>
           <Text style={styles.text}>עדיין לא חברת קהילה? </Text>
         </View>
+        {showAlertModal && (
+          <AlertModal
+            showModal={showAlertModal}
+            setShowModal={setShowAlertModal}
+            massage={message}
+          />
+        )}
       </KeyboardAwareScrollView>
     );
   }

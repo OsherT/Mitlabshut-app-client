@@ -117,8 +117,7 @@ export default function Closet(props) {
         GetClosetFollowers_num();
       })
       .catch((err) => {
-        //alert("cant take description");
-        console.log(err);
+        console.log("err in GetClosetDescription ", err);
       });
   }
 
@@ -175,8 +174,7 @@ export default function Closet(props) {
         setIsLoading(false);
       })
       .catch((error) => {
-        //alert("cant take photos");
-        console.log(error);
+        console.log("error in GetItemPhotos", error);
       });
   }
 
@@ -332,7 +330,6 @@ export default function Closet(props) {
         GetItemForAlgo(item_id, favScore, loggedUser.id);
       })
       .catch((err) => {
-        // alert("cant add to fav");
         console.log("cant add to fav", err);
       });
   }
@@ -384,8 +381,7 @@ export default function Closet(props) {
         GetItemForAlgo(item_id, shopScore, loggedUser.id);
       })
       .catch((err) => {
-        alert("cant add to shop list");
-        console.log(err);
+        console.log("cant add to shop list", err);
       });
   }
 
@@ -398,8 +394,7 @@ export default function Closet(props) {
         setUsersShopList((prevList) => prevList.filter((id) => id !== itemId));
       })
       .catch((err) => {
-        alert("cant add to fav");
-        console.log(err);
+        console.log("cant add to fav", err);
         // console.log(newFav);
       });
   }

@@ -230,8 +230,7 @@ export default function SearchRes(props) {
         GetItemForAlgo(item_id, favScore, loggedUser.id);
       })
       .catch((err) => {
-        // alert("cant add to fav");
-        console.log("cant add to fav", err);
+        console.log("err in AddtoFav ", err);
       });
   }
 
@@ -245,7 +244,6 @@ export default function SearchRes(props) {
         setUsersFavList((prevList) => prevList.filter((id) => id !== itemId));
       })
       .catch((err) => {
-        // alert("");
         console.log("cant remove from getFavItems", err);
       });
   }
@@ -280,8 +278,7 @@ export default function SearchRes(props) {
         GetItemForAlgo(item_id, shopScore, loggedUser.id);
       })
       .catch((err) => {
-        alert("cant add to shop list");
-        console.log(err);
+        console.log("cant add to shop list", err);
       });
   }
 
@@ -294,9 +291,7 @@ export default function SearchRes(props) {
         setUsersShopList((prevList) => prevList.filter((id) => id !== itemId));
       })
       .catch((err) => {
-        alert("cant add to fav");
-        console.log(err);
-        // console.log(newFav);
+        console.log("cant add to fav",err);
       });
   }
 

@@ -16,7 +16,6 @@ import { AREA, COLORS, FONTS } from "../constants";
 import { Edit, EditTwo } from "../svg";
 import { userContext } from "../navigation/userContext";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import { Alert } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { colors } from "react-native-elements";
 import axios from "axios";

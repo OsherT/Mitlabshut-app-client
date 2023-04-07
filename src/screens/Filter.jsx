@@ -13,7 +13,6 @@ import { Header, ContainerComponent, Button } from "../components";
 import { AREA, COLORS, FONTS } from "../constants";
 import axios from "axios";
 import { userContext } from "../navigation/userContext";
-import { Alert } from "react-native";
 
 export default function Filter() {
   const navigation = useNavigation();

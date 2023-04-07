@@ -70,8 +70,7 @@ export default function Order() {
         calSum(Items);
       })
       .catch((error) => {
-        alert("cant take items");
-        console.log(error);
+        console.log("err in getItemsData", error);
       });
   }
   function GetItemPhotos(items) {
@@ -90,8 +89,7 @@ export default function Order() {
 
       })
       .catch((error) => {
-        alert("cant take photos");
-        console.log(error);
+        console.log("err in GetItemPhotos", error);
       });
   }
 
@@ -453,7 +451,7 @@ export default function Order() {
 
   return (
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
-      <Header title="סל קניות" goBack={false} flag={false} />
+      <Header title="סל קניות" />
       {isLoading?
       <LoadingComponent></LoadingComponent>:renderContent()}
     </SafeAreaView>

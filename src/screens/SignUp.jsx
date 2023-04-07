@@ -20,6 +20,7 @@ import { firebase } from "../../firebaseConfig";
 import { ScrollView } from "react-native";
 import UploadModal from "../components/Uploading";
 import { SelectList } from "react-native-dropdown-select-list";
+import AlertModal from "../components/AlertModal";
 
 export default function SignUp() {
   const ApiUrl_image = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/ItemImages`;
@@ -35,9 +36,11 @@ export default function SignUp() {
   const [userAge, setUserAge] = useState("");
   const [ClosetDisc, setClosetDisc] = useState("ברוכות הבאות לארון החדש שלי");
   const [ClosetName, setClosetName] = useState(userName);
-  const { loggedUser, setloggedUser } = useContext(userContext);
+  const { setSelectedTab, setloggedUser } = useContext(userContext);
   const [uploading, setUploading] = useState(false);
   const [image, setImage] = useState("");
+  const [showAlertModal, setShowAlertModal] = useState(false);
+  const [message, setMessage] = useState("");
 
   const ageList = Array.from({ length: 109 }, (_, i) => ({
     value: (i + 12).toString(),
@@ -55,9 +58,11 @@ export default function SignUp() {
       userAge == ""
     ) {
       //אלו השדות חובה שלנו
-      alert("אנא מלאי את כל הפרטים הנדרשים");
+      setMessage("יש למלא את כל הפרטים");
+      setShowAlertModal(true);
     } else if (address.split(",").length < 3) {
-      alert("אנא הכניסי כתובת מלאה הכוללת שם רחובת עיר ומדינה");
+      setMessage("אנא הכניסי כתובת מלאה הכוללת שם רחובת עיר ומדינה");
+      setShowAlertModal(true);
     } else {
       const newCloset = {
         //יצירת ארון חדש למשתמשת
@@ -101,7 +106,7 @@ export default function SignUp() {
           }
         })
         .catch((err) => {
-          alert("Error in closet", err);
+          console.log("Error in closet", err);
         });
     }
   };
@@ -177,7 +182,7 @@ export default function SignUp() {
 
   function renderContent() {
     return (
-      <View style={{marginBottom:50}}>
+      <View style={{ marginBottom: 50 }}>
         <ContainerComponent>
           <Text
             style={{
@@ -187,14 +192,12 @@ export default function SignUp() {
               marginBottom: 20,
               lineHeight: 32 * 1.2,
               textTransform: "capitalize",
-            }}
-          >
+            }}>
             הצטרפי לקהילה שלנו
           </Text>
           <ScrollView
             keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-          >
+            showsVerticalScrollIndicator={false}>
             <InputField
               placeholder="שם מלא"
               containerStyle={{ marginBottom: 10 }}
@@ -276,8 +279,7 @@ export default function SignUp() {
                   style={styles.deleteButton}
                   onPress={() => {
                     setImage(""); // Update the state
-                  }}
-                >
+                  }}>
                   <Text style={styles.deleteButtonText}>X</Text>
                 </TouchableOpacity>
               </View>
@@ -289,8 +291,7 @@ export default function SignUp() {
                       style={{
                         color: "gray",
                         textAlign: "center",
-                      }}
-                    >
+                      }}>
                       הוסיפי תמונת פרופיל
                     </Text>
                     <AddSvg></AddSvg>
@@ -301,8 +302,7 @@ export default function SignUp() {
 
             <UploadModal
               uploading={uploading}
-              message="ההרשמה עלולה לקחת זמן, אנא המתן"
-            ></UploadModal>
+              message="ההרשמה עלולה לקחת זמן, אנא המתן"></UploadModal>
             <View>
               <Button title="הרשמה" onPress={() => SignUp()} />
             </View>
@@ -315,16 +315,14 @@ export default function SignUp() {
                 marginBottom: 13,
                 flexDirection: "row",
                 top: 20,
-              }}
-            >
+              }}>
               <TouchableOpacity onPress={() => navigation.navigate("SignIn")}>
                 <Text
                   style={{
                     ...FONTS.Mulish_400Regular,
                     fontSize: 16,
                     color: COLORS.black,
-                  }}
-                >
+                  }}>
                   {" "}
                   התחברי
                 </Text>
@@ -334,13 +332,14 @@ export default function SignUp() {
                   ...FONTS.Mulish_400Regular,
                   fontSize: 16,
                   color: COLORS.gray,
-                }}
-              >
+                }}>
                 כבר חלק מהקהילה?{" "}
               </Text>
             </View>
-            <Text>{" "}</Text>
-            <Text>{" "}</Text><Text>{" "}</Text><Text>{" "}</Text>
+            <Text> </Text>
+            <Text> </Text>
+            <Text> </Text>
+            <Text> </Text>
           </ScrollView>
         </ContainerComponent>
       </View>
@@ -349,8 +348,23 @@ export default function SignUp() {
 
   return (
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
-      <Header title="הרשמה" flag="false" onPress={() => navigation.goBack()} />
+      <Header
+        title="הרשמה"
+        flag="false"
+        goBack={true}
+        selectedTab={() => {
+          setSelectedTab("Home");
+          navigation.goBack();
+        }}
+      />
       {renderContent()}
+      {showAlertModal && (
+        <AlertModal
+          message={message}
+          showModal={showAlertModal}
+          setShowModal={setShowAlertModal}
+        />
+      )}
     </SafeAreaView>
   );
 }

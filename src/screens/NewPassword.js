@@ -23,7 +23,7 @@ export default function NewPassword() {
                     <Text
                         style={styles.textMessage}
                     >
-                        הכניסי סיסמא חדשה ובצעי אימות
+                        הכניסי סיסמא חדשה ובצעי אימותעעעע
                     </Text>
                     <InputField
                         placeholder="סיסמא חדשה"
@@ -36,6 +36,7 @@ export default function NewPassword() {
                     <Button
                         title="עדכני סיסמא"
                         onPress={() =>
+                        
                             navigation.navigate("RessetPasswordNotice")
                         }
                     />

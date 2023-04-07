@@ -95,8 +95,7 @@ export default function ProductDetails(props) {
         setclosetName(res.data[0].user_name);
       })
       .catch((err) => {
-        alert("cant take description");
-        console.log(err);
+        console.log("err in GetClosetdata", err);
       });
   }
 
@@ -291,8 +290,7 @@ export default function ProductDetails(props) {
         setUsersShopList((prevList) => prevList.filter((id) => id !== itemId));
       })
       .catch((err) => {
-        alert("cant add to fav");
-        console.log(err);
+        console.log("err in RemoveFromShopList", err);
       });
   }
 
@@ -479,8 +477,7 @@ export default function ProductDetails(props) {
     return (
       <View>
         <View style={styles.contentContainer}>
-          <ScrollView
-          showsVerticalScrollIndicator={false}>
+          <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.Row}>
               <View>
                 {shippingMethod == 1 && (

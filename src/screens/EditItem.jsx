@@ -23,12 +23,15 @@ import { firebase } from "../../firebaseConfig";
 import ButtonLogIn from "../components/ButtonLogIn";
 import UploadModal from "../components/Uploading";
 import WarningModal from "../components/WarningModal";
+import AlertModal from "../components/AlertModal";
 
 export default function EditItem(props) {
   const item = props.route.params.item;
   const itemCurrentImages = props.route.params.itemImages;
   const isFocused = useIsFocused();
   const [showModal, setShowModal] = useState(false);
+  const [showAlertModal, setShowAlertModal] = useState(false);
+
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
 
   const { loggedUser } = useContext(userContext);
@@ -220,7 +223,7 @@ export default function EditItem(props) {
       selectedCategory.length == 0 ||
       itemDeliveryMethod.length == 0
     ) {
-      Alert.alert("אנא מלאי את כל הפרטים");
+      setShowAlertModal(true);
     } else {
       const updateItem = {
         id: item.id,
@@ -350,7 +353,7 @@ export default function EditItem(props) {
   //post images to the FB
   const uploadImageFB = async (item_ID) => {
     if (flagForNoImg) {
-      Alert.alert("אנא מלאי את כל הפרטים");
+      setShowAlertModal(true)
     } else {
       setUploading(true);
       const imageLinks = [];
@@ -372,7 +375,7 @@ export default function EditItem(props) {
           var imageRef = firebase.storage().ref().child(filename);
           const imageLink = await imageRef.getDownloadURL();
           imageLinks.push(imageLink);
-          console.log("upload to FB #", i+1);
+          console.log("upload to FB #", i + 1);
         } catch (error) {
           console.log("error in upload to FB", error);
         }
@@ -775,7 +778,15 @@ export default function EditItem(props) {
           setShowModal={setShowModal}
           handleSure={() => navigation.goBack()}
           massage={" השינויים לא ישמרו \n האם את בטוחה ?"}
-          goBack={() => navigation.goBack()}
+          goBack={true}
+        />
+      )}
+
+      {showAlertModal && (
+        <AlertModal
+          showModal={showAlertModal}
+          setShowModal={setShowAlertModal}
+          massage={" יש למלא את כל הפרטים"}
         />
       )}
     </SafeAreaView>

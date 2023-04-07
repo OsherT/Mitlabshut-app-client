@@ -5,9 +5,9 @@ import {
   ScrollView,
   ImageBackground,
   TouchableOpacity,
-  Image, 
+  Image,
 } from "react-native";
-import * as Linking from 'expo-linking';
+import * as Linking from "expo-linking";
 import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { Header, ContainerComponent, Button, Line } from "../components";
@@ -47,9 +47,14 @@ export default function Order() {
           loggedUser.id
       )
       .then((res) => {
-        getItemsData(res.data);
-        setItemsinCart(res.data);
-        GetItemPhotos(res.data);
+        if (res.data === "No items yet") {
+          console.log("user dont have items in cart");
+          setIsLoading(false);
+        } else {
+          getItemsData(res.data);
+          setItemsinCart(res.data);
+          GetItemPhotos(res.data);
+        }
       })
       .catch((err) => {
         setItemsinCart("");
@@ -85,15 +90,12 @@ export default function Order() {
       .then((responses) => {
         const photos = responses.flatMap((response) => response.data);
         setUsersItemPhotos(photos);
-        setIsLoading(false)
-
+        setIsLoading(false);
       })
       .catch((error) => {
         console.log("err in GetItemPhotos", error);
       });
   }
-
-
 
   function RemoveFromShopList(itemId) {
     axios
@@ -132,10 +134,12 @@ export default function Order() {
       //const deepLink = await createDeepLink(item);
       var message = `היי ${user.full_name}, ראיתי את הפריט שלך שנקרא ${item.name} באפליקציית מתלבשות `;
       const phone = `+972${user.phone_number}`;
-      message += `ואשמח לרכוש אותו ממך :) `
+      message += `ואשמח לרכוש אותו ממך :) `;
       //message += `זה הלינק לפריט :\n${deepLink}`
       //var message=`${deepLink}`;
-      const url = `whatsapp://send?phone=${phone}&text=${encodeURIComponent(message)}`;
+      const url = `whatsapp://send?phone=${phone}&text=${encodeURIComponent(
+        message
+      )}`;
       Linking.openURL(url);
     } catch (err) {
       console.log("error in get users data to buy" + err);
@@ -291,10 +295,12 @@ export default function Order() {
                   </TouchableOpacity> */}
                     <TouchableOpacity
                       style={{ margin: 25 }}
-                      onPress={()=>sendWhatsAppMessage(item)}
+                      onPress={() => sendWhatsAppMessage(item)}
                     >
-                      <Image source={{ uri: whatsappIcon }} style={{ width: 45, height: 45 ,borderRadius: 10}} />
-                      
+                      <Image
+                        source={{ uri: whatsappIcon }}
+                        style={{ width: 45, height: 45, borderRadius: 10 }}
+                      />
                     </TouchableOpacity>
                   </TouchableOpacity>
                 </Swipeable>
@@ -394,8 +400,6 @@ export default function Order() {
                 סה"כ
               </Text>
             </View>
-
-           
           </ContainerComponent>
         ) : (
           <Text></Text>
@@ -452,8 +456,7 @@ export default function Order() {
   return (
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
       <Header title="סל קניות" />
-      {isLoading?
-      <LoadingComponent></LoadingComponent>:renderContent()}
+      {isLoading ? <LoadingComponent></LoadingComponent> : renderContent()}
     </SafeAreaView>
   );
 }

@@ -17,8 +17,11 @@ import ButtonLogIn from "../components/ButtonLogIn";
 // import Google from "../svg/GoogleSvg";
 import { userContext } from "../navigation/userContext";
 import AlertModal from "../components/AlertModal";
+import { RememberSvg } from "../svg";
 // import * as webBrowser from "expo-web-browser";
 // import * as Google from "expo-auth-session/providers/google";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect } from "react";
 
 export default function SignIn() {
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api`;
@@ -26,21 +29,52 @@ export default function SignIn() {
   const navigation = useNavigation();
   const [showAlertModal, setShowAlertModal] = useState(false);
   const [message, setMessage] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
 
   // const [userEmail, setUserEmail] = useState("");
   // const [userPassword, setUserPassword] = useState("");
 
   //לצורך נוחות כדי לא להקליד את הנתונים כל פעם////////////////////////
-  const [userEmail, setUserEmail] = useState("o@g.c");
-  const [userPassword, setUserPassword] = useState("123");
+  const [userEmail, setUserEmail] = useState("");
+  const [userPassword, setUserPassword] = useState("");
   //לצורך נוחות כדי לא להקליד את הנתונים כל פעם////////////////////////
 
   //ref to clean the user inputs
   const emailInputRef = useRef(null);
   const passwordInputRef = useRef(null);
 
+  useEffect(() => {
+   
+    async function getRememberMeState() {
+      try {
+        const storedRememberMe = await AsyncStorage.getItem("rememberMe");
+        setRememberMe(storedRememberMe === "true");
+      } catch (error) {
+        console.error('Error retrieving "Remember Me" state:', error);
+      }
+    }
+    getRememberMeState();
+
+    const loadCredentials = async () => {
+      try {
+        const storedEmail = await AsyncStorage.getItem('username');
+        const storedPassword = await AsyncStorage.getItem('password');
+
+        if (storedEmail && storedPassword) {
+          setUserEmail(storedEmail);
+          setUserPassword(storedPassword);
+          setRememberMe(true);
+        }
+      } catch (error) {
+        console.log('Error loading credentials from AsyncStorage:', error);
+      }
+    }
+
+    loadCredentials();
+  }, []);
+
   //check if the user insert correct values, and loning him in
-  const logIn = () => {
+  const logIn = async () => {
     if (userEmail === "" || userPassword === "") {
       setMessage("יש למלא את כל הפרטים");
       setShowAlertModal(true);
@@ -81,6 +115,27 @@ export default function SignIn() {
           }
         );
     }
+
+    if (rememberMe) {
+      try {
+        await AsyncStorage.setItem("username", userEmail);
+        await AsyncStorage.setItem("password", userPassword);
+        await AsyncStorage.setItem("rememberMe", "true");
+      } catch (error) {
+        console.error("Error saving login credentials:", error);
+      }
+    } else {
+      // If "Remember Me" is not checked, remove stored login credentials
+      try {
+        await AsyncStorage.removeItem("username");
+        await AsyncStorage.removeItem("password");
+        await AsyncStorage.removeItem("rememberMe");
+        setUserEmail("");
+        setUserPassword("");
+      } catch (error) {
+        console.error("Error removing login credentials:", error);
+      }
+    }
   };
 
   // const logInWithFaceBook = () => {
@@ -98,7 +153,8 @@ export default function SignIn() {
           paddingHorizontal: 20,
           paddingVertical: 25,
         }}
-        showsHorizontalScrollIndicator={false}>
+        showsHorizontalScrollIndicator={false}
+      >
         <ContainerComponent>
           <Text style={styles.mainHeader}>ברוכה הבאה </Text>
           <Text style={styles.secondHeader}>התחברי לקהילה</Text>
@@ -107,9 +163,9 @@ export default function SignIn() {
             style={styles.textInput}
             placeholder="המייל שלך"
             name="email"
-            // onChangeText={(text) => setUserEmail(text.replace("%40", "@"))}
+            onChangeText={(text) => setUserEmail(text.replace("%40", "@"))}
             //לצורך נוחות כדי לא להקליד את הנתונים כל פעם////////////////////////
-            value="o@g.c"
+            value={userEmail}
             containerStyle={{ marginBottom: 10, textAlign: "right" }}
             ref={emailInputRef}
             keyboardType="email-address"
@@ -119,18 +175,51 @@ export default function SignIn() {
             style={styles.textInput}
             placeholder="••••••••"
             name="password"
-            // onChangeText={(text) => setUserPassword(text)}
-
+            onChangeText={(text) => setUserPassword(text)}
             //לצורך נוחות כדי לא להקליד את הנתונים כל פעם////////////////////////
-            value="123"
+            value={userPassword}
             containerStyle={{ marginBottom: 20 }}
             ref={passwordInputRef}
           />
 
           <View style={styles.textUpperContainer}>
             <TouchableOpacity
-              onPress={() => navigation.navigate("ForgotPassword")}>
+              onPress={() => navigation.navigate("ForgotPassword")}
+            >
               <Text style={styles.forgotPassword}>שכחת סיסמא?</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+              onPress={() => setRememberMe(!rememberMe)}
+            >
+              <Text
+                style={{
+                  ...FONTS.Mulish_400Regular,
+                  fontSize: 16,
+                  color: COLORS.gray,
+                  lineHeight: 16 * 1.7,
+                }}
+              >
+                {" "}
+                {""} זכור אותי
+              </Text>
+              <View
+                style={{
+                  width: 18,
+                  height: 18,
+                  borderWidth: 2,
+                  borderRadius: 5,
+                  borderColor: COLORS.goldenTransparent_05,
+                  marginRight: 10,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {rememberMe && <RememberSvg />}
+              </View>
             </TouchableOpacity>
           </View>
 
@@ -228,7 +317,7 @@ const styles = StyleSheet.create({
   textUpperContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-between",
     marginBottom: 30,
   },
   forgotPassword: {

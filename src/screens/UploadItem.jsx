@@ -498,12 +498,12 @@ export default function UploadItem() {
             <TextInput
               style={styles.textInput}
               placeholder="שם פריט"
-              containerStyle={{ marginBottom: 10 }}
               onChangeText={(text) => setItemName(text)}
               /////////////////////////לנוחות, למחוק אח"כ/////////////////////////
               value={itemName}
             />
           </View>
+
           <MultiSelect
             items={categoriesList}
             selectedItems={itemCategory}
@@ -522,19 +522,26 @@ export default function UploadItem() {
             tagRemoveIconColor={COLORS.golden}
             tagTextColor="#000"
             tagBorderColor={COLORS.goldenTransparent_03}
-            searchInputStyle={{
-              color: "#000",
-              textAlign: "right",
-              backgroundColor: "#FBF8F2",
-              padding: 12,
-              borderRadius: 25,
-            }}
-            styleDropdownMenu={styles.dropdownContainer}
-            styleInputGroup={styles.InputGroup}
-            styleItemsContainer={styles.dropdownContainer}
-            styleDropdownMenuSubsection={{ backgroundColor: "#FBF8F2" }}
             submitButtonColor={COLORS.golden}
             itemFontSize={14}
+            //עיצוב הטקסט הראשי
+            styleTextDropdown={{ textAlign: "right", color: "#000" }}
+            //עיצוב החץ
+            styleIndicator={{ right: 295 }}
+            //עיצוב האינפוט הראשי שרואים
+            styleDropdownMenuSubsection={{
+              backgroundColor: "#FBF8F2",
+              borderColor: COLORS.goldenTransparent_03,
+              borderWidth: 1,
+              borderRadius: 25,
+              height: 45,
+              marginBottom: 30,
+              paddingRight: 0,
+            }}
+            //עיצוב של החיפוש
+            styleInputGroup={styles.InputGroup}
+            //עיצוב של התיבה שמכילה את הרשימה של הפרטים
+            styleListContainer={styles.dropdownContainer}
           />
 
           <SelectList
@@ -573,7 +580,6 @@ export default function UploadItem() {
             data={brandsList}
             notFoundText="לא קיים מידע"
           />
-          {/* לשנות שיכניס את המילה ולא את המפתח */}
           <SelectList
             placeholder=" מצב פריט"
             searchPlaceholder="חיפוש"
@@ -584,6 +590,7 @@ export default function UploadItem() {
             save="value"
             notFoundText="לא קיים מידע"
           />
+
           <MultiSelect
             items={deliveryMethodsList}
             selectedItems={itemDeliveryMethod}
@@ -602,19 +609,25 @@ export default function UploadItem() {
             tagRemoveIconColor={COLORS.golden}
             tagTextColor="#000"
             tagBorderColor={COLORS.goldenTransparent_03}
-            searchInputStyle={{
-              color: "#000",
-              textAlign: "right",
-              backgroundColor: "#FBF8F2",
-              padding: 12,
-              borderRadius: 25,
-            }}
-            styleDropdownMenu={styles.dropdownContainer}
-            styleInputGroup={styles.InputGroup}
-            styleItemsContainer={styles.dropdownContainer}
-            styleDropdownMenuSubsection={{ backgroundColor: "#FBF8F2" }}
             submitButtonColor={COLORS.golden}
             itemFontSize={14}
+            //עיצוב הטקסט הראשי
+            styleTextDropdown={{ textAlign: "right", color: "#000" }}
+            //עיצוב החץ
+            styleIndicator={{ right: 295 }}
+            //עיצוב האינפוט הראשי שרואים
+            styleDropdownMenuSubsection={{
+              backgroundColor: "#FBF8F2",
+              borderColor: COLORS.goldenTransparent_03,
+              borderWidth: 1,
+              borderRadius: 25,
+              height: 45,
+              paddingRight: 0,
+            }}
+            //עיצוב של החיפוש
+            styleInputGroup={styles.InputGroup}
+            //עיצוב של התיבה שמכילה את הרשימה של הפרטים
+            styleListContainer={styles.dropdownContainer}
           />
 
           <TextInput
@@ -662,17 +675,6 @@ export default function UploadItem() {
               ))}
             </View>
           )}
-          {/* {images.length > 0 && (
-            <View style={styles.imageContainer}>
-              {images.map((item, index) => (
-                <Image
-                  key={index}
-                  source={{ uri: item.uri }}
-                  style={styles.Image}
-                />
-              ))}
-            </View>
-          )} */}
 
           <UploadModal
             uploading={uploading}
@@ -727,7 +729,6 @@ const styles = StyleSheet.create({
   },
   doubleContainer: {
     width: "100%",
-
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
@@ -745,6 +746,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     backgroundColor: "#FBF8F2",
     textAlign: "right",
+    marginBottom: 10,
   },
 
   dropdownInput: {
@@ -759,6 +761,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#FBF8F2",
     marginBottom: 30,
     textAlign: "right",
+    color: "red",
+  },
+  styleDropdownMenu: {
+    width: "100%",
+    backgroundColor: "#FBF8F2",
+    borderColor: COLORS.goldenTransparent_03,
+    marginBottom: 30,
+    borderWidth: 1,
+    borderRadius: 25,
+    height: 45,
   },
   dropdownContainer: {
     width: "100%",
@@ -777,6 +789,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 25,
     paddingHorizontal: 25,
+    height: 45,
   },
   bigInput: {
     width: "100%",
@@ -788,6 +801,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FBF8F2",
     textAlign: "right",
     marginBottom: 30,
+    marginTop: 20,
   },
   picturBtn: {
     width: "100%",

@@ -236,7 +236,7 @@ export default function Closet(props) {
               marginBottom: 10,
               lineHeight: 16 * 1.2,
             }}>
-            הארון של {closetName}
+            הארון של {owner.full_name ? owner.full_name : loggedUser.full_name}
           </Text>
           <ProfileNumbers
             followers={ClosetFollowers}

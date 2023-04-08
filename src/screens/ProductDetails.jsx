@@ -362,7 +362,8 @@ export default function ProductDetails(props) {
     try {
       const result = await Share.share({
         message: "תראי איזה פריט שווה מצאתי !",
-        url: "https://example.com/page",
+        // url: "https://example.com/page",
+        url: itemImages[0], //until we'll be able to send a ling to our project
         title: "מתלבשות",
       });
       if (result.action === Share.sharedAction) {
@@ -375,7 +376,7 @@ export default function ProductDetails(props) {
         // dismissed
       }
     } catch (error) {
-      console.error(error.message);
+      console.error("err in onShare ", error.message);
     }
   };
 

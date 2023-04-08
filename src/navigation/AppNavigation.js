@@ -79,17 +79,17 @@ export default function Navigation() {
   async function sendPushNotification(expoPushToken, action, from) {
     var bodyMessage;
     if (action === "follow") {
-      bodyMessage = `${from} התחילה לעקוב אחרייך `;
+      bodyMessage = `${from} התחילה לעקוב אחרייך \n כנסי לאפליקציה כדי להתעדכן `;
     }
     if (action === "like") {
-      bodyMessage = `${from} עשתה לייק לפריט שלך `;
+      bodyMessage = `${from} עשתה לייק לפריט שלך \n כנסי לאפליקציה כדי להתעדכן `;
     }
     const message = {
       to: expoPushToken,
       sound: "default",
       title: "מתלבשות",
       body: bodyMessage,
-      // data: { someData: "goes here" },
+      data: { someData: "goes here" },
     };
     await fetch("https://exp.host/--/api/v2/push/send", {
       method: "POST",
@@ -248,8 +248,7 @@ export default function Navigation() {
           setSorted_,
           sendPushNotification,
           registerForPushNotificationsAsync,
-        }}
-      >
+        }}>
         <Stack.Navigator
           screenOptions={{
             headerStyle: {
@@ -259,8 +258,7 @@ export default function Navigation() {
             },
             headerShown: false,
           }}
-          initialRouteName="SignIn"
-        >
+          initialRouteName="SignIn">
           {/* // initialRouteName="PushNotification"> */}
           <Stack.Screen name="PushNotification" component={PushNotification} />
 

@@ -5,7 +5,6 @@ import {
   SafeAreaView,
   StyleSheet,
   Image,
-  Alert,
 } from "react-native";
 import React, { useEffect, useState, useContext } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";

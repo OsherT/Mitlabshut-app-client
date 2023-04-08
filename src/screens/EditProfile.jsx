@@ -6,10 +6,8 @@ import {
   Text,
   StyleSheet,
   KeyboardAvoidingView,
-  ActivityIndicator,
 } from "react-native";
 import React, { useContext, useState } from "react";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useNavigation } from "@react-navigation/native";
 import { Header, InputField, Button, ContainerComponent } from "../components";
 import { AREA, COLORS, FONTS } from "../constants";
@@ -52,7 +50,6 @@ export default function EditProfile(props) {
   const [flagForNewImg, setFlagForNewImg] = useState(false);
   const [showAlertModal, setShowAlertModal] = useState(false);
   const [message, setMessage] = useState("");
-
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
 
   const ageList = Array.from({ length: 109 }, (_, i) => ({
@@ -115,80 +112,81 @@ export default function EditProfile(props) {
     if (address.split(",").length < 3) {
       setMessage("אנא הכניסי כתובת מלאה הכוללת שם רחוב, עיר ומדינה");
       setShowAlertModal(true);
-    }
-    else {const newUser = {
-      email: userEmail,
-      id: loggedUser.id,
-      closet_id: userClosetId,
-      phone_number: userPhone,
-      full_name: userName,
-      password: userPassword,
-      address: address,
-      isAdmin: false,
-      user_image: imageLink,
-      age: userAge,
-      token: loggedUser.token,
-    };
+    } else {
+      const newUser = {
+        email: userEmail,
+        id: loggedUser.id,
+        closet_id: userClosetId,
+        phone_number: userPhone,
+        full_name: userName,
+        password: userPassword,
+        address: address,
+        isAdmin: false,
+        user_image: imageLink,
+        age: userAge,
+        token: loggedUser.token,
+      };
 
-    const newClosetData = {
-      id: loggedUser.closet_id,
-      description: closetDesc,
-      user_name: closetName,
-    };
+      const newClosetData = {
+        id: loggedUser.closet_id,
+        description: closetDesc,
+        user_name: closetName,
+      };
 
-    fetch(ApiUrl + `User/PutUser`, {
-      method: "PUT",
-      body: JSON.stringify(newUser),
-      headers: new Headers({
-        "Content-type": "application/json; charset=UTF-8",
-        Accept: "application/json; charset=UTF-8",
-      }),
-    })
-      .then((res) => {
-        return res.json();
+      fetch(ApiUrl + `User/PutUser`, {
+        method: "PUT",
+        body: JSON.stringify(newUser),
+        headers: new Headers({
+          "Content-type": "application/json; charset=UTF-8",
+          Accept: "application/json; charset=UTF-8",
+        }),
       })
-      .then(
-        (result) => {
-          axios
-            .put(
-              "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Closet/Put",
-              newClosetData
-            )
-            .then((res) => {
-              setloggedUser(newUser);
-              setUserImage(imageLink);
-              setFlagForNewImg(false);
-              setUploading(false);
+        .then((res) => {
+          return res.json();
+        })
+        .then(
+          (result) => {
+            axios
+              .put(
+                "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Closet/Put",
+                newClosetData
+              )
+              .then((res) => {
+                setloggedUser(newUser);
+                setUserImage(imageLink);
+                setFlagForNewImg(false);
+                setUploading(false);
 
-              if (!uploading) {
-                navigation.navigate("OrderSuccessful", {
-                  message: "הפרטים עודכנו בהצלחה !",
-                });
-              }
-            })
-            .catch((error) => {
-              console.log("ERR in update closet", error);
-            });
-        },
-        (error) => {
-          console.log("ERR in update user", error);
-        }
-      );}
+                if (!uploading) {
+                  navigation.navigate("OrderSuccessful", {
+                    message: "הפרטים עודכנו בהצלחה !",
+                  });
+                }
+              })
+              .catch((error) => {
+                console.log("ERR in update closet", error);
+              });
+          },
+          (error) => {
+            console.log("ERR in update user", error);
+          }
+        );
+    }
   };
 
   function renderContent() {
     return (
       <View style={{ flex: 1 }}>
         <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
-          <ScrollView contentContainerStyle={{ flexGrow: 1 }}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}>
+          <ScrollView
+            contentContainerStyle={{ flexGrow: 1 }}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}>
             <ContainerComponent>
               <TouchableOpacity
                 onPress={() => {
                   pickImage();
-                }}
-              >
+                }}>
                 {!image && (
                   <ImageBackground
                     source={{ uri: loggedUser.user_image }}
@@ -198,15 +196,13 @@ export default function EditProfile(props) {
                       alignSelf: "center",
                       marginBottom: 15,
                     }}
-                    imageStyle={{ borderRadius: 40 }}
-                  >
+                    imageStyle={{ borderRadius: 40 }}>
                     <View
                       style={{
                         position: "absolute",
                         right: -20,
                         bottom: -20,
-                      }}
-                    >
+                      }}>
                       <Edit />
                     </View>
                   </ImageBackground>
@@ -220,23 +216,20 @@ export default function EditProfile(props) {
                       alignSelf: "center",
                       marginBottom: 15,
                     }}
-                    imageStyle={{ borderRadius: 40 }}
-                  >
+                    imageStyle={{ borderRadius: 40 }}>
                     <View
                       style={{
                         position: "absolute",
                         right: -20,
                         bottom: -20,
-                      }}
-                    >
+                      }}>
                       <Edit />
                     </View>
                   </ImageBackground>
                 )}
               </TouchableOpacity>
               <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
-              >
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
                 שם מלא:
               </Text>
               <InputField
@@ -247,8 +240,7 @@ export default function EditProfile(props) {
                 keyboardType="text"
               />
               <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
-              >
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
                 כתובת אימייל :
               </Text>
               <InputField
@@ -259,8 +251,7 @@ export default function EditProfile(props) {
                 keyboardType="text"
               />
               <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
-              >
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
                 כתובת מגורים:
               </Text>
               <SafeAreaView style={styles.view}>
@@ -279,7 +270,7 @@ export default function EditProfile(props) {
                   textInputProps={{
                     textAlign: "right",
                     backgroundColor: "#FBF8F2",
-                    placeholderTextColor: "black"
+                    placeholderTextColor: "black",
                   }}
                   styles={{
                     container: {
@@ -293,8 +284,7 @@ export default function EditProfile(props) {
               </SafeAreaView>
 
               <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
-              >
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
                 גיל:
               </Text>
 
@@ -311,8 +301,7 @@ export default function EditProfile(props) {
               />
 
               <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
-              >
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
                 מספר טלפון:
               </Text>
               <InputField
@@ -323,8 +312,7 @@ export default function EditProfile(props) {
                 onChangeText={(text) => setUserPhone(text)}
               />
               <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
-              >
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
                 סיסמה:
               </Text>
               <InputField
@@ -335,8 +323,7 @@ export default function EditProfile(props) {
                 keyboardType="text"
               />
               <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
-              >
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
                 תיאור ארון:
               </Text>
               <InputField
@@ -347,8 +334,7 @@ export default function EditProfile(props) {
                 keyboardType="text"
               />
               <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
-              >
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
                 שם ארון:
               </Text>
               <InputField
@@ -361,8 +347,7 @@ export default function EditProfile(props) {
 
               <UploadModal
                 uploading={uploading}
-                message="עדכון פרטים עלול לקחת זמן, אנא המתן"
-              ></UploadModal>
+                message="עדכון פרטים עלול לקחת זמן, אנא המתן"></UploadModal>
 
               <View style={{ marginTop: 40 }}>
                 <Button

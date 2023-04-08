@@ -10,7 +10,6 @@ import {
   Modal,
   FlatList,
   Dimensions,
- 
 } from "react-native";
 import axios from "axios";
 import { Edit } from "../svg";

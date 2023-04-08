@@ -6,7 +6,7 @@ import {
   StyleSheet,
   Share,
 } from "react-native";
-import React, { useContext, useEffect, useState,useRef } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { AREA, COLORS, FONTS } from "../constants";
 import { Button, Header } from "../components";
@@ -35,7 +35,6 @@ export default function ProductDetails(props) {
     setClosetId_,
     setOwner_,
     sendPushNotification,
-
   } = useContext(userContext);
   const item = props.route.params.item;
   const isFocused = useIsFocused();
@@ -66,9 +65,6 @@ export default function ProductDetails(props) {
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
   const ApiUrl_user = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User`;
 
- 
-
-  
   useEffect(() => {
     if (isFocused) {
       GetClosetdata();
@@ -82,7 +78,6 @@ export default function ProductDetails(props) {
       if (address1 && address2) {
         getAddressLocations();
       }
-
     }
   }, [isFocused, address1, address2, itemStatus]);
 
@@ -596,8 +591,7 @@ export default function ProductDetails(props) {
                         loggedUser.full_name
                       ),
                     ]);
-                  }}
-                  >
+                  }}>
                   <HeartTwoSvg filled={false} strokeColor="red" />
                 </TouchableOpacity>
               )}
@@ -846,14 +840,7 @@ export default function ProductDetails(props) {
 
   return (
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
-      <Header
-        goBack={true}
-        selectedTab={() => {
-          setSelectedTab("Closet");
-          navigation.goBack();
-        }}
-        flag={true}
-      />
+      <Header flag={true} />
       {isLoading ? <LoadingComponent></LoadingComponent> : renderContent()}
       {showModal && (
         <WarningModal

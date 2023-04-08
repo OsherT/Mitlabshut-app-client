@@ -5,17 +5,17 @@ import {
   SafeAreaView,
   TouchableOpacity,
 } from "react-native";
-import React from "react";
 import { useNavigation } from "@react-navigation/native";
-
-import { Button, ContainerComponent } from "../components";
+import React, { useContext } from "react";
+import { ContainerComponent } from "../components";
 import { AREA, COLORS, FONTS } from "../constants";
 import { Success } from "../svg";
+import { userContext } from "../navigation/userContext";
 
 export default function OrderSuccessful(props) {
   const navigation = useNavigation();
   const message = props.route.params.message;
-
+  const { setSelectedTab } = useContext(userContext);
   function renderContent() {
     return (
       <ScrollView
@@ -41,25 +41,11 @@ export default function OrderSuccessful(props) {
             }}>
             {message}
           </Text>
-          {/* <Text
-                        style={{
-                            ...FONTS.Mulish_400Regular,
-                            fontSize: 16,
-                            color: COLORS.gray,
-                            textAlign: "center",
-                            lineHeight: 16 * 1.7,
-                            marginBottom: 30,
-                            paddingHorizontal: 30,
-                        }}
-                    >
-                        Your order will be delivered on time. ID # 123456
-                    </Text> */}
-          {/* <Button
-                        title="View Order"
-                        containerStyle={{ marginBottom: 23 }}
-                        onPress={() => navigation.navigate("TrackYourOrder")}
-                    /> */}
-          <TouchableOpacity onPress={() => navigation.navigate("MainLayout")}>
+
+          <TouchableOpacity
+            onPress={() => {
+               navigation.navigate("MainLayout"),setSelectedTab("Closet");
+            }}>
             <Text
               style={{
                 textAlign: "center",

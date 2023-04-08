@@ -5,7 +5,6 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ImageBackground,
-  Animated,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
@@ -14,15 +13,13 @@ import { AREA, COLORS, FONTS } from "../constants";
 import { BagSvg, Empty } from "../svg";
 import axios from "axios";
 import { userContext } from "../navigation/userContext";
-import TrashCanIcon from "../svg/TrashCanIcon";
 import { Swipeable } from "react-native-gesture-handler";
-import { TabElement } from "../svg";
-import MainLayout from "./MainLayout";
 import LoadingComponent from "./LoadingComponent";
 export default function WishList() {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-  const { loggedUser, GetItemForAlgo, shopScore } = useContext(userContext);
+  const { loggedUser, GetItemForAlgo, shopScore, setSelectedTab } =
+    useContext(userContext);
   const [Items, setItems] = useState([]);
   const [UsersItemPhotos, setUsersItemPhotos] = useState([]);
   const [shopList, setshopList] = useState([]);

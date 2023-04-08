@@ -599,11 +599,6 @@ export default function Closet(props) {
       });
   }
 
-  function handleUserChoice() {
-    if (showModal && typeof userChoice === "function") {
-      userChoice();
-    }
-  }
 
   ///render items
   function renderClothes() {
@@ -616,6 +611,7 @@ export default function Closet(props) {
           paddingHorizontal: 20,
           paddingBottom: 50,
         }}
+
         numColumns={2}
         columnWrapperStyle={{ justifyContent: "space-between" }}
         renderItem={({ item, index }) => (
@@ -633,13 +629,11 @@ export default function Closet(props) {
               shadowRadius: 2,
               elevation: 5,
             }}
-            //Osherrrrrrrrrrrr///////////////////////////////////////////////
             onPress={() => {
               navigation.navigate("ProductDetails", {
                 item: item,
               });
             }}
-            //Osherrrrrrrrrrrr///////////////////////////////////////////////
           >
             {UsersItemPhotos.filter((photo) => photo.item_ID === item.id)
               .slice(0, 1)

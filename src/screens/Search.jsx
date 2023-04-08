@@ -125,7 +125,7 @@ export default function Search() {
                       uri: type.item_type_image,
                     }}
                     style={{
-                      width: 220,
+                      width: 180,
                       height: "97%",
                       margin: 5,
                     }}

@@ -470,7 +470,7 @@ export default function Home() {
           <FlatList
             data={allUsers}
             horizontal={true}
-            keyExtractor={(user) => user.id}
+            keyExtractor={(user) => user.closet_id}
             renderItem={({ item: user, index }) => {
               return (
                 <TouchableOpacity

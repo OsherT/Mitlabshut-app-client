@@ -529,6 +529,7 @@ export default function UploadItem() {
               borderWidth: 1,
               borderRadius: 25,
               height: 45,
+              marginBottom: 30,
               paddingRight: 0,
             }}
             //עיצוב של החיפוש

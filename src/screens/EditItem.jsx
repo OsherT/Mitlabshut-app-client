@@ -353,7 +353,7 @@ export default function EditItem(props) {
   //post images to the FB
   const uploadImageFB = async (item_ID) => {
     if (flagForNoImg) {
-      setShowAlertModal(true)
+      setShowAlertModal(true);
     } else {
       setUploading(true);
       const imageLinks = [];
@@ -530,7 +530,15 @@ export default function EditItem(props) {
               onChangeText={(text) => setItemName(text)}
             />
           </View>
-          <Text style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+
+          <Text
+            style={{
+              textAlign: "right",
+              color: colors.grey3,
+              right: 15,
+              top: -20,
+              paddingTop: 20,
+            }}>
             קטגוריה :
           </Text>
           <MultiSelect
@@ -551,20 +559,28 @@ export default function EditItem(props) {
             tagRemoveIconColor={COLORS.golden}
             tagTextColor="#000"
             tagBorderColor={COLORS.goldenTransparent_03}
-            searchInputStyle={{
-              color: "#000",
-              textAlign: "right",
-              backgroundColor: "#FBF8F2",
-              padding: 12,
-              borderRadius: 25,
-            }}
-            styleDropdownMenu={styles.dropdownContainer}
-            styleInputGroup={styles.InputGroup}
-            styleItemsContainer={styles.dropdownContainer}
-            styleDropdownMenuSubsection={{ backgroundColor: "#FBF8F2" }}
             submitButtonColor={COLORS.golden}
             itemFontSize={14}
+            //עיצוב הטקסט הראשי
+            styleTextDropdown={{ textAlign: "right", color: "#000" }}
+            //עיצוב החץ
+            styleIndicator={{ right: 295 }}
+            //עיצוב האינפוט הראשי שרואים
+            styleDropdownMenuSubsection={{
+              backgroundColor: "#FBF8F2",
+              borderColor: COLORS.goldenTransparent_03,
+              borderWidth: 1,
+              borderRadius: 25,
+              height: 45,
+              marginBottom: 30,
+              paddingRight: 0,
+            }}
+            //עיצוב של החיפוש
+            styleInputGroup={styles.InputGroup}
+            //עיצוב של התיבה שמכילה את הרשימה של הפרטים
+            styleListContainer={styles.dropdownContainer}
           />
+
           <Text
             style={{
               textAlign: "right",
@@ -638,7 +654,14 @@ export default function EditItem(props) {
             save="value"
             notFoundText="לא קיים מידע"
           />
-          <Text style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+          <Text
+            style={{
+              textAlign: "right",
+              color: colors.grey3,
+              right: 15,
+              top: -20,
+              paddingTop: 20,
+            }}>
             שיטת איסוף :
           </Text>
           <MultiSelect
@@ -659,19 +682,26 @@ export default function EditItem(props) {
             tagRemoveIconColor={COLORS.golden}
             tagTextColor="#000"
             tagBorderColor={COLORS.goldenTransparent_03}
-            searchInputStyle={{
-              color: "#000",
-              textAlign: "right",
-              backgroundColor: "#FBF8F2",
-              padding: 12,
-              borderRadius: 25,
-            }}
-            styleDropdownMenu={styles.dropdownContainer}
-            styleInputGroup={styles.InputGroup}
-            styleItemsContainer={styles.dropdownContainer}
-            styleDropdownMenuSubsection={{ backgroundColor: "#FBF8F2" }}
             submitButtonColor={COLORS.golden}
             itemFontSize={14}
+            //עיצוב הטקסט הראשי
+            styleTextDropdown={{ textAlign: "right", color: "#000" }}
+            //עיצוב החץ
+            styleIndicator={{ right: 295 }}
+            //עיצוב האינפוט הראשי שרואים
+            styleDropdownMenuSubsection={{
+              backgroundColor: "#FBF8F2",
+              borderColor: COLORS.goldenTransparent_03,
+              borderWidth: 1,
+              borderRadius: 25,
+              height: 45,
+              marginBottom: 30,
+              paddingRight: 0,
+            }}
+            //עיצוב של החיפוש
+            styleInputGroup={styles.InputGroup}
+            //עיצוב של התיבה שמכילה את הרשימה של הפרטים
+            styleListContainer={styles.dropdownContainer}
           />
           <Text style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
             תיאור פריט :
@@ -794,6 +824,7 @@ export default function EditItem(props) {
 }
 
 const styles = StyleSheet.create({
+  try: { textAlign: "right" },
   header: {
     textAlign: "center",
     ...FONTS.H1,
@@ -845,7 +876,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 25,
     paddingHorizontal: 25,
-    // textAlign: "right",
   },
   InputGroup: {
     width: "100%",
@@ -854,6 +884,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 25,
     paddingHorizontal: 25,
+    height: 45,
   },
   bigInput: {
     width: "100%",

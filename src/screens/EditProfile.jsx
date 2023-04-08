@@ -109,7 +109,10 @@ export default function EditProfile(props) {
 
   //update users details
   const updateUser = (imageLink) => {
-    const newUser = {
+    if (address.split(",").length < 3) {
+      alert("אנא הכניסי כתובת מלאה הכוללת שם רחובת עיר ומדינה");
+    }
+    else {const newUser = {
       email: userEmail,
       id: loggedUser.id,
       closet_id: userClosetId,
@@ -166,14 +169,16 @@ export default function EditProfile(props) {
         (error) => {
           console.log("ERR in update user", error);
         }
-      );
+      );}
   };
 
   function renderContent() {
     return (
       <View style={{ flex: 1 }}>
         <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
-          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}>
             <ContainerComponent>
               <TouchableOpacity
                 onPress={() => {
@@ -256,7 +261,7 @@ export default function EditProfile(props) {
               </Text>
               <SafeAreaView style={styles.view}>
                 <GooglePlacesAutocomplete
-                  defaultValue={loggedUser.address}
+                  //defaultValue={loggedUser.address}
                   placeholder={loggedUser.address}
                   fetchDetails={true}
                   GooglePlacesSearchQuery={{ rankby: "distance" }}

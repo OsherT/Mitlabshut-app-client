@@ -39,7 +39,7 @@ export default function UploadItem() {
   //the section of the item information hooks
   const [itemName, setItemName] = useState("");
   const [itemPrice, setItemPrice] = useState("");
-  const [itemDescription, setItemDescription] = useState("מושלם");
+  const [itemDescription, setItemDescription] = useState("");
 
   const [itemCategory, setItemCategory] = useState([]);
   const [itemType, setItemType] = useState("");

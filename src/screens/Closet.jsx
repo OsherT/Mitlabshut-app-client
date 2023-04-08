@@ -265,7 +265,7 @@ export default function Closet(props) {
                       sendPushNotification(
                         owner.token,
                         "follow",
-                        loggedUser.full_name
+                        loggedUser.full_name,
                       ),
                     ]);
                   }}

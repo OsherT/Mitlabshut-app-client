@@ -564,6 +564,7 @@ export default function UploadItem() {
           />
           <SelectList
             placeholder="  צבע "
+            
             searchPlaceholder="חיפוש"
             boxStyles={styles.dropdownInput}
             dropdownStyles={styles.dropdownContainer}

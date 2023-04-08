@@ -25,26 +25,19 @@ import { useEffect } from "react";
 
 export default function SignIn() {
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api`;
-  const { loggedUser, setloggedUser, setSelectedTab } = useContext(userContext);
+  const { setloggedUser } = useContext(userContext);
   const navigation = useNavigation();
   const [showAlertModal, setShowAlertModal] = useState(false);
   const [message, setMessage] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-
-  // const [userEmail, setUserEmail] = useState("");
-  // const [userPassword, setUserPassword] = useState("");
-
-  //לצורך נוחות כדי לא להקליד את הנתונים כל פעם////////////////////////
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
-  //לצורך נוחות כדי לא להקליד את הנתונים כל פעם////////////////////////
 
   //ref to clean the user inputs
   const emailInputRef = useRef(null);
   const passwordInputRef = useRef(null);
 
   useEffect(() => {
-   
     async function getRememberMeState() {
       try {
         const storedRememberMe = await AsyncStorage.getItem("rememberMe");
@@ -57,8 +50,8 @@ export default function SignIn() {
 
     const loadCredentials = async () => {
       try {
-        const storedEmail = await AsyncStorage.getItem('username');
-        const storedPassword = await AsyncStorage.getItem('password');
+        const storedEmail = await AsyncStorage.getItem("username");
+        const storedPassword = await AsyncStorage.getItem("password");
 
         if (storedEmail && storedPassword) {
           setUserEmail(storedEmail);
@@ -66,16 +59,16 @@ export default function SignIn() {
           setRememberMe(true);
         }
       } catch (error) {
-        console.log('Error loading credentials from AsyncStorage:', error);
+        console.log("Error loading credentials from AsyncStorage:", error);
       }
-    }
+    };
 
     loadCredentials();
   }, []);
 
   //check if the user insert correct values, and loning him in
   const logIn = async () => {
-    if (userEmail === "" || userPassword === "") {
+    if (userEmail == "" || userPassword == "") {
       setMessage("יש למלא את כל הפרטים");
       setShowAlertModal(true);
     } else {
@@ -153,8 +146,7 @@ export default function SignIn() {
           paddingHorizontal: 20,
           paddingVertical: 25,
         }}
-        showsHorizontalScrollIndicator={false}
-      >
+        showsHorizontalScrollIndicator={false}>
         <ContainerComponent>
           <Text style={styles.mainHeader}>ברוכה הבאה </Text>
           <Text style={styles.secondHeader}>התחברי לקהילה</Text>
@@ -184,8 +176,7 @@ export default function SignIn() {
 
           <View style={styles.textUpperContainer}>
             <TouchableOpacity
-              onPress={() => navigation.navigate("ForgotPassword")}
-            >
+              onPress={() => navigation.navigate("ForgotPassword")}>
               <Text style={styles.forgotPassword}>שכחת סיסמא?</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -193,16 +184,14 @@ export default function SignIn() {
                 flexDirection: "row",
                 alignItems: "center",
               }}
-              onPress={() => setRememberMe(!rememberMe)}
-            >
+              onPress={() => setRememberMe(!rememberMe)}>
               <Text
                 style={{
                   ...FONTS.Mulish_400Regular,
                   fontSize: 16,
                   color: COLORS.gray,
                   lineHeight: 16 * 1.7,
-                }}
-              >
+                }}>
                 {" "}
                 {""} זכור אותי
               </Text>
@@ -216,8 +205,7 @@ export default function SignIn() {
                   marginRight: 10,
                   justifyContent: "center",
                   alignItems: "center",
-                }}
-              >
+                }}>
                 {rememberMe && <RememberSvg />}
               </View>
             </TouchableOpacity>
@@ -252,7 +240,7 @@ export default function SignIn() {
           <AlertModal
             showModal={showAlertModal}
             setShowModal={setShowAlertModal}
-            massage={message}
+            message={message}
           />
         )}
       </KeyboardAwareScrollView>

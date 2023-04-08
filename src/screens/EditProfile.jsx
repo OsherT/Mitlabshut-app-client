@@ -127,11 +127,11 @@ export default function EditProfile(props) {
         token: loggedUser.token,
       };
 
-    const newClosetData = {
-      id: loggedUser.closet_id,
-      description: closetDesc,
-      user_name: closetName,
-    };
+      const newClosetData = {
+        id: loggedUser.closet_id,
+        description: closetDesc,
+        user_name: closetName,
+      };
 
       fetch(ApiUrl + `User/PutUser`, {
         method: "PUT",
@@ -290,7 +290,11 @@ export default function EditProfile(props) {
 
               <SelectList
                 defaultOption={loggedUser.age}
-                placeholder={loggedUser.age}
+                placeholder={
+                  <>
+                    {loggedUser.age}{"   "} <EditTwo />
+                  </>
+                }
                 searchPlaceholder="חיפוש"
                 boxStyles={styles.dropdownInput}
                 dropdownStyles={styles.dropdownContainer}
@@ -333,7 +337,7 @@ export default function EditProfile(props) {
                 onChangeText={(text) => setclosetDesc(text)}
                 keyboardType="text"
               />
-              <Text
+              {/* <Text
                 style={{ textAlign: "right", color: colors.grey3, right: 15 }}
               >
                 שם ארון:

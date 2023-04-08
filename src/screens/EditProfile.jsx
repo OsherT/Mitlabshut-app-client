@@ -279,7 +279,18 @@ export default function EditProfile(props) {
                       width: "100%",
                     },
                     listView: { position: "absolute", zIndex: 1, top: 50 },
+                    textInputContainer: {
+                      flexDirection: "row",
+                      alignItems: "center",
+                    },
+                    description: {
+                      flex: 1,
+                    },
+                    icon: {
+                      marginHorizontal: 8,
+                    },
                   }}
+                  renderRightButton={() => <EditTwo />}
                 />
               </SafeAreaView>
 
@@ -344,7 +355,7 @@ export default function EditProfile(props) {
                 containerStyle={{ marginBottom: 20 }}
                 onChangeText={(text) => setclosetName(text)}
                 keyboardType="text"
-              /> */}
+              /> 
 
               <UploadModal
                 uploading={uploading}

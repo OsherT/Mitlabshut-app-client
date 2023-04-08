@@ -128,13 +128,15 @@ export default function Home() {
             <TouchableOpacity
               onPress={() => {
                 setSelectedTab("Closet");
+                setClosetId_(loggedUser.closet_id);
+                setOwner_(loggedUser);
               }}>
               <Image
                 source={{ uri: loggedUser.user_image }}
                 style={{
                   width: 75,
                   height: 75,
-                  borderRadius: 50,
+                  borderRadius: 25,
                   marginLeft: 10,
                 }}
               />

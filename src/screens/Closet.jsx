@@ -10,6 +10,7 @@ import {
   Modal,
   FlatList,
   Dimensions,
+  StyleSheet,
 } from "react-native";
 import axios from "axios";
 import { Edit } from "../svg";
@@ -86,8 +87,8 @@ export default function Closet(props) {
     const screenWidth = Dimensions.get("screen").width;
     const screenHeight = Dimensions.get("screen").height;
 
-    const modalX = buttonX + buttonWidth/ 2 - buttonWidth/3; // position modal to the right of the button
-    const modalY = buttonY + buttonHeight / 2 - modalHeight /1.3; // center modal vertically
+    const modalX = buttonX + buttonWidth / 2 - buttonWidth / 3; // position modal to the right of the button
+    const modalY = buttonY + buttonHeight / 2 - modalHeight / 1.3; // center modal vertically
 
     setModalPosition({
       x: modalX,
@@ -200,17 +201,17 @@ export default function Closet(props) {
               </View>
             </TouchableOpacity>
           )}
-          {myClosetFlag && UsersItems.length > 0 && (
+          {/* {myClosetFlag && UsersItems.length > 0 && (
             <View
               style={{
                 position: "absolute",
-                right: 34,
-                bottom: 170,
+                right: 30,
+                bottom: 200,
               }}
             >
               {addItemButton()}
             </View>
-          )}
+          )} */}
           <ImageBackground
             source={{
               uri: owner.user_image ? owner.user_image : loggedUser.user_image,
@@ -289,8 +290,19 @@ export default function Closet(props) {
                 />
               )}
             </View>
-          ) : (
-            <Text> </Text>
+          ) : (<View>
+            {myClosetFlag && UsersItems.length > 0 && (
+              <View
+                style={{
+                  width: 100,
+              alignSelf: "center",
+              marginTop:15
+                }}
+              >
+                {addItemButton()}
+              </View>
+            )}
+            </View>
           )}
         </ContainerComponent>
       </View>
@@ -740,11 +752,13 @@ export default function Closet(props) {
                           const currentButtonRef = itemRefs.current[index];
                           console.log(currentButtonRef);
 
-                          currentButtonRef.measureInWindow((x, y, width, height) => {
-                            console.log(x, y, width, height);
-                            handleOptionsMenuPress(x, y, width, height),
-                              setModalItem(item);
-                          });
+                          currentButtonRef.measureInWindow(
+                            (x, y, width, height) => {
+                              console.log(x, y, width, height);
+                              handleOptionsMenuPress(x, y, width, height),
+                                setModalItem(item);
+                            }
+                          );
                         }}
                       >
                         <View
@@ -854,7 +868,13 @@ export default function Closet(props) {
 
   function renderMessage() {
     return (
-      <View>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <Text
           style={{
             textAlign: "center",
@@ -866,19 +886,9 @@ export default function Closet(props) {
             lineHeight: 16 * 1.2,
           }}
         >
-          הארון ריק
+          לא קיימים פריטים בארון... עדיין{" "}
         </Text>
-        {myClosetFlag && (
-          <View
-            style={{
-              //position: "absolute",
-              left: 180,
-              top: 10,
-            }}
-          >
-            {addItemButton()}
-          </View>
-        )}
+        {myClosetFlag && <View>{addItemButton()}</View>}
       </View>
     );
   }
@@ -889,8 +899,11 @@ export default function Closet(props) {
         onPress={() => {
           navigation.navigate("UploadItem");
         }}
+        style={styles.button}
       >
-        <View style={{ height: 48, width: 24 }}>
+        <Text style={styles.text}>הוסיפי פריט</Text>
+        <Text>{" "}</Text>
+        <View style={styles.iconContainer}>
           <Plus />
         </View>
       </TouchableOpacity>
@@ -961,3 +974,30 @@ export default function Closet(props) {
     </View>
   );
 }
+const styles = StyleSheet.create({
+  button: {
+    height: 30,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: COLORS.golden,
+    borderRadius: 24,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+    paddingHorizontal: 5,
+  },
+  iconContainer: {
+    height: 24,
+    width: 24,
+  },
+  text: {
+    fontSize: 13,
+    color: COLORS.white,
+  },
+});

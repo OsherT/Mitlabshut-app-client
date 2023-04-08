@@ -156,7 +156,6 @@ export default function SignIn() {
             placeholder="המייל שלך"
             name="email"
             onChangeText={(text) => setUserEmail(text.replace("%40", "@"))}
-            //לצורך נוחות כדי לא להקליד את הנתונים כל פעם////////////////////////
             value={userEmail}
             containerStyle={{ marginBottom: 10, textAlign: "right" }}
             ref={emailInputRef}
@@ -168,7 +167,6 @@ export default function SignIn() {
             placeholder="••••••••"
             name="password"
             onChangeText={(text) => setUserPassword(text)}
-            //לצורך נוחות כדי לא להקליד את הנתונים כל פעם////////////////////////
             value={userPassword}
             containerStyle={{ marginBottom: 20 }}
             ref={passwordInputRef}

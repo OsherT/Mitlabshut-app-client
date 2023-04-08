@@ -37,14 +37,9 @@ export default function UploadItem() {
   const [message, setMessage] = useState("");
 
   //the section of the item information hooks
-  // const [itemName, setItemName] = useState("");
-  // const [itemPrice, setItemPrice] = useState("");
-  // const [itemDescription, setItemDescription] = useState("");
-  /////////////////////////לנוחות, למחוק אח"כ/////////////////////////
   const [itemName, setItemName] = useState("");
   const [itemPrice, setItemPrice] = useState("");
   const [itemDescription, setItemDescription] = useState("מושלם");
-  /////////////////////////לנוחות, למחוק אח"כ/////////////////////////
 
   const [itemCategory, setItemCategory] = useState([]);
   const [itemType, setItemType] = useState("");
@@ -492,15 +487,11 @@ export default function UploadItem() {
               placeholder="מחיר"
               keyboardType="phone-pad"
               onChangeText={(text) => setItemPrice(text)}
-              /////////////////////////לנוחות, למחוק אח"כ/////////////////////////
-              value={itemPrice.toString()}
             />
             <TextInput
               style={styles.textInput}
               placeholder="שם פריט"
               onChangeText={(text) => setItemName(text)}
-              /////////////////////////לנוחות, למחוק אח"כ/////////////////////////
-              value={itemName}
             />
           </View>
 
@@ -525,7 +516,10 @@ export default function UploadItem() {
             submitButtonColor={COLORS.golden}
             itemFontSize={14}
             //עיצוב הטקסט הראשי
-            styleTextDropdown={{ textAlign: "right", color: "#000" }}
+            styleTextDropdown={{
+              textAlign: "right",
+              color: "gray",
+            }}
             //עיצוב החץ
             styleIndicator={{ right: 295 }}
             //עיצוב האינפוט הראשי שרואים
@@ -542,16 +536,23 @@ export default function UploadItem() {
             styleInputGroup={styles.InputGroup}
             //עיצוב של התיבה שמכילה את הרשימה של הפרטים
             styleListContainer={styles.dropdownContainer}
+            //עיצוב של הכותרת של הפריטים שנבחרו
+            styleTextDropdownSelected={{ textAlign: "right", color: "#000" }}
           />
 
           <SelectList
-            placeholder="  סוג פריט"
+            placeholder="סוג פריט"
             searchPlaceholder="חיפוש"
             boxStyles={styles.dropdownInput}
             dropdownStyles={styles.dropdownContainer}
-            setSelected={(val) => setItemType(val)}
+            setSelected={(val) => {
+              setItemType(val);
+            }}
             data={typesList}
             notFoundText="לא קיים מידע"
+            inputStyles={[
+              { color: itemType ? "black" : "gray" }, // Set color to black if value is selected, otherwise set to gray
+            ]}
           />
           <SelectList
             placeholder="מידה "
@@ -561,16 +562,21 @@ export default function UploadItem() {
             setSelected={(val) => setItemSize(val)}
             data={sizesList}
             notFoundText="לא קיים מידע"
+            inputStyles={[
+              { color: itemSize ? "black" : "gray" }, // Set color to black if value is selected, otherwise set to gray
+            ]}
           />
           <SelectList
             placeholder="  צבע "
-            
             searchPlaceholder="חיפוש"
             boxStyles={styles.dropdownInput}
             dropdownStyles={styles.dropdownContainer}
             setSelected={(val) => setItemColor(val)}
             data={colorsList}
             notFoundText="לא קיים מידע"
+            inputStyles={[
+              { color: itemColor ? "black" : "gray" }, // Set color to black if value is selected, otherwise set to gray
+            ]}
           />
           <SelectList
             placeholder="  מותג "
@@ -580,6 +586,9 @@ export default function UploadItem() {
             setSelected={(val) => setItemBrand(val)}
             data={brandsList}
             notFoundText="לא קיים מידע"
+            inputStyles={[
+              { color: itemBrand ? "black" : "gray" }, // Set color to black if value is selected, otherwise set to gray
+            ]}
           />
           <SelectList
             placeholder=" מצב פריט"
@@ -590,6 +599,9 @@ export default function UploadItem() {
             data={conditionsList}
             save="value"
             notFoundText="לא קיים מידע"
+            inputStyles={[
+              { color: itemCondition ? "black" : "gray" }, // Set color to black if value is selected, otherwise set to gray
+            ]}
           />
 
           <MultiSelect
@@ -613,7 +625,7 @@ export default function UploadItem() {
             submitButtonColor={COLORS.golden}
             itemFontSize={14}
             //עיצוב הטקסט הראשי
-            styleTextDropdown={{ textAlign: "right", color: "#000" }}
+            styleTextDropdown={{ textAlign: "right", color: "gray" }}
             //עיצוב החץ
             styleIndicator={{ right: 295 }}
             //עיצוב האינפוט הראשי שרואים
@@ -629,6 +641,8 @@ export default function UploadItem() {
             styleInputGroup={styles.InputGroup}
             //עיצוב של התיבה שמכילה את הרשימה של הפרטים
             styleListContainer={styles.dropdownContainer}
+            //עיצוב של הכותרת של הפריטים שנבחרו
+            styleTextDropdownSelected={{ textAlign: "right", color: "#000" }}
           />
 
           <TextInput

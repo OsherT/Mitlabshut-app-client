@@ -195,10 +195,10 @@ export default function Home() {
   function GetRecommendedClosets() {
     axios
       .get(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/cheackStep3/User_ID/" +
-          loggedUser.id
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/cheackStep3/User_ID/${loggedUser.id}?closetID=${loggedUser.closet_id}`
       )
       .then((res) => {
+        console.log(res.data);
         GetUsersData1(res.data);
       })
       .catch((err) => {

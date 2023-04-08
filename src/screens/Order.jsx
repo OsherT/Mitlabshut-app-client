@@ -454,7 +454,12 @@ export default function Order() {
   // }
 
   return (
-    <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
+    <SafeAreaView
+      style={{
+        ...AREA.AndroidSafeArea,
+        backgroundColor: "none",
+        showsVerticalScrollIndicator: false,
+      }}>
       <Header title="סל קניות" />
       {isLoading ? <LoadingComponent></LoadingComponent> : renderContent()}
     </SafeAreaView>

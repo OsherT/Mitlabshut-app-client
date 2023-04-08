@@ -848,8 +848,7 @@ export default function Closet(props) {
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-        }}
-      >
+        }}>
         <Text
           style={{
             textAlign: "center",
@@ -859,9 +858,8 @@ export default function Closet(props) {
             color: COLORS.black,
             marginBottom: 4,
             lineHeight: 16 * 1.2,
-          }}
-        >
-          לא קיימים פריטים בארון... עדיין{" "}
+          }}>
+          לא קיימים פריטים בארון... עדיין 😉{" "}
         </Text>
         {myClosetFlag && <View>{addItemButton()}</View>}
       </View>

@@ -361,20 +361,11 @@ export default function ProductDetails(props) {
   const onShare = async () => {
     try {
       const result = await Share.share({
-        message: "תראי איזה פריט שווה מצאתי !",
+        message: "תראי איזה פריט שווה מצאתי באפליקציית מתלבשות !",
         // url: "https://example.com/page",
         url: itemImages[0], //until we'll be able to send a ling to our project
         title: "מתלבשות",
       });
-      if (result.action === Share.sharedAction) {
-        if (result.activityType) {
-          // shared with activity type of result.activityType
-        } else {
-          // shared
-        }
-      } else if (result.action === Share.dismissedAction) {
-        // dismissed
-      }
     } catch (error) {
       console.error("err in onShare ", error.message);
     }

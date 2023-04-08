@@ -693,7 +693,7 @@ export default function UploadItem() {
 
           <UploadModal
             uploading={uploading}
-            message="העלאת פריט עלולה לקחת זמן, אנא המתן"></UploadModal>
+            message="העלאת פריט עלולה לקחת זמן, אנא המתיני"></UploadModal>
 
           <Button title="הוספת פריט" onPress={UploadItem} />
 

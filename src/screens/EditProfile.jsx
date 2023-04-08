@@ -359,7 +359,7 @@ export default function EditProfile(props) {
 
               <UploadModal
                 uploading={uploading}
-                message="עדכון פרטים עלול לקחת זמן, אנא המתן"></UploadModal>
+                message="עדכון פרטים עלול לקחת זמן, אנא המתיני"></UploadModal>
 
               <View style={{ marginTop: 40 }}>
                 <Button

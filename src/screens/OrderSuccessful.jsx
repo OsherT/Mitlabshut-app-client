@@ -44,7 +44,7 @@ export default function OrderSuccessful(props) {
 
           <TouchableOpacity
             onPress={() => {
-               navigation.navigate("MainLayout"),setSelectedTab("Closet");
+               navigation.navigate("MainLayout")
             }}>
             <Text
               style={{

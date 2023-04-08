@@ -776,7 +776,7 @@ export default function EditItem(props) {
 
           <UploadModal
             uploading={uploading}
-            message="עדכון פרטים עלול לקחת זמן, אנא המתן"></UploadModal>
+            message="עדכון פרטים עלול לקחת זמן, אנא המתיני"></UploadModal>
 
           <Button
             title="עדכני פרטים "

@@ -95,7 +95,7 @@ export default function SignUp() {
       setMessage("יש למלא את כל הפרטים");
       setShowAlertModal(true);
     } else if (address.split(",").length < 3) {
-      setMessage("אנא הכניסי כתובת מלאה הכוללת שם רחובת עיר ומדינה");
+      setMessage("אנא הכניסי כתובת מלאה הכוללת שם רחוב, עיר ומדינה");
       setShowAlertModal(true);
     } else {
       const newCloset = {
@@ -339,7 +339,7 @@ export default function SignUp() {
 
             <UploadModal
               uploading={uploading}
-              message="ההרשמה עלולה לקחת זמן, אנא המתן"></UploadModal>
+              message="ההרשמה עלולה לקחת זמן, אנא המתיני"></UploadModal>
             <View>
               <Button title="הרשמה" onPress={() => SignUp()} />
             </View>

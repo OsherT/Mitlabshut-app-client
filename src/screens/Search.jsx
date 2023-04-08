@@ -123,7 +123,7 @@ export default function Search() {
                   <ImageBackground
                     source={{
                       uri: type.item_type_image,
-                    }}
+                    }}//
                     style={{
                       width: 180,
                       height: "97%",

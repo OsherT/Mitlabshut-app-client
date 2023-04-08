@@ -77,12 +77,12 @@ export default function Navigation() {
 
   //push notification
   async function sendPushNotification(expoPushToken, action, from) {
-var  bodyMessage;
-   if (action === "follow") {
-    bodyMessage=`${from} התחילה לעקוב אחרייך `;
+    var bodyMessage;
+    if (action === "follow") {
+      bodyMessage = `${from} התחילה לעקוב אחרייך `;
     }
     if (action === "like") {
-      bodyMessage=`${from} עשתה לייק לפריט שלך `;
+      bodyMessage = `${from} עשתה לייק לפריט שלך `;
     }
     const message = {
       to: expoPushToken,
@@ -99,7 +99,6 @@ var  bodyMessage;
         "Content-Type": "application/json",
       },
       body: JSON.stringify(message),
-
     });
   }
 
@@ -249,7 +248,8 @@ var  bodyMessage;
           setSorted_,
           sendPushNotification,
           registerForPushNotificationsAsync,
-        }}>
+        }}
+      >
         <Stack.Navigator
           screenOptions={{
             headerStyle: {
@@ -259,7 +259,8 @@ var  bodyMessage;
             },
             headerShown: false,
           }}
-          initialRouteName="SignIn">
+          initialRouteName="SignIn"
+        >
           {/* // initialRouteName="PushNotification"> */}
           <Stack.Screen name="PushNotification" component={PushNotification} />
 
@@ -300,8 +301,16 @@ var  bodyMessage;
           <Stack.Screen name="CartIsEmpty" component={CartIsEmpty} />
           <Stack.Screen name="Filter" component={Filter} />
           <Stack.Screen name="PaymentMethod" component={PaymentMethod} />
-          <Stack.Screen name="EditProfile" component={EditProfile} />
-          <Stack.Screen name="EditItem" component={EditItem} />
+          <Stack.Screen
+            name="EditProfile"
+            component={EditProfile}
+            options={{ gestureEnabled: false }}
+          />
+          <Stack.Screen
+            name="EditItem"
+            component={EditItem}
+            options={{ gestureEnabled: false }}
+          />
           <Stack.Screen name="OrderFailed" component={OrderFailed} />
           <Stack.Screen
             name="MainLayout"

@@ -178,7 +178,8 @@ export default function EditProfile(props) {
               <TouchableOpacity
                 onPress={() => {
                   pickImage();
-                }}>
+                }}
+              >
                 {!image && (
                   <ImageBackground
                     source={{ uri: loggedUser.user_image }}
@@ -188,13 +189,15 @@ export default function EditProfile(props) {
                       alignSelf: "center",
                       marginBottom: 15,
                     }}
-                    imageStyle={{ borderRadius: 40 }}>
+                    imageStyle={{ borderRadius: 40 }}
+                  >
                     <View
                       style={{
                         position: "absolute",
                         right: -20,
                         bottom: -20,
-                      }}>
+                      }}
+                    >
                       <Edit />
                     </View>
                   </ImageBackground>
@@ -208,20 +211,23 @@ export default function EditProfile(props) {
                       alignSelf: "center",
                       marginBottom: 15,
                     }}
-                    imageStyle={{ borderRadius: 40 }}>
+                    imageStyle={{ borderRadius: 40 }}
+                  >
                     <View
                       style={{
                         position: "absolute",
                         right: -20,
                         bottom: -20,
-                      }}>
+                      }}
+                    >
                       <Edit />
                     </View>
                   </ImageBackground>
                 )}
               </TouchableOpacity>
               <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
+              >
                 שם מלא:
               </Text>
               <InputField
@@ -232,7 +238,8 @@ export default function EditProfile(props) {
                 keyboardType="text"
               />
               <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
+              >
                 כתובת אימייל :
               </Text>
               <InputField
@@ -243,11 +250,13 @@ export default function EditProfile(props) {
                 keyboardType="text"
               />
               <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
+              >
                 כתובת מגורים:
               </Text>
               <SafeAreaView style={styles.view}>
                 <GooglePlacesAutocomplete
+                  defaultValue={loggedUser.address}
                   placeholder={loggedUser.address}
                   fetchDetails={true}
                   GooglePlacesSearchQuery={{ rankby: "distance" }}
@@ -261,6 +270,7 @@ export default function EditProfile(props) {
                   textInputProps={{
                     textAlign: "right",
                     backgroundColor: "#FBF8F2",
+                    placeholderTextColor: "black"
                   }}
                   styles={{
                     container: {
@@ -274,7 +284,8 @@ export default function EditProfile(props) {
               </SafeAreaView>
 
               <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
+              >
                 גיל:
               </Text>
 
@@ -291,7 +302,8 @@ export default function EditProfile(props) {
               />
 
               <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
+              >
                 מספר טלפון:
               </Text>
               <InputField
@@ -302,7 +314,8 @@ export default function EditProfile(props) {
                 onChangeText={(text) => setUserPhone(text)}
               />
               <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
+              >
                 סיסמה:
               </Text>
               <InputField
@@ -313,7 +326,8 @@ export default function EditProfile(props) {
                 keyboardType="text"
               />
               <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
+              >
                 תיאור ארון:
               </Text>
               <InputField
@@ -324,7 +338,8 @@ export default function EditProfile(props) {
                 keyboardType="text"
               />
               <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
+              >
                 שם ארון:
               </Text>
               <InputField
@@ -337,7 +352,8 @@ export default function EditProfile(props) {
 
               <UploadModal
                 uploading={uploading}
-                message="עדכון פרטים עלול לקחת זמן, אנא המתן"></UploadModal>
+                message="עדכון פרטים עלול לקחת זמן, אנא המתן"
+              ></UploadModal>
 
               <View style={{ marginTop: 40 }}>
                 <Button

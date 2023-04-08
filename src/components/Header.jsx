@@ -172,7 +172,7 @@ export default function Header({
         <TouchableOpacity
           style={{
             position: "absolute",
-            right: 60,
+            right: 40,
             top: 12,
             paddingHorizontal: 20,
           }}

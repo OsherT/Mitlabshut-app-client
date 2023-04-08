@@ -25,6 +25,7 @@ import ButtonLogIn from "../components/ButtonLogIn";
 import UploadModal from "../components/Uploading";
 import { SelectList } from "react-native-dropdown-select-list";
 import WarningModal from "../components/WarningModal";
+import AlertModal from "../components/AlertModal";
 
 export default function EditProfile(props) {
   const {
@@ -49,6 +50,8 @@ export default function EditProfile(props) {
   const [image, setImage] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [flagForNewImg, setFlagForNewImg] = useState(false);
+  const [showAlertModal, setShowAlertModal] = useState(false);
+  const [message, setMessage] = useState("");
 
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
 
@@ -110,7 +113,8 @@ export default function EditProfile(props) {
   //update users details
   const updateUser = (imageLink) => {
     if (address.split(",").length < 3) {
-      alert("אנא הכניסי כתובת מלאה הכוללת שם רחובת עיר ומדינה");
+      setMessage("אנא הכניסי כתובת מלאה הכוללת שם רחוב, עיר ומדינה");
+      setShowAlertModal(true);
     }
     else {const newUser = {
       email: userEmail,
@@ -403,6 +407,13 @@ export default function EditProfile(props) {
           setShowModal={setShowModal}
           handleSure={() => navigation.goBack()}
           massage={" השינויים לא ישמרו \n האם את בטוחה ?"}
+        />
+      )}
+      {showAlertModal && (
+        <AlertModal
+          message={message}
+          showModal={showAlertModal}
+          setShowModal={setShowAlertModal}
         />
       )}
     </SafeAreaView>

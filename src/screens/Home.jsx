@@ -75,7 +75,7 @@ export default function Home() {
           justifyContent: "space-between",
           marginTop: 30,
           backgroundColor: COLORS.white,
-          borderRadius: 25,
+          borderRadius: 50,
           shadowColor: "#000",
           shadowOffset: {
             width: 0,
@@ -136,7 +136,7 @@ export default function Home() {
                 style={{
                   width: 75,
                   height: 75,
-                  borderRadius: 25,
+                  borderRadius: 50,
                   marginLeft: 10,
                 }}
               />

@@ -31,6 +31,7 @@ export default function WishList() {
 
   useEffect(() => {
     if (isFocused) {
+      
       getItemsData();
       getShopItems();
     }
@@ -102,7 +103,13 @@ export default function WishList() {
         `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/DeleteFavItem/Item_ID/${itemId}/User_ID/${loggedUser.id}`
       )
       .then((res) => {
+        closeSwipeable = () => {
+          if (this.swipeableRef.current) {
+            this.swipeableRef.current.close();
+          }
+        };
         getItemsData();
+        
       })
       .catch((err) => {
         console.log("cant remove from getFavItems", err);

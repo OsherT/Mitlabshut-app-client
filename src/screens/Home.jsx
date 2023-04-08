@@ -128,13 +128,15 @@ export default function Home() {
             <TouchableOpacity
               onPress={() => {
                 setSelectedTab("Closet");
+                setClosetId_(loggedUser.closet_id);
+                setOwner_(loggedUser);
               }}>
               <Image
                 source={{ uri: loggedUser.user_image }}
                 style={{
                   width: 75,
                   height: 75,
-                  borderRadius: 50,
+                  borderRadius: 25,
                   marginLeft: 10,
                 }}
               />
@@ -193,10 +195,10 @@ export default function Home() {
   function GetRecommendedClosets() {
     axios
       .get(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/cheackStep3/User_ID/" +
-          loggedUser.id
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/cheackStep3/User_ID/${loggedUser.id}?closetID=${loggedUser.closet_id}`
       )
       .then((res) => {
+        console.log(res.data);
         GetUsersData1(res.data);
       })
       .catch((err) => {

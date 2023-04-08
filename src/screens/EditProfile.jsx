@@ -127,11 +127,11 @@ export default function EditProfile(props) {
         token: loggedUser.token,
       };
 
-      const newClosetData = {
-        id: loggedUser.closet_id,
-        description: closetDesc,
-        user_name: closetName,
-      };
+    const newClosetData = {
+      id: loggedUser.closet_id,
+      description: closetDesc,
+      user_name: closetName,
+    };
 
       fetch(ApiUrl + `User/PutUser`, {
         method: "PUT",
@@ -279,7 +279,18 @@ export default function EditProfile(props) {
                       width: "100%",
                     },
                     listView: { position: "absolute", zIndex: 1, top: 50 },
+                    textInputContainer: {
+                      flexDirection: "row",
+                      alignItems: "center",
+                    },
+                    description: {
+                      flex: 1,
+                    },
+                    icon: {
+                      marginHorizontal: 8,
+                    },
                   }}
+                  renderRightButton={() => <EditTwo />}
                 />
               </SafeAreaView>
 
@@ -290,11 +301,7 @@ export default function EditProfile(props) {
 
               <SelectList
                 defaultOption={loggedUser.age}
-                placeholder={
-                  <>
-                    {loggedUser.age}{"   "} <EditTwo />
-                  </>
-                }
+                placeholder={loggedUser.age}
                 searchPlaceholder="חיפוש"
                 boxStyles={styles.dropdownInput}
                 dropdownStyles={styles.dropdownContainer}
@@ -337,7 +344,7 @@ export default function EditProfile(props) {
                 onChangeText={(text) => setclosetDesc(text)}
                 keyboardType="text"
               />
-              {/* <Text
+              <Text
                 style={{ textAlign: "right", color: colors.grey3, right: 15 }}
               >
                 שם ארון:
@@ -348,7 +355,7 @@ export default function EditProfile(props) {
                 containerStyle={{ marginBottom: 20 }}
                 onChangeText={(text) => setclosetName(text)}
                 keyboardType="text"
-              /> */}
+              /> 
 
               <UploadModal
                 uploading={uploading}

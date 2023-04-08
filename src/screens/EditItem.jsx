@@ -550,7 +550,7 @@ export default function EditItem(props) {
             onSelectedItemsChange={onSelectedCategoryChange}
             selectText=""
             searchInputPlaceholderText="חיפוש"
-            selectedText=" נבחרו"
+            selectedText="נבחרו"
             submitButtonText="בחרי"
             noItemsText="לא נמצא מידע"
             itemTextColor="#000"
@@ -579,6 +579,8 @@ export default function EditItem(props) {
             styleInputGroup={styles.InputGroup}
             //עיצוב של התיבה שמכילה את הרשימה של הפרטים
             styleListContainer={styles.dropdownContainer}
+            //עיצוב של הכותרת של הפריטים שנבחרו
+            styleTextDropdownSelected={{ textAlign: "right", color: "#000" }}
           />
 
           <Text
@@ -673,7 +675,7 @@ export default function EditItem(props) {
             onSelectedItemsChange={onSelectedDeliveryChange}
             selectText=""
             searchInputPlaceholderText="חיפוש"
-            selectedText=" נבחרו"
+            selectedText="נבחרו"
             submitButtonText="בחרי"
             noItemsText="לא נמצא מידע"
             itemTextColor="#000"
@@ -702,7 +704,10 @@ export default function EditItem(props) {
             styleInputGroup={styles.InputGroup}
             //עיצוב של התיבה שמכילה את הרשימה של הפרטים
             styleListContainer={styles.dropdownContainer}
+            //עיצוב של הכותרת של הפריטים שנבחרו
+            styleTextDropdownSelected={{ textAlign: "right", color: "#000" }}
           />
+
           <Text style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
             תיאור פריט :
           </Text>
@@ -824,7 +829,6 @@ export default function EditItem(props) {
 }
 
 const styles = StyleSheet.create({
-  try: { textAlign: "right" },
   header: {
     textAlign: "center",
     ...FONTS.H1,

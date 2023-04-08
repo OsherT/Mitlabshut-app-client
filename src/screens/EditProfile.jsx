@@ -129,7 +129,7 @@ export default function EditProfile(props) {
     const newClosetData = {
       id: loggedUser.closet_id,
       description: closetDesc,
-      user_name: closetName,
+      user_name: "null",
     };
 
     fetch(ApiUrl + `User/PutUser`, {
@@ -342,7 +342,7 @@ export default function EditProfile(props) {
                 onChangeText={(text) => setclosetDesc(text)}
                 keyboardType="text"
               />
-              <Text
+              {/* <Text
                 style={{ textAlign: "right", color: colors.grey3, right: 15 }}
               >
                 שם ארון:
@@ -353,7 +353,7 @@ export default function EditProfile(props) {
                 containerStyle={{ marginBottom: 20 }}
                 onChangeText={(text) => setclosetName(text)}
                 keyboardType="text"
-              />
+              /> */}
 
               <UploadModal
                 uploading={uploading}

@@ -35,7 +35,7 @@ export default function SignUp() {
   const [userPhone, setUserPhone] = useState("");
   const [userAge, setUserAge] = useState("");
   const [ClosetDisc, setClosetDisc] = useState("ברוכות הבאות לארון החדש שלי");
-  const [ClosetName, setClosetName] = useState(userName);
+  //const [ClosetName, setClosetName] = useState(userName);
   const { setSelectedTab, setloggedUser, registerForPushNotificationsAsync } =
     useContext(userContext);
 
@@ -102,7 +102,7 @@ export default function SignUp() {
         //יצירת ארון חדש למשתמשת
         Id: 0,
         Description: ClosetDisc,
-        User_name: ClosetName,
+        User_name: "null",
       };
       axios
         .post(
@@ -296,12 +296,12 @@ export default function SignUp() {
               keyboardType="phone-pad"
             />
 
-            <InputField
+            {/* <InputField
               placeholder="שם הארון שלך"
               containerStyle={{ marginBottom: 20 }}
               onChangeText={(text) => setClosetName(text)}
               keyboardType="text"
-            />
+            /> */}
             <InputField
               placeholder="תיאור הארון החדש שלך"
               containerStyle={{ marginBottom: 10 }}

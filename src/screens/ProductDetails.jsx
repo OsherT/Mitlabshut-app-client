@@ -21,7 +21,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import ButtonLogIn from "../components/ButtonLogIn";
 import WarningModal from "../components/WarningModal";
 import LoadingComponent from "./LoadingComponent";
-import * as Notifications from "expo-notifications";
 
 export default function ProductDetails(props) {
   const navigation = useNavigation();
@@ -87,6 +86,7 @@ export default function ProductDetails(props) {
     }
   }, [isFocused]);
 
+  //gets the data of the closet
   function GetClosetdata() {
     axios
       .get(
@@ -120,7 +120,7 @@ export default function ProductDetails(props) {
         getFollowingList();
       })
       .catch((err) => {
-        console.log("cant take user" + err);
+        console.log("err in getUser " + err);
       });
   }
 
@@ -170,6 +170,31 @@ export default function ProductDetails(props) {
         }
       );
   };
+
+  //פונקציה המאפשרת לבצע שיתוף פריט כקישור, שולחת תמונה
+  const onShare = async () => {
+    try {
+      const result = await Share.share({
+        message: "תראי איזה פריט שווה מצאתי באפליקציית מתלבשות !",
+        // url: "https://example.com/page",
+        url: itemImages[0], //until we'll be able to send a ling to our project
+        title: "מתלבשות",
+      });
+    } catch (error) {
+      console.error("err in onShare ", error.message);
+    }
+  };
+
+  //stringify all item's categories
+  const ArrayToStringCat = (dataObj) => {
+    const categoryNames = dataObj.map((item) => item.category_name);
+    const concatenatedString = categoryNames.join("#");
+    return "#" + concatenatedString;
+  };
+
+  ////////////////////////////////////////////////
+  //Fav section
+  ///////////////////////////////////////////////
 
   //gets all the items in the user's fav list
   function getFavItems() {
@@ -244,6 +269,10 @@ export default function ProductDetails(props) {
       );
   };
 
+  ////////////////////////////////////////////////
+  //shopping cart section
+  ///////////////////////////////////////////////
+
   //gets all the items in the user's shop list
   function getShopItems() {
     if (myitemFlag == false) {
@@ -296,12 +325,9 @@ export default function ProductDetails(props) {
       });
   }
 
-  //stringify all item's categories
-  const ArrayToStringCat = (dataObj) => {
-    const categoryNames = dataObj.map((item) => item.category_name);
-    const concatenatedString = categoryNames.join("#");
-    return "#" + concatenatedString;
-  };
+  ////////////////////////////////////////////////
+  //follow section
+  ///////////////////////////////////////////////
 
   //מביא את רשימת העוקבים של היוזר כדי לדעת איזה כפתור עוקב להציג
   function getFollowingList() {
@@ -324,6 +350,7 @@ export default function ProductDetails(props) {
     }
   }
 
+  //פונקציה המאפשרת לבצע מעקב אחרי ארון
   const followCloset = () => {
     axios
       .post(
@@ -339,6 +366,7 @@ export default function ProductDetails(props) {
         console.log("cant follow", err);
       });
   };
+
   //check whay returns err when unfollow
   const unfollowCloset = () => {
     axios
@@ -358,19 +386,11 @@ export default function ProductDetails(props) {
       });
   };
 
-  const onShare = async () => {
-    try {
-      const result = await Share.share({
-        message: "תראי איזה פריט שווה מצאתי באפליקציית מתלבשות !",
-        // url: "https://example.com/page",
-        url: itemImages[0], //until we'll be able to send a ling to our project
-        title: "מתלבשות",
-      });
-    } catch (error) {
-      console.error("err in onShare ", error.message);
-    }
-  };
+  ////////////////////////////////////////////////
+  //Google maps- distance
+  ///////////////////////////////////////////////
 
+  //gets the location of the user using his address via google maps
   const getLocationFromAddress = async (address) => {
     try {
       const response = await axios.get(
@@ -390,6 +410,7 @@ export default function ProductDetails(props) {
     }
   };
 
+  //calculates the distance between 2 locations
   const calculateDistance = (location1, location2) => {
     const R = 6371; // Earth's radius in kilometers
     const dLat = toRadians(location2.latitude - location1.latitude);
@@ -406,10 +427,12 @@ export default function ProductDetails(props) {
     return distance;
   };
 
+  //converts to radians
   const toRadians = (degrees) => {
     return degrees * (Math.PI / 180);
   };
 
+  //sets the distance between 2 users in KM
   const getAddressLocations = async () => {
     const location1 = await getLocationFromAddress(address1);
     const location2 = await getLocationFromAddress(address2);
@@ -420,6 +443,11 @@ export default function ProductDetails(props) {
     }
   };
 
+  ////////////////////////////////////////////////
+  //edit item status section
+  ///////////////////////////////////////////////
+
+  //updates item status to delete
   function handleDeletePress() {
     axios
       .put(
@@ -434,6 +462,7 @@ export default function ProductDetails(props) {
       });
   }
 
+  //updates item status to sold
   function handleSalePress() {
     console.log("in handleSalePress");
 
@@ -444,13 +473,13 @@ export default function ProductDetails(props) {
       .then((res) => {
         console.log("succ to sale item", item.id);
         setItemStatus("sold");
-        // navigation.navigate("Closet");
       })
       .catch((err) => {
         console.log(err);
       });
   }
 
+  //updates item status to active
   function handleNotSalePress() {
     axios
       .put(
@@ -459,8 +488,6 @@ export default function ProductDetails(props) {
       .then((res) => {
         console.log("succ to sale item", item.id);
         setItemStatus("active");
-
-        // navigation.navigate("Closet");
       })
       .catch((err) => {
         console.log("err in handleNotSalePress ", err);

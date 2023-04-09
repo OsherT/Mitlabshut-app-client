@@ -198,17 +198,7 @@ export default function Closet(props) {
               </View>
             </TouchableOpacity>
           )}
-          {/* {myClosetFlag && UsersItems.length > 0 && (
-            <View
-              style={{
-                position: "absolute",
-                right: 30,
-                bottom: 200,
-              }}
-            >
-              {addItemButton()}
-            </View>
-          )} */}
+       
           <ImageBackground
             source={{
               uri: owner.user_image ? owner.user_image : loggedUser.user_image,
@@ -642,6 +632,7 @@ export default function Closet(props) {
               elevation: 5,
             }}
             onPress={() => {
+              {console.log("item", item);}
               navigation.navigate("ProductDetails", {
                 item: item,
               });
@@ -735,7 +726,6 @@ export default function Closet(props) {
 
                           currentButtonRef.measureInWindow(
                             (x, y, width, height) => {
-                              console.log(x, y, width, height);
                               handleOptionsMenuPress(x, y, width, height),
                                 setModalItem(item);
                             }

@@ -365,9 +365,9 @@ export default function EditProfile() {
                 uploading={uploading}
                 message="עדכון פרטים עלול לקחת זמן, אנא המתיני"></UploadModal>
 
-              <View style={{ marginTop: 40 }}>
+              <View style={{ marginTop: 10 }}>
                 <Button
-                  title="עדכון "
+                  title="עדכני פרטים"
                   onPress={() => {
                     flagForNewImg
                       ? uploadImageFB(loggedUser.id)

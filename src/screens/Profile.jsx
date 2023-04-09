@@ -19,11 +19,10 @@ import WarningModal from "../components/WarningModal";
 
 export default function Profile() {
   const navigation = useNavigation();
-  const { loggedUser, setloggedUser, setSelectedTab, setClosetId_, setOwner_ } =
+  const { loggedUser, setSelectedTab, setClosetId_, setOwner_ } =
     useContext(userContext);
   const isFocused = useIsFocused();
   const [usersFollow, setUsersFollow] = useState([]);
-
   const [showModal, setShowModal] = useState(false);
   const [massage, setMassage] = useState("");
 
@@ -140,6 +139,7 @@ export default function Profile() {
       </ScrollView>
     );
   }
+
   function renderUsersFollow() {
     return (
       <View style={{ marginBottom: 40 }}>
@@ -233,6 +233,7 @@ export default function Profile() {
     );
   }
 
+  //handel user choice in the modal
   function handleUserChoice() {
     setSelectedTab("Home");
     navigation.navigate("SignIn");

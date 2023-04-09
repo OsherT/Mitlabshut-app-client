@@ -1,9 +1,9 @@
-import { useNavigation } from "@react-navigation/native";
 import Modal from "react-native-modal";
 import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { COLORS, FONTS, SIZES } from "../constants";
 
+//modal thet we use as pretty alert message, there is an option to confirm or cancel the action
 export default function WarningModal({
   showModal,
   setShowModal,
@@ -11,7 +11,6 @@ export default function WarningModal({
   handleSure,
   hideCancel,
 }) {
-  const navigation = useNavigation();
 
   return (
     <Modal

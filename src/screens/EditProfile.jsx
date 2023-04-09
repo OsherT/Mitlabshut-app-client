@@ -34,29 +34,38 @@ export default function EditProfile() {
     closetName,
     closetDesc,
   } = useContext(userContext);
+  const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
+
+  //modals
   const [showModal, setShowModal] = useState(false);
   const navigation = useNavigation();
+  const [showAlertModal, setShowAlertModal] = useState(false);
+  const [message, setMessage] = useState("");
+
+  //users info
   const [address, setAddress] = useState(loggedUser.address);
   const [userName, setUserName] = useState(loggedUser.full_name);
   const [userEmail, setUserEmail] = useState(loggedUser.email);
   const [userAge, setUserAge] = useState(loggedUser.age);
-
   const [userPassword, setUserPassword] = useState(loggedUser.password);
   const [userPhone, setUserPhone] = useState(loggedUser.phone_number);
   const [userClosetId] = useState(loggedUser.closet_id);
   const [userImage, setUserImage] = useState(loggedUser.user_image);
   const [image, setImage] = useState(null);
+
+  //flages
   const [uploading, setUploading] = useState(false);
   const [flagForNewImg, setFlagForNewImg] = useState(false);
-  const [showAlertModal, setShowAlertModal] = useState(false);
-  const [message, setMessage] = useState("");
-  const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
 
+  //create the age list
   const ageList = Array.from({ length: 109 }, (_, i) => ({
     value: (i + 12).toString(),
     label: `${i + 12}`,
   }));
 
+  ////////////////////////////////////////
+  ///edit image section
+  ////////////////////////////////////////
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,

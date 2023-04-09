@@ -8,7 +8,7 @@ import {
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
-import { Button, ContainerComponent } from "../components";
+import { ContainerComponent } from "../components";
 import { AREA, COLORS, FONTS } from "../constants";
 import { Success } from "../svg";
 
@@ -40,24 +40,7 @@ export default function ItemUpdateSucc() {
             }}>
             השינויים בוצעו בהצלחה !
           </Text>
-          {/* <Text
-                        style={{
-                            ...FONTS.Mulish_400Regular,
-                            fontSize: 16,
-                            color: COLORS.gray,
-                            textAlign: "center",
-                            lineHeight: 16 * 1.7,
-                            marginBottom: 30,
-                            paddingHorizontal: 30,
-                        }}
-                    >
-                        Your order will be delivered on time. ID # 123456
-                    </Text> */}
-          {/* <Button
-                        title="View Order"
-                        containerStyle={{ marginBottom: 23 }}
-                        onPress={() => navigation.navigate("TrackYourOrder")}
-                    /> */}
+      
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Text
               style={{

@@ -1,7 +1,5 @@
 import { View, TouchableOpacity } from "react-native";
 import React, { useContext, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
-
 import Home from "./Home";
 import Search from "./Search";
 import WishList from "./WishList";
@@ -14,7 +12,6 @@ import {
   ProfileTab,
   TabElement,
   Bag,
-  ClothesHanger
 } from "../svg";
 import { COLORS } from "../constants";
 import { userContext } from "../navigation/userContext";
@@ -26,11 +23,12 @@ import Filter from "./Filter";
 import SearchAllUsers from "./SearchAllUsers";
 import EditProfile from "./EditProfile";
 
-
+//shows the navbar of the application
 export default function MainLayout() {
   const { loggedUser, selectedTab, setSelectedTab, setOwner_, setClosetId_ } =
     useContext(userContext);
 
+  //the tabs of the navbar
   const tabs = [
     {
       id: "1",
@@ -103,6 +101,7 @@ export default function MainLayout() {
 
   return (
     <View style={{ flex: 1, backgroundColor: COLORS.goldenTransparent_01 }}>
+      {/* all the pages we navigate in our app */}
       {selectedTab == "Home" && <Home />}
       {selectedTab == "Search" && <Search />}
       {selectedTab == "Closet" && <Closet />}

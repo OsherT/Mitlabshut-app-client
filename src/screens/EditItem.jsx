@@ -28,13 +28,17 @@ export default function EditItem(props) {
   const item = props.route.params.item;
   const itemCurrentImages = props.route.params.itemImages;
   const isFocused = useIsFocused();
+  const { loggedUser } = useContext(userContext);
+  const navigation = useNavigation();
+
+  //modal
   const [showModal, setShowModal] = useState(false);
   const [showAlertModal, setShowAlertModal] = useState(false);
 
+  //api
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
 
-  const { loggedUser } = useContext(userContext);
-  const navigation = useNavigation();
+  //items info
   const [itemName, setItemName] = useState(item.name);
   const [itemPrice, setItemPrice] = useState(item.price);
   const [itemType, setItemType] = useState(item.type);
@@ -43,7 +47,11 @@ export default function EditItem(props) {
   const [itemColor, setItemColor] = useState(item.color);
   const [itemBrand, setItemBrand] = useState(item.brand);
   const [itemDescription, setItemDescription] = useState(item.description);
+  const [itemDeliveryMethod, setItemDeliveryMethod] = useState(
+    getShippingOptions(item.shipping_method)
+  );
 
+  //separatק the shipping options from on number to an array of num
   const getShippingOptions = (num) => {
     if (num === "12") {
       return ["1", "2"];
@@ -54,10 +62,6 @@ export default function EditItem(props) {
     }
   };
 
-  const [itemDeliveryMethod, setItemDeliveryMethod] = useState(
-    getShippingOptions(item.shipping_method)
-  );
-
   //images & categories
   const [categoriesFlag, setCategoriesFlag] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(
@@ -67,12 +71,15 @@ export default function EditItem(props) {
   const [uploading, setUploading] = useState(false);
   const [flagForNewImg, setFlagForNewImg] = useState(false);
   const [flagForNoImg, setFlagForNoImg] = useState(false);
+
   //lists
   const [brandsList, setBrandsList] = useState([]);
   const [categoriesList, setCategoriesList] = useState([]);
   const [colorsList, setColorsList] = useState([]);
   const [sizesList, setSizesList] = useState([]);
   const [typesList, setTypesList] = useState([]);
+
+  // local lists
   const deliveryMethodsList = [
     { key: "1", value: "איסוף עצמי" },
     { key: "2", value: "משלוח" },
@@ -95,6 +102,9 @@ export default function EditItem(props) {
     }
   }, [isFocused]);
 
+  ////////////////////////////////////////
+  //gets all the data from the dataBase
+  ////////////////////////////////////////
   const GetBrandsList = () => {
     fetch(ApiUrl + "/GetBrand", {
       method: "GET",
@@ -208,6 +218,7 @@ export default function EditItem(props) {
       );
   };
 
+  //checks if the user inserts all the required info and updates the item info
   const UpdateItem = () => {
     if (
       itemName == "" ||
@@ -267,6 +278,9 @@ export default function EditItem(props) {
     }
   };
 
+  ////////////////////////////////////////
+  ///categories section
+  ////////////////////////////////////////
   // update only after the array hsa been changed
   const updateCtegories = () => {
     if (categoriesFlag) {
@@ -324,9 +338,8 @@ export default function EditItem(props) {
   };
 
   ////////////////////////////////////////
-  ///uploads the image to the fireBase////
+  ///upload image section
   ////////////////////////////////////////
-
   const pickImage = async () => {
     let selectedImages = []; // declare selectedImages with let
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -404,7 +417,7 @@ export default function EditItem(props) {
     }
   };
 
-  //delete images from the DB and call thr post fun to DB
+  //delete images from the DB and call the post fun to DB
   const deleteImagesDB = async (item_ID, imageLinks) => {
     fetch(
       `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/ItemImages/DeleteItem_Image_Video/Item_ID/${item_ID}`,
@@ -465,15 +478,9 @@ export default function EditItem(props) {
     }
   };
 
-  //to convert the shipping method to string,shipping method in data base gets string only
-  const ArrayToStringShip = (data) => {
-    var string = "";
-    for (let index = 0; index < data.length; index++) {
-      string += data[index];
-    }
-    return string;
-  };
-
+  ////////////////////////////////////////
+  ///MultiSelect section
+  ////////////////////////////////////////
   //updates the new choosen categories
   const onSelectedCategoryChange = (selectedCategory) => {
     setSelectedCategory(selectedCategory);
@@ -483,6 +490,15 @@ export default function EditItem(props) {
   //updates the new choosen shipping method
   const onSelectedDeliveryChange = (selectedDelivery) => {
     setItemDeliveryMethod(selectedDelivery);
+  };
+
+  //to convert the shipping method to string,shipping method in data base gets string only
+  const ArrayToStringShip = (data) => {
+    var string = "";
+    for (let index = 0; index < data.length; index++) {
+      string += data[index];
+    }
+    return string;
   };
 
   function renderContent() {
@@ -793,6 +809,7 @@ export default function EditItem(props) {
       </KeyboardAwareScrollView>
     );
   }
+  
   return (
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
       <Header

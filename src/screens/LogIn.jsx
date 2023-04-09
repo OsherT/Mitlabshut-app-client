@@ -6,30 +6,34 @@ import {
   StyleSheet,
   TextInput,
 } from "react-native";
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useRef, useState, useEffect } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useNavigation } from "@react-navigation/native";
 import { Button, ContainerComponent } from "../components";
 import { AREA, COLORS, FONTS } from "../constants";
-import AppLoading from "expo-app-loading";
-import ButtonLogIn from "../components/ButtonLogIn";
-// import Facebook from "../svg/Facebook";
-// import Google from "../svg/GoogleSvg";
+
 import { userContext } from "../navigation/userContext";
 import AlertModal from "../components/AlertModal";
 import { RememberSvg } from "../svg";
+
+//for later
+// import Facebook from "../svg/Facebook";
+// import Google from "../svg/GoogleSvg";
 // import * as webBrowser from "expo-web-browser";
 // import * as Google from "expo-auth-session/providers/google";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useEffect } from "react";
 
 export default function SignIn() {
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api`;
   const { setloggedUser } = useContext(userContext);
   const navigation = useNavigation();
+
+  //modal
   const [showAlertModal, setShowAlertModal] = useState(false);
   const [message, setMessage] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+
+  //user info
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
 
@@ -66,7 +70,7 @@ export default function SignIn() {
     loadCredentials();
   }, []);
 
-  //check if the user insert correct values, and loning him in
+  //checks if the user insert correct values, and loning him in
   const logIn = async () => {
     if (userEmail == "" || userPassword == "") {
       setMessage("יש למלא את כל הפרטים");
@@ -131,6 +135,7 @@ export default function SignIn() {
     }
   };
 
+  //for later
   // const logInWithFaceBook = () => {
   //   Alert.alert("FaceBook yay");
   // };
@@ -212,6 +217,7 @@ export default function SignIn() {
           <Button title="התחברי" onPress={logIn} />
         </ContainerComponent>
 
+        {/* for later */}
         {/* <View style={styles.logInViaContainer}>
           <ButtonLogIn
             icon={<Google />}

@@ -11,19 +11,17 @@ import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { ContainerComponent, Header } from "../components";
 import { COLORS, FONTS } from "../constants";
-import { Empty, FilterSvg, SearchSvg } from "../svg";
+import { Empty, SearchSvg } from "../svg";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { userContext } from "../navigation/userContext";
 import axios from "axios";
 import { ScrollView } from "react-native-gesture-handler";
 
 export default function SearchAllUsers() {
-  const navigation = useNavigation();
   const [searchName, setSearchName] = useState("");
   const { loggedUser, setSelectedTab, setClosetId_, setOwner_ } =
     useContext(userContext);
   const isFocused = useIsFocused();
-  //   const [usersFollow, setUsersFollow] = useState([]);
   const [noRes, setNoRes] = useState(false);
   const [allUsers, setAllUsers] = useState([]);
 

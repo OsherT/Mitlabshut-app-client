@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { COLORS, FONTS, SIZES } from "../constants";
 
+//modal thet we use as pretty alert message
 export default function AlertModal({ showModal, setShowModal, message }) {
   return (
     <Modal

@@ -6,7 +6,6 @@ import {
   StatusBar,
   TouchableOpacity,
   ImageBackground,
-  StyleSheet,
 } from "react-native";
 import React, { useEffect, useState, useContext } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
@@ -18,7 +17,6 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { userContext } from "../navigation/userContext";
 
 export default function Search() {
-  const navigation = useNavigation();
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api`;
   const { setSelectedTab, setSearchText_, setType_, setFlag_, setSorted_ } =
     useContext(userContext);

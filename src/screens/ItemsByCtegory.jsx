@@ -17,7 +17,6 @@ import { FilterSvg, SearchSvg, BagSvg, HeartSvg, Empty } from "../svg";
 import axios from "axios";
 import { userContext } from "../navigation/userContext";
 import LoadingComponent from "./LoadingComponent";
-import * as Notifications from "expo-notifications";
 
 export default function ItemsByCtegory() {
   const navigation = useNavigation();
@@ -36,11 +35,14 @@ export default function ItemsByCtegory() {
     sendPushNotification,
   } = useContext(userContext);
   const isFocused = useIsFocused();
+
   const [search, setsearch] = useState("");
   const [itemsByType, setItemsByType] = useState([]);
   const [itemsImageByType, setItemsImageByType] = useState([]);
   const [UsersFavList, setUsersFavList] = useState([]);
   const [UsersShopList, setUsersShopList] = useState([]);
+
+  //flages
   const [noRes, setNoRes] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -56,6 +58,7 @@ export default function ItemsByCtegory() {
     }
   }, [isFocused, sorted]);
 
+  //gets all the relevant items by the category
   function GetItemsByCategory() {
     const typeURL = hebrewToUrlEncoded(type);
     axios
@@ -76,6 +79,7 @@ export default function ItemsByCtegory() {
       });
   }
 
+  //gets the item's images
   function GetItemPhotos(items) {
     // pass the items array as a parameter
     const promises = items.map((item) => {
@@ -97,6 +101,7 @@ export default function ItemsByCtegory() {
       });
   }
 
+  //Encode the Hebrew
   function hebrewToUrlEncoded(hebrewStr) {
     const utf8EncodedStr = unescape(encodeURIComponent(hebrewStr));
     let encodedStr = "";
@@ -111,6 +116,9 @@ export default function ItemsByCtegory() {
     return encodedStr;
   }
 
+  ////////////////////////////////////////////////
+  //Fav section
+  ///////////////////////////////////////////////
   ///handle fav list
   function getFavItems() {
     axios
@@ -161,6 +169,9 @@ export default function ItemsByCtegory() {
       });
   }
 
+  ////////////////////////////////////////////////
+  //shopping cart section
+  ///////////////////////////////////////////////
   //handle shop list
   function getShopItems() {
     axios
@@ -226,6 +237,9 @@ export default function ItemsByCtegory() {
       });
   }
 
+  ////////////////////////////////////////////////
+  //push notification section
+  ///////////////////////////////////////////////
   function HandelLike(closetId, itemId) {
     axios
       .get(
@@ -233,7 +247,6 @@ export default function ItemsByCtegory() {
       )
       .then((res) => {
         AddtoFav(itemId);
-        console.log(res.data);
         sendPushNotification(res.data[0].token, "like", loggedUser.full_name);
       })
       .catch((err) => {

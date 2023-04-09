@@ -5,7 +5,6 @@ import {
   SafeAreaView,
   StyleSheet,
   Image,
-  ActivityIndicator,
 } from "react-native";
 import React, { useEffect, useState, useContext } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -14,7 +13,6 @@ import { Header, Button, ContainerComponent } from "../components";
 import { AREA, COLORS, FONTS } from "../constants";
 import { TextInput } from "react-native";
 import {
-  MultipleSelectList,
   SelectList,
 } from "react-native-dropdown-select-list";
 import * as ImagePicker from "expo-image-picker";
@@ -30,13 +28,17 @@ import * as ImageManipulator from "expo-image-manipulator";
 
 export default function UploadItem() {
   const navigation = useNavigation();
-  const { loggedUser, setSelectedTab } = useContext(userContext);
-  const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
-  const ApiUrl_image = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/ItemImages`;
-  const [showAlertModal, setShowAlertModal] = useState(false);
-  const [message, setMessage] = useState("");
+  const { loggedUser } = useContext(userContext);
   const difPic =
     "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg?20200913095930";
+
+  //api
+  const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
+  const ApiUrl_image = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/ItemImages`;
+
+  //modal
+  const [showAlertModal, setShowAlertModal] = useState(false);
+  const [message, setMessage] = useState("");
 
   //the section of the item information hooks
   const [itemName, setItemName] = useState("");
@@ -82,7 +84,7 @@ export default function UploadItem() {
   }, []);
 
   ////////////////////////////////////////
-  //gets all the data from the dataBase//
+  //gets all the data from the dataBase
   ////////////////////////////////////////
   const GetBrandsList = () => {
     fetch(ApiUrl + "/GetBrand", {
@@ -252,9 +254,8 @@ export default function UploadItem() {
   };
 
   ////////////////////////////////////////
-  ///uploads the image to the fireBase////
+  ///upload image section
   ////////////////////////////////////////
-
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -315,84 +316,6 @@ export default function UploadItem() {
       });
     }
   };
-
-  // const uploadImageFB = async (item_ID) => {
-  //   setUploading(true);
-  //   const imageLinks = [];
-
-  //   for (let i = 0; i < images.length; i++) {
-  //     const response = await fetch(images[i].uri);
-  //     const blob = await response.blob();
-  //     const filename =
-  //       `${loggedUser.id}/` +
-  //       item_ID +
-  //       "/" +
-  //       images[i].uri.substring(images[i].uri.lastIndexOf("/") + 1);
-
-  //     try {
-  //       var ref = firebase.storage().ref().child(filename).put(blob);
-  //       await ref;
-  //       var imageRef = firebase.storage().ref().child(filename);
-  //       const imageLink = await imageRef.getDownloadURL();
-  //       imageLinks.push(imageLink);
-  //       console.log(`Image ${filename} uploaded successfully`);
-  //     } catch (error) {
-  //       console.log("error in upload to FB", error);
-  //     }
-  //   }
-
-  //   uploadImagesDB(item_ID, imageLinks);
-
-  //   setUploading(false);
-
-  //   if (!uploading) {
-  //     navigation.navigate("OrderSuccessful", {
-  //       message: "הפריט עלה בהצלחה !",
-  //     });
-  //   }
-  // };
-
-  // const uploadImageFB = async (item_ID) => {
-  //   setUploading(true);
-  //   const imageLinks = [];
-
-  //   for (let i = 0; i < images.length; i++) {
-  //     const response = await fetch(images[i].uri);
-  //     const blob = await response.blob();
-  //     const resizedImage = await ImageResizer.createResizedImage(
-  //       images[i].uri,
-  //       600, // Width
-  //       800, // Height
-  //       "JPEG", // Format
-  //       50 // Quality (0-100)
-  //     );
-  //     const filename =
-  //       `${loggedUser.id}/` +
-  //       item_ID +
-  //       "/" +
-  //       resizedImage.uri.substring(resizedImage.uri.lastIndexOf("/") + 1);
-
-  //     try {
-  //       var ref = firebase.storage().ref().child(filename).put(blob);
-  //       await ref;
-  //       var imageRef = firebase.storage().ref().child(filename);
-  //       const imageLink = await imageRef.getDownloadURL();
-  //       imageLinks.push(imageLink);
-  //       console.log(`Image ${filename} uploaded successfully`);
-  //     } catch (error) {
-  //       console.log("error in upload to FB", error);
-  //     }
-  //   }
-  //   uploadImagesDB(item_ID, imageLinks);
-
-  //   setUploading(false);
-
-  //   if (!uploading) {
-  //     navigation.navigate("OrderSuccessful", {
-  //       message: "הפריט עלה בהצלחה !",
-  //     });
-  //   }
-  // };
 
   const uploadImagesDB = (item_id, imageLinks) => {
     //if there is a problem with uploading to FB
@@ -487,6 +410,9 @@ export default function UploadItem() {
     }
   };
 
+  ////////////////////////////////////////
+  ///MultiSelect section
+  ////////////////////////////////////////
   const onSelectedCategoryChange = (itemCategory) => {
     setItemCategory(itemCategory);
   };
@@ -764,6 +690,8 @@ export default function UploadItem() {
     </SafeAreaView>
   );
 }
+
+
 const styles = StyleSheet.create({
   header: {
     textAlign: "center",

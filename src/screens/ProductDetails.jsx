@@ -108,10 +108,13 @@ export default function ProductDetails(props) {
           item.closet_ID
       )
       .then((res) => {
-        setuser(res.data[0]);
-        setaddress2(res.data[0].address);
+        // console.log("res.data", res.data);
+        // console.log("res.data[0]", res.data[0]);
 
-        if (res.data[0].id === loggedUser.id) {
+        setuser(res.data);
+        setaddress2(res.data.address);
+
+        if (res.data.id === loggedUser.id) {
           setmyitemFlag(true);
         } else {
           setmyitemFlag(false);
@@ -874,37 +877,6 @@ export default function ProductDetails(props) {
 }
 
 const styles = StyleSheet.create({
-  // topIcons: {
-  //   // position: "absolute",
-  //   top: 0,
-  //   zIndex: 1,
-  //   paddingHorizontal: 20,
-  //   marginTop: 45,
-  //   flexDirection: "row",
-  //   justifyContent: "space-between",
-  //   width: SIZES.width,
-  //   // marginBottom: 30,
-  // },
-  // dot: {
-  //   width: 10,
-  //   height: 10,
-  //   marginHorizontal: 5,
-  //   borderRadius: 5,
-  //   borderWidth: 2,
-  //   top: -50,
-  // },
-  // container: {
-  //   width: SIZES.width,
-  //   height: 15,
-  //   borderTopLeftRadius: 15,
-  //   borderTopRightRadius: 15,
-  //   position: "absolute",
-  //   top: -15,
-  //   // backgroundColor: COLORS.white,
-  //   zIndex: 9,
-  //   // backgroundColor: "#EFEDE6",
-  // },
-
   favIcon: {
     position: "absolute",
     left: 12,

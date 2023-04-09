@@ -10,7 +10,7 @@ import {
 import React, { useContext, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { Header, InputField, Button, ContainerComponent } from "../components";
-import { AREA, COLORS, FONTS } from "../constants";
+import { AREA, COLORS } from "../constants";
 import { Edit, EditTwo } from "../svg";
 import { userContext } from "../navigation/userContext";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
@@ -25,7 +25,7 @@ import { SelectList } from "react-native-dropdown-select-list";
 import WarningModal from "../components/WarningModal";
 import AlertModal from "../components/AlertModal";
 
-export default function EditProfile(props) {
+export default function EditProfile() {
   const {
     loggedUser,
     setclosetDesc,
@@ -127,11 +127,11 @@ export default function EditProfile(props) {
         token: loggedUser.token,
       };
 
-    const newClosetData = {
-      id: loggedUser.closet_id,
-      description: closetDesc,
-      user_name: closetName,
-    };
+      const newClosetData = {
+        id: loggedUser.closet_id,
+        description: closetDesc,
+        user_name: closetName,
+      };
 
       fetch(ApiUrl + `User/PutUser`, {
         method: "PUT",
@@ -256,7 +256,6 @@ export default function EditProfile(props) {
               </Text>
               <SafeAreaView style={styles.view}>
                 <GooglePlacesAutocomplete
-                  //defaultValue={loggedUser.address}
                   placeholder={loggedUser.address}
                   fetchDetails={true}
                   GooglePlacesSearchQuery={{ rankby: "distance" }}
@@ -301,7 +300,13 @@ export default function EditProfile(props) {
 
               <SelectList
                 defaultOption={loggedUser.age}
-                placeholder={loggedUser.age}
+                placeholder={
+                  <>
+                    {loggedUser.age}
+                    {"    "}
+                    <EditTwo />
+                  </>
+                }
                 searchPlaceholder="חיפוש"
                 boxStyles={styles.dropdownInput}
                 dropdownStyles={styles.dropdownContainer}
@@ -345,8 +350,7 @@ export default function EditProfile(props) {
                 keyboardType="text"
               />
               <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
-              >
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
                 שם ארון:
               </Text>
               <InputField
@@ -355,7 +359,7 @@ export default function EditProfile(props) {
                 containerStyle={{ marginBottom: 20 }}
                 onChangeText={(text) => setclosetName(text)}
                 keyboardType="text"
-              /> 
+              />
 
               <UploadModal
                 uploading={uploading}
@@ -363,7 +367,7 @@ export default function EditProfile(props) {
 
               <View style={{ marginTop: 40 }}>
                 <Button
-                  title="שמור שינויים "
+                  title="עדכון "
                   onPress={() => {
                     flagForNewImg
                       ? uploadImageFB(loggedUser.id)

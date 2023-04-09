@@ -35,6 +35,8 @@ export default function UploadItem() {
   const ApiUrl_image = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/ItemImages`;
   const [showAlertModal, setShowAlertModal] = useState(false);
   const [message, setMessage] = useState("");
+  const difPic =
+    "https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg?20200913095930";
 
   //the section of the item information hooks
   const [itemName, setItemName] = useState("");
@@ -393,10 +395,12 @@ export default function UploadItem() {
   // };
 
   const uploadImagesDB = (item_id, imageLinks) => {
-    for (let i = 0; i < imageLinks.length; i++) {
+    //if there is a problem with uploading to FB
+    console.log("imageLinks", imageLinks);
+    if (imageLinks.length == 0) {
       const new_itemImages = {
         item_ID: item_id,
-        src: imageLinks[i],
+        src: difPic,
       };
 
       fetch(ApiUrl_image, {
@@ -418,6 +422,33 @@ export default function UploadItem() {
             console.log("ERR in post images to DB", error);
           }
         );
+    } else {
+      for (let i = 0; i < imageLinks.length; i++) {
+        const new_itemImages = {
+          item_ID: item_id,
+          src: imageLinks[i],
+        };
+
+        fetch(ApiUrl_image, {
+          method: "POST",
+          body: JSON.stringify(new_itemImages),
+          headers: new Headers({
+            "Content-type": "application/json; charset=UTF-8",
+            Accept: "application/json; charset=UTF-8",
+          }),
+        })
+          .then((res) => {
+            return res.json();
+          })
+          .then(
+            (result) => {
+              console.log("suc in post images to DB ", result);
+            },
+            (error) => {
+              console.log("ERR in post images to DB", error);
+            }
+          );
+      }
     }
   };
 

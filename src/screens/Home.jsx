@@ -9,9 +9,9 @@ import {
 } from "react-native";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
-import {  COLORS, FONTS } from "../constants";
-import {  ProfileCategory } from "../components";
-import {  SearchSvg, SignOutCategory } from "../svg";
+import { COLORS, FONTS } from "../constants";
+import { ProfileCategory } from "../components";
+import { SearchSvg, SignOutCategory } from "../svg";
 import { userContext } from "../navigation/userContext";
 import axios from "axios";
 import ButtonFollow from "../components/ButtonFollow";
@@ -65,7 +65,7 @@ export default function Home() {
 
     setGreeting(newGreeting);
   }
-  
+
   function RenderGreeting() {
     return (
       <View
@@ -157,7 +157,7 @@ export default function Home() {
         setSentence(res.data[randomIndex].content);
       })
       .catch((err) => {
-        console.log(err);
+        console.log("err in GetSentences", err);
       });
   }
 
@@ -198,11 +198,10 @@ export default function Home() {
         `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/cheackStep3/User_ID/${loggedUser.id}?closetID=${loggedUser.closet_id}`
       )
       .then((res) => {
-        console.log(res.data);
         GetUsersData1(res.data);
       })
       .catch((err) => {
-        console.log(err);
+        console.log("err in GetRecommendedClosets", err);
       });
   }
 
@@ -219,7 +218,7 @@ export default function Home() {
         setRecoUsers(users);
       })
       .catch((err) => {
-        console.log(err);
+        console.log("err in GetUsersData1", err);
       });
   }
 
@@ -233,7 +232,6 @@ export default function Home() {
           const tempUsersFollowList = res.data.map(
             ({ closet_id }) => closet_id
           );
-          //console.log(tempUsersFollowList);
           setUsersFollowingList(tempUsersFollowList);
         }
       })
@@ -401,7 +399,7 @@ export default function Home() {
                             ),
                           ]);
                         }}
-                      /> 
+                      />
                     )}
                     {UsersFollowingList.includes(user.closet_id) && (
                       <ButtonFollow
@@ -540,221 +538,16 @@ export default function Home() {
     );
   }
 
-  //   function updateCurrentSlideIndex(e) {
-  //     const contentOffsetX = e.nativeEvent.contentOffset.x;
-  //     const currentIndex = Math.round(contentOffsetX / SIZES.width);
-  //     setCurrentSlideIndex(currentIndex);
-  //   }
-  //   //render the sliders dots
-  //   function renderDots() {
-  //     return (
-  //       <View>
-  //         <View
-  //           style={{
-  //             alignItems: "center",
-  //             justifyContent: "center",
-  //             flexDirection: "row",
-  //           }}
-  //         >
-  //           {promo.map((_, index) => {
-  //             return (
-  //               <View
-  //                 key={index}
-  //                 style={[
-  //                   styles.dot,
-  //                   currentSlideIndex == index && {
-  //                     width: 22,
-  //                   },
-  //                 ]}
-  //               />
-  //             );
-  //           })}
-  //         </View>
-  //       </View>
-  //     );
-  //   }
-
-  //   //the big image in the page
-  //   function renderSlide() {
-  //     return (
-  //       <View
-  //         style={{
-  //           borderBottomLeftRadius: 20,
-  //           borderBottomRightRadius: 20,
-  //           overflow: "hidden",
-  //         }}
-  //       >
-  //         <FlatList
-  //           data={promo}
-  //           keyExtractor={(item) => item.id.toString()}
-  //           horizontal={true}
-  //           pagingEnabled={true}
-  //           showsHorizontalScrollIndicator={false}
-  //           onMomentumScrollEnd={updateCurrentSlideIndex}
-  //           renderItem={({ item, index, separators }) => (
-  //             <View key={item.key} style={{ width: SIZES.width, height: 356 }}>
-  //               <ImageBackground
-  //                 source={item.photo_1125x1068}
-  //                 style={{ width: "100%", height: "100%" }}
-  //               ></ImageBackground>
-  //             </View>
-  //           )}
-  //         />
-  //       </View>
-  //     );
-  //   }
-
-  //   function renderFeaturedProducts() {
-  //     return (
-  //       <View style={{ paddingHorizontal: 20 }}>
-  //         <View
-  //           style={{
-  //             flexDirection: "row",
-  //             alignItems: "center",
-  //             justifyContent: "space-between",
-  //             marginBottom: 16,
-  //           }}
-  //         >
-  //           <Text
-  //             style={{
-  //               ...FONTS.Mulish_700Bold,
-  //               fontSize: 20,
-  //               textTransform: "capitalize",
-  //               color: COLORS.black,
-  //               lineHeight: 20 * 1.2,
-  //             }}
-  //           >
-  //             Featured Products
-  //           </Text>
-  //         </View>
-  //         {products.map((item, index) => {
-  //           return (
-  //             item.featuredProducts === true && (
-  //               <TouchableOpacity
-  //                 key={index}
-  //                 style={{
-  //                   width: "100%",
-  //                   height: 100,
-  //                   backgroundColor: COLORS.white,
-  //                   marginBottom: 15,
-  //                   borderRadius: 10,
-  //                   flexDirection: "row",
-  //                 }}
-  //                 onPress={() =>
-  //                   navigation.navigate("ProductDetails", {
-  //                     productDetails: item,
-  //                     productSlides: item.slides,
-  //                   })
-  //                 }
-  //               >
-  //                 <ImageBackground
-  //                   source={item.photo_300x300}
-  //                   style={{
-  //                     width: 100,
-  //                     height: "100%",
-  //                   }}
-  //                   imageStyle={{ borderRadius: 10 }}
-  //                 >
-  //                   <RatingComponent
-  //                     item={item}
-  //                     containerStyle={{
-  //                       bottom: 2,
-  //                       left: 2,
-  //                       borderBottomLeftRadius: 10,
-  //                       borderTopRightRadius: 10,
-  //                     }}
-  //                     onPress={() => navigation.navigate("Reviews")}
-  //                   />
-  //                 </ImageBackground>
-  //                 <View
-  //                   style={{
-  //                     paddingHorizontal: 15,
-  //                     paddingVertical: 11,
-  //                     flex: 1,
-  //                   }}
-  //                 >
-  //                   <Text
-  //                     style={{
-  //                       ...FONTS.Mulish_600SemiBold,
-  //                       fontSize: 14,
-  //                       textTransform: "capitalize",
-  //                       marginBottom: 6,
-  //                     }}
-  //                   >
-  //                     {item.name}
-  //                   </Text>
-  //                   <Text
-  //                     style={{
-  //                       color: COLORS.gray,
-  //                       ...FONTS.Mulish_400Regular,
-  //                       fontSize: 14,
-  //                     }}
-  //                   >
-  //                     {item.size}
-  //                   </Text>
-  //                   <Line />
-  //                   <Text
-  //                     style={{
-  //                       ...FONTS.Mulish_600SemiBold,
-  //                       fontSize: 14,
-  //                       color: COLORS.carrot,
-  //                     }}
-  //                   >
-  //                     {item.price}
-  //                   </Text>
-  //                 </View>
-  //                 <TouchableOpacity
-  //                   style={{
-  //                     position: "absolute",
-  //                     width: 30,
-  //                     height: 30,
-  //                     right: 15,
-  //                     bottom: 11,
-  //                     justifyContent: "center",
-  //                     alignItems: "center",
-  //                   }}
-  //                   onPress={() => {
-  //                     showMessage({
-  //                       message: `${item.name} has been added`,
-  //                       type: "info",
-  //                     });
-  //                   }}
-  //                 >
-  //                   <BagSvg />
-  //                 </TouchableOpacity>
-  //                 <TouchableOpacity
-  //                   style={{
-  //                     position: "absolute",
-  //                     width: 30,
-  //                     height: 30,
-  //                     right: 15,
-  //                     top: 8,
-  //                     justifyContent: "center",
-  //                     alignItems: "center",
-  //                   }}
-  //                 >
-  //                   <HeartSvg />
-  //                 </TouchableOpacity>
-  //               </TouchableOpacity>
-  //             )
-  //           );
-  //         })}
-  //       </View>
-  //     );
-  //   }
-
   return (
     <ScrollView
       style={{
         flexGrow: 1,
-        top: 50,
+        top: 50, 
       }}
       contentContainerStyle={{ paddingBottom: 30 }}
       showsVerticalScrollIndicator={false}>
-      {/* {renderSlide()}
-      {renderDots()} */}
       {RenderGreeting()}
-      {renderAllUsers()}
+      {renderAllUsers()} 
       {RenderSentences()}
       {renderRecommendedClosets()}
       {showModal && (
@@ -765,27 +558,6 @@ export default function Home() {
           handleSure={handleUserChoice}
         />
       )}
-      {/* <PushNotification></PushNotification>
-      <Button
-        title="Press to Send Notification"
-        onPress={async () => {
-          await sendPushNotification(expoPushToken);
-        }}
-      /> */}
-      {/* {renderFeaturedProducts()} */}
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  dot: {
-    width: 10,
-    height: 10,
-    marginHorizontal: 5,
-    borderRadius: 50,
-    borderWidth: 2,
-    borderColor: COLORS.black,
-    marginTop: 20,
-    marginBottom: 40,
-  },
-});

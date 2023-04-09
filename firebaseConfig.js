@@ -6,6 +6,7 @@ import "firebase/compat/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAF-UN1LEbh6ENgYvKBbftdwoeCxmBsZFQ",
+  
   authDomain: "mitlabshut-ee371.firebaseapp.com",
   projectId: "mitlabshut-ee371",
   storageBucket: "mitlabshut-ee371.appspot.com",

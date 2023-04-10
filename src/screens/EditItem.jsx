@@ -28,16 +28,19 @@ export default function EditItem(props) {
   const item = props.route.params.item;
   const itemCurrentImages = props.route.params.itemImages;
   const isFocused = useIsFocused();
-  const { loggedUser } = useContext(userContext);
+  const { loggedUser, setSelectedTab } = useContext(userContext);
   const navigation = useNavigation();
 
   //modal
   const [showModal, setShowModal] = useState(false);
   const [showAlertModal, setShowAlertModal] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [confirmAlertModal, setConfirmAlertModal] = useState(false);
 
   //api
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
-  //separatק the shipping options from on number to an array of num
+
+  //separate the shipping options from on number to an array of num
   const getShippingOptions = (num) => {
     if (num === "12") {
       return ["1", "2"];
@@ -60,14 +63,14 @@ export default function EditItem(props) {
     getShippingOptions(item.shipping_method)
   );
 
-
-
   //images & categories
-  const [categoriesFlag, setCategoriesFlag] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(
     props.route.params.itemCtegories.map((item) => item.category_name)
   );
   const [itemNewImages, setItemNewImages] = useState([]);
+
+  //flages
+  const [categoriesFlag, setCategoriesFlag] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [flagForNewImg, setFlagForNewImg] = useState(false);
   const [flagForNoImg, setFlagForNoImg] = useState(false);
@@ -233,6 +236,7 @@ export default function EditItem(props) {
       selectedCategory.length == 0 ||
       itemDeliveryMethod.length == 0
     ) {
+      setAlertMessage("יש למלא את כל הפרטים");
       setShowAlertModal(true);
     } else {
       const updateItem = {
@@ -364,7 +368,9 @@ export default function EditItem(props) {
 
   //post images to the FB
   const uploadImageFB = async (item_ID) => {
+    var FBfail = false;
     if (flagForNoImg) {
+      setAlertMessage("יש למלא את כל הפרטים");
       setShowAlertModal(true);
     } else {
       setUploading(true);
@@ -389,13 +395,26 @@ export default function EditItem(props) {
           imageLinks.push(imageLink);
           console.log("upload to FB #", i + 1);
         } catch (error) {
-          console.log("error in upload to FB", error);
+          FBfail = true;
+          console.log(" error in upload to FB ", error);
         }
       }
-      console.log("finish upload to FB");
-      //after uploading all the new images
-      deleteImagesFB();
-      deleteImagesDB(item_ID, imageLinks);
+
+      //if fail to upload images only update the data
+      if (FBfail) {
+        setUploading(false);
+        setAlertMessage("קיימת שגיאה בהעלאת התמונות,\nאנא נסי שוב מאוחר יותר");
+        setShowAlertModal(true);
+        setConfirmAlertModal(true);
+
+        setSelectedTab("Home");
+        setTimeout(() => {
+          navigation.navigate("MainLayout");
+        }, 2000); 
+      } else {
+        deleteImagesFB();
+        deleteImagesDB(item_ID, imageLinks);
+      }
       UpdateItem();
     }
   };
@@ -764,7 +783,7 @@ export default function EditItem(props) {
             </View>
           )}
 
-          {/* מציג את התמונותהחדשות לאחר השינויים*/}
+          {/* מציג את התמונות החדשות לאחר השינויים*/}
           {itemNewImages.length > 0 && (
             <View style={styles.imageContainer}>
               {itemNewImages.map((image, index) => (
@@ -776,8 +795,6 @@ export default function EditItem(props) {
                       const newImages = [...itemNewImages]; // Make a copy of the array
                       newImages.splice(index, 1); // Remove the image at the given index
                       setItemNewImages(newImages); // Update the state
-                      console.log("newImages 1", newImages);
-                      console.log("setItemNewImages 1", itemNewImages);
 
                       if (newImages.length == 0) {
                         setFlagForNoImg(true);
@@ -809,7 +826,7 @@ export default function EditItem(props) {
       </KeyboardAwareScrollView>
     );
   }
-  
+
   return (
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
       <Header
@@ -837,7 +854,8 @@ export default function EditItem(props) {
         <AlertModal
           showModal={showAlertModal}
           setShowModal={setShowAlertModal}
-          massage={" יש למלא את כל הפרטים"}
+          message={alertMessage}
+          confirm={confirmAlertModal}
         />
       )}
     </SafeAreaView>

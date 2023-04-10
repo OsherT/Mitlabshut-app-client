@@ -29,7 +29,7 @@ export default function EditProfile() {
   const {
     loggedUser,
     setclosetDesc,
-    setclosetName,
+    setSelectedTab,
     setloggedUser,
     closetName,
     closetDesc,
@@ -41,6 +41,7 @@ export default function EditProfile() {
   const navigation = useNavigation();
   const [showAlertModal, setShowAlertModal] = useState(false);
   const [message, setMessage] = useState("");
+  const [confirmAlertModal, setConfirmAlertModal] = useState(false);
 
   //users info
   const [address, setAddress] = useState(loggedUser.address);
@@ -85,6 +86,7 @@ export default function EditProfile() {
 
   const uploadImageFB = async (user_id) => {
     setUploading(true);
+    var FBfail = false;
 
     const response = await fetch(image.uri);
     const blob = await response.blob();
@@ -95,11 +97,25 @@ export default function EditProfile() {
       var ref = firebase.storage().ref().child(filename).put(blob);
       await ref;
       var imageRef = firebase.storage().ref().child(filename);
-      const imageLink = await imageRef.getDownloadURL();
+      var imageLink = await imageRef.getDownloadURL();
+    } catch (error) {
+      FBfail = true;
+
+      console.log("error in upload to FB", error);
+    }
+    if (FBfail) {
+      setUploading(false);
+      setMessage("קיימת שגיאה בהעלאת הנתונים,\nאנא נסי שוב מאוחר יותר");
+      setShowAlertModal(true);
+      setConfirmAlertModal(true);
+
+      setSelectedTab("Home");
+      setTimeout(() => {
+        navigation.navigate("MainLayout");
+      }, 2000);
+    } else {
       deleteImageFB();
       updateUser(imageLink);
-    } catch (error) {
-      console.log("error in upload to FB", error);
     }
   };
 
@@ -424,6 +440,7 @@ export default function EditProfile() {
           message={message}
           showModal={showAlertModal}
           setShowModal={setShowAlertModal}
+          confirm={confirmAlertModal}
         />
       )}
     </SafeAreaView>

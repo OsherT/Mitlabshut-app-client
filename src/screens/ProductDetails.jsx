@@ -108,9 +108,6 @@ export default function ProductDetails(props) {
           item.closet_ID
       )
       .then((res) => {
-        // console.log("res.data", res.data);
-        // console.log("res.data[0]", res.data[0]);
-
         setuser(res.data);
         setaddress2(res.data.address);
 

@@ -4,7 +4,12 @@ import React from "react";
 import { COLORS, FONTS, SIZES } from "../constants";
 
 //modal thet we use as pretty alert message
-export default function AlertModal({ showModal, setShowModal, message }) {
+export default function AlertModal({
+  showModal,
+  setShowModal,
+  message,
+  confirm,
+}) {
   return (
     <Modal
       isVisible={!!showModal}
@@ -30,34 +35,36 @@ export default function AlertModal({ showModal, setShowModal, message }) {
           }}>
           {message}
         </Text>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-          }}>
-          <TouchableOpacity
+        {!confirm && (
+          <View
             style={{
-              width: 130,
-              height: 40,
-              backgroundColor: COLORS.golden,
-              borderRadius: 20,
-              justifyContent: "center",
+              flexDirection: "row",
               alignItems: "center",
-              marginHorizontal: 7.5,
-            }}
-            onPress={() => setShowModal(false)}>
-            <Text
+              justifyContent: "center",
+            }}>
+            <TouchableOpacity
               style={{
-                color: COLORS.red,
-                ...FONTS.Mulish_600SemiBold,
-                fontSize: 14,
-                textTransform: "uppercase",
-              }}>
-              אישור
-            </Text>
-          </TouchableOpacity>
-        </View>
+                width: 130,
+                height: 40,
+                backgroundColor: COLORS.golden,
+                borderRadius: 20,
+                justifyContent: "center",
+                alignItems: "center",
+                marginHorizontal: 7.5,
+              }}
+              onPress={() => setShowModal(false)}>
+              <Text
+                style={{
+                  color: COLORS.red,
+                  ...FONTS.Mulish_600SemiBold,
+                  fontSize: 14,
+                  textTransform: "uppercase",
+                }}>
+                אישור
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </Modal>
   );

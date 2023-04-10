@@ -22,11 +22,13 @@ import SearchRes from "./SearchRes";
 import Filter from "./Filter";
 import SearchAllUsers from "./SearchAllUsers";
 import EditProfile from "./EditProfile";
+import { Image } from "react-native";
 
 //shows the navbar of the application
 export default function MainLayout() {
   const { loggedUser, selectedTab, setSelectedTab, setOwner_, setClosetId_ } =
     useContext(userContext);
+    const closetIcon = `https://firebasestorage.googleapis.com/v0/b/mitlabshut-final.appspot.com/o/AppImages%2FclosetIcon.png?alt=media&token=948c5dad-d3a8-4aa9-97c9-f6fc9eeb0d32`;
 
   //the tabs of the navbar
   const tabs = [
@@ -54,11 +56,11 @@ export default function MainLayout() {
       icon: (
         <View
           style={{
-            width: 58,
-            height: 58,
+            width: 60,
+            height: 60,
             borderWidth: 1,
             borderColor: "#BBA36B",
-            top: -10,
+            top: -19,
             borderRadius: 30,
             justifyContent: "center",
             alignItems: "center",
@@ -72,9 +74,10 @@ export default function MainLayout() {
               justifyContent: "center",
               alignItems: "center",
             }}>
-            <Bag
-              color={selectedTab == "Closet" ? COLORS.golden : COLORS.lightGray}
-            />
+            <Image
+                        source={{ uri: closetIcon }}
+                        style={{ width: 40, height: 40, borderRadius: 10 ,paddingBottom:40}}
+                      />
           </View>
         </View>
       ),

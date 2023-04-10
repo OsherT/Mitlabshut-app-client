@@ -37,7 +37,16 @@ export default function EditItem(props) {
 
   //api
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
-
+  //separatק the shipping options from on number to an array of num
+  const getShippingOptions = (num) => {
+    if (num === "12") {
+      return ["1", "2"];
+    } else if (num === "2") {
+      return ["2"];
+    } else {
+      return ["1"];
+    }
+  };
   //items info
   const [itemName, setItemName] = useState(item.name);
   const [itemPrice, setItemPrice] = useState(item.price);
@@ -51,16 +60,7 @@ export default function EditItem(props) {
     getShippingOptions(item.shipping_method)
   );
 
-  //separatק the shipping options from on number to an array of num
-  const getShippingOptions = (num) => {
-    if (num === "12") {
-      return ["1", "2"];
-    } else if (num === "2") {
-      return ["2"];
-    } else {
-      return ["1"];
-    }
-  };
+
 
   //images & categories
   const [categoriesFlag, setCategoriesFlag] = useState(false);

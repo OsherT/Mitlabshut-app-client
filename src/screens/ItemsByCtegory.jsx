@@ -247,7 +247,7 @@ export default function ItemsByCtegory() {
       )
       .then((res) => {
         AddtoFav(itemId);
-        sendPushNotification(res.data[0].token, "like", loggedUser.full_name);
+        sendPushNotification(res.data.token, "like", loggedUser.full_name);
       })
       .catch((err) => {
         console.log("err in AddtoFav ", err);

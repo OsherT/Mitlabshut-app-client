@@ -358,7 +358,7 @@ export default function EditProfile() {
                 onChangeText={(text) => setclosetDesc(text)}
                 keyboardType="text"
               />
-              <Text
+              {/* <Text
                 style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
                 שם ארון:
               </Text>
@@ -368,7 +368,7 @@ export default function EditProfile() {
                 containerStyle={{ marginBottom: 20 }}
                 onChangeText={(text) => setclosetName(text)}
                 keyboardType="text"
-              />
+              /> */}
 
               <UploadModal
                 uploading={uploading}

@@ -48,6 +48,7 @@ export default function Order() {
       )
       .then((res) => {
         if (res.data === "No items yet") {
+          setItemsinCart("")
           console.log("user dont have items in cart");
           setIsLoading(false);
         } else {
@@ -130,7 +131,8 @@ export default function Order() {
       const res = await axios.get(
         `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetUserByClosetId/Closet_ID/${item.closet_ID}`
       );
-      const user = res.data[0];
+      const user = res.data;
+      console.log(res.data)
       //const deepLink = await createDeepLink(item);
       var message = `היי ${user.full_name}, ראיתי את הפריט שלך שנקרא ${item.name} באפליקציית מתלבשות `;
       const phone = `+972${user.phone_number}`;

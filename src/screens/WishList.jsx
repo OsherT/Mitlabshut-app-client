@@ -46,6 +46,7 @@ export default function WishList() {
       .then((res) => {
         if (res.data === 0) {
           console.log("user dont have items on wishlist");
+          setItems("")
           setIsLoading(false);
         } else {
           setItems(res.data);
@@ -88,7 +89,6 @@ export default function WishList() {
     Promise.all(promises)
       .then((responses) => {
         const photos = responses.flatMap((response) => response.data);
-        console.log(photos);
         setUsersItemPhotos(photos);
         setIsLoading(false);
       })
@@ -103,11 +103,7 @@ export default function WishList() {
         `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/DeleteFavItem/Item_ID/${itemId}/User_ID/${loggedUser.id}`
       )
       .then((res) => {
-        closeSwipeable = () => {
-          if (this.swipeableRef.current) {
-            this.swipeableRef.current.close();
-          }
-        };
+        
         getItemsData();
         
       })

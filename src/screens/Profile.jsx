@@ -60,7 +60,7 @@ export default function Profile() {
   function renderContent() {
     return (
       <ScrollView
-      showsVerticalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           flexGrow: 1,
           paddingHorizontal: 20,
@@ -72,6 +72,8 @@ export default function Profile() {
           <TouchableOpacity
             onPress={() => {
               setSelectedTab("Closet");
+              setClosetId_(loggedUser.closet_id);
+              setOwner_(loggedUser);
             }}>
             <ImageBackground
               source={{
@@ -84,30 +86,31 @@ export default function Profile() {
                 marginBottom: 15,
               }}
               imageStyle={{ borderRadius: 40 }}></ImageBackground>
-
-            <Text
-              style={{
-                textAlign: "center",
-                ...FONTS.Mulish_700Bold,
-                fontSize: 16,
-                textTransform: "capitalize",
-                color: COLORS.black,
-                marginBottom: 4,
-                lineHeight: 16 * 1.2,
-              }}>
-              {loggedUser.full_name}
-            </Text>
-            <Text
-              style={{
-                textAlign: "center",
-                ...FONTS.Mulish_400Regular,
-                fontSize: 14,
-                color: COLORS.gray,
-                lineHeight: 14 * 1.7,
-              }}>
-              {loggedUser.email}
-            </Text>
           </TouchableOpacity>
+
+          <Text
+            style={{
+              textAlign: "center",
+              ...FONTS.Mulish_700Bold,
+              fontSize: 16,
+              textTransform: "capitalize",
+              color: COLORS.black,
+              marginBottom: 4,
+              lineHeight: 16 * 1.2,
+            }}>
+            {loggedUser.full_name}
+          </Text>
+          <Text
+            style={{
+              textAlign: "center",
+              ...FONTS.Mulish_400Regular,
+              fontSize: 14,
+              color: COLORS.gray,
+              lineHeight: 14 * 1.7,
+            }}>
+            {loggedUser.email}
+          </Text>
+
           <TouchableOpacity
             onPress={() => {
               navigation.navigate("EditProfile");
@@ -116,7 +119,8 @@ export default function Profile() {
               style={{
                 position: "absolute",
                 right: 0,
-                bottom: 120,
+                bottom: -20,
+                // bottom: 120,
               }}>
               <Edit />
             </View>

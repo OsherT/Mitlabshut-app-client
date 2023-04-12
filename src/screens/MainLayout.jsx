@@ -1,5 +1,5 @@
 import { View, TouchableOpacity } from "react-native";
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import Home from "./Home";
 import Search from "./Search";
 import WishList from "./WishList";
@@ -11,7 +11,6 @@ import {
   WishListTab,
   ProfileTab,
   TabElement,
-  Bag,
 } from "../svg";
 import { COLORS } from "../constants";
 import { userContext } from "../navigation/userContext";
@@ -145,7 +144,7 @@ export default function MainLayout() {
                   setClosetId_(loggedUser.closet_id);
                   setOwner_(loggedUser);
                 } else {
-                  setSelectedTab(item.screen);
+                  setSelectedTab(item.screen); 
                 }
               }}>
               <View>{item.icon}</View>

@@ -292,22 +292,26 @@ export default function EditProfile() {
                     language: "he",
                   }}
                   textInputProps={{
-                    textAlign: "right",
-                    backgroundColor: "#FBF8F2",
+                    textAlign: "right", 
+                    // backgroundColor: "#FBF8F2",
+                    backgroundColor: "transparent",
                     placeholderTextColor: "black",
                   }}
                   styles={{
                     container: {
                       flex: 0,
-                      // position: "absolute",
                       width: "100%",
                     },
-                    listView: { position: "absolute", zIndex: 1, top: 50 },
+                    listView: {
+                      position: "absolute",
+                      zIndex: 1,
+                      top: 50,
+                    },
                     textInputContainer: {
                       flexDirection: "row",
                       alignItems: "center",
                     },
-                    description: {
+                    description: { 
                       flex: 1,
                     },
                     icon: {

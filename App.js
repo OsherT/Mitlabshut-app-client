@@ -1,7 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useLayoutEffect } from "react";
+
 import AppLoading from "expo-app-loading";
 import { useFonts } from "expo-font";
 import AppNavigation from "./src/navigation/AppNavigation";
+import { I18nManager } from "react-native";
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -9,6 +11,14 @@ export default function App() {
     Mulish_600SemiBold: require("./src/assets/fonts/Mulish-SemiBold.ttf"),
     Mulish_700Bold: require("./src/assets/fonts/Mulish-Bold.ttf"),
   });
+  useEffect(() => {
+    I18nManager.allowRTL(false);
+    I18nManager.forceRTL(false);
+  }, []);
+  // useLayoutEffect(() => {
+  //   I18nManager.allowRTL(false);
+  //   I18nManager.forceRTL(false);
+  // }, []);
 
   if (!fontsLoaded) {
     return <AppLoading />;

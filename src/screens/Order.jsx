@@ -289,12 +289,8 @@ export default function Order() {
                         ₪ {item.price}
                       </Text>
                     </View>
-                    {/* <TouchableOpacity
-                    style={{ position: "absolute", right: 12, bottom: 12 ,zIndex:2}}
-                    onPress={() => RemoveFromShopList(item.id)}
-                  >
-                    <BagSvg color="#626262" inCart={true} />
-                  </TouchableOpacity> */}
+               
+               
                     <TouchableOpacity
                       style={{ margin: 25 }}
                       onPress={() => sendWhatsAppMessage(item)}

@@ -56,7 +56,6 @@ export default function Closet(props) {
   const buttonRef = useRef(null); // Ref for TouchableOpacity button
 
   const [showModal, setShowModal] = useState(false);
-  const [userChoice, setUserChoice] = useState(null);
   const [massage, setMassage] = useState("");
   const [handleSure, setHandleSure] = useState("");
   const [showAlertModal, setShowAlertModal] = useState(false);

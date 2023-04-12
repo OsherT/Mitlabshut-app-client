@@ -5,7 +5,6 @@ import {
   View,
   Text,
   StyleSheet,
-  KeyboardAvoidingView,
 } from "react-native";
 import React, { useContext, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -24,6 +23,7 @@ import UploadModal from "../components/Uploading";
 import { SelectList } from "react-native-dropdown-select-list";
 import WarningModal from "../components/WarningModal";
 import AlertModal from "../components/AlertModal";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function EditProfile() {
   const {
@@ -202,7 +202,13 @@ export default function EditProfile() {
   function renderContent() {
     return (
       <View style={{ flex: 1 }}>
-        <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
+            <KeyboardAwareScrollView
+        contentContainerStyle={{
+          flexGrow: 1,
+          paddingHorizontal: 20,
+          paddingVertical: 25,
+        }}
+        showsHorizontalScrollIndicator={false}>
           <ScrollView
             contentContainerStyle={{ flexGrow: 1 }}
             keyboardShouldPersistTaps="handled"
@@ -378,17 +384,7 @@ export default function EditProfile() {
                 onChangeText={(text) => setclosetDesc(text)}
                 keyboardType="text"
               />
-              {/* <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
-                שם ארון:
-              </Text>
-              <InputField
-                defaultValue={closetName}
-                icon={<EditTwo />}
-                containerStyle={{ marginBottom: 20 }}
-                onChangeText={(text) => setclosetName(text)}
-                keyboardType="text"
-              /> */}
+       
 
               <UploadModal
                 uploading={uploading}
@@ -413,7 +409,7 @@ export default function EditProfile() {
               </View>
             </ContainerComponent>
           </ScrollView>
-        </KeyboardAvoidingView>
+        </KeyboardAwareScrollView>
       </View>
     );
   }

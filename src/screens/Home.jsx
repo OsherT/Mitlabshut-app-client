@@ -129,7 +129,7 @@ export default function Home() {
                 setClosetId_(loggedUser.closet_id);
                 setOwner_(loggedUser);
               }}>
-                
+
               <Image
                 source={{ uri: loggedUser.user_image }}
                 style={{

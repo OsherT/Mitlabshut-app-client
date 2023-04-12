@@ -119,8 +119,6 @@ export default function Home() {
               textTransform: "capitalize",
               color: COLORS.gray,
               lineHeight: 20 * 1.2,
-
-              //marginTop:10
             }}>
             {greeting},
           </Text>
@@ -131,6 +129,7 @@ export default function Home() {
                 setClosetId_(loggedUser.closet_id);
                 setOwner_(loggedUser);
               }}>
+                
               <Image
                 source={{ uri: loggedUser.user_image }}
                 style={{
@@ -145,7 +144,7 @@ export default function Home() {
         </View>
       </View>
     );
-  }
+  } 
 
   function GetSentences() {
     axios
@@ -542,12 +541,12 @@ export default function Home() {
     <ScrollView
       style={{
         flexGrow: 1,
-        top: 50, 
+        top: 50,
       }}
       contentContainerStyle={{ paddingBottom: 30 }}
       showsVerticalScrollIndicator={false}>
       {RenderGreeting()}
-      {renderAllUsers()} 
+      {renderAllUsers()}
       {RenderSentences()}
       {renderRecommendedClosets()}
       {showModal && (

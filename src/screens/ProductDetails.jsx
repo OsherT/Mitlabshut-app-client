@@ -507,8 +507,7 @@ export default function ProductDetails(props) {
                       textAlign: "right",
                       fontSize: 13,
                       marginBottom: 5,
-                    }}
-                  >
+                    }}>
                     ✓ איסוף עצמי
                   </Text>
                 )}
@@ -518,8 +517,7 @@ export default function ProductDetails(props) {
                       textAlign: "right",
                       fontSize: 13,
                       marginBottom: 5,
-                    }}
-                  >
+                    }}>
                     ✓ משלוח
                   </Text>
                 )}
@@ -529,8 +527,7 @@ export default function ProductDetails(props) {
                       textAlign: "right",
                       fontSize: 13,
                       marginBottom: 5,
-                    }}
-                  >
+                    }}>
                     ✓ משלוח ✓ איסוף עצמי
                   </Text>
                 )}
@@ -548,8 +545,7 @@ export default function ProductDetails(props) {
                           itemImages: itemImages,
                           itemCtegories: itemCtegories,
                         });
-                      }}
-                    >
+                      }}>
                       <Edit />
                     </TouchableOpacity>
                   )}
@@ -559,8 +555,7 @@ export default function ProductDetails(props) {
                     textAlign: "right",
                     fontSize: 13,
                     marginBottom: 5,
-                  }}
-                >
+                  }}>
                   ♡ {numOfFav} אהבו פריט זה
                 </Text>
               </View>
@@ -578,8 +573,7 @@ export default function ProductDetails(props) {
                             ...FONTS.Mulish_600SemiBold,
                             fontSize: 20,
                             textAlign: "center",
-                          }}
-                        >
+                          }}>
                           נמכר
                         </Text>
                       </View>
@@ -595,8 +589,7 @@ export default function ProductDetails(props) {
                 // render the filled heart SVG if the item ID is in the UsersFavList
                 <TouchableOpacity
                   style={styles.favIcon}
-                  onPress={() => RemoveFromFav(item.id)}
-                >
+                  onPress={() => RemoveFromFav(item.id)}>
                   <HeartTwoSvg filled={true} strokeColor="red" />
                 </TouchableOpacity>
               )}
@@ -617,8 +610,7 @@ export default function ProductDetails(props) {
                         loggedUser.full_name
                       ),
                     ]);
-                  }}
-                >
+                  }}>
                   <HeartTwoSvg filled={false} strokeColor="red" />
                 </TouchableOpacity>
               )}
@@ -627,8 +619,7 @@ export default function ProductDetails(props) {
                 style={styles.shareIcon}
                 onPress={() => {
                   onShare();
-                }}
-              >
+                }}>
                 <ShareSvg></ShareSvg>
               </TouchableOpacity>
             )}
@@ -678,8 +669,7 @@ export default function ProductDetails(props) {
                     setOwner_(user);
                     //the go back takes us to the wanted closet
                     navigation.goBack();
-                  }}
-                >
+                  }}>
                   <ImageBackground
                     source={{
                       uri: user.user_image,
@@ -705,9 +695,8 @@ export default function ProductDetails(props) {
                       fontSize: 18,
                       color: COLORS.black,
                       lineHeight: 22 * 1.2,
-                      padding:2
-                    }}
-                  >
+                      padding: 2,
+                    }}>
                     {user.full_name}
                   </Text>
                 </TouchableOpacity>
@@ -724,15 +713,13 @@ export default function ProductDetails(props) {
                   setOwner_(user);
                   //the go back takes us to the wanted closet
                   navigation.goBack();
-                }}
-              >
+                }}>
                 <ImageBackground
                   source={{
                     uri: user.user_image,
                   }}
                   style={styles.userImage}
-                  imageStyle={{ borderRadius: 40 }}
-                ></ImageBackground>
+                  imageStyle={{ borderRadius: 40 }}></ImageBackground>
 
                 <Text
                   style={{
@@ -740,9 +727,8 @@ export default function ProductDetails(props) {
                     fontSize: 18,
                     color: COLORS.gray,
                     lineHeight: 22 * 1.2,
-                    padding:2
-                  }}
-                >
+                    padding: 2,
+                  }}>
                   הארון שלי{" "}
                 </Text>
                 <Text> </Text>

@@ -25,7 +25,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function SignIn() {
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api`;
-  const { setloggedUser } = useContext(userContext);
+  const { setloggedUser, setSelectedTab } = useContext(userContext);
   const navigation = useNavigation();
 
   //modal

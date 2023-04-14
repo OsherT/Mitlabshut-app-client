@@ -9,12 +9,13 @@ import {
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
-import { ContainerComponent, Header ,LoadingComponent} from "../components";
+import { ContainerComponent, Header } from "../components";
 import { COLORS, FONTS } from "../constants";
 import { FilterSvg, BagSvg, HeartSvg, Empty } from "../svg";
 import axios from "axios";
 import { userContext } from "../navigation/userContext";
 import { ScrollView } from "react-native-gesture-handler";
+import LoadingComponent from "../components/LoadingComponent";
 
 //מציג את תוצאות החיפוש לפי קטגוריה או מותג
 export default function SearchRes(props) {

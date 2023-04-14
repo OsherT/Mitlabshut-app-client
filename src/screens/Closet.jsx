@@ -21,7 +21,7 @@ import { useIsFocused } from "@react-navigation/native";
 import ProfileNumbers from "../components/ProfileNumbers";
 import ButtonFollow from "../components/ButtonFollow";
 import WarningModal from "../components/WarningModal";
-import LoadingComponent from "./LoadingComponent";
+import LoadingComponent from "../components/LoadingComponent";
 
 export default function Closet(props) {
   const {

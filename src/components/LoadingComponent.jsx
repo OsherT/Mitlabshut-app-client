@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 
-const LoadingComponent = () => {
+const LoadingComponent = () => {//מציג נטען כאשר הדף נטען
   return (
     <View style={styles.container}>
       <ActivityIndicator size="large" color="Grey" />

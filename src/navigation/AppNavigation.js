@@ -79,10 +79,10 @@ export default function Navigation() {
   async function sendPushNotification(expoPushToken, action, from) {
     var bodyMessage;
     if (action === "follow") {
-      bodyMessage = `${from} התחילה לעקוב אחרייך \n כנסי לאפליקציה ותתעדכני `;
+      bodyMessage = `${from} התחילה לעקוב אחרייך 😊 \n כנסי לאפליקציה ותתעדכני `;
     }
     if (action === "like") {
-      bodyMessage = `${from} עשתה לייק לפריט שלך \n כנסי לאפליקציה ותתעדכני `;
+      bodyMessage = `${from} עשתה לייק לפריט שלך ❤️ \n כנסי לאפליקציה ותתעדכני `;
     }
     const message = {
       to: expoPushToken,

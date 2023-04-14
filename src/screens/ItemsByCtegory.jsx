@@ -630,7 +630,7 @@ export default function ItemsByCtegory() {
       }}>
       <Header title={type} goBack={true} selectedTab={"Search"} />
       {!noRes && !noResinSort && renderSearch()}
-      {!noRes && !isLoading && renderNumOfRes()}
+      {!noRes && !noResinSort && renderNumOfRes()}
 
       {isLoading ? (
         <LoadingComponent />

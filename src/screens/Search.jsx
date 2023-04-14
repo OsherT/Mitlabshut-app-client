@@ -8,7 +8,7 @@ import {
   ImageBackground,
 } from "react-native";
 import React, { useEffect, useState, useContext } from "react";
-import { useIsFocused, useNavigation } from "@react-navigation/native";
+import { useIsFocused } from "@react-navigation/native";
 import { Header } from "../components";
 import { COLORS, FONTS } from "../constants";
 import { SearchSvg } from "../svg";
@@ -95,8 +95,7 @@ export default function Search() {
   //renders the main content
   function renderTyps() {
     return (
-      <KeyboardAwareScrollView
-      showsVerticalScrollIndicator={false}>
+      <KeyboardAwareScrollView showsVerticalScrollIndicator={false}>
         <View style={{ paddingHorizontal: 20 }}>
           {typeList.map((type, index) => {
             return (
@@ -121,7 +120,7 @@ export default function Search() {
                   <ImageBackground
                     source={{
                       uri: type.item_type_image,
-                    }}//
+                    }} //
                     style={{
                       width: 180,
                       height: "97%",

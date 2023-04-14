@@ -45,7 +45,7 @@ export default function Filter() {
     GetCategoriesList();
     GetBrandsList();
   }, []);
-
+//פונקציה הממירה סטרינג בעברית לקוד URL
   function hebrewToUrlEncoded(hebrewStr) {
     const utf8EncodedStr = unescape(encodeURIComponent(hebrewStr));
     let encodedStr = "";
@@ -59,7 +59,7 @@ export default function Filter() {
     }
     return encodedStr;
   }
-
+//קבלת הפריטים בהתאם לסינון 
   function SortItems() {
     if (
       productBrand == "null" &&
@@ -70,7 +70,7 @@ export default function Filter() {
       size == "null"
     ) {
       setSelectedTab("ItemsByCtegory");
-      setType_(type);
+      setType_(type);//לא נבחר כלום לכן חוזרים לדף פריט
     } else {
       let url = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemByUserIdAndFilters/UserId/${
         loggedUser.id
@@ -89,7 +89,7 @@ export default function Filter() {
         productCat !== "null"
           ? `&ItemCategory=${hebrewToUrlEncoded(productCat)}&`
           : "ItemCategory=null&";
-      url += `MinPrice=${minVal}&MaxPrice=${maxVal}`;
+      url += `MinPrice=${minVal}&MaxPrice=${maxVal}`;//יצירת הקישור לטובת הגט
 
       axios
         .get(url)
@@ -98,7 +98,7 @@ export default function Filter() {
             setSelectedTab("ItemsByCtegory");
             setType_(type);
             setSorted_(res.data);
-            setFlag_(false);
+            setFlag_(false);//חזרה לדף הקטגוריה עם הפריטים העונים על הסינון
           } else {
             setSelectedTab("ItemsByCtegory");
             setType_(type);
@@ -111,7 +111,8 @@ export default function Filter() {
         });
     }
   }
-
+//קבלת המידע הנדרש לטובת הסינון
+//קבלת רשימת הצבעים
   const GetColorsList = () => {
     fetch(ApiUrl + "/GetColor", {
       method: "GET",
@@ -134,7 +135,7 @@ export default function Filter() {
         }
       );
   };
-
+//קבלת רשימת המידות
   const GetSizesList = () => {
     fetch(ApiUrl + "/GetItem_size", {
       method: "GET",
@@ -155,7 +156,7 @@ export default function Filter() {
         }
       );
   };
-
+//קבלת רשימת הקטגוריות
   const GetCategoriesList = () => {
     fetch(ApiUrl + "/GetCategory", {
       method: "GET",
@@ -181,7 +182,7 @@ export default function Filter() {
         }
       );
   };
-
+//קבלת רשימת המותגים
   const GetBrandsList = () => {
     fetch(ApiUrl + "/GetBrand", {
       method: "GET",
@@ -202,7 +203,7 @@ export default function Filter() {
         }
       );
   };
-
+  //רינדור אופציות הסינון 
   function renderContent() {
     return (
       <ScrollView

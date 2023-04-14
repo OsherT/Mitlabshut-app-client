@@ -79,7 +79,7 @@ export default function Closet(props) {
       getFollowingList();
     }
   }, [isFocused, ClosetFollowers, closetId_, owner_]);
-
+//פונקציה המחשבת את המיקום שהמודל אמור להיפתח בלחיצה על ה3 נקודות 
   function handleOptionsMenuPress(buttonX, buttonY, buttonWidth, buttonHeight) {
     const modalWidth = 120;
     const modalHeight = 120;
@@ -95,7 +95,7 @@ export default function Closet(props) {
     });
     setModalVisible(true);
   }
-
+// קבלת פרטי הארון המוצג
   function GetClosetDescription() {
     axios
       .get(
@@ -111,7 +111,7 @@ export default function Closet(props) {
         console.log("err in GetClosetDescription ", err);
       });
   }
-
+//קבלת מספר העוקבים לארון המוצג
   function GetClosetFollowers_num() {
     axios
       .get(
@@ -126,7 +126,7 @@ export default function Closet(props) {
         console.log("err in GetClosetFollowers_num", err);
       });
   }
-
+//קבלת פרטי הארון 
   function GetClosetItems() {
     axios
       .get(

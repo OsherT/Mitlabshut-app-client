@@ -5,6 +5,7 @@ import {
   SafeAreaView,
   StyleSheet,
   Image,
+  ScrollView
 } from "react-native";
 import React, { useEffect, useState, useContext } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -542,13 +543,12 @@ export default function EditItem(props) {
 
   function renderContent() {
     return (
-      <KeyboardAwareScrollView
-        contentContainerStyle={{
-          flexGrow: 1,
-          paddingHorizontal: 20,
-          paddingVertical: 25,
-        }}
-        showsHorizontalScrollIndicator={false}>
+      <View style={{ flex: 1 }}>
+          <ScrollView
+            contentContainerStyle={{ flexGrow: 1 }}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
         <ContainerComponent>
           <Text style={styles.header}>עדכון פריט</Text>
           <View
@@ -595,6 +595,7 @@ export default function EditItem(props) {
             }}>
             קטגוריה :
           </Text>
+          <SafeAreaView>
           <MultiSelect
             items={categoriesList}
             selectedItems={selectedCategory}
@@ -636,6 +637,7 @@ export default function EditItem(props) {
             //עיצוב של הכותרת של הפריטים שנבחרו
             styleTextDropdownSelected={{ textAlign: "right", color: "#000" }}
           />
+          </SafeAreaView>
 
           <Text
             style={{
@@ -855,7 +857,8 @@ export default function EditItem(props) {
             <ButtonLogIn title="ביטול  " onPress={() => setShowModal(true)} />
           </View>
         </ContainerComponent>
-      </KeyboardAwareScrollView>
+        </ScrollView>
+      </View>
     );
   }
   //

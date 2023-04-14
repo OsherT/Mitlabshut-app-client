@@ -202,22 +202,18 @@ export default function EditProfile() {
   function renderContent() {
     return (
       <View style={{ flex: 1 }}>
-            <KeyboardAwareScrollView
-        contentContainerStyle={{
-          flexGrow: 1,
-          paddingHorizontal: 20,
-          paddingVertical: 25,
-        }}
-        showsHorizontalScrollIndicator={false}>
+        
           <ScrollView
             contentContainerStyle={{ flexGrow: 1 }}
             keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}>
+            showsVerticalScrollIndicator={false}
+          >
             <ContainerComponent>
               <TouchableOpacity
                 onPress={() => {
                   pickImage();
-                }}>
+                }}
+              >
                 {!image && (
                   <ImageBackground
                     source={{ uri: loggedUser.user_image }}
@@ -227,13 +223,15 @@ export default function EditProfile() {
                       alignSelf: "center",
                       marginBottom: 15,
                     }}
-                    imageStyle={{ borderRadius: 40 }}>
+                    imageStyle={{ borderRadius: 40 }}
+                  >
                     <View
                       style={{
                         position: "absolute",
                         right: -20,
                         bottom: -20,
-                      }}>
+                      }}
+                    >
                       <Edit />
                     </View>
                   </ImageBackground>
@@ -247,20 +245,23 @@ export default function EditProfile() {
                       alignSelf: "center",
                       marginBottom: 15,
                     }}
-                    imageStyle={{ borderRadius: 40 }}>
+                    imageStyle={{ borderRadius: 40 }}
+                  >
                     <View
                       style={{
                         position: "absolute",
                         right: -20,
                         bottom: -20,
-                      }}>
+                      }}
+                    >
                       <Edit />
                     </View>
                   </ImageBackground>
                 )}
               </TouchableOpacity>
               <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
+              >
                 שם מלא:
               </Text>
               <InputField
@@ -271,7 +272,8 @@ export default function EditProfile() {
                 keyboardType="text"
               />
               <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
+              >
                 כתובת אימייל :
               </Text>
               <InputField
@@ -282,7 +284,8 @@ export default function EditProfile() {
                 keyboardType="text"
               />
               <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
+              >
                 כתובת מגורים:
               </Text>
               <SafeAreaView style={styles.view}>
@@ -298,9 +301,8 @@ export default function EditProfile() {
                     language: "he",
                   }}
                   textInputProps={{
-                    textAlign: "right", 
-                    // backgroundColor: "#FBF8F2",
-                    backgroundColor: "transparent",
+                    textAlign: "right",
+                    backgroundColor: Platform.OS === "android" ? "#FBF8F2" : "transparent",
                     placeholderTextColor: "black",
                   }}
                   styles={{
@@ -317,7 +319,7 @@ export default function EditProfile() {
                       flexDirection: "row",
                       alignItems: "center",
                     },
-                    description: { 
+                    description: {
                       flex: 1,
                     },
                     icon: {
@@ -329,7 +331,8 @@ export default function EditProfile() {
               </SafeAreaView>
 
               <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
+              >
                 גיל:
               </Text>
 
@@ -352,7 +355,8 @@ export default function EditProfile() {
               />
 
               <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
+              >
                 מספר טלפון:
               </Text>
               <InputField
@@ -363,7 +367,8 @@ export default function EditProfile() {
                 onChangeText={(text) => setUserPhone(text)}
               />
               <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
+              >
                 סיסמה:
               </Text>
               <InputField
@@ -374,7 +379,8 @@ export default function EditProfile() {
                 keyboardType="text"
               />
               <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
+              >
                 תיאור ארון:
               </Text>
               <InputField
@@ -384,11 +390,11 @@ export default function EditProfile() {
                 onChangeText={(text) => setclosetDesc(text)}
                 keyboardType="text"
               />
-       
 
               <UploadModal
                 uploading={uploading}
-                message="עדכון פרטים עלול לקחת זמן, אנא המתיני"></UploadModal>
+                message="עדכון פרטים עלול לקחת זמן, אנא המתיני"
+              ></UploadModal>
 
               <View style={{ marginTop: 10 }}>
                 <Button
@@ -409,7 +415,6 @@ export default function EditProfile() {
               </View>
             </ContainerComponent>
           </ScrollView>
-        </KeyboardAwareScrollView>
       </View>
     );
   }

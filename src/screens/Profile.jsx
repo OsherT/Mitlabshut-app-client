@@ -32,6 +32,7 @@ export default function Profile() {
     }
   }, [isFocused]);
 
+
   const GetUsersFollow = () => {
     fetch(
       "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetUserFollowingByUser/LoggedUser/" +

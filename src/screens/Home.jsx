@@ -4,12 +4,10 @@ import {
   FlatList,
   TouchableOpacity,
   Image,
-  StyleSheet,
   ScrollView,
-  YellowBox, 
-  LogBox
+  LogBox,
 } from "react-native";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { COLORS, FONTS } from "../constants";
 import { ProfileCategory } from "../components";
@@ -37,9 +35,12 @@ export default function Home() {
   const [allUsers, setAllUsers] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [massage, setMassage] = useState("");
-  LogBox.ignoreLogs([' Encountered two children with the same key, `1`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.'])
-  //push notification
 
+  LogBox.ignoreLogs([
+    " Encountered two children with the same key, `1`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.",
+  ]);
+
+  //push notification
   useEffect(() => {
     if (isFocused) {
       GreetingComponent();
@@ -131,7 +132,6 @@ export default function Home() {
                 setClosetId_(loggedUser.closet_id);
                 setOwner_(loggedUser);
               }}>
-
               <Image
                 source={{ uri: loggedUser.user_image }}
                 style={{
@@ -146,7 +146,7 @@ export default function Home() {
         </View>
       </View>
     );
-  } 
+  }
 
   function GetSentences() {
     axios

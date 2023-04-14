@@ -202,13 +202,13 @@ export default function EditProfile() {
   function renderContent() {
     return (
       <View style={{ flex: 1 }}>
-            <KeyboardAwareScrollView
-        contentContainerStyle={{
-          flexGrow: 1,
-          paddingHorizontal: 20,
-          paddingVertical: 25,
-        }}
-        showsHorizontalScrollIndicator={false}>
+        <KeyboardAwareScrollView
+          contentContainerStyle={{
+            flexGrow: 1,
+            paddingHorizontal: 20,
+            paddingVertical: 25,
+          }}
+          showsHorizontalScrollIndicator={false}>
           <ScrollView
             contentContainerStyle={{ flexGrow: 1 }}
             keyboardShouldPersistTaps="handled"
@@ -298,7 +298,7 @@ export default function EditProfile() {
                     language: "he",
                   }}
                   textInputProps={{
-                    textAlign: "right", 
+                    textAlign: "right",
                     // backgroundColor: "#FBF8F2",
                     backgroundColor: "transparent",
                     placeholderTextColor: "black",
@@ -317,7 +317,7 @@ export default function EditProfile() {
                       flexDirection: "row",
                       alignItems: "center",
                     },
-                    description: { 
+                    description: {
                       flex: 1,
                     },
                     icon: {
@@ -384,7 +384,6 @@ export default function EditProfile() {
                 onChangeText={(text) => setclosetDesc(text)}
                 keyboardType="text"
               />
-       
 
               <UploadModal
                 uploading={uploading}

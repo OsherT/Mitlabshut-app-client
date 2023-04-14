@@ -1,45 +1,28 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Text, View, Button, Platform } from "react-native";
-
+import React, { useState } from "react";
+import { Platform } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import FlashMessage from "react-native-flash-message";
+import { userContext } from "./userContext";
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
+import axios from "axios";
 
 import {
-  OnBoarding,
   SignIn,
   SignUp,
   ForgotPassword,
   AccountCreated,
-  VerifyPhoneNumber,
-  ConfirmationCode,
-  NewPassword,
   RessetPasswordNotice,
   MainLayout,
   EditProfile,
-  OrderFailed,
   CartIsEmpty,
   Order,
-  Checkout,
-  ShippingDetails,
-  PaymentMethod,
-  OrderHistory,
-  PaymentMethodCheckout,
-  MyAddress,
-  FAQ,
-  MyPromocodes,
   Filter,
-  SelectSize,
-  SelectColor,
-  Reviews,
-  TrackYourOrder,
-  NewAddress,
-  NewCard,
 } from "../screens";
 import Home from "../screens/Home";
 import ProductDetails from "../screens/ProductDetails";
 import Closet from "../screens/Closet";
-import { userContext } from "./userContext";
 import Search from "../screens/Search";
 import Profile from "../screens/Profile";
 import UploadItem from "../screens/UploadItem";
@@ -50,16 +33,12 @@ import ItemsByCtegory from "../screens/ItemsByCtegory";
 import WishList from "../screens/WishList";
 import PasswordHasBeenResetScreen from "../screens/RessetPasswordNotice";
 import SearchRes from "../screens/SearchRes";
-import axios from "axios";
 import SearchUsersFollow from "../screens/SearchUsersFollow";
-import PushNotification from "../screens/PushNotification";
-import * as Device from "expo-device";
-import * as Notifications from "expo-notifications";
+
 const Stack = createStackNavigator();
 
 export default function Navigation() {
   const [selectedTab, setSelectedTab] = useState("Home");
-  const [itemCategories, setitemCategories] = useState([]);
   const [loggedUser, setloggedUser] = useState("");
   const [closetDesc, setclosetDesc] = useState("");
   const [closetName, setclosetName] = useState("");
@@ -69,8 +48,8 @@ export default function Navigation() {
   const [searchText_, setSearchText_] = useState("");
   const [flag_, setFlag_] = useState(false);
   const [sorted_, setSorted_] = useState("");
-  //const [bodyMessage, setBodyMessage] = useState("");
 
+  //scores for algo
   const shopScore = 8;
   const favScore = 6;
   const viewScore = 4;
@@ -102,6 +81,7 @@ export default function Navigation() {
     });
   }
 
+  //Token creator for push notification
   async function registerForPushNotificationsAsync() {
     console.log("in registerForPushNotificationsAsync ");
     let token;
@@ -135,7 +115,7 @@ export default function Navigation() {
     return token;
   }
 
-  //algorithm
+  //קבלת הפריט עבור האלגוריתם
   function GetItemForAlgo(itemId, score, loggedUser_id) {
     axios
       .get(
@@ -156,10 +136,10 @@ export default function Navigation() {
       });
   }
 
+  //קבלת הקטגוריות לפריט בשביל האלגוריתם
   const getItemCategories_ForAlgorithm = (
     item_id,
     score,
-
     loggedUser_id,
     item_type
   ) => {
@@ -176,13 +156,8 @@ export default function Navigation() {
       });
   };
 
-  const algorithmFunc = (
-    item_id,
-    score,
-    loggedUser_id,
-    item_type,
-    itemCategories
-  ) => {
+  //על כל פעולה שהגדרנו- לייק לפריט, הוספת פריט לסל קניות וצפייה בפריט מעדכנים את טבלת הניקוד
+  const algorithmFunc = (score, loggedUser_id, item_type, itemCategories) => {
     itemCategories.map((category_name) => {
       axios
         .post(
@@ -203,6 +178,7 @@ export default function Navigation() {
     itemCategories.splice(0, itemCategories.length);
   };
 
+  //Encode the Ebrew
   function hebrewToUrlEncoded(hebrewStr) {
     const utf8EncodedStr = unescape(encodeURIComponent(hebrewStr));
     let encodedStr = "";
@@ -259,9 +235,6 @@ export default function Navigation() {
             headerShown: false,
           }}
           initialRouteName="SignIn">
-          {/* // initialRouteName="PushNotification"> */}
-          <Stack.Screen name="PushNotification" component={PushNotification} />
-
           <Stack.Screen name="SignIn" component={SignIn} />
           <Stack.Screen
             name="SearchUsersFollow"
@@ -269,23 +242,13 @@ export default function Navigation() {
           />
           <Stack.Screen name="WishList" component={WishList} />
           <Stack.Screen name="UploadItem" component={UploadItem} />
-          <Stack.Screen name="OrderHistory" component={OrderHistory} />
           <Stack.Screen
             name="SignUp"
             component={SignUp}
             options={{ gestureEnabled: false }}
           />
           <Stack.Screen name="SearchRes" component={SearchRes} />
-          <Stack.Screen name="NewCard" component={NewCard} />
-          <Stack.Screen name="MyAddress" component={MyAddress} />
-          <Stack.Screen name="NewAddress" component={NewAddress} />
-          <Stack.Screen name="SelectSize" component={SelectSize} />
-          <Stack.Screen name="MyPromocodes" component={MyPromocodes} />
-          <Stack.Screen name="SelectColor" component={SelectColor} />
           <Stack.Screen name="Home" component={Home} />
-          <Stack.Screen name="TrackYourOrder" component={TrackYourOrder} />
-          <Stack.Screen name="FAQ" component={FAQ} />
-          <Stack.Screen name="Reviews" component={Reviews} />
           <Stack.Screen name="ProductDetails" component={ProductDetails} />
           <Stack.Screen name="ItemsByCtegory" component={ItemsByCtegory} />
           <Stack.Screen
@@ -293,17 +256,10 @@ export default function Navigation() {
             component={PasswordHasBeenResetScreen}
             options={{ gestureEnabled: false }}
           />
-          <Stack.Screen
-            name="PaymentMethodCheckout"
-            component={PaymentMethodCheckout}
-          />
-          <Stack.Screen name="Checkout" component={Checkout} />
           <Stack.Screen name="Closet" component={Closet} />
-          <Stack.Screen name="ShippingDetails" component={ShippingDetails} />
           <Stack.Screen name="Order" component={Order} />
           <Stack.Screen name="CartIsEmpty" component={CartIsEmpty} />
           <Stack.Screen name="Filter" component={Filter} />
-          <Stack.Screen name="PaymentMethod" component={PaymentMethod} />
           <Stack.Screen
             name="EditProfile"
             component={EditProfile}
@@ -314,7 +270,6 @@ export default function Navigation() {
             component={EditItem}
             options={{ gestureEnabled: false }}
           />
-          <Stack.Screen name="OrderFailed" component={OrderFailed} />
           <Stack.Screen
             name="MainLayout"
             component={MainLayout}
@@ -331,12 +286,6 @@ export default function Navigation() {
             name="RessetPasswordNotice"
             component={RessetPasswordNotice}
           />
-          <Stack.Screen name="NewPassword" component={NewPassword} />
-          <Stack.Screen name="ConfirmationCode" component={ConfirmationCode} />
-          <Stack.Screen
-            name="VerifyPhoneNumber"
-            component={VerifyPhoneNumber}
-          />
           <Stack.Screen
             name="AccountCreated"
             component={AccountCreated}
@@ -344,6 +293,33 @@ export default function Navigation() {
           />
           <Stack.Screen name="Search" component={Search} />
           <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+
+          {/* NOT IN USE */}
+
+          {/* <Stack.Screen name="NewPassword" component={NewPassword} /> */}
+          {/* <Stack.Screen name="ConfirmationCode" component={ConfirmationCode} /> */}
+          {/* <Stack.Screen
+            name="VerifyPhoneNumber"
+            component={VerifyPhoneNumber}
+          /> */}
+          {/* <Stack.Screen name="OrderHistory" component={OrderHistory} /> */}
+          {/* <Stack.Screen name="NewCard" component={NewCard} /> */}
+          {/* <Stack.Screen name="MyAddress" component={MyAddress} /> */}
+          {/* <Stack.Screen name="NewAddress" component={NewAddress} /> */}
+          {/* <Stack.Screen name="SelectSize" component={SelectSize} /> */}
+          {/* <Stack.Screen name="MyPromocodes" component={MyPromocodes} /> */}
+          {/* <Stack.Screen name="SelectColor" component={SelectColor} /> */}
+          {/* <Stack.Screen name="TrackYourOrder" component={TrackYourOrder} /> */}
+          {/* <Stack.Screen name="FAQ" component={FAQ} /> */}
+          {/* <Stack.Screen name="Reviews" component={Reviews} /> */}
+          {/* <Stack.Screen
+            name="PaymentMethodCheckout"
+            component={PaymentMethodCheckout}
+          /> */}
+          {/* <Stack.Screen name="Checkout" component={Checkout} /> */}
+          {/* <Stack.Screen name="ShippingDetails" component={ShippingDetails} /> */}
+          {/* <Stack.Screen name="PaymentMethod" component={PaymentMethod} /> */}
+          {/* <Stack.Screen name="OrderFailed" component={OrderFailed} /> */}
         </Stack.Navigator>
         <FlashMessage position="top" />
       </userContext.Provider>

@@ -8,13 +8,17 @@ import {
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
-import { Button, ContainerComponent, Header, Line ,LoadingComponent} from "../components";
+import { Button, ContainerComponent, Header, Line } from "../components";
 import { AREA, COLORS, FONTS } from "../constants";
 import { BagSvg, Empty } from "../svg";
 import axios from "axios";
 import { userContext } from "../navigation/userContext";
 import { Swipeable } from "react-native-gesture-handler";
-export default function WishList() {
+import LoadingComponent from "../components/LoadingComponent";
+
+
+export default function WishList() {//רשימת המועדפים ליוזר
+
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const { loggedUser, GetItemForAlgo, shopScore, setSelectedTab } =
@@ -34,7 +38,7 @@ export default function WishList() {
       getShopItems();
     }
   }, [isFocused]);
-
+//קבלת הפריטים שנמצאים ברשימת המועדפים של הארון
   function getItemsData() {
     axios
       .get(
@@ -56,7 +60,7 @@ export default function WishList() {
         console.log("err in getItemsData", err);
       });
   }
-
+//קבלת הפריטים הנמצאים בסל הקניות
   function getShopItems() {
     axios
       .get(
@@ -75,7 +79,7 @@ export default function WishList() {
         console.log("cant get shop list", err);
       });
   }
-
+//קבלת התמונות של הפריטים במועדפים
   function GetItemPhotos(items) {
     // pass the items array as a parameter
     const promises = items.map((item) => {
@@ -95,7 +99,7 @@ export default function WishList() {
         console.log("err in GetItemPhotos", error);
       });
   }
-
+//פונקציה המוחקת משימת המועדפים פריט מסויים
   function RemoveFromFav(itemId) {
     axios
       .delete(
@@ -108,7 +112,7 @@ export default function WishList() {
         console.log("cant remove from getFavItems", err);
       });
   }
-
+//פונקציה המוסיפה פריט ברשימת המועדפים לרשימת הקניות
   function AddToShopList(item_id) {
     axios
       .post(
@@ -123,7 +127,7 @@ export default function WishList() {
         console.log("err in AddToShopList", err);
       });
   }
-
+//מחיקה מרשימת הקניות
   function RemoveFromShopList(itemId) {
     axios
       .delete(
@@ -137,7 +141,7 @@ export default function WishList() {
         console.log("err in RemoveFromShopList", err);
       });
   }
-
+//רינדור הפריטים ברשימה 
   function renderContent() {
     return (
       <ScrollView

@@ -38,7 +38,6 @@ export default function SignUp() {
   const [showModal, setShowModal] = useState(false);
   const [confirmAlertModal, setConfirmAlertModal] = useState(false);
 
-  //const [ClosetName, setClosetName] = useState(userName);
   const { setSelectedTab, setloggedUser, registerForPushNotificationsAsync } =
     useContext(userContext);
 
@@ -83,7 +82,7 @@ export default function SignUp() {
       };
     }
   }, [isFocused]);
-
+//פונקציית ההרשמה
   const SignUp = () => {
     if (
       userName == "" ||
@@ -97,10 +96,15 @@ export default function SignUp() {
       //אלו השדות חובה שלנו
       setMessage("יש למלא את כל הפרטים");
       setShowAlertModal(true);
-    } else if (address.split(",").length < 3) {
+    } else if (userPhone.length <10) {
+      setMessage("אנא הכניסי מספר טלפון תקין");
+      setShowAlertModal(true);
+    }
+    else if (address.split(",").length < 3) {
       setMessage("אנא הכניסי כתובת מלאה הכוללת שם רחוב, עיר ומדינה");
       setShowAlertModal(true);
-    } else {
+    }
+     else {
       const newCloset = {
         //יצירת ארון חדש למשתמשת
         Id: 0,
@@ -248,12 +252,14 @@ export default function SignUp() {
               marginBottom: 20,
               lineHeight: 32 * 1.2,
               textTransform: "capitalize",
-            }}>
+            }}
+          >
             הצטרפי לקהילה שלנו
           </Text>
           <ScrollView
             keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}>
+            showsVerticalScrollIndicator={false}
+          >
             <InputField
               placeholder="שם מלא"
               containerStyle={{ marginBottom: 10 }}
@@ -331,7 +337,8 @@ export default function SignUp() {
                   style={styles.deleteButton}
                   onPress={() => {
                     setImage(""); // Update the state
-                  }}>
+                  }}
+                >
                   <Text style={styles.deleteButtonText}>X</Text>
                 </TouchableOpacity>
               </View>
@@ -343,7 +350,8 @@ export default function SignUp() {
                       style={{
                         color: "gray",
                         textAlign: "center",
-                      }}>
+                      }}
+                    >
                       הוסיפי תמונת פרופיל
                     </Text>
                     <AddSvg></AddSvg>
@@ -354,7 +362,8 @@ export default function SignUp() {
 
             <UploadModal
               uploading={uploading}
-              message="ההרשמה עלולה לקחת זמן, אנא המתיני"></UploadModal>
+              message="ההרשמה עלולה לקחת זמן, אנא המתיני"
+            ></UploadModal>
             <View>
               <Button title="הרשמה" onPress={() => SignUp()} />
             </View>
@@ -367,14 +376,16 @@ export default function SignUp() {
                 marginBottom: 13,
                 flexDirection: "row",
                 top: 20,
-              }}>
+              }}
+            >
               <TouchableOpacity onPress={() => navigation.navigate("SignIn")}>
                 <Text
                   style={{
                     ...FONTS.Mulish_400Regular,
                     fontSize: 16,
                     color: COLORS.black,
-                  }}>
+                  }}
+                >
                   {" "}
                   התחברי
                 </Text>
@@ -384,7 +395,8 @@ export default function SignUp() {
                   ...FONTS.Mulish_400Regular,
                   fontSize: 16,
                   color: COLORS.gray,
-                }}>
+                }}
+              >
                 כבר חלק מהקהילה?{" "}
               </Text>
             </View>

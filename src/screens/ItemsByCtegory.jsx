@@ -11,11 +11,12 @@ import {
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
-import { Header, ContainerComponent,LoadingComponent } from "../components";
+import { Header, ContainerComponent } from "../components";
 import { COLORS, FONTS } from "../constants";
 import { FilterSvg, SearchSvg, BagSvg, HeartSvg, Empty } from "../svg";
 import axios from "axios";
 import { userContext } from "../navigation/userContext";
+import LoadingComponent from "../components/LoadingComponent";
 
 export default function ItemsByCtegory() {
   const navigation = useNavigation();

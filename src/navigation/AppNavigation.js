@@ -320,7 +320,11 @@ export default function Navigation() {
             component={MainLayout}
             options={{ gestureEnabled: false }}
           />
-          <Stack.Screen name="OrderSuccessful" component={OrderSuccessful} />
+          <Stack.Screen
+            name="OrderSuccessful"
+            component={OrderSuccessful}
+            options={{ gestureEnabled: false }}
+          />
           <Stack.Screen name="ItemUpdateSucc" component={ItemUpdateSucc} />
           <Stack.Screen name="Profile" component={Profile} />
           <Stack.Screen

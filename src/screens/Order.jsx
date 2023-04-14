@@ -18,19 +18,24 @@ import { Swipeable } from "react-native-gesture-handler";
 import { Empty } from "../svg";
 import LoadingComponent from "../components/LoadingComponent";
 
-export default function Order() {//סל קניות של המשתמש
+export default function Order() {
+  //סל קניות של המשתמש
   const navigation = useNavigation();
   const isFocused = useIsFocused();
+  const whatsappIcon = `https://cdn-icons-png.flaticon.com/512/124/124034.png`;
   const { loggedUser, setSelectedTab } = useContext(userContext);
+  const [swipeableRef, setSwipeableRef] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  
+  //items data
   const [ItemsinCart, setItemsinCart] = useState([]);
   const [UsersItemPhotos, setUsersItemPhotos] = useState([]);
   const [ItemsData, setItemsData] = useState([]);
   const [sumTotal, setsumTotal] = useState("");
-  const [swipeableRef, setSwipeableRef] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const whatsappIcon = `https://cdn-icons-png.flaticon.com/512/124/124034.png`;
+ 
 
-  const closeSwipeable = () => {//סגירת המחיקה באמצעות החלקה
+  const closeSwipeable = () => {
+    //סגירת המחיקה באמצעות החלקה
     swipeableRef && swipeableRef.close();
   };
   useEffect(() => {
@@ -38,7 +43,7 @@ export default function Order() {//סל קניות של המשתמש
       getShopItems();
     }
   }, [isFocused]);
-//קבלת כל הפריטים שנמצאים בסל הקניות של המשתמש
+  //קבלת כל הפריטים שנמצאים בסל הקניות של המשתמש
   function getShopItems() {
     axios
       .get(
@@ -47,7 +52,7 @@ export default function Order() {//סל קניות של המשתמש
       )
       .then((res) => {
         if (res.data === "No items yet") {
-          setItemsinCart("")
+          setItemsinCart("");
           console.log("user dont have items in cart");
           setIsLoading(false);
         } else {
@@ -60,7 +65,7 @@ export default function Order() {//סל קניות של המשתמש
         setItemsinCart("");
       });
   }
-//קבלת המידע עבור הפריטים שנמצאים בסל הקניות
+  //קבלת המידע עבור הפריטים שנמצאים בסל הקניות
   function getItemsData(items) {
     const promises = items.map((item) => {
       return axios.get(
@@ -79,7 +84,7 @@ export default function Order() {//סל קניות של המשתמש
         console.log("err in getItemsData", error);
       });
   }
-//קבלת התמונות השייכות לפריטים בסל הקניות
+  //קבלת התמונות השייכות לפריטים בסל הקניות
   function GetItemPhotos(items) {
     const promises = items.map((item) => {
       return axios.get(
@@ -98,7 +103,7 @@ export default function Order() {//סל קניות של המשתמש
         console.log("err in GetItemPhotos", error);
       });
   }
-//פונקציה המוחקת מסל הקניות של המתמש
+  //פונקציה המוחקת מסל הקניות של המתמש
   function RemoveFromShopList(itemId) {
     axios
       .delete(
@@ -111,7 +116,7 @@ export default function Order() {//סל קניות של המשתמש
         console.log(err);
       });
   }
-//פונקציה המחשבת את הסכום עבור כל הפריטים בסל, למעט פריטים שלא זמינים
+  //פונקציה המחשבת את הסכום עבור כל הפריטים בסל, למעט פריטים שלא זמינים
   function calSum(Items) {
     let totalPrice = 0;
     for (let i = 0; i < Items.length; i++) {
@@ -121,14 +126,14 @@ export default function Order() {//סל קניות של המשתמש
     }
     setsumTotal(totalPrice);
   }
-//פונקציה המאפשרת לשלוח הודעת ואטסאפ למוכרת עבור הפריט
+  //פונקציה המאפשרת לשלוח הודעת ואטסאפ למוכרת עבור הפריט
   const sendWhatsAppMessage = async (item) => {
     try {
       const res = await axios.get(
         `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetUserByClosetId/Closet_ID/${item.closet_ID}`
       );
       const user = res.data;
-      console.log(res.data)
+      console.log(res.data);
       //const deepLink = await createDeepLink(item);
       var message = `היי ${user.full_name}, ראיתי את הפריט שלך שנקרא ${item.name} באפליקציית מתלבשות `;
       const phone = `+972${user.phone_number}`;
@@ -143,7 +148,7 @@ export default function Order() {//סל קניות של המשתמש
       console.log("error in get users data to buy" + err);
     }
   };
-//רינדור הפריטים בהתאם לסטטוס שלהם והסכום הכולל
+  //רינדור הפריטים בהתאם לסטטוס שלהם והסכום הכולל
   function renderContent() {
     return (
       <View>
@@ -207,7 +212,7 @@ export default function Order() {//סל קניות של המשתמש
                     disabled={
                       item.item_status === "sold" ||
                       item.item_status === "delete"
-                    } 
+                    }
                   >
                     {UsersItemPhotos.filter(
                       (photo) => photo.item_ID === item.id
@@ -285,8 +290,7 @@ export default function Order() {//סל קניות של המשתמש
                         ₪ {item.price}
                       </Text>
                     </View>
-               
-               
+
                     <TouchableOpacity
                       style={{ margin: 25 }}
                       onPress={() => sendWhatsAppMessage(item)}
@@ -389,7 +393,6 @@ export default function Order() {//סל קניות של המשתמש
       </View>
     );
   }
- 
 
   return (
     <SafeAreaView
@@ -397,9 +400,10 @@ export default function Order() {//סל קניות של המשתמש
         ...AREA.AndroidSafeArea,
         backgroundColor: "none",
         showsVerticalScrollIndicator: false,
-      }}>
+      }}
+    >
       <Header title="סל קניות" />
-      {isLoading ? <LoadingComponent/> : renderContent()}
+      {isLoading ? <LoadingComponent /> : renderContent()}
     </SafeAreaView>
   );
 }

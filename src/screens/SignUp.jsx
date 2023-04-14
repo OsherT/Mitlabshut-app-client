@@ -28,6 +28,14 @@ export default function SignUp() {
   const difPic =
     "https://images.squarespace-cdn.com/content/v1/5beb55599d5abb5a47cc4907/1610465905997-2G8SGHXIYCGTF9BQB0OD/female+girl+woman+icon.jpg?format=500w";
   const navigation = useNavigation();
+  const { setSelectedTab, setloggedUser, registerForPushNotificationsAsync } =
+  useContext(userContext);
+  const ageList = Array.from({ length: 109 }, (_, i) => ({
+    value: (i + 12).toString(),
+    label: `${i + 12}`,
+  }));
+
+  //user data
   const [address, setAddress] = useState("");
   const [userName, setUserName] = useState("");
   const [userEmail, setUserEmail] = useState("");
@@ -35,23 +43,19 @@ export default function SignUp() {
   const [userPhone, setUserPhone] = useState("");
   const [userAge, setUserAge] = useState("");
   const [ClosetDisc, setClosetDisc] = useState("ברוכות הבאות לארון החדש שלי");
+
+  //modal
   const [showModal, setShowModal] = useState(false);
   const [confirmAlertModal, setConfirmAlertModal] = useState(false);
 
-  const { setSelectedTab, setloggedUser, registerForPushNotificationsAsync } =
-    useContext(userContext);
-
+//FB image
   const [uploading, setUploading] = useState(false);
   const [image, setImage] = useState("");
   const [showAlertModal, setShowAlertModal] = useState(false);
   const [message, setMessage] = useState("");
   const isFocused = useIsFocused();
 
-  const ageList = Array.from({ length: 109 }, (_, i) => ({
-    value: (i + 12).toString(),
-    label: `${i + 12}`,
-  }));
-
+//nottifications
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();

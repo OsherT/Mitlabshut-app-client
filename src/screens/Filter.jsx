@@ -15,28 +15,29 @@ import axios from "axios";
 import { userContext } from "../navigation/userContext";
 
 export default function Filter() {
-  const navigation = useNavigation();
-  const [size, setSize] = useState("null");
-  const [selectColor, setSelectColor] = useState("null");
-  const [productCat, setProductCat] = useState("null");
-  const [colorsList, setColorsList] = useState([]);
-  const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
-  const [sizesList, setSizesList] = useState([]);
-  const [categoriesList, setCategoriesList] = useState([]);
   const {
     loggedUser,
     type_,
     setType_,
-    flag_,
     setFlag_,
-    sorted_,
     setSorted_,
     setSelectedTab,
   } = useContext(userContext);
-  const [brandsList, setBrandsList] = useState([]);
+  const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item`;
+//selected
+  const [size, setSize] = useState("null");
+  const [selectColor, setSelectColor] = useState("null");
+  const [productCat, setProductCat] = useState("null");
   const [productBrand, setProductBrand] = useState("null");
   const [maxVal, setmaxVal] = useState(-1);
   const [minVal, setminVal] = useState(-1);
+
+//lists
+  const [brandsList, setBrandsList] = useState([]);
+  const [colorsList, setColorsList] = useState([]);
+  const [sizesList, setSizesList] = useState([]);
+  const [categoriesList, setCategoriesList] = useState([]);
+
   const type = type_;
 
   useEffect(() => {

@@ -27,14 +27,20 @@ export default function Home() {
     setOwner_,
     sendPushNotification,
   } = useContext(userContext);
-  const [RecoUsers, setRecoUsers] = useState([]);
   const ApiUrl_user = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User`;
+
+//users
+  const [RecoUsers, setRecoUsers] = useState([]);
   const [UsersFollowingList, setUsersFollowingList] = useState([]);
-  const [greeting, setGreeting] = useState("");
-  const [Sentence, setSentence] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
+  
+//modal
   const [showModal, setShowModal] = useState(false);
   const [massage, setMassage] = useState("");
+
+//general
+  const [greeting, setGreeting] = useState("");
+  const [Sentence, setSentence] = useState([]);
 
   useEffect(() => {
     if (isFocused) {

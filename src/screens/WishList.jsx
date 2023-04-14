@@ -23,14 +23,18 @@ export default function WishList() {//רשימת המועדפים ליוזר
   const isFocused = useIsFocused();
   const { loggedUser, GetItemForAlgo, shopScore, setSelectedTab } =
     useContext(userContext);
+    const [isLoading, setIsLoading] = useState(true);
+
+    //itemd data
   const [Items, setItems] = useState([]);
   const [UsersItemPhotos, setUsersItemPhotos] = useState([]);
   const [shopList, setshopList] = useState([]);
+
+  //swipable
   const [swipeableRef, setSwipeableRef] = useState(null);
   const closeSwipeable = () => {
     swipeableRef && swipeableRef.close();
   };
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (isFocused) {

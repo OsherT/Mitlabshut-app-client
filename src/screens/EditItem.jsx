@@ -5,7 +5,7 @@ import {
   SafeAreaView,
   StyleSheet,
   Image,
-  ScrollView
+  ScrollView,
 } from "react-native";
 import React, { useEffect, useState, useContext } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -430,6 +430,7 @@ export default function EditItem(props) {
 
         setSelectedTab("Home");
         setTimeout(() => {
+          setShowAlertModal(false);
           navigation.navigate("MainLayout");
         }, 2000);
       } else {
@@ -544,319 +545,327 @@ export default function EditItem(props) {
   function renderContent() {
     return (
       <View style={{ flex: 1 }}>
-          <ScrollView
-            contentContainerStyle={{ flexGrow: 1 }}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-          >
-        <ContainerComponent>
-          <Text style={styles.header}>עדכון פריט</Text>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}>
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}>
+          <ContainerComponent>
+            <Text style={styles.header}>עדכון פריט</Text>
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}>
+              <Text
+                style={{ textAlign: "right", color: colors.grey3, left: 125 }}>
+                מחיר :
+              </Text>
+              <Text
+                style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+                שם פריט :
+              </Text>
+            </View>
+            <View style={styles.doubleContainer}>
+              <TextInput
+                style={styles.textInput}
+                defaultValue={"₪ " + item.price.toString()}
+                keyboardType="numeric"
+                containerStyle={{ marginBottom: 10 }}
+                onChangeText={(text) => {
+                  setItemPrice(text.slice(2));
+                }}
+              />
+
+              <TextInput
+                style={styles.textInput}
+                defaultValue={item.name}
+                containerStyle={{ marginBottom: 10 }}
+                onChangeText={(text) => setItemName(text)}
+              />
+            </View>
+
             <Text
-              style={{ textAlign: "right", color: colors.grey3, left: 125 }}>
-              מחיר :
+              style={{
+                textAlign: "right",
+                color: colors.grey3,
+                right: 15,
+                top: -20,
+                paddingTop: 20,
+              }}>
+              קטגוריה :
             </Text>
+            <SafeAreaView>
+              <MultiSelect
+                items={categoriesList}
+                selectedItems={selectedCategory}
+                hideTags={false}
+                displayKey="value"
+                uniqueKey="key"
+                onSelectedItemsChange={onSelectedCategoryChange}
+                selectText=""
+                searchInputPlaceholderText="חיפוש"
+                selectedText="נבחרו"
+                submitButtonText="בחרי"
+                noItemsText="לא נמצא מידע"
+                itemTextColor="#000"
+                selectedItemTextColor="#000"
+                selectedItemIconColor="#000"
+                tagRemoveIconColor={COLORS.golden}
+                tagTextColor="#000"
+                tagBorderColor={COLORS.goldenTransparent_03}
+                submitButtonColor={COLORS.golden}
+                itemFontSize={14}
+                //עיצוב הטקסט הראשי
+                styleTextDropdown={{ textAlign: "right", color: "#000" }}
+                //עיצוב החץ
+                styleIndicator={{ right: 295 }}
+                //עיצוב האינפוט הראשי שרואים
+                styleDropdownMenuSubsection={{
+                  backgroundColor: "#FBF8F2",
+                  borderColor: COLORS.goldenTransparent_03,
+                  borderWidth: 1,
+                  borderRadius: 25,
+                  height: 45,
+                  marginBottom: 30,
+                  paddingRight: 0,
+                }}
+                //עיצוב של החיפוש
+                styleInputGroup={styles.InputGroup}
+                //עיצוב של התיבה שמכילה את הרשימה של הפרטים
+                styleListContainer={styles.dropdownContainer}
+                //עיצוב של הכותרת של הפריטים שנבחרו
+                styleTextDropdownSelected={{
+                  textAlign: "right",
+                  color: "#000",
+                }}
+              />
+            </SafeAreaView>
+
+            <Text
+              style={{
+                textAlign: "right",
+                color: colors.grey3,
+                right: 15,
+              }}>
+              סוג פריט :
+            </Text>
+            <SelectList
+              placeholder={item.type}
+              defaultOption={item.type}
+              searchPlaceholder="חיפוש"
+              boxStyles={styles.dropdownInput}
+              dropdownStyles={styles.dropdownContainer}
+              setSelected={(val) => setItemType(val)}
+              data={typesList}
+              notFoundText="לא קיים מידע"
+            />
+
             <Text
               style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
-              שם פריט :
+              מידה :
             </Text>
-          </View>
-          <View style={styles.doubleContainer}>
+            <SelectList
+              placeholder={item.size}
+              defaultOption={item.size}
+              searchPlaceholder="חיפוש"
+              boxStyles={styles.dropdownInput}
+              dropdownStyles={styles.dropdownContainer}
+              setSelected={(val) => setItemSize(val)}
+              data={sizesList}
+              notFoundText="לא קיים מידע"
+            />
+            <Text
+              style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+              צבע :
+            </Text>
+            <SelectList
+              placeholder={item.color}
+              defaultOption={item.color}
+              searchPlaceholder="חיפוש"
+              boxStyles={styles.dropdownInput}
+              dropdownStyles={styles.dropdownContainer}
+              setSelected={(val) => setItemColor(val)}
+              data={colorsList}
+              notFoundText="לא קיים מידע"
+            />
+            <Text
+              style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+              מותג :
+            </Text>
+            <SelectList
+              placeholder={item.brand}
+              defaultOption={item.brand}
+              searchPlaceholder="חיפוש"
+              boxStyles={styles.dropdownInput}
+              dropdownStyles={styles.dropdownContainer}
+              setSelected={(val) => setItemBrand(val)}
+              data={brandsList}
+              notFoundText="לא קיים מידע"
+            />
+            <Text
+              style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+              מצב שימוש :
+            </Text>
+
+            <SelectList
+              placeholder={item.use_condition}
+              defaultOption={item.use_condition}
+              searchPlaceholder="חיפוש"
+              boxStyles={styles.dropdownInput}
+              dropdownStyles={styles.dropdownContainer}
+              setSelected={(val) => setItemCondition(val)}
+              data={conditionsList}
+              save="value"
+              notFoundText="לא קיים מידע"
+            />
+            <Text
+              style={{
+                textAlign: "right",
+                color: colors.grey3,
+                right: 15,
+                top: -20,
+                paddingTop: 20,
+              }}>
+              שיטת איסוף :
+            </Text>
+            <MultiSelect
+              items={deliveryMethodsList}
+              selectedItems={itemDeliveryMethod}
+              hideTags={false}
+              displayKey="value"
+              uniqueKey="key"
+              onSelectedItemsChange={onSelectedDeliveryChange}
+              selectText=""
+              searchInputPlaceholderText="חיפוש"
+              selectedText="נבחרו"
+              submitButtonText="בחרי"
+              noItemsText="לא נמצא מידע"
+              itemTextColor="#000"
+              selectedItemTextColor="#000"
+              selectedItemIconColor="#000"
+              tagRemoveIconColor={COLORS.golden}
+              tagTextColor="#000"
+              tagBorderColor={COLORS.goldenTransparent_03}
+              submitButtonColor={COLORS.golden}
+              itemFontSize={14}
+              //עיצוב הטקסט הראשי
+              styleTextDropdown={{ textAlign: "right", color: "#000" }}
+              //עיצוב החץ
+              styleIndicator={{ right: 295 }}
+              //עיצוב האינפוט הראשי שרואים
+              styleDropdownMenuSubsection={{
+                backgroundColor: "#FBF8F2",
+                borderColor: COLORS.goldenTransparent_03,
+                borderWidth: 1,
+                borderRadius: 25,
+                height: 45,
+                marginBottom: 30,
+                paddingRight: 0,
+              }}
+              //עיצוב של החיפוש
+              styleInputGroup={styles.InputGroup}
+              //עיצוב של התיבה שמכילה את הרשימה של הפרטים
+              styleListContainer={styles.dropdownContainer}
+              //עיצוב של הכותרת של הפריטים שנבחרו
+              styleTextDropdownSelected={{ textAlign: "right", color: "#000" }}
+            />
+
+            <Text
+              style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+              תיאור פריט :
+            </Text>
             <TextInput
-              style={styles.textInput}
-              defaultValue={"₪ " + item.price.toString()}
-              keyboardType="numeric"
+              style={styles.bigInput}
+              defaultValue={item.description}
               containerStyle={{ marginBottom: 10 }}
-              onChangeText={(text) => {
-                setItemPrice(text.slice(2));
+              onChangeText={(text) => setItemDescription(text)}
+            />
+            <View>
+              {itemNewImages.length < 3 && (
+                <TouchableOpacity
+                  onPress={() => pickImage(itemNewImages.length)}>
+                  <View style={styles.picturBtn}>
+                    {Platform.OS === "ios" ? (
+                      <Text
+                        style={{
+                          color: "gray",
+                          paddingTop: 10,
+                          paddingBottom: 30,
+                          textAlign: "center",
+                        }}>
+                        בחרי תמונות חדשות ({itemNewImages.length}/3)
+                      </Text>
+                    ) : (
+                      <Text
+                        style={{
+                          color: "gray",
+                          paddingTop: 10,
+                          paddingBottom: 30,
+                          textAlign: "center",
+                        }}>
+                        בחרי תמונה חדשה ({itemNewImages.length}/1)
+                      </Text>
+                    )}
+                    <AddSvg></AddSvg>
+                  </View>
+                </TouchableOpacity>
+              )}
+            </View>
+
+            {/* מציג את התמונות הקיימות לפני השינוי */}
+            {!flagForNewImg && itemCurrentImages.length > 0 && (
+              <View style={styles.imageContainer}>
+                {itemCurrentImages.map((image, index) => (
+                  <Image
+                    key={index}
+                    source={{ uri: image }}
+                    style={styles.Image}
+                  />
+                ))}
+              </View>
+            )}
+
+            {/* מציג את התמונות החדשות לאחר השינויים*/}
+            {itemNewImages.length > 0 && (
+              <View style={styles.imageContainer}>
+                {itemNewImages.map((image, index) => (
+                  <View key={index}>
+                    <Image source={{ uri: image.uri }} style={styles.Image} />
+                    <TouchableOpacity
+                      style={styles.deleteButton}
+                      onPress={() => {
+                        const newImages = [...itemNewImages]; // Make a copy of the array
+                        newImages.splice(index, 1); // Remove the image at the given index
+                        setItemNewImages(newImages); // Update the state
+
+                        if (newImages.length == 0) {
+                          setFlagForNoImg(true);
+                        }
+                      }}>
+                      <Text style={styles.deleteButtonText}>X</Text>
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </View>
+            )}
+
+            <UploadModal
+              uploading={uploading}
+              message="עדכון פרטים עלול לקחת זמן, אנא המתיני"></UploadModal>
+
+            <Button
+              title="עדכני פרטים "
+              onPress={() => {
+                updateCtegories();
+                flagForNewImg ? uploadImageFB(item.id) : UpdateItem();
               }}
             />
 
-            <TextInput
-              style={styles.textInput}
-              defaultValue={item.name}
-              containerStyle={{ marginBottom: 10 }}
-              onChangeText={(text) => setItemName(text)}
-            />
-          </View>
-
-          <Text
-            style={{
-              textAlign: "right",
-              color: colors.grey3,
-              right: 15,
-              top: -20,
-              paddingTop: 20,
-            }}>
-            קטגוריה :
-          </Text>
-          <SafeAreaView>
-          <MultiSelect
-            items={categoriesList}
-            selectedItems={selectedCategory}
-            hideTags={false}
-            displayKey="value"
-            uniqueKey="key"
-            onSelectedItemsChange={onSelectedCategoryChange}
-            selectText=""
-            searchInputPlaceholderText="חיפוש"
-            selectedText="נבחרו"
-            submitButtonText="בחרי"
-            noItemsText="לא נמצא מידע"
-            itemTextColor="#000"
-            selectedItemTextColor="#000"
-            selectedItemIconColor="#000"
-            tagRemoveIconColor={COLORS.golden}
-            tagTextColor="#000"
-            tagBorderColor={COLORS.goldenTransparent_03}
-            submitButtonColor={COLORS.golden}
-            itemFontSize={14}
-            //עיצוב הטקסט הראשי
-            styleTextDropdown={{ textAlign: "right", color: "#000" }}
-            //עיצוב החץ
-            styleIndicator={{ right: 295 }}
-            //עיצוב האינפוט הראשי שרואים
-            styleDropdownMenuSubsection={{
-              backgroundColor: "#FBF8F2",
-              borderColor: COLORS.goldenTransparent_03,
-              borderWidth: 1,
-              borderRadius: 25,
-              height: 45,
-              marginBottom: 30,
-              paddingRight: 0,
-            }}
-            //עיצוב של החיפוש
-            styleInputGroup={styles.InputGroup}
-            //עיצוב של התיבה שמכילה את הרשימה של הפרטים
-            styleListContainer={styles.dropdownContainer}
-            //עיצוב של הכותרת של הפריטים שנבחרו
-            styleTextDropdownSelected={{ textAlign: "right", color: "#000" }}
-          />
-          </SafeAreaView>
-
-          <Text
-            style={{
-              textAlign: "right",
-              color: colors.grey3,
-              right: 15,
-            }}>
-            סוג פריט :
-          </Text>
-          <SelectList
-            placeholder={item.type}
-            defaultOption={item.type}
-            searchPlaceholder="חיפוש"
-            boxStyles={styles.dropdownInput}
-            dropdownStyles={styles.dropdownContainer}
-            setSelected={(val) => setItemType(val)}
-            data={typesList}
-            notFoundText="לא קיים מידע"
-          />
-
-          <Text style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
-            מידה :
-          </Text>
-          <SelectList
-            placeholder={item.size}
-            defaultOption={item.size}
-            searchPlaceholder="חיפוש"
-            boxStyles={styles.dropdownInput}
-            dropdownStyles={styles.dropdownContainer}
-            setSelected={(val) => setItemSize(val)}
-            data={sizesList}
-            notFoundText="לא קיים מידע"
-          />
-          <Text style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
-            צבע :
-          </Text>
-          <SelectList
-            placeholder={item.color}
-            defaultOption={item.color}
-            searchPlaceholder="חיפוש"
-            boxStyles={styles.dropdownInput}
-            dropdownStyles={styles.dropdownContainer}
-            setSelected={(val) => setItemColor(val)}
-            data={colorsList}
-            notFoundText="לא קיים מידע"
-          />
-          <Text style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
-            מותג :
-          </Text>
-          <SelectList
-            placeholder={item.brand}
-            defaultOption={item.brand}
-            searchPlaceholder="חיפוש"
-            boxStyles={styles.dropdownInput}
-            dropdownStyles={styles.dropdownContainer}
-            setSelected={(val) => setItemBrand(val)}
-            data={brandsList}
-            notFoundText="לא קיים מידע"
-          />
-          <Text style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
-            מצב שימוש :
-          </Text>
-
-          <SelectList
-            placeholder={item.use_condition}
-            defaultOption={item.use_condition}
-            searchPlaceholder="חיפוש"
-            boxStyles={styles.dropdownInput}
-            dropdownStyles={styles.dropdownContainer}
-            setSelected={(val) => setItemCondition(val)}
-            data={conditionsList}
-            save="value"
-            notFoundText="לא קיים מידע"
-          />
-          <Text
-            style={{
-              textAlign: "right",
-              color: colors.grey3,
-              right: 15,
-              top: -20,
-              paddingTop: 20,
-            }}>
-            שיטת איסוף :
-          </Text>
-          <MultiSelect
-            items={deliveryMethodsList}
-            selectedItems={itemDeliveryMethod}
-            hideTags={false}
-            displayKey="value"
-            uniqueKey="key"
-            onSelectedItemsChange={onSelectedDeliveryChange}
-            selectText=""
-            searchInputPlaceholderText="חיפוש"
-            selectedText="נבחרו"
-            submitButtonText="בחרי"
-            noItemsText="לא נמצא מידע"
-            itemTextColor="#000"
-            selectedItemTextColor="#000"
-            selectedItemIconColor="#000"
-            tagRemoveIconColor={COLORS.golden}
-            tagTextColor="#000"
-            tagBorderColor={COLORS.goldenTransparent_03}
-            submitButtonColor={COLORS.golden}
-            itemFontSize={14}
-            //עיצוב הטקסט הראשי
-            styleTextDropdown={{ textAlign: "right", color: "#000" }}
-            //עיצוב החץ
-            styleIndicator={{ right: 295 }}
-            //עיצוב האינפוט הראשי שרואים
-            styleDropdownMenuSubsection={{
-              backgroundColor: "#FBF8F2",
-              borderColor: COLORS.goldenTransparent_03,
-              borderWidth: 1,
-              borderRadius: 25,
-              height: 45,
-              marginBottom: 30,
-              paddingRight: 0,
-            }}
-            //עיצוב של החיפוש
-            styleInputGroup={styles.InputGroup}
-            //עיצוב של התיבה שמכילה את הרשימה של הפרטים
-            styleListContainer={styles.dropdownContainer}
-            //עיצוב של הכותרת של הפריטים שנבחרו
-            styleTextDropdownSelected={{ textAlign: "right", color: "#000" }}
-          />
-
-          <Text style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
-            תיאור פריט :
-          </Text>
-          <TextInput
-            style={styles.bigInput}
-            defaultValue={item.description}
-            containerStyle={{ marginBottom: 10 }}
-            onChangeText={(text) => setItemDescription(text)}
-          />
-          <View>
-            {itemNewImages.length < 3 && (
-              <TouchableOpacity onPress={() => pickImage(itemNewImages.length)}>
-                <View style={styles.picturBtn}>
-                  {Platform.OS === "ios" ? (
-                    <Text
-                      style={{
-                        color: "gray",
-                        paddingTop: 10,
-                        paddingBottom: 30,
-                        textAlign: "center",
-                      }}>
-                      בחרי תמונות חדשות ({itemNewImages.length}/3)
-                    </Text>
-                  ) : (
-                    <Text
-                      style={{
-                        color: "gray",
-                        paddingTop: 10,
-                        paddingBottom: 30,
-                        textAlign: "center",
-                      }}>
-                      בחרי תמונה חדשה ({itemNewImages.length}/1)
-                    </Text>
-                  )}
-                  <AddSvg></AddSvg>
-                </View>
-              </TouchableOpacity>
-            )}
-          </View>
-
-          {/* מציג את התמונות הקיימות לפני השינוי */}
-          {!flagForNewImg && itemCurrentImages.length > 0 && (
-            <View style={styles.imageContainer}>
-              {itemCurrentImages.map((image, index) => (
-                <Image
-                  key={index}
-                  source={{ uri: image }}
-                  style={styles.Image}
-                />
-              ))}
+            <View style={{ marginTop: 20 }}>
+              <ButtonLogIn title="ביטול  " onPress={() => setShowModal(true)} />
             </View>
-          )}
-
-          {/* מציג את התמונות החדשות לאחר השינויים*/}
-          {itemNewImages.length > 0 && (
-            <View style={styles.imageContainer}>
-              {itemNewImages.map((image, index) => (
-                <View key={index}>
-                  <Image source={{ uri: image.uri }} style={styles.Image} />
-                  <TouchableOpacity
-                    style={styles.deleteButton}
-                    onPress={() => {
-                      const newImages = [...itemNewImages]; // Make a copy of the array
-                      newImages.splice(index, 1); // Remove the image at the given index
-                      setItemNewImages(newImages); // Update the state
-
-                      if (newImages.length == 0) {
-                        setFlagForNoImg(true);
-                      }
-                    }}>
-                    <Text style={styles.deleteButtonText}>X</Text>
-                  </TouchableOpacity>
-                </View>
-              ))}
-            </View>
-          )}
-
-          <UploadModal
-            uploading={uploading}
-            message="עדכון פרטים עלול לקחת זמן, אנא המתיני"></UploadModal>
-
-          <Button
-            title="עדכני פרטים "
-            onPress={() => {
-              updateCtegories();
-              flagForNewImg ? uploadImageFB(item.id) : UpdateItem();
-            }}
-          />
-
-          <View style={{ marginTop: 20 }}>
-            <ButtonLogIn title="ביטול  " onPress={() => setShowModal(true)} />
-          </View>
-        </ContainerComponent>
+          </ContainerComponent>
         </ScrollView>
       </View>
     );

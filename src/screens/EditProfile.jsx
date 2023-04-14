@@ -111,6 +111,7 @@ export default function EditProfile() {
 
       setSelectedTab("Home");
       setTimeout(() => {
+        setShowAlertModal(false);
         navigation.navigate("MainLayout");
       }, 2000);
     } else {
@@ -202,219 +203,201 @@ export default function EditProfile() {
   function renderContent() {
     return (
       <View style={{ flex: 1 }}>
-        
-          <ScrollView
-            contentContainerStyle={{ flexGrow: 1 }}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-          >
-            <ContainerComponent>
-              <TouchableOpacity
-                onPress={() => {
-                  pickImage();
-                }}
-              >
-                {!image && (
-                  <ImageBackground
-                    source={{ uri: loggedUser.user_image }}
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}>
+          <ContainerComponent>
+            <TouchableOpacity
+              onPress={() => {
+                pickImage();
+              }}>
+              {!image && (
+                <ImageBackground
+                  source={{ uri: loggedUser.user_image }}
+                  style={{
+                    width: 80,
+                    height: 80,
+                    alignSelf: "center",
+                    marginBottom: 15,
+                  }}
+                  imageStyle={{ borderRadius: 40 }}>
+                  <View
                     style={{
-                      width: 80,
-                      height: 80,
-                      alignSelf: "center",
-                      marginBottom: 15,
-                    }}
-                    imageStyle={{ borderRadius: 40 }}
-                  >
-                    <View
-                      style={{
-                        position: "absolute",
-                        right: -20,
-                        bottom: -20,
-                      }}
-                    >
-                      <Edit />
-                    </View>
-                  </ImageBackground>
-                )}
-                {image && (
-                  <ImageBackground
-                    source={{ uri: image.uri }}
-                    style={{
-                      width: 80,
-                      height: 80,
-                      alignSelf: "center",
-                      marginBottom: 15,
-                    }}
-                    imageStyle={{ borderRadius: 40 }}
-                  >
-                    <View
-                      style={{
-                        position: "absolute",
-                        right: -20,
-                        bottom: -20,
-                      }}
-                    >
-                      <Edit />
-                    </View>
-                  </ImageBackground>
-                )}
-              </TouchableOpacity>
-              <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
-              >
-                שם מלא:
-              </Text>
-              <InputField
-                defaultValue={loggedUser.full_name}
-                icon={<EditTwo />}
-                containerStyle={{ marginBottom: 10 }}
-                onChangeText={(text) => setUserName(text)}
-                keyboardType="text"
-              />
-              <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
-              >
-                כתובת אימייל :
-              </Text>
-              <InputField
-                defaultValue={loggedUser.email}
-                icon={<EditTwo />}
-                containerStyle={{ marginBottom: 10 }}
-                onChangeText={(text) => setUserEmail(text)}
-                keyboardType="text"
-              />
-              <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
-              >
-                כתובת מגורים:
-              </Text>
-              <SafeAreaView style={styles.view}>
-                <GooglePlacesAutocomplete
-                  placeholder={loggedUser.address}
-                  fetchDetails={true}
-                  GooglePlacesSearchQuery={{ rankby: "distance" }}
-                  onPress={(data, details = null) => {
-                    setAddress(data.description);
-                  }}
-                  query={{
-                    key: "AIzaSyAaCpPtzL7apvQuXnKdRhY0omPHiMdc--s",
-                    language: "he",
-                  }}
-                  textInputProps={{
-                    textAlign: "right",
-                    backgroundColor: Platform.OS === "android" ? "#FBF8F2" : "transparent",
-                    placeholderTextColor: "black",
-                  }}
-                  styles={{
-                    container: {
-                      flex: 0,
-                      width: "100%",
-                    },
-                    listView: {
                       position: "absolute",
-                      zIndex: 1,
-                      top: 50,
-                    },
-                    textInputContainer: {
-                      flexDirection: "row",
-                      alignItems: "center",
-                    },
-                    description: {
-                      flex: 1,
-                    },
-                    icon: {
-                      marginHorizontal: 8,
-                    },
+                      right: -20,
+                      bottom: -20,
+                    }}>
+                    <Edit />
+                  </View>
+                </ImageBackground>
+              )}
+              {image && (
+                <ImageBackground
+                  source={{ uri: image.uri }}
+                  style={{
+                    width: 80,
+                    height: 80,
+                    alignSelf: "center",
+                    marginBottom: 15,
                   }}
-                  renderRightButton={() => <EditTwo />}
-                />
-              </SafeAreaView>
-
-              <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
-              >
-                גיל:
-              </Text>
-
-              <SelectList
-                defaultOption={loggedUser.age}
-                placeholder={
-                  <>
-                    {loggedUser.age}
-                    {"    "}
-                    <EditTwo />
-                  </>
-                }
-                searchPlaceholder="חיפוש"
-                boxStyles={styles.dropdownInput}
-                dropdownStyles={styles.dropdownContainer}
-                setSelected={(val) => setUserAge(val)}
-                data={ageList}
-                save="value"
-                notFoundText="לא קיים מידע"
+                  imageStyle={{ borderRadius: 40 }}>
+                  <View
+                    style={{
+                      position: "absolute",
+                      right: -20,
+                      bottom: -20,
+                    }}>
+                    <Edit />
+                  </View>
+                </ImageBackground>
+              )}
+            </TouchableOpacity>
+            <Text
+              style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+              שם מלא:
+            </Text>
+            <InputField
+              defaultValue={loggedUser.full_name}
+              icon={<EditTwo />}
+              containerStyle={{ marginBottom: 10 }}
+              onChangeText={(text) => setUserName(text)}
+              keyboardType="text"
+            />
+            <Text
+              style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+              כתובת אימייל :
+            </Text>
+            <InputField
+              defaultValue={loggedUser.email}
+              icon={<EditTwo />}
+              containerStyle={{ marginBottom: 10 }}
+              onChangeText={(text) => setUserEmail(text)}
+              keyboardType="text"
+            />
+            <Text
+              style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+              כתובת מגורים:
+            </Text>
+            <SafeAreaView style={styles.view}>
+              <GooglePlacesAutocomplete
+                placeholder={loggedUser.address}
+                fetchDetails={true}
+                GooglePlacesSearchQuery={{ rankby: "distance" }}
+                onPress={(data, details = null) => {
+                  setAddress(data.description);
+                }}
+                query={{
+                  key: "AIzaSyAaCpPtzL7apvQuXnKdRhY0omPHiMdc--s",
+                  language: "he",
+                }}
+                textInputProps={{
+                  textAlign: "right",
+                  backgroundColor: "#FBF8F2",
+                  placeholderTextColor: "black",
+                }}
+                styles={{
+                  container: {
+                    flex: 0,
+                    width: "100%",
+                  },
+                  listView: {
+                    position: "absolute",
+                    zIndex: 1,
+                    top: 50,
+                  },
+                  textInputContainer: {
+                    flexDirection: "row",
+                    alignItems: "center",
+                  },
+                  description: {
+                    flex: 1,
+                  },
+                  icon: {
+                    marginHorizontal: 8,
+                  },
+                }}
+                renderRightButton={() => <EditTwo />}
               />
+            </SafeAreaView>
 
-              <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
-              >
-                מספר טלפון:
-              </Text>
-              <InputField
-                defaultValue={loggedUser.phone_number}
-                icon={<EditTwo />}
-                containerStyle={{ marginBottom: 10 }}
-                keyboardType="phone-pad"
-                onChangeText={(text) => setUserPhone(text)}
+            <Text
+              style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+              גיל:
+            </Text>
+
+            <SelectList
+              defaultOption={loggedUser.age}
+              placeholder={
+                <>
+                  {loggedUser.age}
+                  {"    "}
+                  <EditTwo />
+                </>
+              }
+              searchPlaceholder="חיפוש"
+              boxStyles={styles.dropdownInput}
+              dropdownStyles={styles.dropdownContainer}
+              setSelected={(val) => setUserAge(val)}
+              data={ageList}
+              save="value"
+              notFoundText="לא קיים מידע"
+            />
+
+            <Text
+              style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+              מספר טלפון:
+            </Text>
+            <InputField
+              defaultValue={loggedUser.phone_number}
+              icon={<EditTwo />}
+              containerStyle={{ marginBottom: 10 }}
+              keyboardType="phone-pad"
+              onChangeText={(text) => setUserPhone(text)}
+            />
+            <Text
+              style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+              סיסמה:
+            </Text>
+            <InputField
+              defaultValue={loggedUser.password}
+              icon={<EditTwo />}
+              containerStyle={{ marginBottom: 10 }}
+              onChangeText={(text) => setUserPassword(text)}
+              keyboardType="text"
+            />
+            <Text
+              style={{ textAlign: "right", color: colors.grey3, right: 15 }}>
+              תיאור ארון:
+            </Text>
+            <InputField
+              defaultValue={closetDesc}
+              icon={<EditTwo />}
+              containerStyle={{ marginBottom: 10 }}
+              onChangeText={(text) => setclosetDesc(text)}
+              keyboardType="text"
+            />
+
+            <UploadModal
+              uploading={uploading}
+              message="עדכון פרטים עלול לקחת זמן, אנא המתיני"></UploadModal>
+
+            <View style={{ marginTop: 10 }}>
+              <Button
+                title="עדכני פרטים"
+                onPress={() => {
+                  flagForNewImg
+                    ? uploadImageFB(loggedUser.id)
+                    : updateUser(loggedUser.user_image);
+                }}
               />
-              <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
-              >
-                סיסמה:
-              </Text>
-              <InputField
-                defaultValue={loggedUser.password}
-                icon={<EditTwo />}
-                containerStyle={{ marginBottom: 10 }}
-                onChangeText={(text) => setUserPassword(text)}
-                keyboardType="text"
-              />
-              <Text
-                style={{ textAlign: "right", color: colors.grey3, right: 15 }}
-              >
-                תיאור ארון:
-              </Text>
-              <InputField
-                defaultValue={closetDesc}
-                icon={<EditTwo />}
-                containerStyle={{ marginBottom: 10 }}
-                onChangeText={(text) => setclosetDesc(text)}
-                keyboardType="text"
-              />
+            </View>
 
-              <UploadModal
-                uploading={uploading}
-                message="עדכון פרטים עלול לקחת זמן, אנא המתיני"
-              ></UploadModal>
-
-              <View style={{ marginTop: 10 }}>
-                <Button
-                  title="עדכני פרטים"
-                  onPress={() => {
-                    flagForNewImg
-                      ? uploadImageFB(loggedUser.id)
-                      : updateUser(loggedUser.user_image);
-                  }}
-                />
-              </View>
-
-              <View style={{ marginTop: 20 }}>
-                <ButtonLogIn
-                  title="ביטול  "
-                  onPress={() => setShowModal(true)}
-                />
-              </View>
-            </ContainerComponent>
-          </ScrollView>
+            <View style={{ marginTop: 20 }}>
+              <ButtonLogIn title="ביטול  " onPress={() => setShowModal(true)} />
+            </View>
+          </ContainerComponent>
+        </ScrollView>
       </View>
     );
   }

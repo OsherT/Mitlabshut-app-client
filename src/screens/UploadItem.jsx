@@ -12,9 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Header, Button, ContainerComponent } from "../components";
 import { AREA, COLORS, FONTS } from "../constants";
 import { TextInput } from "react-native";
-import {
-  SelectList,
-} from "react-native-dropdown-select-list";
+import { SelectList } from "react-native-dropdown-select-list";
 import * as ImagePicker from "expo-image-picker";
 import { userContext } from "../navigation/userContext";
 import { firebase } from "../../firebaseConfig";
@@ -39,6 +37,7 @@ export default function UploadItem() {
   //modal
   const [showAlertModal, setShowAlertModal] = useState(false);
   const [message, setMessage] = useState("");
+  const [confirmAlertModal, setConfirmAlertModal] = useState(false);
 
   //the section of the item information hooks
   const [itemName, setItemName] = useState("");
@@ -277,6 +276,8 @@ export default function UploadItem() {
 
   const uploadImageFB = async (item_ID) => {
     setUploading(true);
+    var FBfail = false;
+
     const imageLinks = [];
 
     for (let i = 0; i < images.length; i++) {
@@ -303,18 +304,42 @@ export default function UploadItem() {
         imageLinks.push(imageLink);
         console.log(`Image ${filename} uploaded successfully`);
       } catch (error) {
+        FBfail = true;
+
         console.log("error in upload to FB", error);
       }
     }
-    uploadImagesDB(item_ID, imageLinks);
 
-    setUploading(false);
+    if (FBfail) {
+      setUploading(false);
+      setMessage("קיימת שגיאה בהעלאת התמונות,\n  בנתיים שמנו תמונה זמנית 😊");
+      setShowAlertModal(true);
+      setConfirmAlertModal(true);
+      uploadImagesDB(item_ID, imageLinks);
 
-    if (!uploading) {
+      // setSelectedTab("Closet");
+      setTimeout(() => {
+        setShowAlertModal(false);
+        // navigation.navigate("MainLayout");
+         navigation.navigate("OrderSuccessful", {
+           message: "הפריט עלה בהצלחה,\n אל תשכחי לעדכן את תמונות מאוחר יותר !",
+         });
+      }, 2000);
+    } else {
+      uploadImagesDB(item_ID, imageLinks);
       navigation.navigate("OrderSuccessful", {
         message: "הפריט עלה בהצלחה !",
       });
     }
+    // setUploading(false);
+
+    // uploadImagesDB(item_ID, imageLinks);
+
+    // if (!uploading) {
+    //   navigation.navigate("OrderSuccessful", {
+    //     message: "הפריט עלה בהצלחה !",
+    //   });
+    // }
   };
 
   const uploadImagesDB = (item_id, imageLinks) => {
@@ -685,12 +710,12 @@ export default function UploadItem() {
           message={message}
           showModal={showAlertModal}
           setShowModal={setShowAlertModal}
+          confirm={confirmAlertModal}
         />
       )}
     </SafeAreaView>
   );
 }
-
 
 const styles = StyleSheet.create({
   header: {

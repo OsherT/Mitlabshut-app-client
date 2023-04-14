@@ -35,7 +35,8 @@ export default function SignUp() {
   const [userPhone, setUserPhone] = useState("");
   const [userAge, setUserAge] = useState("");
   const [ClosetDisc, setClosetDisc] = useState("ברוכות הבאות לארון החדש שלי");
-    const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [confirmAlertModal, setConfirmAlertModal] = useState(false);
 
   //const [ClosetName, setClosetName] = useState(userName);
   const { setSelectedTab, setloggedUser, registerForPushNotificationsAsync } =
@@ -167,6 +168,8 @@ export default function SignUp() {
 
   const uploadImageFB = async (user) => {
     setUploading(true);
+    var FBfail = false;
+
     const response = await fetch(image.uri);
     const blob = await response.blob();
     const filename =
@@ -176,16 +179,30 @@ export default function SignUp() {
       var ref = firebase.storage().ref().child(filename).put(blob);
       await ref;
       var imageRef = firebase.storage().ref().child(filename);
-      const imageLink = await imageRef.getDownloadURL();
+      var imageLink = await imageRef.getDownloadURL();
       setImage(null);
       setUploading(false);
-      uploadImagesDB(user, imageLink);
 
       if (!uploading) {
         navigation.navigate("AccountCreated");
       }
     } catch (error) {
+      FBfail = true;
       console.log("error in upload to FB", error);
+    }
+    if (FBfail) {
+      setUploading(false);
+      setMessage("קיימת שגיאה בהעלאת התמונה,\n  בנתיים שמנו לך תמונה זמנית 😊");
+      setShowAlertModal(true);
+      setConfirmAlertModal(true);
+
+      setSelectedTab("Home");
+      setTimeout(() => {
+        setShowAlertModal(false);
+        navigation.navigate("MainLayout");
+      }, 2000);
+    } else {
+      uploadImagesDB(user, imageLink);
     }
   };
 
@@ -405,6 +422,7 @@ export default function SignUp() {
           message={message}
           showModal={showAlertModal}
           setShowModal={setShowAlertModal}
+          confirm={confirmAlertModal}
         />
       )}
     </SafeAreaView>

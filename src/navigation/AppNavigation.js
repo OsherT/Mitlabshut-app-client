@@ -270,7 +270,11 @@ export default function Navigation() {
           <Stack.Screen name="WishList" component={WishList} />
           <Stack.Screen name="UploadItem" component={UploadItem} />
           <Stack.Screen name="OrderHistory" component={OrderHistory} />
-          <Stack.Screen name="SignUp" component={SignUp} />
+          <Stack.Screen
+            name="SignUp"
+            component={SignUp}
+            options={{ gestureEnabled: false }}
+          />
           <Stack.Screen name="SearchRes" component={SearchRes} />
           <Stack.Screen name="NewCard" component={NewCard} />
           <Stack.Screen name="MyAddress" component={MyAddress} />

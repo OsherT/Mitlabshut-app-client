@@ -17,20 +17,19 @@ import { userContext } from "../navigation/userContext";
 import { Swipeable } from "react-native-gesture-handler";
 import { Empty } from "../svg";
 
-export default function Order() {
+export default function Order() {//סל קניות של המשתמש
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const { loggedUser, setSelectedTab } = useContext(userContext);
-
   const [ItemsinCart, setItemsinCart] = useState([]);
   const [UsersItemPhotos, setUsersItemPhotos] = useState([]);
   const [ItemsData, setItemsData] = useState([]);
   const [sumTotal, setsumTotal] = useState("");
   const [swipeableRef, setSwipeableRef] = useState(null);
-  const whatsappIcon = `https://cdn-icons-png.flaticon.com/512/124/124034.png`;
   const [isLoading, setIsLoading] = useState(true);
+  const whatsappIcon = `https://cdn-icons-png.flaticon.com/512/124/124034.png`;
 
-  const closeSwipeable = () => {
+  const closeSwipeable = () => {//סגירת המחיקה באמצעות החלקה
     swipeableRef && swipeableRef.close();
   };
   useEffect(() => {
@@ -38,7 +37,7 @@ export default function Order() {
       getShopItems();
     }
   }, [isFocused]);
-
+//קבלת כל הפריטים שנמצאים בסל הקניות של המשתמש
   function getShopItems() {
     axios
       .get(
@@ -60,6 +59,7 @@ export default function Order() {
         setItemsinCart("");
       });
   }
+//קבלת המידע עבור הפריטים שנמצאים בסל הקניות
   function getItemsData(items) {
     const promises = items.map((item) => {
       return axios.get(
@@ -78,6 +78,7 @@ export default function Order() {
         console.log("err in getItemsData", error);
       });
   }
+//קבלת התמונות השייכות לפריטים בסל הקניות
   function GetItemPhotos(items) {
     const promises = items.map((item) => {
       return axios.get(
@@ -96,7 +97,7 @@ export default function Order() {
         console.log("err in GetItemPhotos", error);
       });
   }
-
+//פונקציה המוחקת מסל הקניות של המתמש
   function RemoveFromShopList(itemId) {
     axios
       .delete(
@@ -109,6 +110,7 @@ export default function Order() {
         console.log(err);
       });
   }
+//פונקציה המחשבת את הסכום עבור כל הפריטים בסל, למעט פריטים שלא זמינים
   function calSum(Items) {
     let totalPrice = 0;
     for (let i = 0; i < Items.length; i++) {
@@ -118,13 +120,7 @@ export default function Order() {
     }
     setsumTotal(totalPrice);
   }
-  // const createDeepLink = async (item) => {
-  //   const path = `ProductDetails?item=${JSON.stringify(item)}`;
-  //   const { protocol, hostname } = Linking.parseInitialURLAsync();
-  //   const deepLink = Linking.createURL(path, { protocol, hostname });
-  //   return deepLink;
-  // };
-
+//פונקציה המאפשרת לשלוח הודעת ואטסאפ למוכרת עבור הפריט
   const sendWhatsAppMessage = async (item) => {
     try {
       const res = await axios.get(
@@ -146,7 +142,7 @@ export default function Order() {
       console.log("error in get users data to buy" + err);
     }
   };
-
+//רינדור הפריטים בהתאם לסטטוס שלהם והסכום הכולל
   function renderContent() {
     return (
       <View>

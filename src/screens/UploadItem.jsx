@@ -475,7 +475,7 @@ export default function UploadItem() {
             //עיצוב הטקסט הראשי
             styleTextDropdown={{
               textAlign: "right",
-              color: "gray",
+              color: COLORS.lightGray,
             }}
             //עיצוב החץ
             styleIndicator={{ right: 295 }}
@@ -508,7 +508,7 @@ export default function UploadItem() {
             data={typesList}
             notFoundText="לא קיים מידע"
             inputStyles={[
-              { color: itemType ? "black" : "gray" }, // Set color to black if value is selected, otherwise set to gray
+              { color: itemType ? "black" : COLORS.lightGray }, // Set color to black if value is selected, otherwise set to gray
             ]}
           />
           <SelectList
@@ -520,7 +520,7 @@ export default function UploadItem() {
             data={sizesList}
             notFoundText="לא קיים מידע"
             inputStyles={[
-              { color: itemSize ? "black" : "gray" }, // Set color to black if value is selected, otherwise set to gray
+              { color: itemSize ? "black" : COLORS.lightGray }, // Set color to black if value is selected, otherwise set to gray
             ]}
           />
           <SelectList
@@ -532,7 +532,7 @@ export default function UploadItem() {
             data={colorsList}
             notFoundText="לא קיים מידע"
             inputStyles={[
-              { color: itemColor ? "black" : "gray" }, // Set color to black if value is selected, otherwise set to gray
+              { color: itemColor ? "black" : COLORS.lightGray }, // Set color to black if value is selected, otherwise set to gray
             ]}
           />
           <SelectList
@@ -544,7 +544,7 @@ export default function UploadItem() {
             data={brandsList}
             notFoundText="לא קיים מידע"
             inputStyles={[
-              { color: itemBrand ? "black" : "gray" }, // Set color to black if value is selected, otherwise set to gray
+              { color: itemBrand ? "black" : COLORS.lightGray }, // Set color to black if value is selected, otherwise set to gray
             ]}
           />
           <SelectList
@@ -557,7 +557,7 @@ export default function UploadItem() {
             save="value"
             notFoundText="לא קיים מידע"
             inputStyles={[
-              { color: itemCondition ? "black" : "gray" }, // Set color to black if value is selected, otherwise set to gray
+              { color: itemCondition ? "black" : COLORS.lightGray }, // Set color to black if value is selected, otherwise set to gray
             ]}
           />
 
@@ -582,7 +582,7 @@ export default function UploadItem() {
             submitButtonColor={COLORS.golden}
             itemFontSize={14}
             //עיצוב הטקסט הראשי
-            styleTextDropdown={{ textAlign: "right", color: "gray" }}
+            styleTextDropdown={{ textAlign: "right", color: COLORS.lightGray }}
             //עיצוב החץ
             styleIndicator={{ right: 295 }}
             //עיצוב האינפוט הראשי שרואים
@@ -616,7 +616,7 @@ export default function UploadItem() {
                 <View style={styles.picturBtn}>
                   <Text
                     style={{
-                      color: "gray",
+                      color: COLORS.lightGray,
                       paddingTop: 10,
                       paddingBottom: 30,
                       textAlign: "center",

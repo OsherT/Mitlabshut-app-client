@@ -282,6 +282,9 @@ export default function SignUp() {
               data={ageList}
               save="value"
               notFoundText="לא קיים מידע"
+              inputStyles={[
+                { color: userAge ? "black" : COLORS.lightGray }, // Set color to black if value is selected, otherwise set to gray
+              ]}
             />
             <InputField
               placeholder="סיסמה"

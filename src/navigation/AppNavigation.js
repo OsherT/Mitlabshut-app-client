@@ -287,6 +287,7 @@ export default function Navigation() {
           <Stack.Screen
             name="PasswordHasBeenResetScreen"
             component={PasswordHasBeenResetScreen}
+            options={{ gestureEnabled: false }}
           />
           <Stack.Screen
             name="PaymentMethodCheckout"
@@ -328,7 +329,11 @@ export default function Navigation() {
             name="VerifyPhoneNumber"
             component={VerifyPhoneNumber}
           />
-          <Stack.Screen name="AccountCreated" component={AccountCreated} />
+          <Stack.Screen
+            name="AccountCreated"
+            component={AccountCreated}
+            options={{ gestureEnabled: false }}
+          />
           <Stack.Screen name="Search" component={Search} />
           <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
         </Stack.Navigator>

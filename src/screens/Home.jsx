@@ -222,8 +222,8 @@ export default function Home() {
     axios
       .get(ApiUrl_user + `/GetClosetByUserID/User_ID/${loggedUser.id}`)
       .then((res) => {
-        if (res.data == "No closets yet") {
-          setUsersFollowingList("");
+        if (res.data === "No closets yet") {
+          setUsersFollowingList([]);
         } else {
           const tempUsersFollowList = res.data.map(
             ({ closet_id }) => closet_id

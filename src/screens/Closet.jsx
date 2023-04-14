@@ -41,33 +41,34 @@ export default function Closet(props) {
   const { route } = props;
   const closetId = closetId_ || route?.params?.closetId || loggedUser.closet_id;
   const owner = owner_ || route?.params?.owner || loggedUser;
+  const ApiUrl_user = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User`;
+  const navigation = useNavigation();
 
+  //user
   const [UsersItems, setUsersItems] = useState([]);
   const [UsersItemPhotos, setUsersItemPhotos] = useState([]);
   const [UsersFavList, setUsersFavList] = useState([]);
   const [UsersShopList, setUsersShopList] = useState([]);
   const [ClosetFollowers, setClosetFollowers] = useState([]);
-  const [myClosetFlag, setMyClosetFlag] = useState(false);
   const [UsersFollowingList, setUsersFollowingList] = useState([]);
+
+  //modal
+  const [showModal, setShowModal] = useState(false);
+  const [massage, setMassage] = useState("");
+  const [handleSure, setHandleSure] = useState("");
+  const [showAlertModal, setShowAlertModal] = useState(false);
+  const [message, setMessage] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
   const [ModalItem, setModalItem] = useState("");
   const itemRefs = useRef({}); // Ref for FlatList items
   const buttonRef = useRef(null); // Ref for TouchableOpacity button
 
-  const [showModal, setShowModal] = useState(false);
-  const [massage, setMassage] = useState("");
-  const [handleSure, setHandleSure] = useState("");
-  const [showAlertModal, setShowAlertModal] = useState(false);
-  const [message, setMessage] = useState("");
-
-  const ApiUrl_user = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User`;
-  const navigation = useNavigation();
+  //flag
   const isFocused = useIsFocused();
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingUserData, setIsLoadingUserData] = useState(true);
-
-  //push notification
+  const [myClosetFlag, setMyClosetFlag] = useState(false);
 
   useEffect(() => {
     if (isFocused) {
@@ -79,15 +80,13 @@ export default function Closet(props) {
       getFollowingList();
     }
   }, [isFocused, ClosetFollowers, closetId_, owner_]);
-//פונקציה המחשבת את המיקום שהמודל אמור להיפתח בלחיצה על ה3 נקודות 
-  function handleOptionsMenuPress(buttonX, buttonY, buttonWidth, buttonHeight) {
-    const modalWidth = 120;
-    const modalHeight = 120;
-    const screenWidth = Dimensions.get("screen").width;
-    const screenHeight = Dimensions.get("screen").height;
 
-    const modalX = buttonX + buttonWidth/ 2 - buttonWidth/3; // position modal to the right of the button
-    const modalY = buttonY + buttonHeight / 2 - modalHeight /1.3; // center modal vertically
+  //פונקציה המחשבת את המיקום שהמודל אמור להיפתח בלחיצה על ה3 נקודות
+  function handleOptionsMenuPress(buttonX, buttonY, buttonWidth, buttonHeight) {
+    const modalHeight = 120;
+
+    const modalX = buttonX + buttonWidth / 2 - buttonWidth / 3; // position modal to the right of the button
+    const modalY = buttonY + buttonHeight / 2 - modalHeight / 1.3; // center modal vertically
 
     setModalPosition({
       x: modalX,
@@ -95,7 +94,8 @@ export default function Closet(props) {
     });
     setModalVisible(true);
   }
-// קבלת פרטי הארון המוצג
+
+  // קבלת פרטי הארון המוצג
   function GetClosetDescription() {
     axios
       .get(
@@ -111,7 +111,8 @@ export default function Closet(props) {
         console.log("err in GetClosetDescription ", err);
       });
   }
-//קבלת מספר העוקבים לארון המוצג
+
+  //קבלת מספר העוקבים לארון המוצג
   function GetClosetFollowers_num() {
     axios
       .get(
@@ -126,6 +127,7 @@ export default function Closet(props) {
         console.log("err in GetClosetFollowers_num", err);
       });
   }
+
   //קבלת הפריטים המוצגים בארון
   function GetClosetItems() {
     axios
@@ -146,7 +148,8 @@ export default function Closet(props) {
         console.log("err in GetClosetItems ", err);
       });
   }
-//קבלת תמונות הפריטים
+
+  //קבלת תמונות הפריטים
   function GetItemPhotos(items) {
     // pass the items array as a parameter
     const promises = items.map((item) => {
@@ -169,7 +172,8 @@ export default function Closet(props) {
         setShowAlertModal(true);
       });
   }
-//הצגת פרטי הארון 
+
+  //הצגת פרטי הארון
   function renderUserContent() {
     return (
       <View
@@ -178,7 +182,7 @@ export default function Closet(props) {
           paddingHorizontal: 20,
           paddingTop: 25,
           paddingBottom: 40,
-          justifyContent: "center", 
+          justifyContent: "center",
         }}
         showsHorizontalScrollIndicator={false}>
         <ContainerComponent containerStyle={{ marginBottom: 20 }}>
@@ -197,7 +201,7 @@ export default function Closet(props) {
               </View>
             </TouchableOpacity>
           )}
-       
+
           <ImageBackground
             source={{
               uri: owner.user_image ? owner.user_image : loggedUser.user_image,
@@ -241,7 +245,7 @@ export default function Closet(props) {
               style={{
                 alignItems: "center",
               }}>
-              {!UsersFollowingList.includes(owner.closet_id) && (//אם הארון המוצג שייך למשתמשת אחרת מרונדר כפתור עקבי או הסירי עוקב בהתאם
+              {!UsersFollowingList.includes(owner.closet_id) && ( //אם הארון המוצג שייך למשתמשת אחרת מרונדר כפתור עקבי או הסירי עוקב בהתאם
                 <ButtonFollow
                   title="עקבי"
                   backgroundColor={COLORS.golden}
@@ -253,7 +257,7 @@ export default function Closet(props) {
                       sendPushNotification(
                         owner.token,
                         "follow",
-                        loggedUser.full_name,
+                        loggedUser.full_name
                       ),
                     ]);
                   }}
@@ -271,24 +275,26 @@ export default function Closet(props) {
                 />
               )}
             </View>
-          ) : (<View>
-            {myClosetFlag && UsersItems.length > 0 && (//אם הארון המוצג שייך למשתמשת המחוברת יוצג כפתור הוספת פריט
-              <View
-                style={{
-                  width: 100,
-              alignSelf: "center",
-              marginTop:15
-                }}
-              >
-                {addItemButton()}
-              </View>
-            )}
+          ) : (
+            <View>
+              {myClosetFlag &&
+                UsersItems.length > 0 && ( //אם הארון המוצג שייך למשתמשת המחוברת יוצג כפתור הוספת פריט
+                  <View
+                    style={{
+                      width: 100,
+                      alignSelf: "center",
+                      marginTop: 15,
+                    }}>
+                    {addItemButton()}
+                  </View>
+                )}
             </View>
           )}
         </ContainerComponent>
       </View>
     );
   }
+
   ///handle fav list
   function getFavItems() {
     if (myClosetFlag == false) {
@@ -340,7 +346,6 @@ export default function Closet(props) {
       });
   }
 
-
   //handle shop list
   function getShopItems() {
     if (myClosetFlag == false) {
@@ -390,7 +395,6 @@ export default function Closet(props) {
         console.log("cant add to fav", err);
       });
   }
-
 
   //handle Follow button
   function getFollowingList() {
@@ -443,7 +447,6 @@ export default function Closet(props) {
         console.log("cant unfollow");
       });
   };
-
 
   //רינדור המודל בלחיצה על ה3 נקודות לטובת עריכה\ מחיקה\ סימון כנמכר של פריט
   function renderModal() {
@@ -532,7 +535,8 @@ export default function Closet(props) {
       </Modal>
     );
   }
-//כאשר המשתמש לוחץ על עריכה מעביר לדף עריכת פריט
+
+  //כאשר המשתמש לוחץ על עריכה מעביר לדף עריכת פריט
   function handleEditPress() {
     setModalVisible(false);
     axios
@@ -561,7 +565,8 @@ export default function Closet(props) {
         console.log("cant take categories", err);
       });
   }
-//כאשר המשתמש לוחץ על מכירה- משנה את סטטוס הפריט לנמכר
+
+  //כאשר המשתמש לוחץ על מכירה- משנה את סטטוס הפריט לנמכר
   function handleSalePress() {
     axios
       .put(
@@ -574,7 +579,8 @@ export default function Closet(props) {
         console.log("err in handleSalePress");
       });
   }
-//כאשר הפריט נמצא בסטטוס נמכר הוא יכול להסיר את מצב נמכר ולהחזיר אותו למצב פעיל
+
+  //כאשר הפריט נמצא בסטטוס נמכר הוא יכול להסיר את מצב נמכר ולהחזיר אותו למצב פעיל
   function handleNotSalePress() {
     axios
       .put(
@@ -587,7 +593,8 @@ export default function Closet(props) {
         console.log("err in handleNotSalePress");
       });
   }
-//כאשר המשתמש לחץ על מחיקת פריט, סטטוס הפריט הופך לנמחק
+
+  //כאשר המשתמש לחץ על מחיקת פריט, סטטוס הפריט הופך לנמחק
   function handleDeletePress() {
     axios
       .put(
@@ -634,7 +641,9 @@ export default function Closet(props) {
               elevation: 5,
             }}
             onPress={() => {
-              {console.log("item", item);}
+              {
+                console.log("item", item);
+              }
               navigation.navigate("ProductDetails", {
                 item: item,
               });
@@ -677,7 +686,7 @@ export default function Closet(props) {
                       </View>
                     )}
                     {!myClosetFlag &&
-                      UsersFavList.includes(item.id) &&//הפריט נמצא במועדפים שלי ולכן מרונדר לב מלא, לחיצה עליו תסיר מהמועדפים
+                      UsersFavList.includes(item.id) && //הפריט נמצא במועדפים שלי ולכן מרונדר לב מלא, לחיצה עליו תסיר מהמועדפים
                       item.item_status != "sold" && (
                         <TouchableOpacity
                           style={{ left: 12, top: 12 }}
@@ -686,7 +695,7 @@ export default function Closet(props) {
                         </TouchableOpacity>
                       )}
                     {!myClosetFlag &&
-                      !UsersFavList.includes(item.id) &&//הפריט לא נמצא ברשימת המועדפים שלי ולכן ירונדר לב ריק, לחיצה עליו תוסיף לרשימה
+                      !UsersFavList.includes(item.id) && //הפריט לא נמצא ברשימת המועדפים שלי ולכן ירונדר לב ריק, לחיצה עליו תוסיף לרשימה
                       item.item_status != "sold" && (
                         <TouchableOpacity
                           style={{ left: 12, top: 12 }}
@@ -703,7 +712,7 @@ export default function Closet(props) {
                           <HeartSvg filled={false} />
                         </TouchableOpacity>
                       )}
-                    {myClosetFlag && (//רינדור 3 הנקודות לטובת עריכה מחיקה וסימון כנמכר רק אם הארון המוצג הוא הארון שלי
+                    {myClosetFlag && ( //רינדור 3 הנקודות לטובת עריכה מחיקה וסימון כנמכר רק אם הארון המוצג הוא הארון שלי
                       <TouchableOpacity
                         style={{
                           position: "absolute",
@@ -727,8 +736,7 @@ export default function Closet(props) {
                                 setModalItem(item);
                             }
                           );
-                        }}
-                      >
+                        }}>
                         <View
                           style={{
                             backgroundColor: COLORS.white,
@@ -806,26 +814,29 @@ export default function Closet(props) {
                 ₪ {item.price}
               </Text>
             </View>
-            {!myClosetFlag && UsersShopList.includes(item.id) && (//הפריט נמצא בסל הקניות שלי ולכן לחיצה כאן תסיר אותו מרשימה זו
-              <TouchableOpacity
-                style={{ position: "absolute", right: 12, bottom: 12 }}
-                onPress={() => RemoveFromShopList(item.id)}>
-                <BagSvg color="#626262" inCart={true} />
-              </TouchableOpacity>
-            )}
-            {!myClosetFlag && !UsersShopList.includes(item.id) && (//הפריט לא נמצא בסל הקניות ולכן לחיצה כאן תוסיף לרשימה
-              <TouchableOpacity
-                style={{ position: "absolute", right: 12, bottom: 12 }}
-                onPress={() => AddToShopList(item.id)}>
-                <BagSvg color="#D7BA7B" inCart={false} />
-              </TouchableOpacity>
-            )}
+            {!myClosetFlag &&
+              UsersShopList.includes(item.id) && ( //הפריט נמצא בסל הקניות שלי ולכן לחיצה כאן תסיר אותו מרשימה זו
+                <TouchableOpacity
+                  style={{ position: "absolute", right: 12, bottom: 12 }}
+                  onPress={() => RemoveFromShopList(item.id)}>
+                  <BagSvg color="#626262" inCart={true} />
+                </TouchableOpacity>
+              )}
+            {!myClosetFlag &&
+              !UsersShopList.includes(item.id) && ( //הפריט לא נמצא בסל הקניות ולכן לחיצה כאן תוסיף לרשימה
+                <TouchableOpacity
+                  style={{ position: "absolute", right: 12, bottom: 12 }}
+                  onPress={() => AddToShopList(item.id)}>
+                  <BagSvg color="#D7BA7B" inCart={false} />
+                </TouchableOpacity>
+              )}
           </TouchableOpacity>
         )}
       />
     );
   }
-//אם הארון ריק תופיע הודעה המעידה על כך
+
+  //אם הארון ריק תופיע הודעה המעידה על כך
   function renderMessage() {
     return (
       <View
@@ -850,24 +861,25 @@ export default function Closet(props) {
       </View>
     );
   }
-//כפתור הוספת פריט שמופיע מספר פעמים במיקומים שונים לכן זו פונקציה נפרדת
+
+  //כפתור הוספת פריט שמופיע מספר פעמים במיקומים שונים לכן זו פונקציה נפרדת
   function addItemButton() {
     return (
       <TouchableOpacity
         onPress={() => {
           navigation.navigate("UploadItem");
         }}
-        style={styles.button}
-      >
+        style={styles.button}>
         <Text style={styles.text}>הוסיפי פריט</Text>
-        <Text>{" "}</Text>
+        <Text> </Text>
         <View style={styles.iconContainer}>
           <Plus />
         </View>
       </TouchableOpacity>
     );
   }
-//רינדור פלייסהולדר עד שהפרטי היוזר עולים
+
+  //רינדור פלייסהולדר עד שהפרטי היוזר עולים
   function LoadingUsersdata() {
     return (
       <View
@@ -876,7 +888,7 @@ export default function Closet(props) {
           paddingHorizontal: 20,
           paddingTop: 25,
           paddingBottom: 40,
-          justifyContent: "center", 
+          justifyContent: "center",
         }}
         showsHorizontalScrollIndicator={false}>
         <ContainerComponent containerStyle={{ marginBottom: 20 }}>
@@ -893,6 +905,7 @@ export default function Closet(props) {
       </View>
     );
   }
+
   return (
     <View style={{ flex: 1 }}>
       <SafeAreaView
@@ -930,6 +943,7 @@ export default function Closet(props) {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   button: {
     height: 30,

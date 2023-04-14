@@ -414,12 +414,7 @@ export default function SignUp() {
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
       <Header
         title="הרשמה"
-        // flag="false"
-        // goBack={true}
-        // selectedTab={() => {
-        //   setSelectedTab("Home");
-        //   navigation.goBack();
-        // }}
+      
         flag={true}
         onEdit={true}
         showModal={false}

@@ -109,7 +109,7 @@ export default function EditProfile() {
       setShowAlertModal(true);
       setConfirmAlertModal(true);
 
-      setSelectedTab("Home");
+      setSelectedTab("Closet");
       setTimeout(() => {
         setShowAlertModal(false);
         navigation.navigate("MainLayout");
@@ -137,6 +137,17 @@ export default function EditProfile() {
   const updateUser = (imageLink) => {
     if (address.split(",").length < 3) {
       setMessage("אנא הכניסי כתובת מלאה הכוללת שם רחוב, עיר ומדינה");
+      setShowAlertModal(true);
+    } else if (
+      userName == "" ||
+      userEmail == "" ||
+      userPassword == "" ||
+      userPhone == "" ||
+      image == "" ||
+      address == "" ||
+      userAge == ""
+    ) {
+      setMessage("אנא מלאי את כל הפרטים");
       setShowAlertModal(true);
     } else {
       const newUser = {

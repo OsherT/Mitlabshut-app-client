@@ -22,7 +22,11 @@ export default function Profile() {
   const { loggedUser, setSelectedTab, setClosetId_, setOwner_ } =
     useContext(userContext);
   const isFocused = useIsFocused();
+
+  //usser
   const [usersFollow, setUsersFollow] = useState([]);
+
+  //modal
   const [showModal, setShowModal] = useState(false);
   const [massage, setMassage] = useState("");
 
@@ -238,7 +242,7 @@ export default function Profile() {
     );
   }
 
-  //handel user choice in the modal
+  //handel users choice of the modal
   function handleUserChoice() {
     setSelectedTab("Home");
     navigation.navigate("SignIn");

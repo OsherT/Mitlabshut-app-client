@@ -9,7 +9,7 @@ import {
 import React, { useContext, useEffect, useState, useRef } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { AREA, COLORS, FONTS } from "../constants";
-import { Button, Header,LoadingComponent } from "../components";
+import { Button, Header } from "../components";
 import { Edit, HeartTwoSvg } from "../svg";
 import ButtonFollow from "../components/ButtonFollow";
 import { ScrollView } from "react-native-gesture-handler";
@@ -20,6 +20,7 @@ import axios from "axios";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ButtonLogIn from "../components/ButtonLogIn";
 import WarningModal from "../components/WarningModal";
+import LoadingComponent from "../components/LoadingComponent";
 
 export default function ProductDetails(props) {
   const navigation = useNavigation();

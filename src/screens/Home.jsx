@@ -35,13 +35,7 @@ export default function Home() {
   const [allUsers, setAllUsers] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [massage, setMassage] = useState("");
-  //push notification
 
-  LogBox.ignoreLogs([
-    " Encountered two children with the same key, `1`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.",
-  ]);
-
-  //push notification
   useEffect(() => {
     if (isFocused) {
       GreetingComponent();
@@ -51,7 +45,7 @@ export default function Home() {
       GetSentences();
     }
   }, [isFocused]);
-
+//פונקציה הבודקת איזו שעה ובהתאם לכך מתאימה את הברכה
   function GreetingComponent() {
     const now = new Date();
     const currentHour = now.getHours();
@@ -69,7 +63,7 @@ export default function Home() {
 
     setGreeting(newGreeting);
   }
-
+//מרנדרת את הברכה המכילה שם תמונה ואופציה להתנתקות
   function RenderGreeting() {
     return (
       <View
@@ -87,7 +81,7 @@ export default function Home() {
           },
           shadowOpacity: 0.25,
           shadowRadius: 3.84,
-          elevation: 5, // Add this line for Android compatibility
+          elevation: 5, 
         }}>
         <View style={{ justifyContent: "flex-start", flexDirection: "row" }}>
           <ProfileCategory
@@ -148,7 +142,7 @@ export default function Home() {
       </View>
     );
   }
-
+//קבלת כל המשפטים מהשרת
   function GetSentences() {
     axios
       .get(
@@ -162,7 +156,7 @@ export default function Home() {
         console.log("err in GetSentences", err);
       });
   }
-
+//רינדור המשפטים באופן רנדומלי
   function RenderSentences() {
     if (Sentence !== null) {
       return (
@@ -193,7 +187,7 @@ export default function Home() {
       );
     }
   }
-
+//קבלת הארונות המומלצים לפי האלגוריתם
   function GetRecommendedClosets() {
     axios
       .get(
@@ -206,7 +200,7 @@ export default function Home() {
         console.log("err in GetRecommendedClosets", err);
       });
   }
-
+//קבלת היוזרים עבור הארונות המומלצים
   function GetUsersData1(closets) {
     const promises = closets.map((closet) =>
       axios.get(
@@ -223,7 +217,7 @@ export default function Home() {
         console.log("err in GetUsersData1", err);
       });
   }
-
+//קבלת הארונות שאני עוקבת אחריהם
   function getFollowingList() {
     axios
       .get(ApiUrl_user + `/GetClosetByUserID/User_ID/${loggedUser.id}`)
@@ -241,7 +235,7 @@ export default function Home() {
         console.log("cant get following list", err);
       });
   }
-
+//מעקב אחרי ארון
   const followCloset = (closetID) => {
     axios
       .post(
@@ -256,7 +250,7 @@ export default function Home() {
         console.log("cant follow", err);
       });
   };
-
+//הוררדת מעקב אחרי ארון
   const unfollowCloset = (closetID) => {
     axios
       .delete(
@@ -272,7 +266,7 @@ export default function Home() {
         console.log("cant unfollow", err);
       });
   };
-
+//קבלת כל המשתמשים
   const GetAllUsers = () => {
     fetch(
       "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetAllUsersNotThisOne/UserID/" +
@@ -297,12 +291,11 @@ export default function Home() {
         }
       );
   };
-
-  //handle the sign out
-  function handleUserChoice() {
+//התנתקות מהאפליקציה
+  function LogOut() {
     navigation.navigate("SignIn");
   }
-
+//רינדור הארונות המומלצים שקיבלנו מהאלגוריתם עם כפתור המאפשר לעקוב אחריהם
   function renderRecommendedClosets() {
     return (
       <View
@@ -425,7 +418,7 @@ export default function Home() {
       </View>
     );
   }
-
+//רינדור כל המשתמשים באפליקציה 
   function renderAllUsers() {
     return (
       <View
@@ -557,7 +550,7 @@ export default function Home() {
           showModal={showModal}
           setShowModal={setShowModal}
           massage={massage}
-          handleSure={handleUserChoice}
+          handleSure={LogOut}
         />
       )}
     </ScrollView>

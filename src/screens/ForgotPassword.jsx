@@ -21,13 +21,12 @@ export default function ForgotPassword() {
   const { setSelectedTab } = useContext(userContext);
   const [showAlertModal, setShowAlertModal] = useState(false);
   const [message, setMessage] = useState("");
-
+//בשלב הראשון יש להזין מייל ומספר טלפוון לטובת אימות
   function newpass() {
     if (userEmail == "" || userPhone == "") {
       setMessage("יש למלא את כל הפרטים");
       setShowAlertModal(true);
     } else {
-      //לשלוח לשרת את המייל והטלפון ולקבל חזרה את יוזר
       setUserEmail(userEmail.replace("%40", "@"));
       axios
         .get(
@@ -45,7 +44,7 @@ export default function ForgotPassword() {
         });
     }
   }
-
+//פונקציה המקבלת מהמשתמש סיסמה, מוודאה שהן זהות ומחליפה
   function changePass() {
     if (password == "" || rePassword == "") {
       setMessage("יש למלא את כל הפרטים");
@@ -81,7 +80,7 @@ export default function ForgotPassword() {
         });
     }
   }
-
+  // רינדור שלב האימות
   function renderStepOne() {
     return (
       <KeyboardAwareScrollView
@@ -112,6 +111,7 @@ export default function ForgotPassword() {
       </KeyboardAwareScrollView>
     );
   }
+// רינדור שלב שינוי הסיסמה
   function renderStepTwo() {
     return (
       <KeyboardAwareScrollView

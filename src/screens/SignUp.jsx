@@ -300,13 +300,6 @@ export default function SignUp() {
               onChangeText={(text) => setUserPhone(text)}
               keyboardType="phone-pad"
             />
-
-            {/* <InputField
-              placeholder="שם הארון שלך"
-              containerStyle={{ marginBottom: 20 }}
-              onChangeText={(text) => setClosetName(text)}
-              keyboardType="text"
-            /> */}
             <InputField
               placeholder="תיאור הארון החדש שלך"
               containerStyle={{ marginBottom: 10 }}

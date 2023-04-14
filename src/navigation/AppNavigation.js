@@ -7,20 +7,17 @@ import { userContext } from "./userContext";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import axios from "axios";
-
-import {
-  SignIn,
-  SignUp,
-  ForgotPassword,
-  AccountCreated,
-  RessetPasswordNotice,
-  MainLayout,
-  EditProfile,
-  CartIsEmpty,
-  Order,
-  Filter,
-} from "../screens";
 import Home from "../screens/Home";
+import LogIn from "../screens/LogIn";
+import SignUp from "../screens/SignUp";
+import ForgotPassword from "../screens/ForgotPassword";
+import AccountCreated from "../screens/AccountCreated";
+import RessetPasswordNotice from "../screens/RessetPasswordNotice";
+import MainLayout from "../screens/MainLayout";
+import EditProfile from "../screens/EditProfile";
+import CartIsEmpty from "../screens/CartIsEmpty";
+import Order from "../screens/Order";
+import Filter from "../screens/Filter";
 import ProductDetails from "../screens/ProductDetails";
 import Closet from "../screens/Closet";
 import Search from "../screens/Search";
@@ -34,20 +31,29 @@ import WishList from "../screens/WishList";
 import PasswordHasBeenResetScreen from "../screens/RessetPasswordNotice";
 import SearchRes from "../screens/SearchRes";
 import SearchUsersFollow from "../screens/SearchUsersFollow";
+import SearchAllUsers from "../screens/SearchAllUsers";
 
 const Stack = createStackNavigator();
 
 export default function Navigation() {
   const [selectedTab, setSelectedTab] = useState("Home");
+
+  //user
   const [loggedUser, setloggedUser] = useState("");
+  const [owner_, setOwner_] = useState("");
+
+  //filter
+  const [searchText_, setSearchText_] = useState("");
+  const [sorted_, setSorted_] = useState("");
+  const [type_, setType_] = useState("");
+
+  //clost info
   const [closetDesc, setclosetDesc] = useState("");
   const [closetName, setclosetName] = useState("");
   const [closetId_, setClosetId_] = useState("");
-  const [type_, setType_] = useState("");
-  const [owner_, setOwner_] = useState("");
-  const [searchText_, setSearchText_] = useState("");
+
+  //flag
   const [flag_, setFlag_] = useState(false);
-  const [sorted_, setSorted_] = useState("");
 
   //scores for algo
   const shopScore = 8;
@@ -234,8 +240,8 @@ export default function Navigation() {
             },
             headerShown: false,
           }}
-          initialRouteName="SignIn">
-          <Stack.Screen name="SignIn" component={SignIn} />
+          initialRouteName="LogIn">
+          <Stack.Screen name="LogIn" component={LogIn} />
           <Stack.Screen
             name="SearchUsersFollow"
             component={SearchUsersFollow}
@@ -248,6 +254,8 @@ export default function Navigation() {
             options={{ gestureEnabled: false }}
           />
           <Stack.Screen name="SearchRes" component={SearchRes} />
+          <Stack.Screen name="SearchAllUsers" component={SearchAllUsers} />
+
           <Stack.Screen name="Home" component={Home} />
           <Stack.Screen name="ProductDetails" component={ProductDetails} />
           <Stack.Screen name="ItemsByCtegory" component={ItemsByCtegory} />

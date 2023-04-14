@@ -11,7 +11,6 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { useNavigation } from "@react-navigation/native";
 import { Button, ContainerComponent } from "../components";
 import { AREA, COLORS, FONTS } from "../constants";
-
 import { userContext } from "../navigation/userContext";
 import AlertModal from "../components/AlertModal";
 import { RememberSvg } from "../svg";
@@ -23,7 +22,7 @@ import { RememberSvg } from "../svg";
 // import * as Google from "expo-auth-session/providers/google";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function SignIn() {
+export default function LogIn() {
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api`;
   const { setloggedUser, setSelectedTab } = useContext(userContext);
   const navigation = useNavigation();

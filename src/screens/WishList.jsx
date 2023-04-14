@@ -8,12 +8,15 @@ import {
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
-import { Button, ContainerComponent, Header, Line ,LoadingComponent} from "../components";
+import { Button, ContainerComponent, Header, Line } from "../components";
 import { AREA, COLORS, FONTS } from "../constants";
 import { BagSvg, Empty } from "../svg";
 import axios from "axios";
 import { userContext } from "../navigation/userContext";
 import { Swipeable } from "react-native-gesture-handler";
+import LoadingComponent from "../components/LoadingComponent";
+
+
 export default function WishList() {
   const navigation = useNavigation();
   const isFocused = useIsFocused();

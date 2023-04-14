@@ -10,12 +10,13 @@ import {
 import * as Linking from "expo-linking";
 import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
-import { Header, ContainerComponent, Button, Line,LoadingComponent } from "../components";
+import { Header, ContainerComponent, Button, Line } from "../components";
 import { AREA, COLORS, FONTS } from "../constants";
 import axios from "axios";
 import { userContext } from "../navigation/userContext";
 import { Swipeable } from "react-native-gesture-handler";
 import { Empty } from "../svg";
+import LoadingComponent from "../components/LoadingComponent";
 
 export default function Order() {//סל קניות של המשתמש
   const navigation = useNavigation();
@@ -398,7 +399,7 @@ export default function Order() {//סל קניות של המשתמש
         showsVerticalScrollIndicator: false,
       }}>
       <Header title="סל קניות" />
-      {isLoading ? <LoadingComponent></LoadingComponent> : renderContent()}
+      {isLoading ? <LoadingComponent/> : renderContent()}
     </SafeAreaView>
   );
 }

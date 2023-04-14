@@ -311,6 +311,7 @@ export default function WishList() {
         ) : (
           <ScrollView
             contentContainerStyle={{
+              top:-55,
               flexGrow: 1,
               paddingHorizontal: 20,
               justifyContent: "center",
@@ -345,7 +346,7 @@ export default function WishList() {
                 נראה שאין לך עדיין פריטים שאהבת{" "}
               </Text>
               <Button
-                title="שוטטי בבזאר"
+                title="מצאי פריטים חדשים"
                 onPress={() => {
                   setSelectedTab("Search");
                 }}

@@ -6,6 +6,8 @@ import {
   Image,
   StyleSheet,
   ScrollView,
+  YellowBox, 
+  LogBox
 } from "react-native";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
@@ -35,7 +37,7 @@ export default function Home() {
   const [allUsers, setAllUsers] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [massage, setMassage] = useState("");
-
+  LogBox.ignoreLogs([' Encountered two children with the same key, `1`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.'])
   //push notification
 
   useEffect(() => {

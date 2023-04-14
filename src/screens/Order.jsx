@@ -211,7 +211,7 @@ export default function Order() {
                     disabled={
                       item.item_status === "sold" ||
                       item.item_status === "delete"
-                    }
+                    } 
                   >
                     {UsersItemPhotos.filter(
                       (photo) => photo.item_ID === item.id
@@ -344,25 +344,13 @@ export default function Order() {
                   נראה שאין לך עדיין פריטים בסל הקניות
                 </Text>
                 <Button
-                  title="שוטטי בבזאר"
+                  title="מצאי פריטים חדשים"
                   onPress={() => {
                     setSelectedTab("Search");
                   }}
                 />
               </ContainerComponent>
             </ScrollView>
-            // <Text
-            //   style={{
-            //     textAlign: "center",
-            //     ...FONTS.Mulish_700Bold,
-            //     fontSize: 16,
-            //     textTransform: "capitalize",
-            //     color: COLORS.black,
-            //     marginBottom: 4,
-            //     lineHeight: 16 * 1.2,
-            //   }}>
-            //   סל הקניות שלך ריק{" "}
-            // </Text>
           )}
         </ScrollView>
         {ItemsinCart.length > 0 ? (
@@ -405,51 +393,7 @@ export default function Order() {
       </View>
     );
   }
-  //   function renderCartIsEmpty() {
-  //     return (
-  //         <ScrollView
-  //             contentContainerStyle={{
-  //                 flexGrow: 1,
-  //                 paddingHorizontal: 20,
-  //                 justifyContent: "center",
-  //                 alignItems: "center",
-  //                 paddingVertical: 25,
-  //             }}
-  //             showsHorizontalScrollIndicator={false}
-  //         >
-  //             <ContainerComponent>
-  //                 <View style={{ alignSelf: "center", marginBottom: 35 }}>
-  //                     <Empty />
-  //                 </View>
-  //                 <Text
-  //                     style={{
-  //                         textAlign: "center",
-  //                         ...FONTS.H2,
-  //                         textTransform: "capitalize",
-  //                         color: COLORS.black,
-  //                         lineHeight: 22 * 1.2,
-  //                         marginBottom: 18,
-  //                     }}
-  //                 >
-  //                     Your cart is empty!
-  //                 </Text>
-  //                 <Text
-  //                     style={{
-  //                         textAlign: "center",
-  //                         ...FONTS.Mulish_400Regular,
-  //                         fontSize: 16,
-  //                         color: COLORS.gray,
-  //                         paddingHorizontal: 50,
-  //                         marginBottom: 30,
-  //                     }}
-  //                 >
-  //                     Looks like you haven't made your order yet.
-  //                 </Text>
-  //                 <Button title="shop now" />
-  //             </ContainerComponent>
-  //         </ScrollView>
-  //     );
-  // }
+ 
 
   return (
     <SafeAreaView

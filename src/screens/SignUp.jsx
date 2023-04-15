@@ -142,7 +142,7 @@ export default function SignUp() {
               )
               .then((res) => {
                 if (res.data == -1) {
-                  setMessage("המייל שהזנת כבר תפוס, אנא הזיני מייל אחר");
+                  setMessage("המייל שהזנת כבר קיים במערכת, אנא הזיני מייל אחר");
                   setShowAlertModal(true);
                 } else {
                   setloggedUser(res.data);

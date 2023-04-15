@@ -29,7 +29,7 @@ export default function SignUp() {
     "https://images.squarespace-cdn.com/content/v1/5beb55599d5abb5a47cc4907/1610465905997-2G8SGHXIYCGTF9BQB0OD/female+girl+woman+icon.jpg?format=500w";
   const navigation = useNavigation();
   const { setSelectedTab, setloggedUser, registerForPushNotificationsAsync } =
-  useContext(userContext);
+    useContext(userContext);
   const ageList = Array.from({ length: 109 }, (_, i) => ({
     value: (i + 12).toString(),
     label: `${i + 12}`,
@@ -48,14 +48,14 @@ export default function SignUp() {
   const [showModal, setShowModal] = useState(false);
   const [confirmAlertModal, setConfirmAlertModal] = useState(false);
 
-//FB image
+  //FB image
   const [uploading, setUploading] = useState(false);
   const [image, setImage] = useState("");
   const [showAlertModal, setShowAlertModal] = useState(false);
   const [message, setMessage] = useState("");
   const isFocused = useIsFocused();
 
-//nottifications
+  //nottifications
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState(false);
   const notificationListener = useRef();
@@ -86,7 +86,7 @@ export default function SignUp() {
       };
     }
   }, [isFocused]);
-//פונקציית ההרשמה
+  //פונקציית ההרשמה
   const SignUp = () => {
     if (
       userName == "" ||
@@ -100,15 +100,13 @@ export default function SignUp() {
       //אלו השדות חובה שלנו
       setMessage("יש למלא את כל הפרטים");
       setShowAlertModal(true);
-    } else if (userPhone.length <10) {
+    } else if (userPhone.length < 10) {
       setMessage("אנא הכניסי מספר טלפון תקין");
       setShowAlertModal(true);
-    }
-    else if (address.split(",").length < 3) {
+    } else if (address.split(",").length < 3) {
       setMessage("אנא הכניסי כתובת מלאה הכוללת שם רחוב, עיר ומדינה");
       setShowAlertModal(true);
-    }
-     else {
+    } else {
       const newCloset = {
         //יצירת ארון חדש למשתמשת
         Id: 0,
@@ -143,8 +141,13 @@ export default function SignUp() {
                 newUser
               )
               .then((res) => {
-                setloggedUser(res.data); 
-                uploadImageFB(res.data);
+                if (res.data == -1) {
+                  setMessage("המייל שהזנת כבר תפוס, אנא הזיני מייל אחר");
+                  setShowAlertModal(true);
+                } else {
+                  setloggedUser(res.data);
+                  uploadImageFB(res.data);
+                }
               })
               .catch((err) => {
                 console.log("Error in user", err);
@@ -417,7 +420,6 @@ export default function SignUp() {
     <SafeAreaView style={{ ...AREA.AndroidSafeArea }}>
       <Header
         title="הרשמה"
-      
         flag={true}
         onEdit={true}
         showModal={false}

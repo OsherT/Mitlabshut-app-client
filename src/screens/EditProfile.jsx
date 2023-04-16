@@ -31,7 +31,6 @@ export default function EditProfile() {
     setclosetDesc,
     setSelectedTab,
     setloggedUser,
-    closetName,
     closetDesc,
   } = useContext(userContext);
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
@@ -215,7 +214,7 @@ export default function EditProfile() {
   function renderContent() {
     return (
       <View style={{ flex: 1 }}>
-        <ScrollView
+        <KeyboardAwareScrollView
           contentContainerStyle={{ flexGrow: 1 }}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
@@ -409,7 +408,7 @@ export default function EditProfile() {
               <ButtonLogIn title="ביטול  " onPress={() => setShowModal(true)} />
             </View>
           </ContainerComponent>
-        </ScrollView>
+        </KeyboardAwareScrollView>
       </View>
     );
   }

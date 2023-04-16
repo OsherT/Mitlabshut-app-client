@@ -245,7 +245,7 @@ export default function Profile() {
   //handel users choice of the modal
   function handleUserChoice() {
     setSelectedTab("Home");
-    navigation.navigate("SignIn");
+    navigation.navigate("LogIn");
   }
 
   return (

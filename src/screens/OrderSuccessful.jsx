@@ -45,12 +45,8 @@ export default function OrderSuccessful(props) {
 
           <TouchableOpacity
             onPress={() => {
-<<<<<<< Updated upstream
                navigation.navigate("MainLayout");
 
-=======
-              navigation.navigate("MainLayout");
->>>>>>> Stashed changes
             }}>
             <Text
               style={{

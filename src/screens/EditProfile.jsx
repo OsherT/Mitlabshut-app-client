@@ -115,6 +115,7 @@ export default function EditProfile() {
         navigation.navigate("MainLayout");
       }, 2000);
     } else {
+      setSelectedTab("Closet");
       deleteImageFB();
       updateUser(imageLink);
     }
@@ -170,7 +171,7 @@ export default function EditProfile() {
         description: closetDesc,
         user_name: "0",
       };
-
+      console.log(newUser);
       fetch(ApiUrl + `User/PutUser`, {
         method: "PUT",
         body: JSON.stringify(newUser),
@@ -191,8 +192,15 @@ export default function EditProfile() {
               )
               .then((res) => {
                 setloggedUser(newUser);
+<<<<<<< Updated upstream
                 console.log("newUser",newUser);
+=======
+                console.log(loggedUser.user_image);
+
+>>>>>>> Stashed changes
                 setUserImage(imageLink);
+                console.log(imageLink);
+
                 setFlagForNewImg(false);
                 setUploading(false);
 

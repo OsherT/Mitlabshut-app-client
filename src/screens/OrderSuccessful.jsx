@@ -16,7 +16,7 @@ export default function OrderSuccessful(props) {
   const navigation = useNavigation();
   const message = props.route.params.message;
   const { setSelectedTab } = useContext(userContext);
-  
+
   function renderContent() {
     return (
       <ScrollView
@@ -45,8 +45,12 @@ export default function OrderSuccessful(props) {
 
           <TouchableOpacity
             onPress={() => {
+<<<<<<< Updated upstream
                navigation.navigate("MainLayout");
 
+=======
+              navigation.navigate("MainLayout");
+>>>>>>> Stashed changes
             }}>
             <Text
               style={{

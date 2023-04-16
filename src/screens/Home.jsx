@@ -33,7 +33,7 @@ export default function Home() {
   const [RecoUsers, setRecoUsers] = useState([]);
   const [UsersFollowingList, setUsersFollowingList] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
-  
+
 //modal
   const [showModal, setShowModal] = useState(false);
   const [massage, setMassage] = useState("");
@@ -299,7 +299,7 @@ export default function Home() {
   };
 //התנתקות מהאפליקציה
   function LogOut() {
-    navigation.navigate("SignIn");
+    navigation.navigate("LogIn");
   }
 //רינדור הארונות המומלצים שקיבלנו מהאלגוריתם עם כפתור המאפשר לעקוב אחריהם
   function renderRecommendedClosets() {

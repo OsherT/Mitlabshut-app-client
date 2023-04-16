@@ -7,7 +7,7 @@ import {
   StyleSheet,
 } from "react-native";
 import React, { useContext, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { Header, InputField, Button, ContainerComponent } from "../components";
 import { AREA, COLORS } from "../constants";
 import { Edit, EditTwo } from "../svg";
@@ -24,6 +24,7 @@ import { SelectList } from "react-native-dropdown-select-list";
 import WarningModal from "../components/WarningModal";
 import AlertModal from "../components/AlertModal";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { useEffect } from "react";
 
 export default function EditProfile() {
   const {
@@ -33,9 +34,16 @@ export default function EditProfile() {
     setloggedUser,
     closetName,
     closetDesc,
+    
   } = useContext(userContext);
-  const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
+  const isFocused = useIsFocused();
 
+  const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/`;
+  useEffect(() => {
+    if (isFocused) {
+      GetClosetDescription();
+    }
+  }, []);
   //modals
   const [showModal, setShowModal] = useState(false);
   const navigation = useNavigation();
@@ -132,7 +140,19 @@ export default function EditProfile() {
       console.log("Error FB deleting image:", error);
     }
   };
-
+  function GetClosetDescription() {
+    axios
+      .get(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Closet/Get/" +
+        userClosetId
+      )
+      .then((res) => {
+        setclosetDesc(res.data[0].description);
+      })
+      .catch((err) => {
+        console.log("err in GetClosetDescription ", err);
+      });
+  }
   //update users details
   const updateUser = (imageLink) => {
     if (address.split(",").length < 3) {

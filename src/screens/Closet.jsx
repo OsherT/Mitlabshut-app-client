@@ -78,6 +78,9 @@ export default function Closet(props) {
       getShopItems();
       getFavItems();
       getFollowingList();
+      // const {
+      //   loggedUser,
+      // } = useContext(userContext);
     }
   }, [isFocused, ClosetFollowers, closetId_, owner_]);
 

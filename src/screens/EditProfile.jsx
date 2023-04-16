@@ -32,7 +32,6 @@ export default function EditProfile() {
     setclosetDesc,
     setSelectedTab,
     setloggedUser,
-    closetName,
     closetDesc,
     
   } = useContext(userContext);
@@ -123,6 +122,7 @@ export default function EditProfile() {
         navigation.navigate("MainLayout");
       }, 2000);
     } else {
+      setSelectedTab("Closet");
       deleteImageFB();
       updateUser(imageLink);
     }
@@ -190,7 +190,6 @@ export default function EditProfile() {
         description: closetDesc,
         user_name: "0",
       };
-
       fetch(ApiUrl + `User/PutUser`, {
         method: "PUT",
         body: JSON.stringify(newUser),
@@ -211,7 +210,6 @@ export default function EditProfile() {
               )
               .then((res) => {
                 setloggedUser(newUser);
-                console.log("newUser",newUser);
                 setUserImage(imageLink);
                 setFlagForNewImg(false);
                 setUploading(false);
@@ -236,7 +234,7 @@ export default function EditProfile() {
   function renderContent() {
     return (
       <View style={{ flex: 1 }}>
-        <ScrollView
+        <KeyboardAwareScrollView
           contentContainerStyle={{ flexGrow: 1 }}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}>
@@ -430,7 +428,7 @@ export default function EditProfile() {
               <ButtonLogIn title="ביטול  " onPress={() => setShowModal(true)} />
             </View>
           </ContainerComponent>
-        </ScrollView>
+        </KeyboardAwareScrollView>
       </View>
     );
   }

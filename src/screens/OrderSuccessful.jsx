@@ -16,7 +16,7 @@ export default function OrderSuccessful(props) {
   const navigation = useNavigation();
   const message = props.route.params.message;
   const { setSelectedTab } = useContext(userContext);
-  
+
   function renderContent() {
     return (
       <ScrollView

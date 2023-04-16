@@ -145,7 +145,8 @@ export default function EditProfile() {
       userPhone == "" ||
       image == "" ||
       address == "" ||
-      userAge == ""
+      userAge == ""||
+      closetDesc==""
     ) {
       setMessage("אנא מלאי את כל הפרטים");
       setShowAlertModal(true);
@@ -190,6 +191,7 @@ export default function EditProfile() {
               )
               .then((res) => {
                 setloggedUser(newUser);
+                console.log("newUser",newUser);
                 setUserImage(imageLink);
                 setFlagForNewImg(false);
                 setUploading(false);

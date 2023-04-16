@@ -163,25 +163,27 @@ export default function Navigation() {
   };
 
   //על כל פעולה שהגדרנו- לייק לפריט, הוספת פריט לסל קניות וצפייה בפריט מעדכנים את טבלת הניקוד
-  const algorithmFunc = (score, loggedUser_id, item_type, itemCategories) => {
-    itemCategories.map((category_name) => {
-      axios
-        .post(
-          `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/SmartAlgoStepOne/category_name/${hebrewToUrlEncoded(
-            category_name
-          )}/item_type_name/${hebrewToUrlEncoded(
-            item_type
-          )}/score/${score}/user_id/${loggedUser_id}`
-        )
-        .then((res) => {
-          console.log("succ in algo");
-        })
-        .catch((err) => {
-          console.log("err in algo", err);
-        });
-    });
-
-    itemCategories.splice(0, itemCategories.length);
+  const algorithmFunc = (item_id, score, loggedUser_id, item_type, itemCategories) => {
+    if (Array.isArray(itemCategories)) {
+      itemCategories.map((category_name) => {
+        axios
+          .post(
+            `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/SmartAlgoStepOne/category_name/${hebrewToUrlEncoded(
+              category_name
+            )}/item_type_name/${hebrewToUrlEncoded(
+              item_type
+            )}/score/${score}/user_id/${loggedUser_id}`
+          )
+          .then((res) => {
+            console.log("succ in algo");
+          })
+          .catch((err) => {
+            console.log("err in algo", err);
+          });
+      });
+  
+      itemCategories.splice(0, itemCategories.length);
+    }
   };
 
   //Encode the Ebrew

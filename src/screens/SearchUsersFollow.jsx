@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused } from "@react-navigation/native";
-import { ContainerComponent, Header } from "../components";
+import { Button, ContainerComponent, Header } from "../components";
 import { COLORS, FONTS } from "../constants";
 import { Empty, FilterSvg, SearchSvg } from "../svg";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -235,39 +235,12 @@ export default function SearchUsersFollow() {
             לא נמצאו משתמשות{" "}
           </Text>
           <View>
-            <TouchableOpacity
-              onPress={() => setSelectedTab("Profile")}
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-                paddingVertical: 8,
-                paddingHorizontal: 4,
-                marginBottom: 15,
-                backgroundColor: "#F2F2F2",
-                borderRadius: 20,
-                borderWidth: 1,
-                borderColor: "#E5E5E5",
-                shadowColor: "#000",
-                shadowOffset: {
-                  width: 0,
-                  height: 2,
-                },
-                shadowOpacity: 0.23,
-                shadowRadius: 2.62,
-                elevation: 4,
-              }}>
-              <FilterSvg filled={true} />
-              <Text
-                style={{
-                  fontSize: 16,
-                  fontWeight: "bold",
-                  color: "#333",
-                  marginLeft: 8,
-                }}>
-                חזרה לדף האישי
-              </Text>
-            </TouchableOpacity>
+            <Button
+              title="חפשי חברות קהילה חדשות"
+              onPress={() => {
+                setSelectedTab("SearchAllUsers");
+              }}
+            />
           </View>
         </ContainerComponent>
       </ScrollView>

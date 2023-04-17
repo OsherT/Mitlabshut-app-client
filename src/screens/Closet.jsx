@@ -71,12 +71,6 @@ export default function Closet(props) {
 
   useEffect(() => {
     if (isFocused) {
-      console.log("loggedUser closet", loggedUser);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (isFocused) {
       setMyClosetFlag(loggedUser.closet_id === closetId);
       GetClosetDescription();
       GetClosetItems();

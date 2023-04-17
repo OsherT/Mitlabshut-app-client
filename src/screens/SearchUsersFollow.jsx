@@ -16,6 +16,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { userContext } from "../navigation/userContext";
 import axios from "axios";
 import { ScrollView } from "react-native-gesture-handler";
+import LoadingComponent from "../components/LoadingComponent";
 
 export default function SearchUsersFollow() {
   const [searchName, setSearchName] = useState("");
@@ -23,7 +24,10 @@ export default function SearchUsersFollow() {
     useContext(userContext);
   const isFocused = useIsFocused();
   const [usersFollow, setUsersFollow] = useState([]);
+
+  //flag
   const [noRes, setNoRes] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     if (isFocused || searchName == "") {
@@ -51,6 +55,7 @@ export default function SearchUsersFollow() {
       .then(
         (data) => {
           setUsersFollow(data);
+          setIsLoading(false);
         },
         (error) => {
           console.log("GetUsersFollow error", error);
@@ -73,6 +78,7 @@ export default function SearchUsersFollow() {
         } else {
           console.log("NO RES");
           setNoRes(true);
+          // setUsersFollow([]);
         }
       })
       .catch((err) => {
@@ -135,7 +141,7 @@ export default function SearchUsersFollow() {
   function renderUsers() {
     return (
       <KeyboardAwareScrollView>
-        {usersFollow.length > 0 ? (
+        {usersFollow.length > 0 && !noRes ? (
           <View style={{ paddingHorizontal: 20 }}>
             {usersFollow.map((user, index) => {
               return (
@@ -185,16 +191,7 @@ export default function SearchUsersFollow() {
             })}
           </View>
         ) : (
-          <Text
-            style={{
-              ...FONTS.Mulish_700Bold,
-              fontSize: 16,
-              color: COLORS.black,
-              lineHeight: 50 * 1.2,
-              textAlign: "center",
-            }}>
-            אין ארונות במעקב עדיין
-          </Text>
+          noSearchResults()
         )}
       </KeyboardAwareScrollView>
     );
@@ -235,7 +232,7 @@ export default function SearchUsersFollow() {
               paddingHorizontal: 50,
               marginBottom: 30,
             }}>
-            לא נמצאו משתמשים התואמים את החיפוש שלך{" "}
+            לא נמצאו משתמשות{" "}
           </Text>
           <View>
             <TouchableOpacity
@@ -289,8 +286,8 @@ export default function SearchUsersFollow() {
         selectedTab={"Profile"}
         flag={false}
       />
-      {renderSearch()}
-      {!noRes ? renderUsers() : noSearchResults()}
+      {!noRes && renderSearch()}
+      {isLoading ? <LoadingComponent></LoadingComponent> : renderUsers()}
     </SafeAreaView>
   );
 }

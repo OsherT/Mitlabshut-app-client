@@ -11,11 +11,16 @@ import { ContainerComponent } from "../components";
 import { AREA, COLORS, FONTS } from "../constants";
 import { Success } from "../svg";
 import { userContext } from "../navigation/userContext";
+import { useEffect } from "react";
 
 export default function OrderSuccessful(props) {
   const navigation = useNavigation();
   const message = props.route.params.message;
-  const { setSelectedTab } = useContext(userContext);
+  const { setSelectedTab, loggedUser } = useContext(userContext);
+
+  useEffect(() => {
+    console.log("loggedUser", loggedUser);
+  }, []);
 
   function renderContent() {
     return (
@@ -45,8 +50,7 @@ export default function OrderSuccessful(props) {
 
           <TouchableOpacity
             onPress={() => {
-               navigation.navigate("MainLayout");
-
+              navigation.navigate("MainLayout");
             }}>
             <Text
               style={{

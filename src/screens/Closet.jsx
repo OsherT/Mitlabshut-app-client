@@ -28,7 +28,6 @@ export default function Closet(props) {
     loggedUser,
     setclosetDesc,
     setclosetName,
-    closetName,
     closetDesc,
     GetItemForAlgo,
     shopScore,
@@ -72,17 +71,20 @@ export default function Closet(props) {
 
   useEffect(() => {
     if (isFocused) {
+      console.log("loggedUser closet", loggedUser);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (isFocused) {
       setMyClosetFlag(loggedUser.closet_id === closetId);
       GetClosetDescription();
       GetClosetItems();
       getShopItems();
       getFavItems();
       getFollowingList();
-      // const {
-      //   loggedUser,
-      // } = useContext(userContext);
     }
-  }, [isFocused, ClosetFollowers, closetId_, owner_]);
+  }, [isFocused, ClosetFollowers, closetId_, owner_, loggedUser]);
 
   //פונקציה המחשבת את המיקום שהמודל אמור להיפתח בלחיצה על ה3 נקודות
   function handleOptionsMenuPress(buttonX, buttonY, buttonWidth, buttonHeight) {
@@ -189,7 +191,7 @@ export default function Closet(props) {
         }}
         showsHorizontalScrollIndicator={false}>
         <ContainerComponent containerStyle={{ marginBottom: 20 }}>
-          {myClosetFlag && (
+          {/* {myClosetFlag && (
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate("EditProfile");
@@ -203,7 +205,7 @@ export default function Closet(props) {
                 <Edit />
               </View>
             </TouchableOpacity>
-          )}
+          )} */}
 
           <ImageBackground
             source={{

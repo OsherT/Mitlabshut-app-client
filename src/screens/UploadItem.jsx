@@ -317,16 +317,15 @@ export default function UploadItem() {
       setConfirmAlertModal(true);
       uploadImagesDB(item_ID, imageLinks);
 
-      // setSelectedTab("Closet");
       setTimeout(() => {
         setShowAlertModal(false);
-        // navigation.navigate("MainLayout");
-         navigation.navigate("OrderSuccessful", {
-           message: "הפריט עלה בהצלחה,\n אל תשכחי לעדכן את תמונות מאוחר יותר !",
-         });
+        navigation.navigate("OrderSuccessful", {
+          message: "הפריט עלה בהצלחה,\n אל תשכחי לעדכן את תמונות מאוחר יותר !",
+        });
       }, 2000);
     } else {
       uploadImagesDB(item_ID, imageLinks);
+      setUploading(false);
       navigation.navigate("OrderSuccessful", {
         message: "הפריט עלה בהצלחה !",
       });

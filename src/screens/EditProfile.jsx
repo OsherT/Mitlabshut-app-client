@@ -33,7 +33,6 @@ export default function EditProfile() {
     setSelectedTab,
     setloggedUser,
     closetDesc,
-    
   } = useContext(userContext);
   const isFocused = useIsFocused();
 
@@ -122,7 +121,7 @@ export default function EditProfile() {
         navigation.navigate("MainLayout");
       }, 2000);
     } else {
-      setSelectedTab("Closet");
+      navigation.navigate("MainLayout");
       deleteImageFB();
       updateUser(imageLink);
     }
@@ -140,11 +139,12 @@ export default function EditProfile() {
       console.log("Error FB deleting image:", error);
     }
   };
+
   function GetClosetDescription() {
     axios
       .get(
         "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Closet/Get/" +
-        userClosetId
+          userClosetId
       )
       .then((res) => {
         setclosetDesc(res.data[0].description);
@@ -165,8 +165,8 @@ export default function EditProfile() {
       userPhone == "" ||
       image == "" ||
       address == "" ||
-      userAge == ""||
-      closetDesc==""
+      userAge == "" ||
+      closetDesc == ""
     ) {
       setMessage("אנא מלאי את כל הפרטים");
       setShowAlertModal(true);
@@ -209,12 +209,14 @@ export default function EditProfile() {
                 newClosetData
               )
               .then((res) => {
+                console.log("newUser", newUser);
                 setloggedUser(newUser);
                 setUserImage(imageLink);
                 setFlagForNewImg(false);
                 setUploading(false);
 
                 if (!uploading) {
+                  setSelectedTab("Profile");
                   navigation.navigate("OrderSuccessful", {
                     message: "הפרטים עודכנו בהצלחה !",
                   });

@@ -25,8 +25,11 @@ import WarningModal from "../components/WarningModal";
 import AlertModal from "../components/AlertModal";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useEffect } from "react";
+import { LogBox } from "react-native";
 
 export default function EditProfile() {
+  LogBox.ignoreAllLogs(); //Ignore all log notifications
+
   const {
     loggedUser,
     setclosetDesc,

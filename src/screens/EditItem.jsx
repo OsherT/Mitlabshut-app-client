@@ -24,8 +24,11 @@ import ButtonLogIn from "../components/ButtonLogIn";
 import UploadModal from "../components/Uploading";
 import WarningModal from "../components/WarningModal";
 import AlertModal from "../components/AlertModal";
+import { LogBox } from "react-native";
 
 export default function EditItem(props) {
+  LogBox.ignoreAllLogs(); //Ignore all log notifications
+
   const item = props.route.params.item;
   const itemCurrentImages = props.route.params.itemImages;
   const isFocused = useIsFocused();
@@ -348,15 +351,6 @@ export default function EditItem(props) {
   const pickImage = async () => {
     let selectedImages = []; // declare selectedImages with let
     let result;
-
-    // let result = await ImagePicker.launchImageLibraryAsync({
-    //   mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    //   aspect: [4, 3],
-    //   quality: 1,
-    //   allowsMultipleSelection: true, // Allow multiple image selection
-    //   selectionLimit: 3,
-    //   orderedSelection: true,
-    // });
     if (Platform.OS === "ios") {
       result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,

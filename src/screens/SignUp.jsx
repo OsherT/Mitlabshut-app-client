@@ -23,8 +23,11 @@ import { SelectList } from "react-native-dropdown-select-list";
 import AlertModal from "../components/AlertModal";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
+import { LogBox } from "react-native";
 
 export default function SignUp() {
+  LogBox.ignoreAllLogs(); //Ignore all log notifications
+
   const difPic =
     "https://images.squarespace-cdn.com/content/v1/5beb55599d5abb5a47cc4907/1610465905997-2G8SGHXIYCGTF9BQB0OD/female+girl+woman+icon.jpg?format=500w";
   const navigation = useNavigation();
@@ -258,14 +261,12 @@ export default function SignUp() {
               marginBottom: 20,
               lineHeight: 32 * 1.2,
               textTransform: "capitalize",
-            }}
-          >
+            }}>
             הצטרפי לקהילה שלנו
           </Text>
           <ScrollView
             keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-          >
+            showsVerticalScrollIndicator={false}>
             <InputField
               placeholder="שם מלא"
               containerStyle={{ marginBottom: 10 }}
@@ -343,8 +344,7 @@ export default function SignUp() {
                   style={styles.deleteButton}
                   onPress={() => {
                     setImage(""); // Update the state
-                  }}
-                >
+                  }}>
                   <Text style={styles.deleteButtonText}>X</Text>
                 </TouchableOpacity>
               </View>
@@ -356,8 +356,7 @@ export default function SignUp() {
                       style={{
                         color: "gray",
                         textAlign: "center",
-                      }}
-                    >
+                      }}>
                       הוסיפי תמונת פרופיל
                     </Text>
                     <AddSvg></AddSvg>
@@ -368,8 +367,7 @@ export default function SignUp() {
 
             <UploadModal
               uploading={uploading}
-              message="ההרשמה עלולה לקחת זמן, אנא המתיני"
-            ></UploadModal>
+              message="ההרשמה עלולה לקחת זמן, אנא המתיני"></UploadModal>
             <View>
               <Button title="הרשמה" onPress={() => SignUp()} />
             </View>
@@ -382,16 +380,14 @@ export default function SignUp() {
                 marginBottom: 13,
                 flexDirection: "row",
                 top: 20,
-              }}
-            >
+              }}>
               <TouchableOpacity onPress={() => navigation.navigate("SignIn")}>
                 <Text
                   style={{
                     ...FONTS.Mulish_400Regular,
                     fontSize: 16,
                     color: COLORS.black,
-                  }}
-                >
+                  }}>
                   {" "}
                   התחברי
                 </Text>
@@ -401,8 +397,7 @@ export default function SignUp() {
                   ...FONTS.Mulish_400Regular,
                   fontSize: 16,
                   color: COLORS.gray,
-                }}
-              >
+                }}>
                 כבר חלק מהקהילה?{" "}
               </Text>
             </View>

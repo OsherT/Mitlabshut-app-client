@@ -23,8 +23,11 @@ import UploadModal from "../components/Uploading";
 import WarningModal from "../components/WarningModal";
 import AlertModal from "../components/AlertModal";
 import * as ImageManipulator from "expo-image-manipulator";
+import { LogBox } from "react-native";
 
 export default function UploadItem() {
+  LogBox.ignoreAllLogs(); //Ignore all log notifications
+
   const navigation = useNavigation();
   const { loggedUser } = useContext(userContext);
   const difPic =

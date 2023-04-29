@@ -101,6 +101,7 @@ export default function SignUp() {
       address == "" ||
       userAge == ""
     ) {
+      
       //אלו השדות חובה שלנו
       setMessage("יש למלא את כל הפרטים");
       setShowAlertModal(true);

@@ -6,6 +6,7 @@ import {
   Image,
   ScrollView,
   LogBox,
+  StyleSheet
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
@@ -16,6 +17,9 @@ import { userContext } from "../navigation/userContext";
 import axios from "axios";
 import ButtonFollow from "../components/ButtonFollow";
 import WarningModal from "../components/WarningModal";
+import MapView, { Marker } from "react-native-maps";
+import * as Permissions from 'expo-permissions';
+ 
 
 export default function Home() {
   const navigation = useNavigation();
@@ -29,18 +33,22 @@ export default function Home() {
   } = useContext(userContext);
   const ApiUrl_user = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User`;
 
-//users
+  //users
   const [RecoUsers, setRecoUsers] = useState([]);
   const [UsersFollowingList, setUsersFollowingList] = useState([]);
   const [allUsers, setAllUsers] = useState([]);
 
-//modal
+  //modal
   const [showModal, setShowModal] = useState(false);
   const [massage, setMassage] = useState("");
 
-//general
+  //general
   const [greeting, setGreeting] = useState("");
   const [Sentence, setSentence] = useState([]);
+
+  //map
+  const [region, setRegion] = useState(null);
+
 
   useEffect(() => {
     if (isFocused) {
@@ -51,7 +59,33 @@ export default function Home() {
       GetSentences();
     }
   }, [isFocused]);
-//פונקציה הבודקת איזו שעה ובהתאם לכך מתאימה את הברכה
+
+  //map use effect
+
+  useEffect(() => {
+    (async () => {
+      // Check for location permissions
+      let { status } = await Location.requestPermissionsAsync();
+      if (status !== "granted") {
+        alert("Permission to access location was denied");
+        return;
+      }
+  
+      // Get current location
+      let location = await Location.getCurrentPositionAsync({});
+  
+      // Set map region to current location with zoom level
+      let region = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        latitudeDelta: 0.0901, // Adjust this value for desired zoom level
+        longitudeDelta: 0.0741, // Adjust this value for desired zoom level
+      };
+      setRegion(region);
+    })();
+  }, []);
+  
+  //פונקציה הבודקת איזו שעה ובהתאם לכך מתאימה את הברכה
   function GreetingComponent() {
     const now = new Date();
     const currentHour = now.getHours();
@@ -69,7 +103,7 @@ export default function Home() {
 
     setGreeting(newGreeting);
   }
-//מרנדרת את הברכה המכילה שם תמונה ואופציה להתנתקות
+  //מרנדרת את הברכה המכילה שם תמונה ואופציה להתנתקות
   function RenderGreeting() {
     return (
       <View
@@ -87,8 +121,9 @@ export default function Home() {
           },
           shadowOpacity: 0.25,
           shadowRadius: 3.84,
-          elevation: 5, 
-        }}>
+          elevation: 5,
+        }}
+      >
         <View style={{ justifyContent: "flex-start", flexDirection: "row" }}>
           <ProfileCategory
             icon={<SignOutCategory />}
@@ -104,7 +139,8 @@ export default function Home() {
             justifyContent: "flex-end",
             flexDirection: "row",
             alignItems: "center",
-          }}>
+          }}
+        >
           <Text
             style={{
               ...FONTS.Mulish_700Bold,
@@ -113,7 +149,8 @@ export default function Home() {
               color: COLORS.black,
               lineHeight: 20 * 1.2,
               marginRight: 3,
-            }}>
+            }}
+          >
             {loggedUser.full_name}!
           </Text>
           <Text
@@ -123,7 +160,8 @@ export default function Home() {
               textTransform: "capitalize",
               color: COLORS.gray,
               lineHeight: 20 * 1.2,
-            }}>
+            }}
+          >
             {greeting},
           </Text>
           {loggedUser.user_image && (
@@ -132,7 +170,8 @@ export default function Home() {
                 setSelectedTab("Closet");
                 setClosetId_(loggedUser.closet_id);
                 setOwner_(loggedUser);
-              }}>
+              }}
+            >
               <Image
                 source={{ uri: loggedUser.user_image }}
                 style={{
@@ -148,7 +187,7 @@ export default function Home() {
       </View>
     );
   }
-//קבלת כל המשפטים מהשרת
+  //קבלת כל המשפטים מהשרת
   function GetSentences() {
     axios
       .get(
@@ -162,7 +201,7 @@ export default function Home() {
         console.log("err in GetSentences", err);
       });
   }
-//רינדור המשפטים באופן רנדומלי
+  //רינדור המשפטים באופן רנדומלי
   function RenderSentences() {
     if (Sentence !== null) {
       return (
@@ -178,7 +217,8 @@ export default function Home() {
             shadowRadius: 20,
             overflow: "hidden",
             marginTop: 15,
-          }}>
+          }}
+        >
           <Text
             style={{
               fontSize: 15,
@@ -186,14 +226,15 @@ export default function Home() {
               textAlign: "center",
               margin: 20,
               color: "#333",
-            }}>
+            }}
+          >
             "{Sentence}"
           </Text>
         </View>
       );
     }
   }
-//קבלת הארונות המומלצים לפי האלגוריתם
+  //קבלת הארונות המומלצים לפי האלגוריתם
   function GetRecommendedClosets() {
     axios
       .get(
@@ -206,7 +247,7 @@ export default function Home() {
         console.log("err in GetRecommendedClosets", err);
       });
   }
-//קבלת היוזרים עבור הארונות המומלצים
+  //קבלת היוזרים עבור הארונות המומלצים
   function GetUsersData1(closets) {
     const promises = closets.map((closet) =>
       axios.get(
@@ -223,7 +264,7 @@ export default function Home() {
         console.log("err in GetUsersData1", err);
       });
   }
-//קבלת הארונות שאני עוקבת אחריהם
+  //קבלת הארונות שאני עוקבת אחריהם
   function getFollowingList() {
     axios
       .get(ApiUrl_user + `/GetClosetByUserID/User_ID/${loggedUser.id}`)
@@ -241,7 +282,7 @@ export default function Home() {
         console.log("cant get following list", err);
       });
   }
-//מעקב אחרי ארון
+  //מעקב אחרי ארון
   const followCloset = (closetID) => {
     axios
       .post(
@@ -256,7 +297,7 @@ export default function Home() {
         console.log("cant follow", err);
       });
   };
-//הוררדת מעקב אחרי ארון
+  //הוררדת מעקב אחרי ארון
   const unfollowCloset = (closetID) => {
     axios
       .delete(
@@ -272,7 +313,7 @@ export default function Home() {
         console.log("cant unfollow", err);
       });
   };
-//קבלת כל המשתמשים
+  //קבלת כל המשתמשים
   const GetAllUsers = () => {
     fetch(
       "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetAllUsersNotThisOne/UserID/" +
@@ -297,11 +338,11 @@ export default function Home() {
         }
       );
   };
-//התנתקות מהאפליקציה
+  //התנתקות מהאפליקציה
   function LogOut() {
     navigation.navigate("LogIn");
   }
-//רינדור הארונות המומלצים שקיבלנו מהאלגוריתם עם כפתור המאפשר לעקוב אחריהם
+  //רינדור הארונות המומלצים שקיבלנו מהאלגוריתם עם כפתור המאפשר לעקוב אחריהם
   function renderRecommendedClosets() {
     return (
       <View
@@ -316,7 +357,8 @@ export default function Home() {
           shadowOpacity: 0.25,
           shadowRadius: 3.84,
           elevation: 5, // Add this line for Android compatibility
-        }}>
+        }}
+      >
         <View
           style={{
             flexDirection: "row",
@@ -324,7 +366,8 @@ export default function Home() {
             justifyContent: "space-between",
             paddingHorizontal: 20,
             marginBottom: 10,
-          }}>
+          }}
+        >
           <Text
             style={{
               ...FONTS.Mulish_700Bold,
@@ -332,7 +375,8 @@ export default function Home() {
               textTransform: "capitalize",
               color: COLORS.black,
               lineHeight: 20 * 1.2,
-            }}>
+            }}
+          >
             ארונות מומלצים במיוחד בשבילך
           </Text>
         </View>
@@ -354,7 +398,8 @@ export default function Home() {
                   setSelectedTab("Closet");
                   setClosetId_(user.closet_id);
                   setOwner_(user);
-                }}>
+                }}
+              >
                 <Image
                   source={{ uri: user.user_image }}
                   style={{
@@ -367,7 +412,8 @@ export default function Home() {
                   style={{
                     paddingHorizontal: 15,
                     paddingVertical: 12,
-                  }}>
+                  }}
+                >
                   <Text
                     style={{
                       ...FONTS.Mulish_600SemiBold,
@@ -376,14 +422,16 @@ export default function Home() {
                       color: COLORS.black,
                       marginBottom: 5,
                       textAlign: "center",
-                    }}>
+                    }}
+                  >
                     הארון של {user.full_name}
                   </Text>
                   <View
                     style={{
                       justifyContent: "center",
                       alignItems: "center",
-                    }}>
+                    }}
+                  >
                     {!UsersFollowingList.includes(user.closet_id) && (
                       <ButtonFollow
                         title="עקבי"
@@ -424,7 +472,7 @@ export default function Home() {
       </View>
     );
   }
-//רינדור כל המשתמשים באפליקציה 
+  //רינדור כל המשתמשים באפליקציה
   function renderAllUsers() {
     return (
       <View
@@ -439,7 +487,8 @@ export default function Home() {
           shadowOpacity: 0.25,
           shadowRadius: 3.84,
           elevation: 5, // Add this line for Android compatibility
-        }}>
+        }}
+      >
         <View
           style={{
             flexDirection: "row",
@@ -447,11 +496,13 @@ export default function Home() {
             justifyContent: "space-between",
             paddingHorizontal: 20,
             marginBottom: 10,
-          }}>
+          }}
+        >
           <TouchableOpacity
             onPress={() => {
               setSelectedTab("SearchAllUsers");
-            }}>
+            }}
+          >
             <Text
               style={{
                 ...FONTS.Mulish_700Bold,
@@ -459,7 +510,8 @@ export default function Home() {
                 textTransform: "capitalize",
                 color: COLORS.black,
                 lineHeight: 20 * 1.2,
-              }}>
+              }}
+            >
               חברות קהילה חדשות... <SearchSvg />
             </Text>
           </TouchableOpacity>
@@ -483,7 +535,8 @@ export default function Home() {
                     setSelectedTab("Closet");
                     setClosetId_(user.closet_id);
                     setOwner_(user);
-                  }}>
+                  }}
+                >
                   <View
                     style={{
                       height: 106,
@@ -491,7 +544,8 @@ export default function Home() {
                       backgroundColor: COLORS.white,
                       paddingTop: 3,
                       paddingHorizontal: 3,
-                    }}>
+                    }}
+                  >
                     <Image
                       source={{ uri: user.user_image }}
                       style={{
@@ -505,7 +559,8 @@ export default function Home() {
                     style={{
                       paddingHorizontal: 15,
                       paddingVertical: 12,
-                    }}>
+                    }}
+                  >
                     <Text
                       style={{
                         ...FONTS.Mulish_600SemiBold,
@@ -513,7 +568,8 @@ export default function Home() {
                         textTransform: "capitalize",
                         color: COLORS.black,
                         textAlign: "center",
-                      }}>
+                      }}
+                    >
                       {user.full_name}
                     </Text>
                   </View>
@@ -531,13 +587,15 @@ export default function Home() {
               color: COLORS.black,
               lineHeight: 20 * 1.2,
               textAlign: "center",
-            }}>
+            }}
+          >
             אין משתמשים כרגע{" "}
           </Text>
         )}
       </View>
     );
   }
+
 
   return (
     <ScrollView
@@ -546,7 +604,8 @@ export default function Home() {
         top: 50,
       }}
       contentContainerStyle={{ paddingBottom: 30 }}
-      showsVerticalScrollIndicator={false}>
+      showsVerticalScrollIndicator={false}
+    >
       {RenderGreeting()}
       {renderAllUsers()}
       {RenderSentences()}
@@ -559,6 +618,24 @@ export default function Home() {
           handleSure={LogOut}
         />
       )}
+      <View style={styles.mapContainer}>
+        <MapView style={styles.mapStyle} region={region} showsUserLocation={true}>
+          {region && <Marker coordinate={region} />}
+        </MapView>
+      </View>
     </ScrollView>
   );
 }
+const styles = StyleSheet.create({
+  mapContainer: {
+    height: 200,
+    margin: 10,
+    borderWidth: 1,
+    borderColor: "#000",
+    borderRadius: 10,
+    overflow: "hidden",
+  },
+  mapStyle: {
+    flex: 1,
+  },
+});

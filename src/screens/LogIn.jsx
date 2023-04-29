@@ -174,6 +174,8 @@ export default function LogIn() {
             value={userPassword}
             containerStyle={{ marginBottom: 20 }}
             ref={passwordInputRef}
+            secureTextEntry={true}
+
           />
 
           <View style={styles.textUpperContainer}>

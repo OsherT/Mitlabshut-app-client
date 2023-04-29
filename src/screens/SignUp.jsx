@@ -27,6 +27,7 @@ import { LogBox } from "react-native";
 
 export default function SignUp() {
   LogBox.ignoreAllLogs(); //Ignore all log notifications
+  const israeliPhoneRegex = /^0(5[^7]|[2-4]|[8-9]|7[0-9])[0-9]{7}$/;
 
   const difPic =
     "https://images.squarespace-cdn.com/content/v1/5beb55599d5abb5a47cc4907/1610465905997-2G8SGHXIYCGTF9BQB0OD/female+girl+woman+icon.jpg?format=500w";
@@ -103,7 +104,7 @@ export default function SignUp() {
       //אלו השדות חובה שלנו
       setMessage("יש למלא את כל הפרטים");
       setShowAlertModal(true);
-    } else if (userPhone.length < 10) {
+    } else if (!israeliPhoneRegex.test(userPhone)) {
       setMessage("אנא הכניסי מספר טלפון תקין");
       setShowAlertModal(true);
     } else if (address.split(",").length < 3) {

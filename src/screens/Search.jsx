@@ -6,6 +6,8 @@ import {
   StatusBar,
   TouchableOpacity,
   ImageBackground,
+  FlatList,
+  Image,
 } from "react-native";
 import React, { useEffect, useState, useContext } from "react";
 import { useIsFocused } from "@react-navigation/native";
@@ -18,16 +20,27 @@ import { userContext } from "../navigation/userContext";
 
 export default function Search() {
   const ApiUrl = `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api`;
-  const { setSelectedTab, setSearchText_, setType_, setFlag_, setSorted_ } =
-    useContext(userContext);
+  const {
+    setSelectedTab,
+    setSearchText_,
+    setType_,
+    setFlag_,
+    setSorted_,
+    loggedUser,
+    setClosetId_,
+    setOwner_,
+  } = useContext(userContext);
   const isFocused = useIsFocused();
+
   const [typeList, setTypeList] = useState([]);
   const [search, setsearch] = useState("");
+  const [allUsers, setAllUsers] = useState([]);
 
-  //renders the types when the page finishes to load
+  //renders the types & users when the page finishes to load
   useEffect(() => {
     if (isFocused) {
       getTypeList();
+      GetAllUsers();
     }
     return () => {};
   }, []);
@@ -42,6 +55,32 @@ export default function Search() {
       .catch((err) => {
         console.log("err in typeList ", err);
       });
+  };
+
+  //gets the users list
+  const GetAllUsers = () => {
+    fetch(
+      "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetAllUsersNotThisOne/UserID/" +
+        loggedUser.id,
+      {
+        method: "GET",
+        headers: new Headers({
+          "Content-Type": "application/json; charset=UTF-8",
+          Accept: "application/json; charset=UTF-8",
+        }),
+      }
+    )
+      .then((res) => {
+        return res.json();
+      })
+      .then(
+        (data) => {
+          setAllUsers(data);
+        },
+        (error) => {
+          console.log("GetAllUsers error", error);
+        }
+      );
   };
 
   //renders the search section (upper)
@@ -88,6 +127,118 @@ export default function Search() {
             }}
           />
         </View>
+      </View>
+    );
+  }
+
+  //renders the app users
+  function renderAllUsers() {
+    return (
+      <View
+        style={{
+          alignItems: "flex-end",
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+          elevation: 5, // Add this line for Android compatibility
+        }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "space-between",
+            paddingHorizontal: 20,
+            marginBottom: 10,
+          }}>
+          <TouchableOpacity
+            onPress={() => {
+              setSelectedTab("SearchAllUsers");
+            }}>
+            <Text
+              style={{
+                ...FONTS.Mulish_700Bold,
+                fontSize: 16,
+                textTransform: "capitalize",
+                color: COLORS.black,
+                lineHeight: 20 * 1.2,
+              }}>
+              חברות קהילה חדשות... <SearchSvg />
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {allUsers.length > 0 ? (
+          <FlatList
+            data={allUsers}
+            horizontal={true}
+            keyExtractor={(user) => user.closet_id}
+            renderItem={({ item: user, index }) => {
+              return (
+                <TouchableOpacity
+                  style={{
+                    width: 80,
+                    marginRight: 15,
+                    borderRadius: 10,
+                  }}
+                  onPress={() => {
+                    setSelectedTab("Closet");
+                    setClosetId_(user.closet_id);
+                    setOwner_(user);
+                  }}>
+                  <View
+                    style={{
+                      // height: 106,
+                      height: 106,
+                      borderRadius: 90,
+                      backgroundColor: COLORS.white,
+                      paddingTop: 3,
+                      paddingHorizontal: 3,
+                    }}>
+                    <Image
+                      source={{ uri: user.user_image }}
+                      style={{
+                        height: 100,
+                        borderRadius: 90,
+                      }}
+                    />
+                  </View>
+                  <View
+                    style={{
+                      paddingHorizontal: 15,
+                      paddingVertical: 12,
+                    }}>
+                    <Text
+                      style={{
+                        ...FONTS.Mulish_600SemiBold,
+                        fontSize: 13,
+                        textTransform: "capitalize",
+                        color: COLORS.black,
+                        textAlign: "center",
+                      }}>
+                      {user.full_name}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            }}
+            contentContainerStyle={{ paddingLeft: 20 }}
+            showsHorizontalScrollIndicator={false}
+          />
+        ) : (
+          <Text
+            style={{
+              ...FONTS.Mulish_700Bold,
+              fontSize: 14,
+              color: COLORS.black,
+              lineHeight: 20 * 1.2,
+              textAlign: "center",
+            }}>
+            אין משתמשים כרגע{" "}
+          </Text>
+        )}
       </View>
     );
   }
@@ -167,8 +318,9 @@ export default function Search() {
         shadowRadius: 3.84,
         elevation: 5, // Add this line for Android compatibility
       }}>
-      <Header title="חיפוש פריט" goBack={false} />
+      <Header title="חיפוש" goBack={false} />
       {renderSearch()}
+      {renderAllUsers()}
       {renderTyps()}
     </SafeAreaView>
   );

@@ -21,14 +21,22 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "Mitlabshut",
-      "associatedDomains": ["applinks:expo.dev"]
+      "associatedDomains": ["applinks:expo.dev"],
+      "config": {
+        "googleMapsApiKey": "AIzaSyA1U7xCIe-6cXLJvIwNdCBZxfKrlwfpz00"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.george_kulishavili.rossi"
+      "package": "com.george_kulishavili.rossi",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyD2JUr94XqMS__BzvZvpj_3nhEGgiViOR8"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"

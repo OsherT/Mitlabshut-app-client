@@ -32,6 +32,8 @@ import PasswordHasBeenResetScreen from "../screens/RessetPasswordNotice";
 import SearchRes from "../screens/SearchRes";
 import SearchUsersFollow from "../screens/SearchUsersFollow";
 import SearchAllUsers from "../screens/SearchAllUsers";
+import Map from "../screens/Map";
+
 
 const Stack = createStackNavigator();
 
@@ -249,6 +251,7 @@ export default function Navigation() {
             component={SearchUsersFollow}
           />
           <Stack.Screen name="WishList" component={WishList} />
+          <Stack.Screen name="Map" component={Map} />
           <Stack.Screen name="UploadItem" component={UploadItem} />
           <Stack.Screen
             name="SignUp"

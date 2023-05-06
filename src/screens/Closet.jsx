@@ -911,7 +911,7 @@ export default function Closet(props) {
     <View style={{ flex: 1 }}>
       <SafeAreaView
         style={{ ...AREA.AndroidSafeArea, backgroundColor: "none" }}>
-        <Header goBack={false} />
+        <Header title="ארון אישי" goBack={false} />
         {showAlertModal && (
           <WarningModal
             massage={message}

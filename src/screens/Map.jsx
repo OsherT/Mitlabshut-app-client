@@ -67,8 +67,7 @@ const Map = () => {
           ...AREA.AndroidSafeArea,
           backgroundColor: "none",
         }}>
-        <Header goBack={false} />
-
+        <Header title="מפת חנויות" goBack={false} />
         {currentLocation && stores ? (
           <MapView
             style={styles.map}

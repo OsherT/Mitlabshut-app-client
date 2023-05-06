@@ -178,7 +178,7 @@ export default function Home() {
       </View>
     );
   }
-  
+
   //קבלת כל המשפטים מהשרת
   function GetSentences() {
     axios
@@ -202,7 +202,7 @@ export default function Home() {
           style={{
             borderWidth: 0,
             borderRadius: 10,
-            padding: 30,
+            padding: 15, 
             backgroundColor: "#fff",
             shadowColor: "#000",
             shadowOffset: { width: 2, height: 2 },
@@ -352,7 +352,6 @@ export default function Home() {
             return (
               <TouchableOpacity
                 style={{
-                  height: "100%",
                   width: 180,
                   backgroundColor: COLORS.white,
                   marginRight: 15,
@@ -373,7 +372,6 @@ export default function Home() {
                 />
                 <View
                   style={{
-                    paddingHorizontal: 15,
                     paddingVertical: 12,
                   }}>
                   <Text
@@ -433,7 +431,6 @@ export default function Home() {
     );
   }
 
-
   return (
     <View style={{ flex: 1 }}>
       <SafeAreaView
@@ -446,8 +443,9 @@ export default function Home() {
           contentContainerStyle={{ paddingBottom: 30 }}
           showsVerticalScrollIndicator={false}>
           {RenderGreeting()}
-          {RenderSentences()}
           {renderRecommendedClosets()}
+
+          {RenderSentences()}
           {showModal && (
             <WarningModal
               showModal={showModal}
@@ -462,7 +460,7 @@ export default function Home() {
               region={region}
               showsUserLocation={true}>
               {region && <Marker coordinate={region} />}
-            </MapView> 
+            </MapView>
           </View>
         </ScrollView>
       </SafeAreaView>

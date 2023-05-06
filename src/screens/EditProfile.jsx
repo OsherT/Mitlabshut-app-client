@@ -192,7 +192,6 @@ export default function EditProfile() {
       const newClosetData = {
         id: loggedUser.closet_id,
         description: closetDesc,
-        user_name: "0",
       };
       fetch(ApiUrl + `User/PutUser`, {
         method: "PUT",

@@ -7,21 +7,29 @@ import {
   TouchableOpacity,
   Modal,
   SafeAreaView,
+  Linking,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import axios from "axios";
 import LoadingComponent from "../components/LoadingComponent";
-import { Header } from "../components";
-import { AREA } from "../constants";
+import { Header, Button, ProfileCategory } from "../components";
+import { AREA, COLORS } from "../constants";
+import { CanceledSvg, HeartSvg } from "../svg";
+import { useContext } from "react";
+import { userContext } from "../navigation/userContext";
 
 const Map = () => {
   const [currentLocation, setCurrentLocation] = useState(null);
   const [stores, setstores] = useState([]);
+  const [UsersFavList, setUsersFavList] = useState([]);
   const [selectedStore, setSelectedStore] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const Store_map_icon =
     "https://firebasestorage.googleapis.com/v0/b/mitlabshut-final.appspot.com/o/AppImages%2Fstore_map_icon.png?alt=media&token=79fc64b1-f12b-40f0-9171-b89e3daca894";
+  const { loggedUser } = useContext(userContext);
+  const [showFavorites, setShowFavorites] = useState(false);
+
   useEffect(() => {
     // Request permission to access the user's location
     (async () => {
@@ -35,7 +43,10 @@ const Map = () => {
       let location = await Location.getCurrentPositionAsync({});
       setCurrentLocation(location.coords);
     })();
+
     getStoresList();
+    getUsersFavList();
+    
   }, []);
 
   //הבאת כל החנויות
@@ -43,11 +54,57 @@ const Map = () => {
     axios
       .get("https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Stores/Get")
       .then((res) => {
-        console.log(res.data);
         setstores(res.data);
       })
       .catch((err) => {
         console.log("cant get stores list", err);
+      });
+  }
+
+  function getUsersFavList() {
+    axios
+      .get(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Stores/Get/" +
+          loggedUser.id
+      )
+      .then((res) => {
+        if (res.data == "No such stores yet") {
+          setUsersFavList("");
+        } else {
+          console.log(res.data);
+          setUsersFavList(res.data);
+        }
+      })
+      .catch((err) => {
+        console.log("cant get fav stores list", err);
+      });
+  }
+
+  function addStoreToFav() {
+    axios
+      .post(
+         `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Stores/PostFavStore?UserID=${loggedUser.id}&StoreID=${selectedStore?.store_ID}`
+         
+      )
+      .then((res) => {
+        getUsersFavList();
+      })
+      .catch((err) => {
+        console.log("cant post store to fav", err);
+      });
+  }
+  
+  function removeFromFav() {
+    axios
+      .delete(
+         `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Stores/DeleteFavItem/Store_ID/${selectedStore?.store_ID}/User_ID/${loggedUser.id}`
+         
+      )
+      .then((res) => {
+        getUsersFavList();
+      })
+      .catch((err) => {
+        console.log("cant delete store to fav", err);
       });
   }
 
@@ -59,48 +116,81 @@ const Map = () => {
   const closeModal = () => {
     setIsModalVisible(false);
   };
+
+  const handlePhoneNumberPress = () => {
+    if (selectedStore?.phone_number) {
+      const phoneNumber = `tel:${selectedStore.phone_number}`;
+      Linking.openURL(phoneNumber);
+    }
+  };
+
+  const openWaze = () => {
+    const [latitude, longitude] =
+      selectedStore?.address_coordinates.split(", ");
+    const parsedLatitude = parseFloat(latitude);
+    const parsedLongitude = parseFloat(longitude);
+    const url = `https://waze.com/ul?ll=${parsedLatitude},${parsedLongitude}&navigate=yes`;
+    Linking.openURL(url);
+  };
+
+  const openFacebook = () => {
+    const url = selectedStore?.facebook_link;
+    Linking.openURL(url);
+  };
+
+  const openInsta = () => {
+    const url = selectedStore?.instegram_link;
+    Linking.openURL(url);
+  };
+
+  
+
+ 
+
   return (
-    // <View style={styles.container}>
     <View style={{ flex: 1 }}>
       <SafeAreaView
         style={{
           ...AREA.AndroidSafeArea,
           backgroundColor: "none",
-        }}>
+        }}
+      >
         <Header title="מפת חנויות" goBack={false} />
-        {currentLocation && stores ? (
-          <MapView
-            style={styles.map}
-            initialRegion={{
-              latitude: currentLocation.latitude,
-              longitude: currentLocation.longitude,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421,
-            }}
-            provider="google"
-            customMapStyle={[]}
-            showsUserLocation={true}
-            showsMyLocationButton={true}>
-            {stores.map((store, index) => {
-              const [latitude, longitude] =
-                store.address_coordinates.split(", ");
-              const parsedLatitude = parseFloat(latitude);
-              const parsedLongitude = parseFloat(longitude);
+        <View style={styles.mapContainer}>
+          {currentLocation && stores && UsersFavList ? (
+            <MapView
+              style={styles.map}
+              initialRegion={{
+                latitude: currentLocation.latitude,
+                longitude: currentLocation.longitude,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+              }}
+              provider="google"
+              customMapStyle={[]}
+              showsUserLocation={true}
+              showsMyLocationButton={true}
+            >
+              {stores.map((store, index) => {
+                const [latitude, longitude] =
+                  store.address_coordinates.split(", ");
+                const parsedLatitude = parseFloat(latitude);
+                const parsedLongitude = parseFloat(longitude);
 
-              if (isNaN(parsedLatitude) || isNaN(parsedLongitude)) {
-                // Handle the case when the coordinates are invalid
-                console.log("Invalid coordinates for store:", store); //
-              } else {
-                return (
-                  <Marker
-                    key={index}
-                    coordinate={{
-                      latitude: parseFloat(latitude),
-                      longitude: parseFloat(longitude),
-                    }}
-                    title={store.name}
-                    onPress={() => handleMarkerPress(store)}>
-                    {/* <Image
+                if (isNaN(parsedLatitude) || isNaN(parsedLongitude)) {
+                  // Handle the case when the coordinates are invalid
+                  console.log("Invalid coordinates for store:", store); //
+                } else {
+                  return (
+                    <Marker
+                      key={index}
+                      coordinate={{
+                        latitude: parseFloat(latitude),
+                        longitude: parseFloat(longitude),
+                      }}
+                      onPress={() => handleMarkerPress(store)}
+                    >
+                      {/* <Image
                     source={{ uri: Store_map_icon }}
                     style={{
                         width: 32,
@@ -109,24 +199,78 @@ const Map = () => {
                       paddingBottom: 40,
                     }}
                   /> */}
-                  </Marker>
-                );
-              }
-            })}
-          </MapView>
-        ) : (
-          <View style={styles.loadingContainer}>
-            <LoadingComponent></LoadingComponent>
-          </View>
-        )}
-        <Modal visible={isModalVisible} animationType="slide">
+                    </Marker>
+                  );
+                }
+              })}
+            </MapView>
+          ) : (
+            <View style={styles.loadingContainer}>
+              <LoadingComponent></LoadingComponent>
+            </View>
+          )}
+        </View>
+        <Modal
+          visible={isModalVisible}
+          animationType="slide"
+          transparent={true}
+        >
           <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>{selectedStore?.name}</Text>
-            <Text style={styles.modalAddress}>{selectedStore?.address}</Text>
-            {/* Add more details or components for the store */}
-            <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
-              <Text style={styles.closeButtonText}>Close</Text>
-            </TouchableOpacity>
+            <View style={styles.miniModalContent}>
+              <View style={styles.modalHeader}>
+                
+                  {UsersFavList.some(item => item.store_ID === selectedStore?.store_ID )? (
+                    <TouchableOpacity onPress={removeFromFav}>
+                      <HeartSvg filled={true} />
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity onPress={addStoreToFav}>
+                    <HeartSvg filled={false} />
+                  </TouchableOpacity>
+                  )}
+            
+                <View style={styles.titleContainer}>
+                  <Text style={styles.modalTitle}>{selectedStore?.name}</Text>
+                  <View>
+                    <ProfileCategory
+                      icon={<CanceledSvg />}
+                      arrow={false}
+                      onPress={closeModal}
+                    />
+                  </View>
+                </View>
+              </View>
+
+              <View style={styles.headerLine} />
+              <Text style={styles.desc}>{selectedStore?.description}</Text>
+              <TouchableOpacity onPress={handlePhoneNumberPress}>
+                <Text style={styles.phone}>{selectedStore?.phone_number}</Text>
+              </TouchableOpacity>
+              <View style={styles.links}>
+                {selectedStore?.facebook_link !== "" && (
+                  <TouchableOpacity onPress={openFacebook}>
+                    <Image
+                      source={require("./Facebook_icon.png")}
+                      style={styles.Icon}
+                    />
+                  </TouchableOpacity>
+                )}
+                {selectedStore?.instegram_link !== "" && (
+                  <TouchableOpacity onPress={openInsta}>
+                    <Image
+                      source={require("./instagram_icon.png")}
+                      style={styles.Icon}
+                    />
+                  </TouchableOpacity>
+                )}
+                <TouchableOpacity onPress={openWaze}>
+                  <Image
+                    source={require("./icon-waze.png")}
+                    style={styles.Icon}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
         </Modal>
       </SafeAreaView>
@@ -135,12 +279,34 @@ const Map = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  Icon: {
+    width: 60,
+    height: 60,
+    marginRight: 10,
+  },
+  headerLine: {
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.gray,
+    marginBottom: 10,
   },
   map: {
     flex: 1,
   },
+  modalHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 10,
+  },
+  titleContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  links: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+  },
+
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
@@ -148,27 +314,42 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "flex-end",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  mapContainer: {
+    flex: 1,
+    backgroundColor: "transparent",
+  },
+  miniModalContent: {
+    backgroundColor: COLORS.white,
+    borderRadius: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    width: "100%",
   },
   modalTitle: {
     fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 10,
+    marginLeft: 10,
+    textAlign: "right",
   },
-  modalAddress: {
-    fontSize: 16,
-    marginBottom: 20,
+  phone: {
+    fontSize: 20,
+    marginBottom: 35,
+    borderBottomColor: COLORS.lightGray,
+    textAlign: "right",
+  },
+  desc: {
+    fontSize: 15,
+    fontStyle: "bold",
+    marginBottom: 7,
+    textAlign: "right",
   },
   closeButton: {
     backgroundColor: "blue",
     padding: 10,
     borderRadius: 5,
-  },
-  closeButtonText: {
-    color: "white",
-    fontWeight: "bold",
   },
 });
 

@@ -15,11 +15,13 @@ import LoadingComponent from "../components/LoadingComponent";
 import { Header } from "../components";
 import { AREA } from "../constants";
 
-const Map = () => {
+const Map = (props) => {
   const [currentLocation, setCurrentLocation] = useState(null);
   const [stores, setstores] = useState([]);
   const [selectedStore, setSelectedStore] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [homeView, setHomeView] = useState(props.homeView || false);
+
   const Store_map_icon =
     "https://firebasestorage.googleapis.com/v0/b/mitlabshut-final.appspot.com/o/AppImages%2Fstore_map_icon.png?alt=media&token=79fc64b1-f12b-40f0-9171-b89e3daca894";
   useEffect(() => {
@@ -67,7 +69,7 @@ const Map = () => {
           ...AREA.AndroidSafeArea,
           backgroundColor: "none",
         }}>
-        <Header title="מפת חנויות" goBack={false} />
+        {!homeView && <Header title="מפת חנויות" goBack={false} />}
         {currentLocation && stores ? (
           <MapView
             style={styles.map}

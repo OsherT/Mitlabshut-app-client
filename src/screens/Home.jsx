@@ -20,6 +20,7 @@ import ButtonFollow from "../components/ButtonFollow";
 import WarningModal from "../components/WarningModal";
 import MapView, { Marker } from "react-native-maps";
 import * as Permissions from "expo-permissions";
+import Map from "./Map";
 
 export default function Home() {
   const navigation = useNavigation();
@@ -48,6 +49,9 @@ export default function Home() {
 
   //map
   const [region, setRegion] = useState(null);
+
+  //flags
+  const [homeView, setHomeView] = useState(true);
 
   useEffect(() => {
     if (isFocused) {
@@ -202,7 +206,7 @@ export default function Home() {
           style={{
             borderWidth: 0,
             borderRadius: 10,
-            padding: 15, 
+            padding: 15,
             backgroundColor: "#fff",
             shadowColor: "#000",
             shadowOffset: { width: 2, height: 2 },
@@ -238,6 +242,7 @@ export default function Home() {
         console.log("err in GetRecommendedClosets", err);
       });
   }
+
   //קבלת היוזרים עבור הארונות המומלצים
   function GetUsersData1(closets) {
     const promises = closets.map((closet) =>
@@ -255,6 +260,7 @@ export default function Home() {
         console.log("err in GetUsersData1", err);
       });
   }
+
   //קבלת הארונות שאני עוקבת אחריהם
   function getFollowingList() {
     axios
@@ -273,6 +279,7 @@ export default function Home() {
         console.log("cant get following list", err);
       });
   }
+
   //מעקב אחרי ארון
   const followCloset = (closetID) => {
     axios
@@ -288,6 +295,7 @@ export default function Home() {
         console.log("cant follow", err);
       });
   };
+
   //הוררדת מעקב אחרי ארון
   const unfollowCloset = (closetID) => {
     axios
@@ -454,14 +462,14 @@ export default function Home() {
               handleSure={LogOut}
             />
           )}
-          <View style={styles.mapContainer}>
-            <MapView
-              style={styles.mapStyle}
-              region={region}
-              showsUserLocation={true}>
-              {region && <Marker coordinate={region} />}
-            </MapView>
-          </View>
+          <TouchableOpacity
+            onPress={() => {
+              setSelectedTab("Map");
+            }}>
+            <View style={styles.mapContainer}>
+              <Map homeView={true}></Map>
+            </View>
+          </TouchableOpacity>
         </ScrollView>
       </SafeAreaView>
     </View>
@@ -471,12 +479,15 @@ const styles = StyleSheet.create({
   mapContainer: {
     height: 200,
     margin: 10,
-    borderWidth: 1,
-    borderColor: "#000",
+    borderWidth: 2,
+    borderColor: COLORS.golden,
     borderRadius: 10,
     overflow: "hidden",
+
+  
   },
   mapStyle: {
     flex: 1,
+    
   },
 });

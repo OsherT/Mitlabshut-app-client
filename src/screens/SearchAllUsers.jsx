@@ -238,7 +238,7 @@ export default function SearchAllUsers() {
           </Text>
           <View>
             <TouchableOpacity
-              onPress={() => setSelectedTab("Home")}
+              onPress={() => setSelectedTab("Search")}
               style={{
                 flexDirection: "row",
                 alignItems: "center",
@@ -250,7 +250,7 @@ export default function SearchAllUsers() {
                 borderRadius: 20,
                 borderWidth: 1,
                 borderColor: "#E5E5E5",
-                shadowColor: "#000",
+                shadowColor: "#000", 
                 shadowOffset: {
                   width: 0,
                   height: 2,
@@ -266,7 +266,7 @@ export default function SearchAllUsers() {
                   color: "#333",
                   marginLeft: 8,
                 }}>
-                חזרה לדף הבית
+                חזרה לחיפוש
               </Text>
             </TouchableOpacity>
           </View>

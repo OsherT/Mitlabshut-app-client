@@ -91,7 +91,13 @@ export default function LogIn() {
         })
         .then(
           (user) => {
-            if (user.id > 0) {
+            //if user_Status in non active
+            if (user.user_Status == "non active") {
+              setMessage("משתמש זה אינו פעיל במערכת");
+              setShowAlertModal(true);
+            }
+            //if user_Status in active
+            else if (user.id > 0) {
               setloggedUser(user);
               navigation.navigate("MainLayout");
             }
@@ -175,7 +181,6 @@ export default function LogIn() {
             containerStyle={{ marginBottom: 20 }}
             ref={passwordInputRef}
             secureTextEntry={true}
-
           />
 
           <View style={styles.textUpperContainer}>

@@ -186,12 +186,12 @@ export default function EditProfile() {
         user_image: imageLink,
         age: userAge,
         token: loggedUser.token,
+        user_Status: loggedUser.user_Status,
       };
 
       const newClosetData = {
         id: loggedUser.closet_id,
         description: closetDesc,
-        user_name: "0",
       };
       fetch(ApiUrl + `User/PutUser`, {
         method: "PUT",

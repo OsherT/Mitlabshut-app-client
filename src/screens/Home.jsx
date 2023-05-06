@@ -13,15 +13,17 @@ import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { AREA, COLORS, FONTS } from "../constants";
 import { Header, ProfileCategory } from "../components";
-import { SearchSvg, SignOutCategory } from "../svg";
+import { SignOutCategory } from "../svg";
 import { userContext } from "../navigation/userContext";
 import axios from "axios";
 import ButtonFollow from "../components/ButtonFollow";
 import WarningModal from "../components/WarningModal";
-import MapView, { Marker } from "react-native-maps";
-import * as Permissions from "expo-permissions";
+
+import Map from "./Map";
 
 export default function Home() {
+  LogBox.ignoreAllLogs(); //Ignore all log notifications
+
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const {
@@ -49,18 +51,20 @@ export default function Home() {
   //map
   const [region, setRegion] = useState(null);
 
+  //flags
+  const [homeView, setHomeView] = useState(true);
+
   useEffect(() => {
     if (isFocused) {
       GreetingComponent();
       getFollowingList();
-      GetAllUsers();
       GetRecommendedClosets();
       GetSentences();
+      console.log(loggedUser);
     }
   }, [isFocused]);
 
   //map use effect
-
   useEffect(() => {
     (async () => {
       // Check for location permissions
@@ -102,6 +106,7 @@ export default function Home() {
 
     setGreeting(newGreeting);
   }
+
   //מרנדרת את הברכה המכילה שם תמונה ואופציה להתנתקות
   function RenderGreeting() {
     return (
@@ -179,6 +184,7 @@ export default function Home() {
       </View>
     );
   }
+
   //קבלת כל המשפטים מהשרת
   function GetSentences() {
     axios
@@ -193,6 +199,7 @@ export default function Home() {
         console.log("err in GetSentences", err);
       });
   }
+
   //רינדור המשפטים באופן רנדומלי
   function RenderSentences() {
     if (Sentence !== null) {
@@ -201,7 +208,7 @@ export default function Home() {
           style={{
             borderWidth: 0,
             borderRadius: 10,
-            padding: 30,
+            padding: 15,
             backgroundColor: "#fff",
             shadowColor: "#000",
             shadowOffset: { width: 2, height: 2 },
@@ -237,6 +244,7 @@ export default function Home() {
         console.log("err in GetRecommendedClosets", err);
       });
   }
+
   //קבלת היוזרים עבור הארונות המומלצים
   function GetUsersData1(closets) {
     const promises = closets.map((closet) =>
@@ -254,6 +262,7 @@ export default function Home() {
         console.log("err in GetUsersData1", err);
       });
   }
+
   //קבלת הארונות שאני עוקבת אחריהם
   function getFollowingList() {
     axios
@@ -272,6 +281,7 @@ export default function Home() {
         console.log("cant get following list", err);
       });
   }
+
   //מעקב אחרי ארון
   const followCloset = (closetID) => {
     axios
@@ -287,6 +297,7 @@ export default function Home() {
         console.log("cant follow", err);
       });
   };
+
   //הוררדת מעקב אחרי ארון
   const unfollowCloset = (closetID) => {
     axios
@@ -303,31 +314,7 @@ export default function Home() {
         console.log("cant unfollow", err);
       });
   };
-  //קבלת כל המשתמשים
-  const GetAllUsers = () => {
-    fetch(
-      "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/GetAllUsersNotThisOne/UserID/" +
-        loggedUser.id,
-      {
-        method: "GET",
-        headers: new Headers({
-          "Content-Type": "application/json; charset=UTF-8",
-          Accept: "application/json; charset=UTF-8",
-        }),
-      }
-    )
-      .then((res) => {
-        return res.json();
-      })
-      .then(
-        (data) => {
-          setAllUsers(data);
-        },
-        (error) => {
-          console.log("GetAllUsers error", error);
-        }
-      );
-  };
+
   //התנתקות מהאפליקציה
   function LogOut() {
     navigation.navigate("LogIn");
@@ -375,7 +362,6 @@ export default function Home() {
             return (
               <TouchableOpacity
                 style={{
-                  height: "100%",
                   width: 180,
                   backgroundColor: COLORS.white,
                   marginRight: 15,
@@ -396,7 +382,6 @@ export default function Home() {
                 />
                 <View
                   style={{
-                    paddingHorizontal: 15,
                     paddingVertical: 12,
                   }}>
                   <Text
@@ -455,120 +440,6 @@ export default function Home() {
       </View>
     );
   }
-  //רינדור כל המשתמשים באפליקציה
-  function renderAllUsers() {
-    return (
-      <View
-        style={{
-          marginTop: 25,
-          alignItems: "flex-end",
-          borderRadius: 25,
-          shadowOffset: {
-            width: 0,
-            height: 2,
-          },
-          shadowOpacity: 0.25,
-          shadowRadius: 3.84,
-          elevation: 5, // Add this line for Android compatibility
-        }}>
-        <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "space-between",
-            paddingHorizontal: 20,
-            marginBottom: 10,
-          }}>
-          <TouchableOpacity
-            onPress={() => {
-              setSelectedTab("SearchAllUsers");
-            }}>
-            <Text
-              style={{
-                ...FONTS.Mulish_700Bold,
-                fontSize: 16,
-                textTransform: "capitalize",
-                color: COLORS.black,
-                lineHeight: 20 * 1.2,
-              }}>
-              חברות קהילה חדשות... <SearchSvg />
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        {allUsers.length > 0 ? (
-          <FlatList
-            data={allUsers}
-            horizontal={true}
-            keyExtractor={(user) => user.closet_id}
-            renderItem={({ item: user, index }) => {
-              return (
-                <TouchableOpacity
-                  style={{
-                    height: "100%",
-                    width: 105,
-                    marginRight: 15,
-                    borderRadius: 10,
-                  }}
-                  onPress={() => {
-                    setSelectedTab("Closet");
-                    setClosetId_(user.closet_id);
-                    setOwner_(user);
-                  }}>
-                  <View
-                    style={{
-                      height: 106,
-                      borderRadius: 90,
-                      backgroundColor: COLORS.white,
-                      paddingTop: 3,
-                      paddingHorizontal: 3,
-                    }}>
-                    <Image
-                      source={{ uri: user.user_image }}
-                      style={{
-                        width: "100%",
-                        height: 100,
-                        borderRadius: 90,
-                      }}
-                    />
-                  </View>
-                  <View
-                    style={{
-                      paddingHorizontal: 15,
-                      paddingVertical: 12,
-                    }}>
-                    <Text
-                      style={{
-                        ...FONTS.Mulish_600SemiBold,
-                        fontSize: 15,
-                        textTransform: "capitalize",
-                        color: COLORS.black,
-                        textAlign: "center",
-                      }}>
-                      {user.full_name}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              );
-            }}
-            contentContainerStyle={{ paddingLeft: 20 }}
-            showsHorizontalScrollIndicator={false}
-          />
-        ) : (
-          <Text
-            style={{
-              ...FONTS.Mulish_700Bold,
-              fontSize: 14,
-              color: COLORS.black,
-              lineHeight: 20 * 1.2,
-              textAlign: "center",
-            }}>
-            אין משתמשים כרגע{" "}
-          </Text>
-        )}
-      </View>
-    );
-  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -582,9 +453,9 @@ export default function Home() {
           contentContainerStyle={{ paddingBottom: 30 }}
           showsVerticalScrollIndicator={false}>
           {RenderGreeting()}
-          {renderAllUsers()}
-          {RenderSentences()}
           {renderRecommendedClosets()}
+
+          {RenderSentences()}
           {showModal && (
             <WarningModal
               showModal={showModal}
@@ -593,14 +464,14 @@ export default function Home() {
               handleSure={LogOut}
             />
           )}
-          <View style={styles.mapContainer}>
-            <MapView
-              style={styles.mapStyle}
-              region={region}
-              showsUserLocation={true}>
-              {region && <Marker coordinate={region} />}
-            </MapView>
-          </View>
+          <TouchableOpacity
+            onPress={() => {
+              setSelectedTab("Map");
+            }}>
+            <View style={styles.mapContainer}>
+              <Map homeView={true}></Map>
+            </View>
+          </TouchableOpacity>
         </ScrollView>
       </SafeAreaView>
     </View>
@@ -610,8 +481,8 @@ const styles = StyleSheet.create({
   mapContainer: {
     height: 200,
     margin: 10,
-    borderWidth: 1,
-    borderColor: "#000",
+    borderWidth: 2,
+    borderColor: COLORS.golden,
     borderRadius: 10,
     overflow: "hidden",
   },

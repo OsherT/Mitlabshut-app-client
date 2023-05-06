@@ -7,11 +7,12 @@ import {
   ScrollView,
   LogBox,
   StyleSheet,
+  SafeAreaView,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
-import { COLORS, FONTS } from "../constants";
-import { ProfileCategory } from "../components";
+import { AREA, COLORS, FONTS } from "../constants";
+import { Header, ProfileCategory } from "../components";
 import { SearchSvg, SignOutCategory } from "../svg";
 import { userContext } from "../navigation/userContext";
 import axios from "axios";
@@ -570,34 +571,39 @@ export default function Home() {
   }
 
   return (
-    <ScrollView
-      style={{
-        flexGrow: 1,
-        top: 50,
-      }}
-      contentContainerStyle={{ paddingBottom: 30 }}
-      showsVerticalScrollIndicator={false}>
-      {RenderGreeting()}
-      {renderAllUsers()}
-      {RenderSentences()}
-      {renderRecommendedClosets()}
-      {showModal && (
-        <WarningModal
-          showModal={showModal}
-          setShowModal={setShowModal}
-          massage={massage}
-          handleSure={LogOut}
-        />
-      )}
-      <View style={styles.mapContainer}>
-        <MapView
-          style={styles.mapStyle}
-          region={region}
-          showsUserLocation={true}>
-          {region && <Marker coordinate={region} />}
-        </MapView>
-      </View>
-    </ScrollView>
+    <View style={{ flex: 1 }}>
+      <SafeAreaView
+        style={{
+          ...AREA.AndroidSafeArea,
+          backgroundColor: "none",
+        }}>
+        <Header goBack={false} />
+        <ScrollView
+          contentContainerStyle={{ paddingBottom: 30 }}
+          showsVerticalScrollIndicator={false}>
+          {RenderGreeting()}
+          {renderAllUsers()}
+          {RenderSentences()}
+          {renderRecommendedClosets()}
+          {showModal && (
+            <WarningModal
+              showModal={showModal}
+              setShowModal={setShowModal}
+              massage={massage}
+              handleSure={LogOut}
+            />
+          )}
+          <View style={styles.mapContainer}>
+            <MapView
+              style={styles.mapStyle}
+              region={region}
+              showsUserLocation={true}>
+              {region && <Marker coordinate={region} />}
+            </MapView>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </View>
   );
 }
 const styles = StyleSheet.create({

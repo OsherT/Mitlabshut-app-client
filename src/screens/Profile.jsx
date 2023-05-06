@@ -311,6 +311,7 @@ export default function Profile() {
           setTimeout(() => {
             setShowAlertModal(false);
             navigation.navigate("LogIn");
+            setSelectedTab("Home");
           }, 2000);
         },
         (error) => {

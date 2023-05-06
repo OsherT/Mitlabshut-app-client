@@ -84,15 +84,6 @@ export default function MainLayout() {
     },
     {
       id: "4",
-      screen: "WishList",
-      icon: (
-        <WishListTab
-          color={selectedTab == "WishList" ? COLORS.golden : COLORS.lightGray}
-        />
-      ),
-    },
-    {
-      id: "5",
       screen: "Closet",
       icon: <BagSvg></BagSvg>,
       // icon: (
@@ -100,6 +91,15 @@ export default function MainLayout() {
       //     color={selectedTab == "Closet" ? COLORS.golden : COLORS.lightGray}
       //   />
       // ),
+    },
+    {
+      id: "5",
+      screen: "Profile",
+      icon: (
+        <ProfileTab
+          color={selectedTab == "Profile" ? COLORS.golden : COLORS.lightGray}
+        />
+      ),
     },
   ];
 

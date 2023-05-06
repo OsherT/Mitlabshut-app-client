@@ -200,10 +200,7 @@ export default function Closet(props) {
               </View>
             </TouchableOpacity>
           )} */}
-          <TouchableOpacity
-            onPress={() => {
-              navigation.navigate("Profile");
-            }}>
+        
             <ImageBackground
               source={{
                 uri: owner.user_image
@@ -217,7 +214,6 @@ export default function Closet(props) {
                 marginBottom: 15,
               }}
               imageStyle={{ borderRadius: 40 }}></ImageBackground>
-          </TouchableOpacity>
           <Text
             style={{
               textAlign: "center",

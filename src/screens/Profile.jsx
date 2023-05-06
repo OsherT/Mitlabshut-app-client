@@ -74,24 +74,17 @@ export default function Profile() {
         }}
         showsHorizontalScrollIndicator={false}>
         <ContainerComponent containerStyle={{ marginBottom: 20 }}>
-          <TouchableOpacity
-            onPress={() => {
-              setSelectedTab("Closet");
-              setClosetId_(loggedUser.closet_id);
-              setOwner_(loggedUser);
-            }}>
-            <ImageBackground
-              source={{
-                uri: loggedUser.user_image,
-              }}
-              style={{
-                width: 80,
-                height: 80,
-                alignSelf: "center",
-                marginBottom: 15,
-              }}
-              imageStyle={{ borderRadius: 40 }}></ImageBackground>
-          </TouchableOpacity>
+          <ImageBackground
+            source={{
+              uri: loggedUser.user_image,
+            }}
+            style={{
+              width: 80,
+              height: 80,
+              alignSelf: "center",
+              marginBottom: 15,
+            }}
+            imageStyle={{ borderRadius: 40 }}></ImageBackground>
 
           <Text
             style={{
@@ -140,9 +133,9 @@ export default function Profile() {
             title="לארון שלי"
             arrow={false}
             onPress={() => {
-             setSelectedTab("Closet");
-             setClosetId_(loggedUser.closet_id);
-             setOwner_(loggedUser);
+              setSelectedTab("Closet");
+              setClosetId_(loggedUser.closet_id);
+              setOwner_(loggedUser);
             }}
           />
           <ProfileCategory

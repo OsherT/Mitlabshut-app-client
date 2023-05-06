@@ -6,11 +6,14 @@ import {
   Text,
   TouchableOpacity,
   Modal,
+  SafeAreaView,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import axios from "axios";
 import LoadingComponent from "../components/LoadingComponent";
+import { Header } from "../components";
+import { AREA } from "../constants";
 
 const Map = () => {
   const [currentLocation, setCurrentLocation] = useState(null);
@@ -57,41 +60,48 @@ const Map = () => {
     setIsModalVisible(false);
   };
   return (
-    <View style={styles.container}>
-      {currentLocation && stores ? (
-        <MapView
-          style={styles.map}
-          initialRegion={{
-            latitude: currentLocation.latitude,
-            longitude: currentLocation.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-          provider="google"
-          customMapStyle={[]}
-          showsUserLocation={true}
-          showsMyLocationButton={true}
-        >
-          {stores.map((store, index) => {
-            const [latitude, longitude] = store.address_coordinates.split(", ");
-            const parsedLatitude = parseFloat(latitude);
-            const parsedLongitude = parseFloat(longitude);
+    // <View style={styles.container}>
+    <View style={{ flex: 1 }}>
+      <SafeAreaView
+        style={{
+          ...AREA.AndroidSafeArea,
+          backgroundColor: "none",
+        }}>
+        <Header goBack={false} />
 
-            if (isNaN(parsedLatitude) || isNaN(parsedLongitude)) {
-              // Handle the case when the coordinates are invalid
-              console.log("Invalid coordinates for store:", store); //
-            } else {
-              return (
-                <Marker
-                  key={index}
-                  coordinate={{
-                    latitude: parseFloat(latitude),
-                    longitude: parseFloat(longitude),
-                  }}
-                  title={store.name}
-                  onPress={() => handleMarkerPress(store)}
-                >
-                  {/* <Image
+        {currentLocation && stores ? (
+          <MapView
+            style={styles.map}
+            initialRegion={{
+              latitude: currentLocation.latitude,
+              longitude: currentLocation.longitude,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            }}
+            provider="google"
+            customMapStyle={[]}
+            showsUserLocation={true}
+            showsMyLocationButton={true}>
+            {stores.map((store, index) => {
+              const [latitude, longitude] =
+                store.address_coordinates.split(", ");
+              const parsedLatitude = parseFloat(latitude);
+              const parsedLongitude = parseFloat(longitude);
+
+              if (isNaN(parsedLatitude) || isNaN(parsedLongitude)) {
+                // Handle the case when the coordinates are invalid
+                console.log("Invalid coordinates for store:", store); //
+              } else {
+                return (
+                  <Marker
+                    key={index}
+                    coordinate={{
+                      latitude: parseFloat(latitude),
+                      longitude: parseFloat(longitude),
+                    }}
+                    title={store.name}
+                    onPress={() => handleMarkerPress(store)}>
+                    {/* <Image
                     source={{ uri: Store_map_icon }}
                     style={{
                         width: 32,
@@ -100,26 +110,27 @@ const Map = () => {
                       paddingBottom: 40,
                     }}
                   /> */}
-                </Marker>
-              );
-            }
-          })}
-        </MapView>
-      ) : (
-        <View style={styles.loadingContainer}>
-          <LoadingComponent></LoadingComponent>
-        </View>
-      )}
-      <Modal visible={isModalVisible} animationType="slide">
-        <View style={styles.modalContainer}>
-          <Text style={styles.modalTitle}>{selectedStore?.name}</Text>
-          <Text style={styles.modalAddress}>{selectedStore?.address}</Text>
-          {/* Add more details or components for the store */}
-          <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
-            <Text style={styles.closeButtonText}>Close</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
+                  </Marker>
+                );
+              }
+            })}
+          </MapView>
+        ) : (
+          <View style={styles.loadingContainer}>
+            <LoadingComponent></LoadingComponent>
+          </View>
+        )}
+        <Modal visible={isModalVisible} animationType="slide">
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>{selectedStore?.name}</Text>
+            <Text style={styles.modalAddress}>{selectedStore?.address}</Text>
+            {/* Add more details or components for the store */}
+            <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
+      </SafeAreaView>
     </View>
   );
 };

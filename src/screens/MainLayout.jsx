@@ -22,12 +22,13 @@ import Filter from "./Filter";
 import SearchAllUsers from "./SearchAllUsers";
 import EditProfile from "./EditProfile";
 import { Image } from "react-native";
+import LocationPinIcon from "../svg/LocationPinIcon";
 
 //shows the navbar of the application
 export default function MainLayout() {
   const { loggedUser, selectedTab, setSelectedTab, setOwner_, setClosetId_ } =
     useContext(userContext);
-    const closetIcon = `https://firebasestorage.googleapis.com/v0/b/mitlabshut-final.appspot.com/o/AppImages%2FclosetIcon.png?alt=media&token=948c5dad-d3a8-4aa9-97c9-f6fc9eeb0d32`;
+  const closetIcon = `https://firebasestorage.googleapis.com/v0/b/mitlabshut-final.appspot.com/o/AppImages%2FclosetIcon.png?alt=media&token=948c5dad-d3a8-4aa9-97c9-f6fc9eeb0d32`;
 
   //the tabs of the navbar
   const tabs = [
@@ -52,6 +53,39 @@ export default function MainLayout() {
     {
       id: "3",
       screen: "Closet",
+      // icon: (
+      //   <View
+      //     style={{
+      //       width: 60,
+      //       height: 60,
+      //       borderWidth: 1,
+      //       borderColor: "#BBA36B",
+      //       top: -19,
+      //       borderRadius: 30,
+      //       justifyContent: "center",
+      //       alignItems: "center",
+      //     }}>
+      //     <View
+      //       style={{
+      //         width: 54,
+      //         height: 54,
+      //         backgroundColor: COLORS.golden,
+      //         borderRadius: 30,
+      //         justifyContent: "center",
+      //         alignItems: "center",
+      //       }}>
+      //       <Image
+      //         source={{ uri: closetIcon }}
+      //         style={{
+      //           width: 40,
+      //           height: 40,
+      //           borderRadius: 10,
+      //           paddingBottom: 40,
+      //         }}
+      //       />
+      //     </View>
+      //   </View>
+      // ),
       icon: (
         <View
           style={{
@@ -73,10 +107,7 @@ export default function MainLayout() {
               justifyContent: "center",
               alignItems: "center",
             }}>
-            <Image
-                        source={{ uri: closetIcon }}
-                        style={{ width: 40, height: 40, borderRadius: 10 ,paddingBottom:40}}
-                      />
+          <LocationPinIcon></LocationPinIcon>
           </View>
         </View>
       ),
@@ -108,7 +139,8 @@ export default function MainLayout() {
       {selectedTab == "Search" && <Search />}
       {selectedTab == "Closet" && <Closet />}
       {selectedTab == "WishList" && <WishList />}
-      {selectedTab == "Profile" && <Profile />}
+      {/* {selectedTab == "Profile" && <Profile />} */}
+      {selectedTab == "Profile" && <Closet />}
       {selectedTab == "Order" && <Order />}
       {selectedTab == "SearchUsersFollow" && <SearchUsersFollow />}
       {selectedTab == "SearchRes" && <SearchRes />}
@@ -144,7 +176,7 @@ export default function MainLayout() {
                   setClosetId_(loggedUser.closet_id);
                   setOwner_(loggedUser);
                 } else {
-                  setSelectedTab(item.screen); 
+                  setSelectedTab(item.screen);
                 }
               }}>
               <View>{item.icon}</View>

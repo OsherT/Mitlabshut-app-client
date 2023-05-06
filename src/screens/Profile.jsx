@@ -17,6 +17,7 @@ import { FlatList } from "react-native";
 import { Image } from "react-native";
 import WarningModal from "../components/WarningModal";
 import BagHeader from "../svg/BagHeader";
+import AlertModal from "../components/AlertModal";
 
 export default function Profile() {
   const navigation = useNavigation();
@@ -24,12 +25,19 @@ export default function Profile() {
     useContext(userContext);
   const isFocused = useIsFocused();
 
-  //usser
+  //user
   const [usersFollow, setUsersFollow] = useState([]);
 
   //modal
   const [showModal, setShowModal] = useState(false);
   const [massage, setMassage] = useState("");
+  const [deleteFlag, setDeleteFlag] = useState(false);
+  const [showAlertModal, setShowAlertModal] = useState(false);
+  const [message, setMessage] = useState("");
+  const [confirmAlertModal, setConfirmAlertModal] = useState(false);
+
+  // //flag
+  // const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (isFocused) {
@@ -136,6 +144,18 @@ export default function Profile() {
               setSelectedTab("Closet");
               setClosetId_(loggedUser.closet_id);
               setOwner_(loggedUser);
+            }}
+          />
+          <ProfileCategory
+            icon={<Edit />}
+            title="מחקי חשבון"
+            arrow={false}
+            onPress={() => {
+              setShowModal(true);
+              setMassage(
+                " פעולה זו הינה לצמיתות !\n\n האם את בטוחה שברצונך למחוק את הפרופיל ?"
+              );
+              setDeleteFlag(true);
             }}
           />
           <ProfileCategory
@@ -247,9 +267,57 @@ export default function Profile() {
 
   //handel users choice of the modal
   function handleUserChoice() {
-    setSelectedTab("Home");
-    navigation.navigate("LogIn");
+    if (deleteFlag) {
+      updateUser_Delete();
+    } else {
+      setSelectedTab("Home");
+      navigation.navigate("LogIn");
+    }
   }
+
+  const updateUser_Delete = () => {
+    const user = {
+      email: loggedUser.email,
+      id: loggedUser.id,
+      closet_id: loggedUser.closet_id,
+      phone_number: loggedUser.phone_number,
+      full_name: loggedUser.full_name,
+      password: loggedUser.password,
+      address: loggedUser.address,
+      isAdmin: false,
+      user_image: loggedUser.user_image,
+      age: loggedUser.age,
+      token: loggedUser.token,
+      user_Status: "non active",
+    };
+
+    fetch(`https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/User/PutUser`, {
+      method: "PUT",
+      body: JSON.stringify(user),
+      headers: new Headers({
+        "Content-type": "application/json; charset=UTF-8",
+        Accept: "application/json; charset=UTF-8",
+      }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then(
+        (result) => {
+          setMessage(" החשבון נמחק לצמיתות !");
+          setShowAlertModal(true);
+          setConfirmAlertModal(true);
+
+          setTimeout(() => {
+            setShowAlertModal(false);
+            navigation.navigate("LogIn");
+          }, 2000);
+        },
+        (error) => {
+          console.log("ERR in update user", error);
+        }
+      );
+  };
 
   return (
     <SafeAreaView
@@ -272,6 +340,14 @@ export default function Profile() {
           setShowModal={setShowModal}
           massage={massage}
           handleSure={handleUserChoice}
+        />
+      )}
+      {showAlertModal && (
+        <AlertModal
+          message={message}
+          showModal={showAlertModal}
+          setShowModal={setShowAlertModal}
+          confirm={confirmAlertModal}
         />
       )}
     </SafeAreaView>

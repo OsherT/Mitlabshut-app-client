@@ -101,7 +101,6 @@ export default function SignUp() {
       address == "" ||
       userAge == ""
     ) {
-      
       //אלו השדות חובה שלנו
       setMessage("יש למלא את כל הפרטים");
       setShowAlertModal(true);
@@ -112,16 +111,10 @@ export default function SignUp() {
       setMessage("אנא הכניסי כתובת מלאה הכוללת שם רחוב, עיר ומדינה");
       setShowAlertModal(true);
     } else {
-      const newCloset = {
-        //יצירת ארון חדש למשתמשת
-        Id: 0,
-        Description: ClosetDisc,
-        User_name: "null",
-      };
+      //יצירת ארון חדש למשתמשת
       axios
         .post(
-          "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Closet/Post",
-          newCloset
+          `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Closet/Post?description=${ClosetDisc}`
         )
         .then((res) => {
           if (res.data != 0) {
@@ -137,6 +130,7 @@ export default function SignUp() {
               user_image: difPic, //בהתחלה נכניס תמונה דיפולטית
               age: parseInt(userAge),
               token: expoPushToken,
+              user_Status: "active",
             };
             console.log("newUser token", newUser.token);
 

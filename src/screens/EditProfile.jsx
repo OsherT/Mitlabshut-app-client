@@ -186,6 +186,7 @@ export default function EditProfile() {
         user_image: imageLink,
         age: userAge,
         token: loggedUser.token,
+        user_Status: loggedUser.user_Status,
       };
 
       const newClosetData = {

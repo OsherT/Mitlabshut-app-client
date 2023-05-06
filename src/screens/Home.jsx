@@ -13,16 +13,17 @@ import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { AREA, COLORS, FONTS } from "../constants";
 import { Header, ProfileCategory } from "../components";
-import { SearchSvg, SignOutCategory } from "../svg";
+import { SignOutCategory } from "../svg";
 import { userContext } from "../navigation/userContext";
 import axios from "axios";
 import ButtonFollow from "../components/ButtonFollow";
 import WarningModal from "../components/WarningModal";
-import MapView, { Marker } from "react-native-maps";
-import * as Permissions from "expo-permissions";
+
 import Map from "./Map";
 
 export default function Home() {
+  LogBox.ignoreAllLogs(); //Ignore all log notifications
+
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   const {
@@ -59,6 +60,7 @@ export default function Home() {
       getFollowingList();
       GetRecommendedClosets();
       GetSentences();
+      console.log(loggedUser);
     }
   }, [isFocused]);
 
@@ -483,11 +485,8 @@ const styles = StyleSheet.create({
     borderColor: COLORS.golden,
     borderRadius: 10,
     overflow: "hidden",
-
-  
   },
   mapStyle: {
     flex: 1,
-    
   },
 });

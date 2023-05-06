@@ -47,8 +47,7 @@ const Map = (props) => {
     })();
 
     getStoresList();
-    getUsersFavList();
-    
+    // getUsersFavList();
   }, []);
 
   //הבאת כל החנויות
@@ -63,30 +62,29 @@ const Map = (props) => {
       });
   }
 
-  function getUsersFavList() {
-    axios
-      .get(
-        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Stores/Get/" +
-          loggedUser.id
-      )
-      .then((res) => {
-        if (res.data == "No such stores yet") {
-          setUsersFavList("");
-        } else {
-          console.log(res.data);
-          setUsersFavList(res.data);
-        }
-      })
-      .catch((err) => {
-        console.log("cant get fav stores list", err);
-      });
-  }
+  // function getUsersFavList() {
+  //   axios
+  //     .get(
+  //       "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Stores/Get/" +
+  //         loggedUser.id
+  //     )
+  //     .then((res) => {
+  //       if (res.data == "No such stores yet") {
+  //         setUsersFavList("");
+  //       } else {
+  //         console.log(res.data);
+  //         setUsersFavList(res.data);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.log("cant get fav stores list", err);
+  //     });
+  // }
 
   function addStoreToFav() {
     axios
       .post(
-         `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Stores/PostFavStore?UserID=${loggedUser.id}&StoreID=${selectedStore?.store_ID}`
-         
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Stores/PostFavStore?UserID=${loggedUser.id}&StoreID=${selectedStore?.store_ID}`
       )
       .then((res) => {
         getUsersFavList();
@@ -95,12 +93,11 @@ const Map = (props) => {
         console.log("cant post store to fav", err);
       });
   }
-  
+
   function removeFromFav() {
     axios
       .delete(
-         `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Stores/DeleteFavItem/Store_ID/${selectedStore?.store_ID}/User_ID/${loggedUser.id}`
-         
+        `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Stores/DeleteFavItem/Store_ID/${selectedStore?.store_ID}/User_ID/${loggedUser.id}`
       )
       .then((res) => {
         getUsersFavList();
@@ -145,19 +142,14 @@ const Map = (props) => {
     Linking.openURL(url);
   };
 
-  
-
- 
-
   return (
     <View style={{ flex: 1 }}>
       <SafeAreaView
         style={{
           ...AREA.AndroidSafeArea,
           backgroundColor: "none",
-        }}
-      >
-        <Header title="מפת חנויות" goBack={false} />
+        }}>
+        {!homeView && <Header title="מפת חנויות" goBack={false} />}
         <View style={styles.mapContainer}>
           {currentLocation && stores && UsersFavList ? (
             <MapView
@@ -171,8 +163,7 @@ const Map = (props) => {
               provider="google"
               customMapStyle={[]}
               showsUserLocation={true}
-              showsMyLocationButton={true}
-            >
+              showsMyLocationButton={true}>
               {stores.map((store, index) => {
                 const [latitude, longitude] =
                   store.address_coordinates.split(", ");
@@ -190,8 +181,7 @@ const Map = (props) => {
                         latitude: parseFloat(latitude),
                         longitude: parseFloat(longitude),
                       }}
-                      onPress={() => handleMarkerPress(store)}
-                    >
+                      onPress={() => handleMarkerPress(store)}>
                       {/* <Image
                     source={{ uri: Store_map_icon }}
                     style={{
@@ -215,22 +205,22 @@ const Map = (props) => {
         <Modal
           visible={isModalVisible}
           animationType="slide"
-          transparent={true}
-        >
+          transparent={true}>
           <View style={styles.modalContainer}>
             <View style={styles.miniModalContent}>
               <View style={styles.modalHeader}>
-                
-                  {UsersFavList.some(item => item.store_ID === selectedStore?.store_ID )? (
-                    <TouchableOpacity onPress={removeFromFav}>
-                      <HeartSvg filled={true} />
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity onPress={addStoreToFav}>
+                {UsersFavList.some(
+                  (item) => item.store_ID === selectedStore?.store_ID
+                ) ? (
+                  <TouchableOpacity onPress={removeFromFav}>
+                    <HeartSvg filled={true} />
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity onPress={addStoreToFav}>
                     <HeartSvg filled={false} />
                   </TouchableOpacity>
-                  )}
-            
+                )}
+
                 <View style={styles.titleContainer}>
                   <Text style={styles.modalTitle}>{selectedStore?.name}</Text>
                   <View>

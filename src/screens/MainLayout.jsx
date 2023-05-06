@@ -3,7 +3,6 @@ import React, { useContext } from "react";
 import Home from "./Home";
 import Search from "./Search";
 import WishList from "./WishList";
-import Profile from "./Profile";
 import Closet from "./Closet";
 import {
   HomeTab,
@@ -11,6 +10,8 @@ import {
   WishListTab,
   ProfileTab,
   TabElement,
+  Bag,
+  BagSvg,
 } from "../svg";
 import { COLORS } from "../constants";
 import { userContext } from "../navigation/userContext";
@@ -23,6 +24,8 @@ import SearchAllUsers from "./SearchAllUsers";
 import EditProfile from "./EditProfile";
 import { Image } from "react-native";
 import LocationPinIcon from "../svg/LocationPinIcon";
+import Map from "./Map";
+import Profile from "./Profile";
 
 //shows the navbar of the application
 export default function MainLayout() {
@@ -52,40 +55,7 @@ export default function MainLayout() {
     },
     {
       id: "3",
-      screen: "Closet",
-      // icon: (
-      //   <View
-      //     style={{
-      //       width: 60,
-      //       height: 60,
-      //       borderWidth: 1,
-      //       borderColor: "#BBA36B",
-      //       top: -19,
-      //       borderRadius: 30,
-      //       justifyContent: "center",
-      //       alignItems: "center",
-      //     }}>
-      //     <View
-      //       style={{
-      //         width: 54,
-      //         height: 54,
-      //         backgroundColor: COLORS.golden,
-      //         borderRadius: 30,
-      //         justifyContent: "center",
-      //         alignItems: "center",
-      //       }}>
-      //       <Image
-      //         source={{ uri: closetIcon }}
-      //         style={{
-      //           width: 40,
-      //           height: 40,
-      //           borderRadius: 10,
-      //           paddingBottom: 40,
-      //         }}
-      //       />
-      //     </View>
-      //   </View>
-      // ),
+      screen: "Map",
       icon: (
         <View
           style={{
@@ -123,12 +93,13 @@ export default function MainLayout() {
     },
     {
       id: "5",
-      screen: "Profile",
-      icon: (
-        <ProfileTab
-          color={selectedTab == "Profile" ? COLORS.golden : COLORS.lightGray}
-        />
-      ),
+      screen: "Closet",
+      icon: <BagSvg></BagSvg>,
+      // icon: (
+      //   <ProfileTab
+      //     color={selectedTab == "Closet" ? COLORS.golden : COLORS.lightGray}
+      //   />
+      // ),
     },
   ];
 
@@ -137,11 +108,11 @@ export default function MainLayout() {
       {/* all the pages we navigate in our app */}
       {selectedTab == "Home" && <Home />}
       {selectedTab == "Search" && <Search />}
-      {selectedTab == "Closet" && <Closet />}
+      {selectedTab == "Map" && <Map />}
       {selectedTab == "WishList" && <WishList />}
-      {/* {selectedTab == "Profile" && <Profile />} */}
-      {/* לשנות בהמשך לcloset */}
-      {selectedTab == "Profile" && <Closet />}
+      {selectedTab == "Closet" && <Closet />}
+      {selectedTab == "Profile" && <Profile />}
+
       {selectedTab == "Order" && <Order />}
       {selectedTab == "SearchUsersFollow" && <SearchUsersFollow />}
       {selectedTab == "SearchRes" && <SearchRes />}
@@ -149,6 +120,7 @@ export default function MainLayout() {
       {selectedTab == "Filter" && <Filter />}
       {selectedTab == "SearchAllUsers" && <SearchAllUsers />}
       {selectedTab == "EditProfile" && <EditProfile />}
+
       <View
         style={{
           alignSelf: "center",
@@ -171,8 +143,7 @@ export default function MainLayout() {
             <TouchableOpacity
               key={index}
               onPress={() => {
-                //לשנות בהמשך לcloset
-                if (item.screen == "Profile") {
+                if (item.screen == "Closet") {
                   setSelectedTab(item.screen);
                   setClosetId_(loggedUser.closet_id);
                   setOwner_(loggedUser);

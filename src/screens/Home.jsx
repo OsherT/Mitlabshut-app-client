@@ -6,7 +6,7 @@ import {
   Image,
   ScrollView,
   LogBox,
-  StyleSheet
+  StyleSheet,
 } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
@@ -18,8 +18,7 @@ import axios from "axios";
 import ButtonFollow from "../components/ButtonFollow";
 import WarningModal from "../components/WarningModal";
 import MapView, { Marker } from "react-native-maps";
-import * as Permissions from 'expo-permissions';
- 
+import * as Permissions from "expo-permissions";
 
 export default function Home() {
   const navigation = useNavigation();
@@ -49,7 +48,6 @@ export default function Home() {
   //map
   const [region, setRegion] = useState(null);
 
-
   useEffect(() => {
     if (isFocused) {
       GreetingComponent();
@@ -70,10 +68,10 @@ export default function Home() {
         alert("Permission to access location was denied");
         return;
       }
-  
+
       // Get current location
       let location = await Location.getCurrentPositionAsync({});
-  
+
       // Set map region to current location with zoom level
       let region = {
         latitude: location.coords.latitude,
@@ -84,7 +82,7 @@ export default function Home() {
       setRegion(region);
     })();
   }, []);
-  
+
   //פונקציה הבודקת איזו שעה ובהתאם לכך מתאימה את הברכה
   function GreetingComponent() {
     const now = new Date();
@@ -122,8 +120,7 @@ export default function Home() {
           shadowOpacity: 0.25,
           shadowRadius: 3.84,
           elevation: 5,
-        }}
-      >
+        }}>
         <View style={{ justifyContent: "flex-start", flexDirection: "row" }}>
           <ProfileCategory
             icon={<SignOutCategory />}
@@ -139,8 +136,7 @@ export default function Home() {
             justifyContent: "flex-end",
             flexDirection: "row",
             alignItems: "center",
-          }}
-        >
+          }}>
           <Text
             style={{
               ...FONTS.Mulish_700Bold,
@@ -149,8 +145,7 @@ export default function Home() {
               color: COLORS.black,
               lineHeight: 20 * 1.2,
               marginRight: 3,
-            }}
-          >
+            }}>
             {loggedUser.full_name}!
           </Text>
           <Text
@@ -160,17 +155,14 @@ export default function Home() {
               textTransform: "capitalize",
               color: COLORS.gray,
               lineHeight: 20 * 1.2,
-            }}
-          >
+            }}>
             {greeting},
           </Text>
           {loggedUser.user_image && (
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate("Profile");
-            
-              }}
-            >
+                setSelectedTab("Profile");
+              }}>
               <Image
                 source={{ uri: loggedUser.user_image }}
                 style={{
@@ -216,8 +208,7 @@ export default function Home() {
             shadowRadius: 20,
             overflow: "hidden",
             marginTop: 15,
-          }}
-        >
+          }}>
           <Text
             style={{
               fontSize: 15,
@@ -225,8 +216,7 @@ export default function Home() {
               textAlign: "center",
               margin: 20,
               color: "#333",
-            }}
-          >
+            }}>
             "{Sentence}"
           </Text>
         </View>
@@ -356,8 +346,7 @@ export default function Home() {
           shadowOpacity: 0.25,
           shadowRadius: 3.84,
           elevation: 5, // Add this line for Android compatibility
-        }}
-      >
+        }}>
         <View
           style={{
             flexDirection: "row",
@@ -365,8 +354,7 @@ export default function Home() {
             justifyContent: "space-between",
             paddingHorizontal: 20,
             marginBottom: 10,
-          }}
-        >
+          }}>
           <Text
             style={{
               ...FONTS.Mulish_700Bold,
@@ -374,8 +362,7 @@ export default function Home() {
               textTransform: "capitalize",
               color: COLORS.black,
               lineHeight: 20 * 1.2,
-            }}
-          >
+            }}>
             ארונות מומלצים במיוחד בשבילך
           </Text>
         </View>
@@ -397,8 +384,7 @@ export default function Home() {
                   setSelectedTab("Closet");
                   setClosetId_(user.closet_id);
                   setOwner_(user);
-                }}
-              >
+                }}>
                 <Image
                   source={{ uri: user.user_image }}
                   style={{
@@ -411,8 +397,7 @@ export default function Home() {
                   style={{
                     paddingHorizontal: 15,
                     paddingVertical: 12,
-                  }}
-                >
+                  }}>
                   <Text
                     style={{
                       ...FONTS.Mulish_600SemiBold,
@@ -421,16 +406,14 @@ export default function Home() {
                       color: COLORS.black,
                       marginBottom: 5,
                       textAlign: "center",
-                    }}
-                  >
+                    }}>
                     הארון של {user.full_name}
                   </Text>
                   <View
                     style={{
                       justifyContent: "center",
                       alignItems: "center",
-                    }}
-                  >
+                    }}>
                     {!UsersFollowingList.includes(user.closet_id) && (
                       <ButtonFollow
                         title="עקבי"
@@ -486,8 +469,7 @@ export default function Home() {
           shadowOpacity: 0.25,
           shadowRadius: 3.84,
           elevation: 5, // Add this line for Android compatibility
-        }}
-      >
+        }}>
         <View
           style={{
             flexDirection: "row",
@@ -495,13 +477,11 @@ export default function Home() {
             justifyContent: "space-between",
             paddingHorizontal: 20,
             marginBottom: 10,
-          }}
-        >
+          }}>
           <TouchableOpacity
             onPress={() => {
               setSelectedTab("SearchAllUsers");
-            }}
-          >
+            }}>
             <Text
               style={{
                 ...FONTS.Mulish_700Bold,
@@ -509,8 +489,7 @@ export default function Home() {
                 textTransform: "capitalize",
                 color: COLORS.black,
                 lineHeight: 20 * 1.2,
-              }}
-            >
+              }}>
               חברות קהילה חדשות... <SearchSvg />
             </Text>
           </TouchableOpacity>
@@ -534,8 +513,7 @@ export default function Home() {
                     setSelectedTab("Closet");
                     setClosetId_(user.closet_id);
                     setOwner_(user);
-                  }}
-                >
+                  }}>
                   <View
                     style={{
                       height: 106,
@@ -543,8 +521,7 @@ export default function Home() {
                       backgroundColor: COLORS.white,
                       paddingTop: 3,
                       paddingHorizontal: 3,
-                    }}
-                  >
+                    }}>
                     <Image
                       source={{ uri: user.user_image }}
                       style={{
@@ -558,8 +535,7 @@ export default function Home() {
                     style={{
                       paddingHorizontal: 15,
                       paddingVertical: 12,
-                    }}
-                  >
+                    }}>
                     <Text
                       style={{
                         ...FONTS.Mulish_600SemiBold,
@@ -567,8 +543,7 @@ export default function Home() {
                         textTransform: "capitalize",
                         color: COLORS.black,
                         textAlign: "center",
-                      }}
-                    >
+                      }}>
                       {user.full_name}
                     </Text>
                   </View>
@@ -586,15 +561,13 @@ export default function Home() {
               color: COLORS.black,
               lineHeight: 20 * 1.2,
               textAlign: "center",
-            }}
-          >
+            }}>
             אין משתמשים כרגע{" "}
           </Text>
         )}
       </View>
     );
   }
-
 
   return (
     <ScrollView
@@ -603,8 +576,7 @@ export default function Home() {
         top: 50,
       }}
       contentContainerStyle={{ paddingBottom: 30 }}
-      showsVerticalScrollIndicator={false}
-    >
+      showsVerticalScrollIndicator={false}>
       {RenderGreeting()}
       {renderAllUsers()}
       {RenderSentences()}
@@ -618,7 +590,10 @@ export default function Home() {
         />
       )}
       <View style={styles.mapContainer}>
-        <MapView style={styles.mapStyle} region={region} showsUserLocation={true}>
+        <MapView
+          style={styles.mapStyle}
+          region={region}
+          showsUserLocation={true}>
           {region && <Marker coordinate={region} />}
         </MapView>
       </View>

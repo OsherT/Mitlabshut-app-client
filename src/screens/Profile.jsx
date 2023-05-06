@@ -140,8 +140,9 @@ export default function Profile() {
             title="לארון שלי"
             arrow={false}
             onPress={() => {
-              setSelectedTab("Closet");
-              navigation.navigate("MainLayout");
+             setSelectedTab("Closet");
+             setClosetId_(loggedUser.closet_id);
+             setOwner_(loggedUser);
             }}
           />
           <ProfileCategory
@@ -171,7 +172,6 @@ export default function Profile() {
           <TouchableOpacity
             onPress={() => {
               setSelectedTab("SearchUsersFollow");
-              navigation.navigate("MainLayout");
             }}>
             <Text
               style={{
@@ -204,7 +204,6 @@ export default function Profile() {
                     setSelectedTab("Closet");
                     setClosetId_(user.closet_id);
                     setOwner_(user);
-                    navigation.navigate("MainLayout");
                   }}>
                   <Image
                     source={{ uri: user.user_image }}

@@ -200,18 +200,24 @@ export default function Closet(props) {
               </View>
             </TouchableOpacity>
           )} */}
-
-          <ImageBackground
-            source={{
-              uri: owner.user_image ? owner.user_image : loggedUser.user_image,
-            }}
-            style={{
-              width: 80,
-              height: 80,
-              alignSelf: "center",
-              marginBottom: 15,
-            }}
-            imageStyle={{ borderRadius: 40 }}></ImageBackground>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("Profile");
+            }}>
+            <ImageBackground
+              source={{
+                uri: owner.user_image
+                  ? owner.user_image
+                  : loggedUser.user_image,
+              }}
+              style={{
+                width: 80,
+                height: 80,
+                alignSelf: "center",
+                marginBottom: 15,
+              }}
+              imageStyle={{ borderRadius: 40 }}></ImageBackground>
+          </TouchableOpacity>
           <Text
             style={{
               textAlign: "center",

@@ -167,9 +167,8 @@ export default function Home() {
           {loggedUser.user_image && (
             <TouchableOpacity
               onPress={() => {
-                setSelectedTab("Closet");
-                setClosetId_(loggedUser.closet_id);
-                setOwner_(loggedUser);
+                navigation.navigate("Profile");
+            
               }}
             >
               <Image

@@ -107,7 +107,7 @@ export default function MainLayout() {
               justifyContent: "center",
               alignItems: "center",
             }}>
-          <LocationPinIcon></LocationPinIcon>
+            <LocationPinIcon></LocationPinIcon>
           </View>
         </View>
       ),
@@ -140,6 +140,7 @@ export default function MainLayout() {
       {selectedTab == "Closet" && <Closet />}
       {selectedTab == "WishList" && <WishList />}
       {/* {selectedTab == "Profile" && <Profile />} */}
+      {/* לשנות בהמשך לcloset */}
       {selectedTab == "Profile" && <Closet />}
       {selectedTab == "Order" && <Order />}
       {selectedTab == "SearchUsersFollow" && <SearchUsersFollow />}
@@ -148,7 +149,6 @@ export default function MainLayout() {
       {selectedTab == "Filter" && <Filter />}
       {selectedTab == "SearchAllUsers" && <SearchAllUsers />}
       {selectedTab == "EditProfile" && <EditProfile />}
-
       <View
         style={{
           alignSelf: "center",
@@ -171,7 +171,8 @@ export default function MainLayout() {
             <TouchableOpacity
               key={index}
               onPress={() => {
-                if (item.screen == "Closet") {
+                //לשנות בהמשך לcloset
+                if (item.screen == "Profile") {
                   setSelectedTab(item.screen);
                   setClosetId_(loggedUser.closet_id);
                   setOwner_(loggedUser);

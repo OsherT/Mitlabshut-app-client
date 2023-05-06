@@ -16,6 +16,7 @@ import { userContext } from "../navigation/userContext";
 import { FlatList } from "react-native";
 import { Image } from "react-native";
 import WarningModal from "../components/WarningModal";
+import BagHeader from "../svg/BagHeader";
 
 export default function Profile() {
   const navigation = useNavigation();
@@ -35,7 +36,6 @@ export default function Profile() {
       GetUsersFollow();
     }
   }, [isFocused]);
-
 
   const GetUsersFollow = () => {
     fetch(
@@ -136,6 +136,15 @@ export default function Profile() {
 
         <ContainerComponent>
           <ProfileCategory
+            icon={<BagHeader />}
+            title="לארון שלי"
+            arrow={false}
+            onPress={() => {
+              setSelectedTab("Closet");
+              navigation.navigate("MainLayout");
+            }}
+          />
+          <ProfileCategory
             icon={<SignOutCategory />}
             title="התנתקי"
             arrow={false}
@@ -162,6 +171,7 @@ export default function Profile() {
           <TouchableOpacity
             onPress={() => {
               setSelectedTab("SearchUsersFollow");
+              navigation.navigate("MainLayout");
             }}>
             <Text
               style={{
@@ -194,6 +204,7 @@ export default function Profile() {
                     setSelectedTab("Closet");
                     setClosetId_(user.closet_id);
                     setOwner_(user);
+                    navigation.navigate("MainLayout");
                   }}>
                   <Image
                     source={{ uri: user.user_image }}

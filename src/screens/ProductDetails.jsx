@@ -5,14 +5,25 @@ import {
   TouchableOpacity,
   StyleSheet,
   Share,
+  Modal,
+  Linking,
 } from "react-native";
 import React, { useContext, useEffect, useState, useRef } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { AREA, COLORS, FONTS } from "../constants";
-import { Button, Header } from "../components";
-import { Edit, HeartTwoSvg } from "../svg";
+import { Button, Header, ProfileCategory } from "../components";
+import {
+  AddSvg,
+  Arrow,
+  ArrowFive,
+  ArrowFour,
+  CanceledSvg,
+  Check,
+  Edit,
+  HeartTwoSvg,
+} from "../svg";
 import ButtonFollow from "../components/ButtonFollow";
-import { ScrollView } from "react-native-gesture-handler";
+import { FlatList, ScrollView } from "react-native-gesture-handler";
 import Swiper from "react-native-swiper";
 import ShareSvg from "../svg/ShareSvg";
 import { userContext } from "../navigation/userContext";
@@ -40,12 +51,16 @@ export default function ProductDetails(props) {
   const [closetName, setclosetName] = useState("");
   const [user, setuser] = useState("");
   const [myitemFlag, setmyitemFlag] = useState(false);
+  const [UsersItems, setUsersItems] = useState([]);
+  const [UsersItemPhotos, setUsersItemPhotos] = useState([]);
 
   //modal
   const [showModal, setShowModal] = useState(false);
   const [massage, setMassage] = useState("");
   const [handleSure, setHandleSure] = useState("");
   const [itemStatus, setItemStatus] = useState(item.item_status);
+  //switchoffer
+  const [isModalOfferVisible, setIsModalOfferVisible] = useState(false);
 
   //item's info section
   const [shippingMethod, setShippingMethod] = useState(item.shipping_method);
@@ -72,6 +87,7 @@ export default function ProductDetails(props) {
       GetItemCategories();
       GetItemImages();
       GetNumOfFav();
+      GetUserItemsForOffer();
       setShippingMethod(item.shipping_method);
 
       if (address1 && address2) {
@@ -494,6 +510,72 @@ export default function ProductDetails(props) {
       });
   }
 
+  //switch offer
+  function GetUserItemsForOffer() {
+    axios
+      .get(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Item/GetItemByClosetId/ClosetId/" +
+          loggedUser.closet_id
+      )
+      .then((res) => {
+        if (res.data === 0) {
+          setUsersItems([]);
+        } else {
+          const activeItems = res.data.filter(
+            (item) => item.item_status === "active"
+          );
+          console.log(activeItems);
+          setUsersItems(activeItems);
+          GetItemPhotos(activeItems);
+        }
+      })
+      .catch((err) => {
+        console.log("err in GetUserItemsForOffer ", err);
+      });
+  }
+
+  //קבלת תמונות הפריטים
+  function GetItemPhotos(items) {
+    // pass the items array as a parameter
+    const promises = items.map((item) => {
+      // use the passed items array
+      return axios.get(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/ItemImages/GetItem_Image_VideoItemById/Item_ID/" +
+          item.id
+      );
+    });
+
+    Promise.all(promises)
+      .then((responses) => {
+        const photos = responses.flatMap((response) => response.data);
+        setUsersItemPhotos(photos);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        console.log("error in GetItemPhotos", error);
+        setMessage("קיימת שגיאה בהעלאת נתונים,\n תועברי לדף הבית");
+        setShowAlertModal(true);
+      });
+  }
+  const closeModal = () => {
+    setIsModalOfferVisible(false);
+  };
+  const sendWhatsAppMessage = async (Myitem) => {
+    console.log(Myitem,"Myitem");
+    try {
+      
+      var message = `היי ${user.full_name}, ראיתי את הפריט שלך שנקרא ${item.name} באפליקציית מתלבשות. `;
+      const phone = `+972${user.phone_number}`;
+      message += `האם את מעוניינת להחליף אותו בעבור `;
+     message+=`הפריט שלי שנקרא ${Myitem.name}?`
+      const url = `whatsapp://send?phone=${phone}&text=${encodeURIComponent(
+        message
+      )}`;
+      Linking.openURL(url);
+    } catch (err) {
+      console.log("error in get users data to buy" + err);
+    }
+  };
   function renderContent() {
     return (
       <View>
@@ -507,7 +589,8 @@ export default function ProductDetails(props) {
                       textAlign: "right",
                       fontSize: 13,
                       marginBottom: 5,
-                    }}>
+                    }}
+                  >
                     ✓ איסוף עצמי
                   </Text>
                 )}
@@ -517,7 +600,8 @@ export default function ProductDetails(props) {
                       textAlign: "right",
                       fontSize: 13,
                       marginBottom: 5,
-                    }}>
+                    }}
+                  >
                     ✓ משלוח
                   </Text>
                 )}
@@ -527,7 +611,8 @@ export default function ProductDetails(props) {
                       textAlign: "right",
                       fontSize: 13,
                       marginBottom: 5,
-                    }}>
+                    }}
+                  >
                     ✓ משלוח ✓ איסוף עצמי
                   </Text>
                 )}
@@ -545,7 +630,8 @@ export default function ProductDetails(props) {
                           itemImages: itemImages,
                           itemCtegories: itemCtegories,
                         });
-                      }}>
+                      }}
+                    >
                       <Edit />
                     </TouchableOpacity>
                   )}
@@ -555,7 +641,8 @@ export default function ProductDetails(props) {
                     textAlign: "right",
                     fontSize: 13,
                     marginBottom: 5,
-                  }}>
+                  }}
+                >
                   ♡ {numOfFav} אהבו פריט זה
                 </Text>
               </View>
@@ -573,7 +660,8 @@ export default function ProductDetails(props) {
                             ...FONTS.Mulish_600SemiBold,
                             fontSize: 20,
                             textAlign: "center",
-                          }}>
+                          }}
+                        >
                           נמכר
                         </Text>
                       </View>
@@ -589,7 +677,8 @@ export default function ProductDetails(props) {
                 // render the filled heart SVG if the item ID is in the UsersFavList
                 <TouchableOpacity
                   style={styles.favIcon}
-                  onPress={() => RemoveFromFav(item.id)}>
+                  onPress={() => RemoveFromFav(item.id)}
+                >
                   <HeartTwoSvg filled={true} strokeColor="red" />
                 </TouchableOpacity>
               )}
@@ -610,7 +699,8 @@ export default function ProductDetails(props) {
                         loggedUser.full_name
                       ),
                     ]);
-                  }}>
+                  }}
+                >
                   <HeartTwoSvg filled={false} strokeColor="red" />
                 </TouchableOpacity>
               )}
@@ -619,7 +709,8 @@ export default function ProductDetails(props) {
                 style={styles.shareIcon}
                 onPress={() => {
                   onShare();
-                }}>
+                }}
+              >
                 <ShareSvg></ShareSvg>
               </TouchableOpacity>
             )}
@@ -669,7 +760,8 @@ export default function ProductDetails(props) {
                     setOwner_(user);
                     //the go back takes us to the wanted closet
                     navigation.goBack();
-                  }}>
+                  }}
+                >
                   <ImageBackground
                     source={{
                       uri: user.user_image,
@@ -696,7 +788,8 @@ export default function ProductDetails(props) {
                       color: COLORS.black,
                       lineHeight: 22 * 1.2,
                       padding: 2,
-                    }}>
+                    }}
+                  >
                     {user.full_name}
                   </Text>
                 </TouchableOpacity>
@@ -713,13 +806,15 @@ export default function ProductDetails(props) {
                   setOwner_(user);
                   //the go back takes us to the wanted closet
                   navigation.goBack();
-                }}>
+                }}
+              >
                 <ImageBackground
                   source={{
                     uri: user.user_image,
                   }}
                   style={styles.userImage}
-                  imageStyle={{ borderRadius: 40 }}></ImageBackground>
+                  imageStyle={{ borderRadius: 40 }}
+                ></ImageBackground>
 
                 <Text
                   style={{
@@ -728,7 +823,8 @@ export default function ProductDetails(props) {
                     color: COLORS.gray,
                     lineHeight: 22 * 1.2,
                     padding: 2,
-                  }}>
+                  }}
+                >
                   הארון שלי{" "}
                 </Text>
                 <Text> </Text>
@@ -803,10 +899,19 @@ export default function ProductDetails(props) {
 
                 {!UsersShopList.includes(item.id) && itemStatus != "sold" && (
                   <Button
-                    title="+ הוסיפי לסל קניות"
+                    title=" הוסיפי לסל קניות +"
                     containerStyle={{ marginBottom: 13 }}
                     onPress={() => {
                       AddToShopList(item.id);
+                    }}
+                  />
+                )}
+                {itemStatus != "sold" && (
+                  <Button
+                    title="הציעי החלפה"
+                    containerStyle={{ marginBottom: 13 }}
+                    onPress={() => {
+                      setIsModalOfferVisible(true);
                     }}
                   />
                 )}
@@ -856,6 +961,97 @@ export default function ProductDetails(props) {
             )}
           </ScrollView>
         </View>
+        <Modal
+          visible={isModalOfferVisible}
+          animationType="slide"
+          transparent={true}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.miniModalContent}>
+              <View style={styles.modalHeader}>
+                <View style={styles.titleContainer}>
+                  <Text style={styles.modalTitle}>החלפת פריט</Text>
+                </View>
+                <View>
+                  <ProfileCategory
+                    icon={<CanceledSvg />}
+                    arrow={false}
+                    onPress={closeModal}
+                  />
+                </View>
+              </View>
+              <View style={styles.headerLine} />
+              <FlatList
+                data={UsersItems}
+                horizontal={true}
+                showsHorizontalScrollIndicator={false}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item, index }) => (
+                  <View
+                    style={{
+                      width: 180,
+                      backgroundColor: COLORS.white,
+                      justifyContent: "space-between",
+                      paddingBottom: 15,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: COLORS.black,
+                        ...FONTS.Mulish_600SemiBold,
+                        fontSize: 15,
+                        textAlign: "center",
+                        paddingBottom: 10,
+                      }}
+                    >
+                      {item.name}
+                    </Text>
+                    {UsersItemPhotos.filter(
+                      (photo) => photo.item_ID === item.id
+                    )
+                      .slice(0, 1)
+                      .map((photo) => {
+                        return (
+                          <ImageBackground
+                            source={{ uri: photo.src }}
+                            style={{
+                              width: 150,
+                              height: 150,
+                            }}
+                            imageStyle={{ borderRadius: 10 }}
+                            key={photo.id}
+                          />
+                        );
+                      })}
+                    <TouchableOpacity
+                      style={{
+                        margin: 8,
+                        height: 30,
+                        width: 125,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        backgroundColor: COLORS.goldenTransparent_04,
+                        borderRadius: 30,
+                        shadowColor: "#000000",
+                        shadowOffset: {
+                          width: 0,
+                          height: 2,
+                        },
+                        shadowOpacity: 0.2,
+                        shadowRadius: 4,
+                        elevation: 4,
+                        paddingHorizontal: 5,
+                      }}
+                      onPress={() => sendWhatsAppMessage(item)}
+                    >
+                      <Text>הציעי החלפה</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              />
+            </View>
+          </View>
+        </Modal>
       </View>
     );
   }
@@ -938,6 +1134,15 @@ const styles = StyleSheet.create({
     lineHeight: 22 * 1.2,
     color: COLORS.black,
   },
+  titleContainer: {
+    flexDirection: "row",
+    alignItems: "righ",
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginLeft: 10,
+  },
   descriptionContainer: {
     flexDirection: "row",
     alignItems: "left",
@@ -998,5 +1203,37 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 10,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+    alignItems: "center",
+    shadowColor: "#000000",
+    width: "100%",
+    shadowOffset: {
+      width: 10,
+      height: 12,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 14,
+    elevation: 4,
+  },
+  miniModalContent: {
+    backgroundColor: COLORS.white,
+    borderRadius: 30,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    width: "100%",
+  },
+  modalHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    marginBottom: 10,
+  },
+  headerLine: {
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.gray,
+    marginBottom: 10,
   },
 });

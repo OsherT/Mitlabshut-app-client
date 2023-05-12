@@ -8,12 +8,13 @@ import {
   Modal,
   SafeAreaView,
   Linking,
+  Button,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import axios from "axios";
 import LoadingComponent from "../components/LoadingComponent";
-import { Header, Button, ProfileCategory } from "../components";
+import { Header, ProfileCategory } from "../components";
 import { AREA, COLORS } from "../constants";
 import { CanceledSvg, HeartSvg } from "../svg";
 import { useContext } from "react";
@@ -26,12 +27,12 @@ const Map = (props) => {
   const [selectedStore, setSelectedStore] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [homeView, setHomeView] = useState(props.homeView || false);
-
+  const [showFav, setshowFav] = useState(false);
   const Store_map_icon =
     "https://firebasestorage.googleapis.com/v0/b/mitlabshut-final.appspot.com/o/AppImages%2Fstore_map_icon.png?alt=media&token=79fc64b1-f12b-40f0-9171-b89e3daca894";
   const { loggedUser } = useContext(userContext);
   const [showFavorites, setShowFavorites] = useState(false);
-
+  const [renderStores, setrenderStores] = useState([]);
   useEffect(() => {
     // Request permission to access the user's location
     (async () => {
@@ -47,39 +48,41 @@ const Map = (props) => {
     })();
 
     getStoresList();
-    // getUsersFavList();
-  }, []);
+    getUsersFavList();
+    console.log(showFav);
+  }, [showFav]);
 
+  
   //הבאת כל החנויות
   function getStoresList() {
     axios
       .get("https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Stores/Get")
       .then((res) => {
         setstores(res.data);
+        setrenderStores(res.data);
       })
       .catch((err) => {
         console.log("cant get stores list", err);
       });
   }
 
-  // function getUsersFavList() {
-  //   axios
-  //     .get(
-  //       "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Stores/Get/" +
-  //         loggedUser.id
-  //     )
-  //     .then((res) => {
-  //       if (res.data == "No such stores yet") {
-  //         setUsersFavList("");
-  //       } else {
-  //         console.log(res.data);
-  //         setUsersFavList(res.data);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.log("cant get fav stores list", err);
-  //     });
-  // }
+  function getUsersFavList() {
+    axios
+      .get(
+        "https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Stores/Get/" +
+          loggedUser.id
+      )
+      .then((res) => {
+        if (res.data == "No such stores yet") {
+          setUsersFavList("");
+        } else {
+          setUsersFavList(res.data);
+        }
+      })
+      .catch((err) => {
+        console.log("cant get fav stores list", err);
+      });
+  }
 
   function addStoreToFav() {
     axios
@@ -133,6 +136,7 @@ const Map = (props) => {
   };
 
   const openFacebook = () => {
+    
     const url = selectedStore?.facebook_link;
     Linking.openURL(url);
   };
@@ -141,17 +145,27 @@ const Map = (props) => {
     const url = selectedStore?.instegram_link;
     Linking.openURL(url);
   };
-
+  function handleHideFav() {
+    setshowFav(false);
+    setrenderStores(stores);
+  }
+  function handleShowFav() {
+    setshowFav(true);
+    setrenderStores(UsersFavList);
+  }
   return (
     <View style={{ flex: 1 }}>
       <SafeAreaView
         style={{
           ...AREA.AndroidSafeArea,
           backgroundColor: "none",
-        }}>
+        }}
+      >
         {!homeView && <Header title="מפת חנויות" goBack={false} />}
+
         <View style={styles.mapContainer}>
-          {currentLocation && stores && UsersFavList ? (
+          {currentLocation && renderStores && UsersFavList ? (
+            
             <MapView
               style={styles.map}
               initialRegion={{
@@ -163,38 +177,56 @@ const Map = (props) => {
               provider="google"
               customMapStyle={[]}
               showsUserLocation={true}
-              showsMyLocationButton={true}>
-              {stores.map((store, index) => {
-                const [latitude, longitude] =
-                  store.address_coordinates.split(", ");
-                const parsedLatitude = parseFloat(latitude);
-                const parsedLongitude = parseFloat(longitude);
+              showsMyLocationButton={true}
+            >
+              <View style={styles.buttonContainer}>
+              
 
-                if (isNaN(parsedLatitude) || isNaN(parsedLongitude)) {
-                  // Handle the case when the coordinates are invalid
-                  console.log("Invalid coordinates for store:", store); //
-                } else {
-                  return (
-                    <Marker
-                      key={index}
-                      coordinate={{
-                        latitude: parseFloat(latitude),
-                        longitude: parseFloat(longitude),
-                      }}
-                      onPress={() => handleMarkerPress(store)}>
-                      {/* <Image
-                    source={{ uri: Store_map_icon }}
-                    style={{
-                        width: 32,
-                        height: 32,
-                      borderRadius: 10,
-                      paddingBottom: 40,
-                    }}
-                  /> */}
-                    </Marker>
-                  );
-                }
-              })}
+
+                {!showFav ? (
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={handleShowFav}
+                  >
+                    <>
+                    <HeartSvg filled={false} />
+                    </>
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={handleHideFav}
+                  >
+                    <>
+                    <HeartSvg filled={true} />
+                    </>
+                  </TouchableOpacity>
+                )}
+                {renderStores.map((store, index) => {
+                  const [latitude, longitude] =
+                    store.address_coordinates.split(", ");
+                  const parsedLatitude = parseFloat(latitude);
+                  const parsedLongitude = parseFloat(longitude);
+
+                  if (isNaN(parsedLatitude) || isNaN(parsedLongitude)) {
+                    // Handle the case when the coordinates are invalid
+                    console.log("Invalid coordinates for store:", store); //
+                  } else {
+                    return (
+                      <View>
+                        <Marker
+                          key={index}
+                          coordinate={{
+                            latitude: parseFloat(latitude),
+                            longitude: parseFloat(longitude),
+                          }}
+                          onPress={() => handleMarkerPress(store)}
+                        ></Marker>
+                      </View>
+                    );
+                  }
+                })}
+              </View>
             </MapView>
           ) : (
             <View style={styles.loadingContainer}>
@@ -205,7 +237,8 @@ const Map = (props) => {
         <Modal
           visible={isModalVisible}
           animationType="slide"
-          transparent={true}>
+          transparent={true}
+        >
           <View style={styles.modalContainer}>
             <View style={styles.miniModalContent}>
               <View style={styles.modalHeader}>
@@ -274,7 +307,11 @@ const styles = StyleSheet.create({
   Icon: {
     width: 60,
     height: 60,
-    marginRight: 10,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   headerLine: {
     borderBottomWidth: 1,
@@ -308,6 +345,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
     alignItems: "center",
+    shadowColor: "#000000",
+    width:'100%',
+    shadowOffset: {
+      width: 10,
+      height: 12,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 14,
+    elevation: 4,
+   
   },
   mapContainer: {
     flex: 1,
@@ -319,6 +366,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 20,
     width: "100%",
+    
   },
   modalTitle: {
     fontSize: 24,
@@ -342,6 +390,35 @@ const styles = StyleSheet.create({
     backgroundColor: "blue",
     padding: 10,
     borderRadius: 5,
+  },
+  button: {
+    position: "absolute",
+    right: 12,
+    top: 560,
+    height: 55,
+    width: 55,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: COLORS.white,
+    borderRadius: 30,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+    paddingHorizontal: 5,
+  },
+  iconContainer: {
+    height: 24,
+    width: 24,
+  },
+  text: {
+    fontSize: 13,
+    color: COLORS.gray,
+    textAlign: "center",
   },
 });
 

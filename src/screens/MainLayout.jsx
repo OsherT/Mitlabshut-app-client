@@ -31,8 +31,9 @@ import Profile from "./Profile";
 export default function MainLayout() {
   const { loggedUser, selectedTab, setSelectedTab, setOwner_, setClosetId_ } =
     useContext(userContext);
-  const closetIcon = `https://firebasestorage.googleapis.com/v0/b/mitlabshut-final.appspot.com/o/AppImages%2FclosetIcon.png?alt=media&token=948c5dad-d3a8-4aa9-97c9-f6fc9eeb0d32`;
-
+  const closetIconGolden = `https://firebasestorage.googleapis.com/v0/b/mitlabshut-final.appspot.com/o/AppImages%2FclosetIcon_Golden.png?alt=media&token=41bc061c-9a63-48c1-a611-0a77a8b6082f`;
+  const closetIconGrey =
+    "https://firebasestorage.googleapis.com/v0/b/mitlabshut-final.appspot.com/o/AppImages%2FclosetIcon_lightGrey.png?alt=media&token=f4c5e8bf-b25b-4822-b886-4e9b15a2fe8a";
   //the tabs of the navbar
   const tabs = [
     {
@@ -64,10 +65,12 @@ export default function MainLayout() {
             borderWidth: 1,
             borderColor: "#BBA36B",
             top: -19,
+            alignSelf: "center",
             borderRadius: 30,
             justifyContent: "center",
             alignItems: "center",
-          }}>
+          }}
+        >
           <View
             style={{
               width: 54,
@@ -76,7 +79,8 @@ export default function MainLayout() {
               borderRadius: 30,
               justifyContent: "center",
               alignItems: "center",
-            }}>
+            }}
+          >
             <LocationPinIcon></LocationPinIcon>
           </View>
         </View>
@@ -85,13 +89,21 @@ export default function MainLayout() {
     {
       id: "4",
       screen: "Closet",
-      icon: <BagSvg></BagSvg>,
-      // icon: (
-      //   <ProfileTab
-      //     color={selectedTab == "Closet" ? COLORS.golden : COLORS.lightGray}
-      //   />
-      // ),
+      icon: (
+        <View style={styles.iconContainer}>
+          <Image
+            source={{
+              uri: selectedTab === "Closet" ? closetIconGolden : closetIconGrey,
+            }}
+            style={{
+              width: 35,
+              height: 35,
+            }}
+          />
+        </View>
+      ),
     },
+
     {
       id: "5",
       screen: "Profile",
@@ -126,7 +138,8 @@ export default function MainLayout() {
           alignSelf: "center",
           position: "absolute",
           bottom: 68,
-        }}>
+        }}
+      >
         <TabElement />
       </View>
       <View
@@ -137,7 +150,8 @@ export default function MainLayout() {
           paddingHorizontal: 28,
           backgroundColor: COLORS.white,
           paddingBottom: 10,
-        }}>
+        }}
+      >
         {tabs.map((item, index) => {
           return (
             <TouchableOpacity
@@ -150,7 +164,8 @@ export default function MainLayout() {
                 } else {
                   setSelectedTab(item.screen);
                 }
-              }}>
+              }}
+            >
               <View>{item.icon}</View>
             </TouchableOpacity>
           );
@@ -159,3 +174,13 @@ export default function MainLayout() {
     </View>
   );
 }
+const styles = {
+  iconContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  icon: {
+    width: 40,
+    height: 40,
+  },
+};

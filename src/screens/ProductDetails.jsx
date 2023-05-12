@@ -561,13 +561,12 @@ export default function ProductDetails(props) {
     setIsModalOfferVisible(false);
   };
   const sendWhatsAppMessage = async (Myitem) => {
-    console.log(Myitem,"Myitem");
+    console.log(Myitem, "Myitem");
     try {
-      
       var message = `היי ${user.full_name}, ראיתי את הפריט שלך שנקרא ${item.name} באפליקציית מתלבשות. `;
       const phone = `+972${user.phone_number}`;
       message += `האם את מעוניינת להחליף אותו בעבור `;
-     message+=`הפריט שלי שנקרא ${Myitem.name}?`
+      message += `הפריט שלי שנקרא ${Myitem.name}?`;
       const url = `whatsapp://send?phone=${phone}&text=${encodeURIComponent(
         message
       )}`;
@@ -981,74 +980,88 @@ export default function ProductDetails(props) {
                 </View>
               </View>
               <View style={styles.headerLine} />
-              <FlatList
-                data={UsersItems}
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item, index }) => (
-                  <View
-                    style={{
-                      width: 180,
-                      backgroundColor: COLORS.white,
-                      justifyContent: "space-between",
-                      paddingBottom: 15,
-                    }}
-                  >
-                    <Text
+              {UsersItems.length != 0 ? (
+                <FlatList
+                  data={UsersItems}
+                  horizontal={true}
+                  showsHorizontalScrollIndicator={false}
+                  keyExtractor={(item) => item.id.toString()}
+                  renderItem={({ item, index }) => (
+                    <View
                       style={{
-                        color: COLORS.black,
-                        ...FONTS.Mulish_600SemiBold,
-                        fontSize: 15,
-                        textAlign: "center",
-                        paddingBottom: 10,
+                        width: 180,
+                        backgroundColor: COLORS.white,
+                        justifyContent: "space-between",
+                        paddingBottom: 15,
                       }}
                     >
-                      {item.name}
-                    </Text>
-                    {UsersItemPhotos.filter(
-                      (photo) => photo.item_ID === item.id
-                    )
-                      .slice(0, 1)
-                      .map((photo) => {
-                        return (
-                          <ImageBackground
-                            source={{ uri: photo.src }}
-                            style={{
-                              width: 150,
-                              height: 150,
-                            }}
-                            imageStyle={{ borderRadius: 10 }}
-                            key={photo.id}
-                          />
-                        );
-                      })}
-                    <TouchableOpacity
-                      style={{
-                        margin: 8,
-                        height: 30,
-                        width: 125,
-                        alignItems: "center",
-                        justifyContent: "center",
-                        backgroundColor: COLORS.goldenTransparent_04,
-                        borderRadius: 30,
-                        shadowColor: "#000000",
-                        shadowOffset: {
-                          width: 0,
-                          height: 2,
-                        },
-                        shadowOpacity: 0.2,
-                        shadowRadius: 4,
-                        elevation: 4,
-                        paddingHorizontal: 5,
-                      }}
-                      onPress={() => sendWhatsAppMessage(item)}
-                    >
-                      <Text>הציעי החלפה</Text>
-                    </TouchableOpacity>
-                  </View>
-                )}
-              />
+                      <Text
+                        style={{
+                          color: COLORS.black,
+                          ...FONTS.Mulish_600SemiBold,
+                          fontSize: 15,
+                          textAlign: "center",
+                          paddingBottom: 10,
+                        }}
+                      >
+                        {item.name}
+                      </Text>
+                      {UsersItemPhotos.filter(
+                        (photo) => photo.item_ID === item.id
+                      )
+                        .slice(0, 1)
+                        .map((photo) => {
+                          return (
+                            <ImageBackground
+                              source={{ uri: photo.src }}
+                              style={{
+                                width: 150,
+                                height: 150,
+                              }}
+                              imageStyle={{ borderRadius: 10 }}
+                              key={photo.id}
+                            />
+                          );
+                        })}
+                      <TouchableOpacity
+                        style={{
+                          margin: 8,
+                          height: 30,
+                          width: 125,
+                          alignItems: "center",
+                          justifyContent: "center",
+                          backgroundColor: COLORS.goldenTransparent_04,
+                          borderRadius: 30,
+                          shadowColor: "#000000",
+                          shadowOffset: {
+                            width: 0,
+                            height: 2,
+                          },
+                          shadowOpacity: 0.2,
+                          shadowRadius: 4,
+                          elevation: 4,
+                          paddingHorizontal: 5,
+                        }}
+                        onPress={() => sendWhatsAppMessage(item)}
+                      >
+                        <Text>הציעי החלפה</Text>
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                />
+              ) : (
+                <Text
+                  style={{
+                    color: COLORS.black,
+                    ...FONTS.Mulish_600SemiBold,
+                    fontSize: 15,
+                    textAlign: "center",
+                    padding: 70,
+                  }}
+                >
+                  נראה שאין לך פריטים זמינים להחלפה{" "}
+                </Text>
+              )}
             </View>
           </View>
         </Modal>

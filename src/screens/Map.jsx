@@ -49,10 +49,9 @@ const Map = (props) => {
 
     getStoresList();
     getUsersFavList();
-    console.log(showFav);
+    console.log(stores);
   }, [showFav]);
 
-  
   //הבאת כל החנויות
   function getStoresList() {
     axios
@@ -73,8 +72,8 @@ const Map = (props) => {
           loggedUser.id
       )
       .then((res) => {
-        if (res.data == "No such stores yet") {
-          setUsersFavList("");
+        if (res.data === "No such stores yet") {
+          setUsersFavList([]);
         } else {
           setUsersFavList(res.data);
         }
@@ -136,7 +135,6 @@ const Map = (props) => {
   };
 
   const openFacebook = () => {
-    
     const url = selectedStore?.facebook_link;
     Linking.openURL(url);
   };
@@ -153,6 +151,68 @@ const Map = (props) => {
     setshowFav(true);
     setrenderStores(UsersFavList);
   }
+
+  function renderMap(data) {
+    return (
+      <View style={styles.mapContainer}>
+        {currentLocation && data && UsersFavList ? (
+          <MapView
+            style={styles.map}
+            initialRegion={{
+              latitude: currentLocation.latitude,
+              longitude: currentLocation.longitude,
+              latitudeDelta: 0.0922,
+              longitudeDelta: 0.0421,
+            }}
+            provider="google"
+            customMapStyle={[]}
+            showsUserLocation={true}
+            showsMyLocationButton={true}
+          >
+            <View style={styles.buttonContainer}>
+              {!showFav ? (
+                <TouchableOpacity style={styles.button} onPress={handleShowFav}>
+                  <HeartSvg filled={false} />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity style={styles.button} onPress={handleHideFav}>
+                  <HeartSvg filled={true} />
+                </TouchableOpacity>
+              )}
+              {data.map((store, index) => {
+                const [latitude, longitude] =
+                  store.address_coordinates.split(", ");
+                const parsedLatitude = parseFloat(latitude);
+                const parsedLongitude = parseFloat(longitude);
+
+                if (isNaN(parsedLatitude) || isNaN(parsedLongitude)) {
+                  // Handle the case when the coordinates are invalid
+                  console.log("Invalid coordinates for store:", store); //
+                } else {
+                  return (
+                    <View>
+                      <Marker
+                        key={index}
+                        coordinate={{
+                          latitude: parseFloat(latitude),
+                          longitude: parseFloat(longitude),
+                        }}
+                        onPress={() => handleMarkerPress(store)}
+                      ></Marker>
+                    </View>
+                  );
+                }
+              })}
+            </View>
+          </MapView>
+        ) : (
+          <View style={styles.loadingContainer}>
+            <LoadingComponent></LoadingComponent>
+          </View>
+        )}
+      </View>
+    );
+  }
   return (
     <View style={{ flex: 1 }}>
       <SafeAreaView
@@ -162,78 +222,8 @@ const Map = (props) => {
         }}
       >
         {!homeView && <Header title="מפת חנויות" goBack={false} />}
+        {showFav ? renderMap(UsersFavList) : renderMap(stores)}
 
-        <View style={styles.mapContainer}>
-          {currentLocation && renderStores && UsersFavList ? (
-            
-            <MapView
-              style={styles.map}
-              initialRegion={{
-                latitude: currentLocation.latitude,
-                longitude: currentLocation.longitude,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-              }}
-              provider="google"
-              customMapStyle={[]}
-              showsUserLocation={true}
-              showsMyLocationButton={true}
-            >
-              <View style={styles.buttonContainer}>
-              
-
-
-                {!showFav ? (
-                  <TouchableOpacity
-                    style={styles.button}
-                    onPress={handleShowFav}
-                  >
-                    <>
-                    <HeartSvg filled={false} />
-                    </>
-                  </TouchableOpacity>
-                ) : (
-                  <TouchableOpacity
-                    style={styles.button}
-                    onPress={handleHideFav}
-                  >
-                    <>
-                    <HeartSvg filled={true} />
-                    </>
-                  </TouchableOpacity>
-                )}
-                {renderStores.map((store, index) => {
-                  const [latitude, longitude] =
-                    store.address_coordinates.split(", ");
-                  const parsedLatitude = parseFloat(latitude);
-                  const parsedLongitude = parseFloat(longitude);
-
-                  if (isNaN(parsedLatitude) || isNaN(parsedLongitude)) {
-                    // Handle the case when the coordinates are invalid
-                    console.log("Invalid coordinates for store:", store); //
-                  } else {
-                    return (
-                      <View>
-                        <Marker
-                          key={index}
-                          coordinate={{
-                            latitude: parseFloat(latitude),
-                            longitude: parseFloat(longitude),
-                          }}
-                          onPress={() => handleMarkerPress(store)}
-                        ></Marker>
-                      </View>
-                    );
-                  }
-                })}
-              </View>
-            </MapView>
-          ) : (
-            <View style={styles.loadingContainer}>
-              <LoadingComponent></LoadingComponent>
-            </View>
-          )}
-        </View>
         <Modal
           visible={isModalVisible}
           animationType="slide"
@@ -346,7 +336,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     alignItems: "center",
     shadowColor: "#000000",
-    width:'100%',
+    width: "100%",
     shadowOffset: {
       width: 10,
       height: 12,
@@ -354,7 +344,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 14,
     elevation: 4,
-   
   },
   mapContainer: {
     flex: 1,
@@ -366,7 +355,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 20,
     width: "100%",
-    
   },
   modalTitle: {
     fontSize: 24,

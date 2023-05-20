@@ -15,10 +15,11 @@ import * as Location from "expo-location";
 import axios from "axios";
 import LoadingComponent from "../components/LoadingComponent";
 import { Header, ProfileCategory } from "../components";
-import { AREA, COLORS } from "../constants";
-import { CanceledSvg, HeartSvg } from "../svg";
+import { AREA, COLORS, FONTS } from "../constants";
+import { Arrow, ArrowThree, ArrowTwo, CanceledSvg, HeartSvg } from "../svg";
 import { useContext } from "react";
 import { userContext } from "../navigation/userContext";
+import { FlatList } from "react-native-gesture-handler";
 
 const Map = (props) => {
   const [currentLocation, setCurrentLocation] = useState(null);
@@ -31,8 +32,8 @@ const Map = (props) => {
   const Store_map_icon =
     "https://firebasestorage.googleapis.com/v0/b/mitlabshut-final.appspot.com/o/AppImages%2Fstore_map_icon.png?alt=media&token=79fc64b1-f12b-40f0-9171-b89e3daca894";
   const { loggedUser } = useContext(userContext);
-  const [showFavorites, setShowFavorites] = useState(false);
   const [renderStores, setrenderStores] = useState([]);
+
   useEffect(() => {
     // Request permission to access the user's location
     (async () => {
@@ -49,7 +50,7 @@ const Map = (props) => {
 
     getStoresList();
     getUsersFavList();
-    console.log(stores);
+    console.log(UsersFavList);
   }, [showFav]);
 
   //הבאת כל החנויות
@@ -143,42 +144,32 @@ const Map = (props) => {
     const url = selectedStore?.instegram_link;
     Linking.openURL(url);
   };
-  function handleHideFav() {
-    setshowFav(false);
-    setrenderStores(stores);
-  }
-  function handleShowFav() {
-    setshowFav(true);
-    setrenderStores(UsersFavList);
-  }
 
   function renderMap(data) {
     return (
       <View style={styles.mapContainer}>
-        {currentLocation && data && UsersFavList ? (
-          <MapView
-            style={styles.map}
-            initialRegion={{
-              latitude: currentLocation.latitude,
-              longitude: currentLocation.longitude,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421,
-            }}
-            provider="google"
-            customMapStyle={[]}
-            showsUserLocation={true}
-            showsMyLocationButton={true}
-          >
-            <View style={styles.buttonContainer}>
-              {!showFav ? (
-                <TouchableOpacity style={styles.button} onPress={handleShowFav}>
-                  <HeartSvg filled={false} />
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity style={styles.button} onPress={handleHideFav}>
-                  <HeartSvg filled={true} />
-                </TouchableOpacity>
-              )}
+        {currentLocation && data ? (
+          <>
+            <TouchableOpacity
+              style={styles.buttonContainer}
+              onPress={() => setshowFav(true)}
+            >
+              <Text style={styles.text}>הציגי חנויות שמורות </Text>
+            </TouchableOpacity>
+
+            <MapView
+              style={styles.map}
+              initialRegion={{
+                latitude: currentLocation.latitude,
+                longitude: currentLocation.longitude,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+              }}
+              provider="google"
+              customMapStyle={[]}
+              showsUserLocation={true}
+              showsMyLocationButton={true}
+            >
               {data.map((store, index) => {
                 const [latitude, longitude] =
                   store.address_coordinates.split(", ");
@@ -203,8 +194,8 @@ const Map = (props) => {
                   );
                 }
               })}
-            </View>
-          </MapView>
+            </MapView>
+          </>
         ) : (
           <View style={styles.loadingContainer}>
             <LoadingComponent></LoadingComponent>
@@ -222,7 +213,7 @@ const Map = (props) => {
         }}
       >
         {!homeView && <Header title="מפת חנויות" goBack={false} />}
-        {showFav ? renderMap(UsersFavList) : renderMap(stores)}
+        {renderMap(stores)}
 
         <Modal
           visible={isModalVisible}
@@ -288,6 +279,101 @@ const Map = (props) => {
             </View>
           </View>
         </Modal>
+
+        <Modal visible={showFav} animationType="slide" transparent="true">
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "flex-start",
+              marginTop: 30,
+            }}
+          >
+            <View
+              style={{
+                width: "50%",
+                height: "100%",
+                borderRadius: 10,
+                padding: 20,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginBottom: 10,
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    style={{
+                      fontSize: 24,
+                      fontWeight: "bold",
+                      alignSelf: "flex-end",
+                    }}
+                  >
+                    החנויות שלי
+                  </Text>
+                </View>
+                <View>
+                  <ProfileCategory
+                    icon={<CanceledSvg />}
+                    arrow={false}
+                    onPress={() => setshowFav(false)}
+                  />
+                </View>
+              </View>
+              <View style={styles.headerLine} />
+              {UsersFavList.length != 0 ? (
+                <FlatList
+                  data={UsersFavList}
+                  horizontal={false}
+                  showsHorizontalScrollIndicator={false}
+                  keyExtractor={(store) => store.store_ID.toString()}
+                  renderItem={({ store, index }) => (
+                    <View
+                      style={{
+                        width: 180,
+                        backgroundColor: COLORS.white,
+                        justifyContent: "space-between",
+                        paddingBottom: 15,
+                      }}
+                    >
+                      <Text
+                        style={{
+                          color: COLORS.black,
+                          ...FONTS.Mulish_600SemiBold,
+                          fontSize: 15,
+                          textAlign: "center",
+                          paddingBottom: 10,
+                        }}
+                      >
+                        להלהלה{" "}
+                      </Text>
+                    </View>
+                  )}
+                />
+              ) : (
+                <Text
+                  style={{
+                    color: COLORS.black,
+                    ...FONTS.Mulish_600SemiBold,
+                    fontSize: 15,
+                    textAlign: "center",
+                    padding: 70,
+                  }}
+                >
+                  נראה שאין לך חנויות שמורות
+                </Text>
+              )}
+            </View>
+          </View>
+        </Modal>
       </SafeAreaView>
     </View>
   );
@@ -300,8 +386,18 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    alignItems: "flex-start",
+    padding: 10,
+    borderRadius: 8,
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4,
+    paddingHorizontal: 5,
   },
   headerLine: {
     borderBottomWidth: 1,
@@ -381,10 +477,10 @@ const styles = StyleSheet.create({
   },
   button: {
     position: "absolute",
-    right: 12,
-    top: 560,
-    height: 55,
-    width: 55,
+    right: 0,
+    top: 0,
+    height: 30,
+    width: 30,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: COLORS.white,
@@ -404,8 +500,8 @@ const styles = StyleSheet.create({
     width: 24,
   },
   text: {
-    fontSize: 13,
-    color: COLORS.gray,
+    fontSize: 15,
+    color: COLORS.black,
     textAlign: "center",
   },
 });

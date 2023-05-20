@@ -3,8 +3,8 @@ import Svg, { Path } from "react-native-svg";
 
 const ArrowTwo = (props) => (
     <Svg
-        width={8}
-        height={14}
+        width={12}
+        height={15}
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         {...props}

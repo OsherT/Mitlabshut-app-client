@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   Linking,
   Button,
+  ScrollView,
 } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
@@ -50,8 +51,7 @@ const Map = (props) => {
 
     getStoresList();
     getUsersFavList();
-    console.log(UsersFavList);
-  }, [showFav]);
+  }, [UsersFavList]);
 
   //הבאת כל החנויות
   function getStoresList() {
@@ -98,6 +98,7 @@ const Map = (props) => {
   }
 
   function removeFromFav() {
+    console.log(selectedStore);
     axios
       .delete(
         `https://proj.ruppin.ac.il/cgroup31/test2/tar2/api/Stores/DeleteFavItem/Store_ID/${selectedStore?.store_ID}/User_ID/${loggedUser.id}`
@@ -145,65 +146,6 @@ const Map = (props) => {
     Linking.openURL(url);
   };
 
-  function renderMap(data) {
-    return (
-      <View style={styles.mapContainer}>
-        {currentLocation && data ? (
-          <>
-            <TouchableOpacity
-              style={styles.buttonContainer}
-              onPress={() => setshowFav(true)}
-            >
-              <Text style={styles.text}>הציגי חנויות שמורות </Text>
-            </TouchableOpacity>
-
-            <MapView
-              style={styles.map}
-              initialRegion={{
-                latitude: currentLocation.latitude,
-                longitude: currentLocation.longitude,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-              }}
-              provider="google"
-              customMapStyle={[]}
-              showsUserLocation={true}
-              showsMyLocationButton={true}
-            >
-              {data.map((store, index) => {
-                const [latitude, longitude] =
-                  store.address_coordinates.split(", ");
-                const parsedLatitude = parseFloat(latitude);
-                const parsedLongitude = parseFloat(longitude);
-
-                if (isNaN(parsedLatitude) || isNaN(parsedLongitude)) {
-                  // Handle the case when the coordinates are invalid
-                  console.log("Invalid coordinates for store:", store); //
-                } else {
-                  return (
-                    <View>
-                      <Marker
-                        key={index}
-                        coordinate={{
-                          latitude: parseFloat(latitude),
-                          longitude: parseFloat(longitude),
-                        }}
-                        onPress={() => handleMarkerPress(store)}
-                      ></Marker>
-                    </View>
-                  );
-                }
-              })}
-            </MapView>
-          </>
-        ) : (
-          <View style={styles.loadingContainer}>
-            <LoadingComponent></LoadingComponent>
-          </View>
-        )}
-      </View>
-    );
-  }
   return (
     <View style={{ flex: 1 }}>
       <SafeAreaView
@@ -213,14 +155,68 @@ const Map = (props) => {
         }}
       >
         {!homeView && <Header title="מפת חנויות" goBack={false} />}
-        {renderMap(stores)}
+        <View style={styles.mapContainer}>
+          {currentLocation && stores && UsersFavList ? (
+            <>
+              <TouchableOpacity
+                style={styles.buttonContainer}
+                onPress={() => setshowFav(true)}
+              >
+                <Text style={styles.text}>הציגי חנויות שמורות </Text>
+              </TouchableOpacity>
 
+              <MapView
+                style={styles.map}
+                initialRegion={{
+                  latitude: currentLocation.latitude,
+                  longitude: currentLocation.longitude,
+                  latitudeDelta: 0.0922,
+                  longitudeDelta: 0.0421,
+                }}
+                provider="google"
+                customMapStyle={[]}
+                showsUserLocation={true}
+                showsMyLocationButton={true}
+              >
+                {stores.map((store, index) => {
+                  const [latitude, longitude] =
+                    store.address_coordinates.split(", ");
+                  const parsedLatitude = parseFloat(latitude);
+                  const parsedLongitude = parseFloat(longitude);
+
+                  if (isNaN(parsedLatitude) || isNaN(parsedLongitude)) {
+                    // Handle the case when the coordinates are invalid
+                    console.log("Invalid coordinates for store:", store); //
+                  } else {
+                    return (
+                      <View>
+                        <Marker
+                          key={index}
+                          coordinate={{
+                            latitude: parseFloat(latitude),
+                            longitude: parseFloat(longitude),
+                          }}
+                          onPress={() => handleMarkerPress(store)}
+                        ></Marker>
+                      </View>
+                    );
+                  }
+                })}
+              </MapView>
+            </>
+          ) : (
+            <View style={styles.loadingContainer}>
+              <LoadingComponent></LoadingComponent>
+            </View>
+          )}
+        </View>
+        {/* מודל הצגת חנות  */}
         <Modal
           visible={isModalVisible}
           animationType="slide"
           transparent={true}
         >
-          <View style={styles.modalContainer}>
+          <View style={styles.modalContainer} pointerEvents="box-none">
             <View style={styles.miniModalContent}>
               <View style={styles.modalHeader}>
                 {UsersFavList.some(
@@ -249,6 +245,7 @@ const Map = (props) => {
 
               <View style={styles.headerLine} />
               <Text style={styles.desc}>{selectedStore?.description}</Text>
+              <Text style={styles.desc}>{selectedStore?.address}</Text>
               <TouchableOpacity onPress={handlePhoneNumberPress}>
                 <Text style={styles.phone}>{selectedStore?.phone_number}</Text>
               </TouchableOpacity>
@@ -279,100 +276,105 @@ const Map = (props) => {
             </View>
           </View>
         </Modal>
-
-        <Modal visible={showFav} animationType="slide" transparent="true">
-          <View
-            style={{
-              flex: 1,
-              justifyContent: "center",
-              alignItems: "flex-start",
-              marginTop: 30,
-            }}
-          >
+        {/* מודל הצגת חנויות שמורות */}
+        <Modal visible={showFav} animationType="slide" transparent={true}>
+       
+          {UsersFavList && UsersFavList.length > 0 ? (
+            
             <View
-              style={{
-                width: "50%",
-                height: "100%",
-                borderRadius: 10,
-                padding: 20,
-              }}
+              style={[
+                styles.modalContainer,
+                {
+                  justifyContent: "flex-end",
+                },
+              ]}
             >
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  marginBottom: 10,
-                }}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontSize: 24,
-                      fontWeight: "bold",
-                      alignSelf: "flex-end",
-                    }}
-                  >
-                    החנויות שלי
-                  </Text>
-                </View>
-                <View>
-                  <ProfileCategory
+              
+              <View style={styles.miniModalContent}>
+              <ProfileCategory
                     icon={<CanceledSvg />}
                     arrow={false}
                     onPress={() => setshowFav(false)}
                   />
-                </View>
-              </View>
-              <View style={styles.headerLine} />
-              {UsersFavList.length != 0 ? (
-                <FlatList
-                  data={UsersFavList}
-                  horizontal={false}
-                  showsHorizontalScrollIndicator={false}
-                  keyExtractor={(store) => store.store_ID.toString()}
-                  renderItem={({ store, index }) => (
-                    <View
-                      style={{
-                        width: 180,
-                        backgroundColor: COLORS.white,
-                        justifyContent: "space-between",
-                        paddingBottom: 15,
-                      }}
-                    >
-                      <Text
-                        style={{
-                          color: COLORS.black,
-                          ...FONTS.Mulish_600SemiBold,
-                          fontSize: 15,
-                          textAlign: "center",
-                          paddingBottom: 10,
-                        }}
-                      >
-                        להלהלה{" "}
-                      </Text>
-                    </View>
-                  )}
-                />
-              ) : (
-                <Text
-                  style={{
-                    color: COLORS.black,
-                    ...FONTS.Mulish_600SemiBold,
-                    fontSize: 15,
-                    textAlign: "center",
-                    padding: 70,
-                  }}
+                <ScrollView
+                  showsVerticalScrollIndicator={false}
+                  contentContainerStyle={styles.modalContent}
+                  style={{ maxHeight: 500 }}
                 >
-                  נראה שאין לך חנויות שמורות
-                </Text>
-              )}
+                 
+                  {UsersFavList.map((item) => (
+                    <React.Fragment key={item.store_ID}>
+                      <View style={styles.modalHeader}>
+                        {UsersFavList.some(
+                          (favItem) => favItem.store_ID === item.store_ID
+                        ) ? (
+                          <TouchableOpacity onPress={() => {setSelectedStore(item);removeFromFav(); }}>
+                            <HeartSvg filled={true} />
+                          </TouchableOpacity>
+                        ) : (
+                          <TouchableOpacity onPress={() => {setSelectedStore(item);addStoreToFav(); }}>
+                            <HeartSvg filled={false} />
+                          </TouchableOpacity>
+                        )}
+                        <View style={styles.titleContainer}>
+                          <Text style={styles.modalTitle}>{item.name}</Text>
+                        </View>
+                      </View>
+                      <Text style={styles.desc}>{item?.description}</Text>
+                      <Text style={styles.desc}>{item?.address}</Text>
+                      <TouchableOpacity onPress={handlePhoneNumberPress}>
+                        <Text style={styles.phone}>{item?.phone_number}</Text>
+                      </TouchableOpacity>
+                      <View style={styles.links}>
+                        {item?.facebook_link !== "" && (
+                          <TouchableOpacity onPress={openFacebook}>
+                            <Image
+                              source={require("./Facebook_icon.png")}
+                              style={styles.Icon}
+                            />
+                          </TouchableOpacity>
+                        )}
+                        {item?.instagram_link !== "" && (
+                          <TouchableOpacity onPress={openInsta}>
+                            <Image
+                              source={require("./instagram_icon.png")}
+                              style={styles.Icon}
+                            />
+                          </TouchableOpacity>
+                        )}
+                        <TouchableOpacity onPress={openWaze}>
+                          <Image
+                            source={require("./icon-waze.png")}
+                            style={styles.Icon}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                      <View style={styles.headerLine} />
+                    </React.Fragment>
+                  ))}
+                </ScrollView>
+              </View>
             </View>
-          </View>
+          ) : (
+             
+            <View
+              style={[
+                styles.modalContainer,
+                {
+                  justifyContent: "flex-end",
+                },
+              ]}
+            >
+              
+              <View style={styles.miniModalContent}>
+              <ProfileCategory
+                    icon={<CanceledSvg />}
+                    arrow={false}
+                    onPress={() => setshowFav(false)}
+                  />
+                   <View style={styles.modalHeader}>
+            <Text style={styles.modalTitle}>אין חנויות שמורות...לבנתיים</Text></View></View></View>
+          )}
         </Modal>
       </SafeAreaView>
     </View>
@@ -380,6 +382,15 @@ const Map = (props) => {
 };
 
 const styles = StyleSheet.create({
+  modalContent: {
+    paddingVertical: 20,
+    paddingHorizontal: 10,
+  },
+  horizontalLine: {
+    height: 1,
+    backgroundColor: "gray",
+    marginVertical: 10,
+  },
   Icon: {
     width: 60,
     height: 60,
@@ -400,9 +411,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
   },
   headerLine: {
-    borderBottomWidth: 1,
+    borderBottomWidth: 2,
     borderBottomColor: COLORS.gray,
     marginBottom: 10,
+    padding: 10,
   },
   map: {
     flex: 1,
@@ -428,8 +440,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalContainer: {
+    backgroundColor: "rgba(128, 128, 128, 0.45)",
     flex: 1,
     justifyContent: "flex-end",
+    position: "relative",
     alignItems: "center",
     shadowColor: "#000000",
     width: "100%",
@@ -443,7 +457,7 @@ const styles = StyleSheet.create({
   },
   mapContainer: {
     flex: 1,
-    backgroundColor: "transparent",
+    //backgroundColor: "transparent",
   },
   miniModalContent: {
     backgroundColor: COLORS.white,

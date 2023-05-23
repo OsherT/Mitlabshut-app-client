@@ -278,9 +278,7 @@ const Map = (props) => {
         </Modal>
         {/* מודל הצגת חנויות שמורות */}
         <Modal visible={showFav} animationType="slide" transparent={true}>
-       
           {UsersFavList && UsersFavList.length > 0 ? (
-            
             <View
               style={[
                 styles.modalContainer,
@@ -289,30 +287,38 @@ const Map = (props) => {
                 },
               ]}
             >
-              
               <View style={styles.miniModalContent}>
-              <ProfileCategory
-                    icon={<CanceledSvg />}
-                    arrow={false}
-                    onPress={() => setshowFav(false)}
-                  />
+                <ProfileCategory
+                  icon={<CanceledSvg />}
+                  arrow={false}
+                  onPress={() => setshowFav(false)}
+                />
                 <ScrollView
                   showsVerticalScrollIndicator={false}
                   contentContainerStyle={styles.modalContent}
                   style={{ maxHeight: 500 }}
                 >
-                 
                   {UsersFavList.map((item) => (
                     <React.Fragment key={item.store_ID}>
                       <View style={styles.modalHeader}>
                         {UsersFavList.some(
                           (favItem) => favItem.store_ID === item.store_ID
                         ) ? (
-                          <TouchableOpacity onPress={() => {setSelectedStore(item);removeFromFav(); }}>
+                          <TouchableOpacity
+                            onPress={() => {
+                              setSelectedStore(item);
+                              removeFromFav();
+                            }}
+                          >
                             <HeartSvg filled={true} />
                           </TouchableOpacity>
                         ) : (
-                          <TouchableOpacity onPress={() => {setSelectedStore(item);addStoreToFav(); }}>
+                          <TouchableOpacity
+                            onPress={() => {
+                              setSelectedStore(item);
+                              addStoreToFav();
+                            }}
+                          >
                             <HeartSvg filled={false} />
                           </TouchableOpacity>
                         )}
@@ -356,7 +362,6 @@ const Map = (props) => {
               </View>
             </View>
           ) : (
-             
             <View
               style={[
                 styles.modalContainer,
@@ -365,15 +370,29 @@ const Map = (props) => {
                 },
               ]}
             >
-              
               <View style={styles.miniModalContent}>
-              <ProfileCategory
-                    icon={<CanceledSvg />}
-                    arrow={false}
-                    onPress={() => setshowFav(false)}
-                  />
-                   <View style={styles.modalHeader}>
-            <Text style={styles.modalTitle}>אין חנויות שמורות...לבנתיים</Text></View></View></View>
+                <ProfileCategory
+                  icon={<CanceledSvg />}
+                  arrow={false}
+                  onPress={() => setshowFav(false)}
+                />
+                <View style={styles.modalHeader}>
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      ...FONTS.Mulish_700Bold,
+                      fontSize: 19,
+                      textTransform: "capitalize",
+                      color: COLORS.black,
+                      marginBottom: 4,
+                      lineHeight: 16 * 1.2,
+                    }}
+                  >
+                    אין חנויות שמורות...לבנתיים
+                  </Text>
+                </View>
+              </View>
+            </View>
           )}
         </Modal>
       </SafeAreaView>

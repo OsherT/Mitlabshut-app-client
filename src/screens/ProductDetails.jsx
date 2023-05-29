@@ -410,7 +410,7 @@ export default function ProductDetails(props) {
   const getLocationFromAddress = async (address) => {
     try {
       const response = await axios.get(
-        `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSyDarVyeqmQSsTsH9SzyEksCaIciizHroe0`
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=AIzaSyBjqIEpWLM9SXgDWMBohWB6eI4v5oKfDpw`
       );
 
       if (response.data.status === "OK") {

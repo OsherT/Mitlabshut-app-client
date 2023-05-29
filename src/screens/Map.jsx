@@ -158,12 +158,16 @@ const Map = (props) => {
         <View style={styles.mapContainer}>
           {currentLocation && stores && UsersFavList ? (
             <>
-              <TouchableOpacity
-                style={styles.buttonContainer}
-                onPress={() => setshowFav(true)}
-              >
-                <Text style={styles.text}>הציגי חנויות שמורות </Text>
-              </TouchableOpacity>
+              <View style={styles.buttonWrapper}>
+                {!homeView && (
+                  <TouchableOpacity
+                    style={styles.buttonContainer}
+                    onPress={() => setshowFav(true)}
+                  >
+                    <Text style={styles.buttonText}>הציגי חנויות שמורות</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
 
               <MapView
                 style={styles.map}
@@ -536,6 +540,24 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: COLORS.black,
     textAlign: "center",
+  },
+  buttonContainer: {
+    backgroundColor: COLORS.golden,
+    borderRadius: 5,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    marginVertical: 10,
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  buttonWrapper: {
+    alignItems: 'left',
+    width: '80%', // Adjust the percentage as needed
   },
 });
 

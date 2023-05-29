@@ -324,7 +324,7 @@ export default function EditProfile() {
                   setAddress(data.description);
                 }}
                 query={{
-                  key: "AIzaSyAaCpPtzL7apvQuXnKdRhY0omPHiMdc--s",
+                  key: "AIzaSyBjqIEpWLM9SXgDWMBohWB6eI4v5oKfDpw",
                   language: "he",
                 }}
                 textInputProps={{

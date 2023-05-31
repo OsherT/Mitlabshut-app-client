@@ -65,6 +65,7 @@ export default function MainLayout() {
             borderWidth: 1,
             borderColor: "#BBA36B",
             top: -19,
+            left:6,
             alignSelf: "center",
             borderRadius: 30,
             justifyContent: "center",

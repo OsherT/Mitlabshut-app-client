@@ -72,6 +72,7 @@ export default function ItemsByCtegory() {
         } else {
           setItemsByType(res.data);
           GetItemPhotos(res.data);
+          console.log(res.data);
         }
       })
       .catch((err) => {

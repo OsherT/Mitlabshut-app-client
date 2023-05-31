@@ -11,13 +11,14 @@ import React, { useContext, useEffect, useState } from "react";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { Header, ContainerComponent, ProfileCategory } from "../components";
 import { COLORS, FONTS } from "../constants";
-import { Edit, SearchSvg, SignOutCategory } from "../svg";
+import { BagSvg, Edit, SearchSvg, SignOutCategory } from "../svg";
 import { userContext } from "../navigation/userContext";
 import { FlatList } from "react-native";
 import { Image } from "react-native";
 import WarningModal from "../components/WarningModal";
-import BagHeader from "../svg/BagHeader";
 import AlertModal from "../components/AlertModal";
+import DeleteSvg from "../svg/DeleteSvg";
+import HengerSvg from "../svg/HengerSvg";
 
 export default function Profile() {
   const navigation = useNavigation();
@@ -137,7 +138,7 @@ export default function Profile() {
 
         <ContainerComponent>
           <ProfileCategory
-            icon={<BagHeader />}
+            icon={<HengerSvg />}
             title="לארון שלי"
             arrow={false}
             onPress={() => {
@@ -146,8 +147,20 @@ export default function Profile() {
               setOwner_(loggedUser);
             }}
           />
+
           <ProfileCategory
-            icon={<Edit />}
+            icon={<SignOutCategory />}
+            title="התנתקי"
+            arrow={false}
+            onPress={() => {
+              setDeleteFlag(false);
+              setShowModal(true);
+              setMassage(" האם את בטוחה שאת רוצה \n להתנתק ?");
+            }}
+          />
+
+          <ProfileCategory
+            icon={<DeleteSvg />}
             title="מחקי חשבון"
             arrow={false}
             onPress={() => {
@@ -156,15 +169,6 @@ export default function Profile() {
                 " פעולה זו הינה לצמיתות !\n\n האם את בטוחה שברצונך למחוק את הפרופיל ?"
               );
               setDeleteFlag(true);
-            }}
-          />
-          <ProfileCategory
-            icon={<SignOutCategory />}
-            title="התנתקי"
-            arrow={false}
-            onPress={() => {
-              setShowModal(true);
-              setMassage(" האם את בטוחה שאת רוצה \n להתנתק ?");
             }}
           />
         </ContainerComponent>
@@ -273,6 +277,7 @@ export default function Profile() {
       setSelectedTab("Home");
       navigation.navigate("LogIn");
     }
+    setDeleteFlag(false);
   }
 
   const updateUser_Delete = () => {
@@ -318,6 +323,7 @@ export default function Profile() {
           console.log("ERR in update user", error);
         }
       );
+    setDeleteFlag(false);
   };
 
   return (

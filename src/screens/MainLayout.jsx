@@ -99,6 +99,7 @@ export default function MainLayout() {
             style={{
               width: 35,
               height: 35,
+              left:12,
             }}
           />
         </View>

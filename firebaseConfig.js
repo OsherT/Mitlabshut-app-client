@@ -4,16 +4,6 @@ import "firebase/compat/auth";
 import "firebase/compat/firestore";
 import "firebase/compat/storage";
 
-// const firebaseConfig = {
-//   apiKey: "AIzaSyAF-UN1LEbh6ENgYvKBbftdwoeCxmBsZFQ",
-  
-//   authDomain: "mitlabshut-ee371.firebaseapp.com",
-//   projectId: "mitlabshut-ee371",
-//   storageBucket: "mitlabshut-ee371.appspot.com",
-//   messagingSenderId: "997564396755",
-//   appId: "1:997564396755:web:8af5839586676e13281026",
-//   measurementId: "G-SDE7P6F41B",
-// };
 const firebaseConfig = {
   apiKey: "AIzaSyCWjcnE8XmJq3Bci5yerkOk89F9yEn7pKM",
   authDomain: "mitlabshut-final.firebaseapp.com",
